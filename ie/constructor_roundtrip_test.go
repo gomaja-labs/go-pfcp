@@ -150,7 +150,7 @@ func callConstructor(entry constructorEntry) []reflect.Value {
 			case reflect.ValueOf(ie.NewUsageReport).Pointer():
 				args[k] = reflect.ValueOf(ie.UsageReportWithinSessionReportRequest)
 			case reflect.ValueOf(ie.NewTSCManagementInformation).Pointer(), reflect.ValueOf(ie.NewPortManagementInformationForTSC).Pointer():
-				args[k] = reflect.ValueOf(ie.PortManagementInformationForTSCWithinSessionModificationRequest)
+				args[k] = reflect.ValueOf(ie.TSCManagementInformationWithinSessionModificationRequest)
 			case reflect.ValueOf(ie.NewUpdateBAR).Pointer():
 				args[k] = reflect.ValueOf(ie.UpdateBARWithinSessionReportResponse)
 			}

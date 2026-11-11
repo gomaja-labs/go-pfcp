@@ -3632,7 +3632,9 @@ func TestIEAddRemove(t *testing.T) {
 		ie.NewNodeID("127.0.0.1", "", ""),
 		ie.NewPDRID(1),
 	)
-	i.Add(ie.NewAPNDNN("foo.example"))
+	if err := i.Add(ie.NewAPNDNN("foo.example")); err != nil {
+		t.Fatal(err)
+	}
 
 	added := ie.NewCreatePDR(
 		ie.NewNodeID("127.0.0.1", "", ""),
@@ -3645,7 +3647,9 @@ func TestIEAddRemove(t *testing.T) {
 		t.Error(diff)
 	}
 
-	i.Remove(ie.NodeID)
+	if err := i.Remove(ie.NodeID); err != nil {
+		t.Fatal(err)
+	}
 
 	removed := ie.NewCreatePDR(
 		ie.NewPDRID(1),

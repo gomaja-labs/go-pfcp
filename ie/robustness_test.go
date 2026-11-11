@@ -3,7 +3,6 @@ package ie_test
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"math/rand/v2"
 	"reflect"
 	"strings"
@@ -38,29 +37,49 @@ func namedTypes() []ie.IEType {
 
 func panicOf(fn func()) (p any) { defer func() { p = recover() }(); fn(); return nil }
 
+// TestAllHelpersNoPanic calls every exported no-argument method of *ie.IE on
+// IEs of every named type with every payload of the family. A method that
+// rejects an IE type with InvalidTypeError does so before reading the payload,
+// so the remaining payloads are skipped for that type and method; every other
+// combination sees the whole family.
 func TestAllHelpersNoPanic(t *testing.T) {
 	methods := reflect.TypeFor[*ie.IE]()
-	failures := map[string]bool{}
+	payloads := payloadFamily()
+	calls := 0
 	for _, typ := range namedTypes() {
-		for _, b := range payloadFamily() {
-			v := reflect.ValueOf(ie.New(typ, b))
-			for m := 0; m < methods.NumMethod(); m++ {
-				method := methods.Method(m)
-				if method.Type.NumIn() != 1 {
-					continue
+		for m := 0; m < methods.NumMethod(); m++ {
+			method := methods.Method(m)
+			if method.Type.NumIn() != 1 {
+				continue
+			}
+			for k, b := range payloads {
+				var out []reflect.Value
+				v := reflect.ValueOf(ie.New(typ, b))
+				calls++
+				if p := panicOf(func() { out = v.Method(m).Call(nil) }); p != nil {
+					t.Errorf("%s/%s length %d: panic %v", typ, method.Name, len(b), p)
+					break
 				}
-				key := fmt.Sprintf("%s/%s", typ, method.Name)
-				if failures[key] {
-					continue
-				}
-				if p := panicOf(func() { v.Method(m).Call(nil) }); p != nil {
-					failures[key] = true
-					t.Errorf("%s length %d: panic %v", key, len(b), p)
+				if k == 0 && rejectsType(out) {
+					break
 				}
 			}
 		}
 	}
-	t.Logf("%d named/vendor types; %d exported methods; %d payloads", len(namedTypes()), methods.NumMethod(), len(payloadFamily()))
+	t.Logf("%d named/vendor types; %d exported methods; %d payloads; %d calls", len(namedTypes()), methods.NumMethod(), len(payloads), calls)
+}
+
+// rejectsType reports whether a method's results end in an *ie.InvalidTypeError.
+func rejectsType(out []reflect.Value) bool {
+	if len(out) == 0 {
+		return false
+	}
+	last := out[len(out)-1]
+	if last.Type() != reflect.TypeFor[error]() || last.IsNil() {
+		return false
+	}
+	var invalid *ie.InvalidTypeError
+	return errors.As(last.Interface().(error), &invalid)
 }
 
 func TestNilIEAPIs(t *testing.T) {

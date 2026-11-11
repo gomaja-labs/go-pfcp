@@ -76,7 +76,7 @@ func (i *IE) ValidateApplyAction() error {
 		return ErrMalformed
 	}
 	// The DUPL flag may be set with any of the DROP, FORW, BUFF and NOCP flags.
-	if i.HasDUPL() && !(i.HasDROP() || i.HasFORW() || i.HasBUFF() || i.HasNOCP()) {
+	if i.HasDUPL() && !i.HasDROP() && !i.HasFORW() && !i.HasBUFF() && !i.HasNOCP() {
 		return ErrMalformed
 	}
 	// The DFRT flag may only be set if the FORW flag is set.
@@ -85,7 +85,7 @@ func (i *IE) ValidateApplyAction() error {
 		return ErrMalformed
 	}
 	// The DDPN flag may be set with any of the DROP and BUFF flags.
-	if i.HasDDPN() && !(i.HasDROP() || i.HasBUFF()) {
+	if i.HasDDPN() && !i.HasDROP() && !i.HasBUFF() {
 		return ErrMalformed
 	}
 

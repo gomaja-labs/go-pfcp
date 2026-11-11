@@ -11,15 +11,16 @@ import (
 
 // Error definitions.
 var (
-	ErrTooShortToParse = errors.New("too short to decode as GTP")
-	ErrInvalidLength   = errors.New("length value is invalid")
+	ErrInvalidLength = errors.New("length value is invalid")
 
 	ErrInvalidType = errors.New("invalid type")
 	ErrIENotFound  = errors.New("could not find the specified IE in a grouped IE")
 
 	ErrMalformed = errors.New("malformed IE")
 
-	ErrElementNotFound = errors.New("element not found")
+	// ErrNestingTooDeep reports grouped IEs nested deeper than any structure
+	// TS 29.244 defines; the decoder stops there instead of following them.
+	ErrNestingTooDeep = errors.New("grouped IEs are nested too deeply")
 )
 
 // DecodeError identifies the IE whose declared value could not be decoded.

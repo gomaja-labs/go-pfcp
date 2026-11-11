@@ -14,6 +14,7 @@ import (
 )
 
 //go:generate go run ../internal/cmd/pfcpgen -target ie
+//go:generate go run ../internal/testutil/registrygen
 type IEType uint16
 
 // IE represents an Information Element of PFCP messages.
@@ -251,52 +252,57 @@ func Parse(b []byte) (*IE, error) {
 	return i, nil
 }
 
-// ParseMultiIEs decodes multiple IEs at a time.
-// This is easy and useful but slower than decoding one by one.
-// When you don't know the number of IEs, this is the only way to decode them.
-// See benchmarks in diameter_test.go for the detail.
-//
-// Note that this function uses the given bytes directly, so not safe to use
-// the buffer after calling this function. When you use the buffer somewhere
-// else, copy it before calling this function.
-func ParseMultiIEs(b []byte) ([]*IE, error) {
-	var ies []*IE
-	for {
-		if len(b) == 0 {
-			break
-		}
+// maxGroupedDepth bounds how many grouped IEs may enclose an IE the decoder
+// follows. TS 29.244 V20.1.0 nests grouped IEs at most four levels below a
+// message (clause 7 tables, e.g. Create PDR > PDI > Ethernet Packet Filter),
+// so deeper input is not a PFCP structure; without a bound one 64 KiB
+// datagram could force thousands of decoding levels.
+const maxGroupedDepth = 16
 
-		i, err := Parse(b)
+// ParseMultiIEs decodes a sequence of IEs that fills b exactly, such as the
+// IEs of a message or the value of a grouped IE.
+//
+// The returned IEs reference b: modifying b afterwards changes them. Copy b
+// first if it is reused.
+func ParseMultiIEs(b []byte) ([]*IE, error) {
+	return decodeIEs(b, 0)
+}
+
+// decodeIEs decodes the IEs filling b. depth counts the grouped IEs that
+// enclose them.
+func decodeIEs(b []byte, depth int) ([]*IE, error) {
+	var ies []*IE
+	for len(b) > 0 {
+		i, n, err := decodeIE(b, depth)
 		if err != nil {
 			return nil, err
 		}
 		ies = append(ies, i)
-		b = b[i.MarshalLen():]
+		b = b[n:]
 	}
 	return ies, nil
 }
 
-// UnmarshalBinary parses b into IE.
+// decodeIE decodes the IE at the start of b and returns it with the number of
+// octets it occupies, so that a caller advances by the declared length rather
+// than by re-measuring the decoded IE.
 // TS 29.244 V20.1.0 clause 8.1.1: Length excludes the four-octet header,
 // but includes the Enterprise ID of a vendor-specific IE.
-func (i *IE) UnmarshalBinary(b []byte) error {
-	if i == nil {
-		return ErrIENotFound
-	}
+func decodeIE(b []byte, depth int) (*IE, int, error) {
 	if len(b) < 4 {
-		return io.ErrUnexpectedEOF
+		return nil, 0, io.ErrUnexpectedEOF
 	}
 	typ := IEType(binary.BigEndian.Uint16(b[:2]))
 	length := int(binary.BigEndian.Uint16(b[2:4]))
 	vendor := typ&0x8000 != 0
 	if vendor && length < 2 {
-		return &DecodeError{Type: typ, Err: ErrInvalidLength}
+		return nil, 0, &DecodeError{Type: typ, Err: ErrInvalidLength}
 	}
 	end := 4 + length
 	if len(b) < end {
-		return &DecodeError{Type: typ, Err: io.ErrUnexpectedEOF}
+		return nil, 0, &DecodeError{Type: typ, Err: io.ErrUnexpectedEOF}
 	}
-	v := IE{Type: typ}
+	v := &IE{Type: typ}
 	offset := 4
 	if vendor {
 		v.EnterpriseID = binary.BigEndian.Uint16(b[4:6])
@@ -304,18 +310,38 @@ func (i *IE) UnmarshalBinary(b []byte) error {
 	}
 	payload := b[offset:end:end]
 	if v.IsGrouped() {
-		children, err := ParseMultiIEs(payload)
+		if depth >= maxGroupedDepth {
+			return nil, 0, &DecodeError{Type: typ, Err: ErrNestingTooDeep}
+		}
+		children, err := decodeIEs(payload, depth+1)
 		if err != nil {
-			return &DecodeError{Type: typ, Err: err}
+			return nil, 0, &DecodeError{Type: typ, Err: err}
+		}
+		if children == nil {
+			children = make([]*IE, 0)
 		}
 		v.ChildIEs = children
-		if v.ChildIEs == nil {
-			v.ChildIEs = make([]*IE, 0)
-		}
 	} else {
 		v.Payload = payload
 	}
-	*i = v
+	return v, end, nil
+}
+
+// UnmarshalBinary parses b, which must hold exactly one IE, into i.
+// Octets after the IE's declared length are an error (ErrInvalidLength):
+// use ParseMultiIEs for a sequence of IEs.
+func (i *IE) UnmarshalBinary(b []byte) error {
+	if i == nil {
+		return ErrIENotFound
+	}
+	v, n, err := decodeIE(b, 0)
+	if err != nil {
+		return err
+	}
+	if n != len(b) {
+		return &DecodeError{Type: v.Type, Err: ErrInvalidLength}
+	}
+	*i = *v
 	return nil
 }
 
@@ -459,7 +485,7 @@ func new3GPPTimestampIE(typ IEType, ts time.Time) *IE {
 
 func decodeFQDNValue(payload []byte) (string, error) {
 	name := utils.DecodeFQDN(payload)
-	if name == "" && !(len(payload) == 1 && payload[0] == 0) {
+	if name == "" && (len(payload) != 1 || payload[0] != 0) {
 		return "", ErrMalformed
 	}
 	return name, nil

@@ -31,14 +31,74 @@ func TestStrictIEBounds(t *testing.T) {
 }
 
 func TestPayloadCapacity(t *testing.T) {
-	b := []byte{0, 19, 0, 1, 7, 99}
-	i, err := ie.Parse(b)
+	b := []byte{0, 19, 0, 1, 7, 0, 19, 0, 1, 99}
+	ies, err := ie.ParseMultiIEs(b)
+	if err != nil || len(ies) != 2 {
+		t.Fatal(ies, err)
+	}
+	_ = append(ies[0].Payload, 8)
+	if b[5] != 0 || b[9] != 99 {
+		t.Fatal("append overwrote the following IE")
+	}
+}
+
+// TestParseRejectsTrailingOctets checks that Parse decodes exactly one IE:
+// octets after the declared length are not silently ignored.
+func TestParseRejectsTrailingOctets(t *testing.T) {
+	_, err := ie.Parse([]byte{0, 19, 0, 1, 7, 99})
+	var de *ie.DecodeError
+	if !errors.Is(err, ie.ErrInvalidLength) || !errors.As(err, &de) || de.IEType() != ie.Cause {
+		t.Fatalf("got %v, want a Cause DecodeError wrapping ErrInvalidLength", err)
+	}
+}
+
+// nestedCreatePDR returns depth Create PDR IEs, each holding the next, around
+// one PDR ID.
+func nestedCreatePDR(depth int) []byte {
+	b := make([]byte, 4*depth, 4*depth+6)
+	b = append(b, 0, 56, 0, 2, 0, 1)
+	for level := range depth {
+		length := len(b) - 4*(level+1)
+		copy(b[4*level:], []byte{0, 1, byte(length >> 8), byte(length)})
+	}
+	return b
+}
+
+// TestGroupedNestingBound checks the decoder's nesting bound: sixteen levels of
+// grouped IEs decode, a seventeenth is rejected with ErrNestingTooDeep, and a
+// 64 KiB datagram of nested headers is rejected without following thousands
+// of levels.
+func TestGroupedNestingBound(t *testing.T) {
+	if _, err := ie.Parse(nestedCreatePDR(16)); err != nil {
+		t.Fatalf("16 levels: %v", err)
+	}
+	if _, err := ie.Parse(nestedCreatePDR(17)); !errors.Is(err, ie.ErrNestingTooDeep) {
+		t.Fatalf("17 levels: got %v, want ErrNestingTooDeep", err)
+	}
+	if _, err := ie.ParseMultiIEs(nestedCreatePDR(16380)); !errors.Is(err, ie.ErrNestingTooDeep) {
+		t.Fatalf("16380 levels: got %v, want ErrNestingTooDeep", err)
+	}
+}
+
+// TestParseMultiIEsAdvancesByDeclaredLength decodes many siblings that each
+// hold the deepest accepted nesting; decoding work is linear in the input.
+func TestParseMultiIEsAdvancesByDeclaredLength(t *testing.T) {
+	one := nestedCreatePDR(16)
+	var b []byte
+	for len(b)+len(one) <= 65535 {
+		b = append(b, one...)
+	}
+	ies, err := ie.ParseMultiIEs(b)
 	if err != nil {
 		t.Fatal(err)
 	}
-	_ = append(i.Payload, 8)
-	if b[5] != 99 {
-		t.Fatal("append overwrote following IE")
+	if want := len(b) / len(one); len(ies) != want {
+		t.Fatalf("decoded %d IEs, want %d", len(ies), want)
+	}
+	for _, i := range ies {
+		if i.MarshalLen() != len(one) {
+			t.Fatalf("decoded IE re-measures %d octets, want %d", i.MarshalLen(), len(one))
+		}
 	}
 }
 
@@ -113,8 +173,12 @@ func TestGroupedSourceOfTruth(t *testing.T) {
 	if err != nil || vIE == nil {
 		t.Fatal("raw group lookup", err)
 	}
-	i.Add(nil, ie.NewCause(4))
-	i.Remove(ie.PDRID)
+	if err := i.Add(nil, ie.NewCause(4)); err != nil {
+		t.Fatal(err)
+	}
+	if err := i.Remove(ie.PDRID); err != nil {
+		t.Fatal(err)
+	}
 	if len(i.ChildIEs) != 1 || i.ChildIEs[0].Type != ie.Cause {
 		t.Fatal("raw group edits failed")
 	}
