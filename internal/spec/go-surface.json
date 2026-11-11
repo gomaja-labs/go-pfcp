@@ -1,0 +1,1468 @@
+{
+  "repository": "github.com/gomaja-labs/go-pfcp",
+  "revision": "2fbe893b27b0ccc38232a1312300fa7ebdb6411b",
+  "sources_sha256": {
+    "message/association-release-request.go": "1b18e206184e63bb470980b42e14a8594d91e8f7245e1052f7e90afa94bfa861",
+    "message/association-release-response.go": "b0f1d1f9a388ecf288ede099c3dccb70aacd2ad1a7e27d54004267d48b136ebd",
+    "message/association-setup-request.go": "a3a191f91ae3761624d75dd442e91379479d9cd87ff71ee7fe05975e11ddb505",
+    "message/association-setup-response.go": "25043979811f71394973bff601674462a74669f64cabfd4763503b5a972a99f3",
+    "message/association-update-request.go": "4442b0d84dea3c9958a3dee93842cceb55d0e0f67ae8b53643e5831eb55214d8",
+    "message/association-update-response.go": "1ce219831ccfca8132cb7c43e8afebc74de170511ab27462a601aba8a2b8ab3d",
+    "message/generic.go": "bd33c8a3bafc61796a88633890d5fcbba2be0d14674a7ab258c668708208ff3b",
+    "message/heartbeat-request.go": "3b1d0d6503f3f369d55cca01f01eab66adea7d1187afacf6fd27b0f7acc44e4f",
+    "message/heartbeat-response.go": "32f0e78bf8c7a67f0eafec4c3192ef59e44bc82a988b6b2ebe00742666f19c50",
+    "message/node-report-request.go": "f6472af46db4879efae7d820bdb146a7e31101b87dbf01e30b998b13ba2b4aab",
+    "message/node-report-response.go": "1ee9fbcd0c388e26ca8b8ffecc4dcd3b5311e827dee36c05cba73a66c8415057",
+    "message/pfd-management-request.go": "1bbe8d2c63b3c486ae57eb16483374901870580582395126819afc82ce14365f",
+    "message/pfd-management-response.go": "d501eb043ac5bd0bcfdfa35ee5aa504c906ddd5ad4feef78733c75bac764d31f",
+    "message/session-deletion-request.go": "b5db92d154dffa142432d6e096fd5ec16412fbb08c3413b22f7c1dc39d160e82",
+    "message/session-deletion-response.go": "4db92b592373c186460e215009a0763280a11bb8207cc4b7f2505bebe95f55f7",
+    "message/session-establishment-request.go": "98211b1817c8b5b53f985aa5527bf5fe112efda73001f108fc8290eb80dcbe96",
+    "message/session-establishment-response.go": "adc82449403ec54cc6daa3efc3fa633e4480f9b85b20305a387c6e1aeb65afec",
+    "message/session-modification-request.go": "b2ad2793c4d05570582a498ef0d62faeec3c525185db62218ef719de7178d4de",
+    "message/session-modification-response.go": "33252feb2d9234524dbe41a5a731c9b22a4d1ae24991eac00e8d3c72b3a6a206",
+    "message/session-report-request.go": "f9db6612e3c86bfec6845de57b03f0a0f333c864a2c371b9fab14da61a85d3e8",
+    "message/session-report-response.go": "516e6856a109401b90c8f0a5ffac67d65f9f0412080a6f1f57d793e32bece25a",
+    "message/session-set-deletion-request.go": "a489c49417c0b82721638b426a221f36ca85e6b44028659d9bc86f0235835a3f",
+    "message/session-set-deletion-response.go": "c20eb3e9d22a42d7c39fa5f7dc5ea7ced493ce5529d03626bb061cef0d8f11f8",
+    "message/version-not-supported-response.go": "276ea49850d1582fcee809cc36af8991f49e3d9dc917ec6e85cf06a365c5e5f4",
+    "ie/ie.go": "ee16179e97179ebfc79d462e5860ac802d6ea0e668e893991901dc4c33a18cbb",
+    "ie/ie_grouped.go": "33e0140ddb90f096b2e43163e86f905c45f0c2f45305a9d5a144f955cb98a506"
+  },
+  "ie_names": {
+    "1": "CreatePDR",
+    "2": "PDI",
+    "3": "CreateFAR",
+    "4": "ForwardingParameters",
+    "5": "DuplicatingParameters",
+    "6": "CreateURR",
+    "7": "CreateQER",
+    "8": "CreatedPDR",
+    "9": "UpdatePDR",
+    "10": "UpdateFAR",
+    "11": "UpdateForwardingParameters",
+    "12": "UpdateBARWithinSessionReportResponse",
+    "13": "UpdateURR",
+    "14": "UpdateQER",
+    "15": "RemovePDR",
+    "16": "RemoveFAR",
+    "17": "RemoveURR",
+    "18": "RemoveQER",
+    "19": "Cause",
+    "20": "SourceInterface",
+    "21": "FTEID",
+    "22": "NetworkInstance",
+    "23": "SDFFilter",
+    "24": "ApplicationID",
+    "25": "GateStatus",
+    "26": "MBR",
+    "27": "GBR",
+    "28": "QERCorrelationID",
+    "29": "Precedence",
+    "30": "TransportLevelMarking",
+    "31": "VolumeThreshold",
+    "32": "TimeThreshold",
+    "33": "MonitoringTime",
+    "34": "SubsequentVolumeThreshold",
+    "35": "SubsequentTimeThreshold",
+    "36": "InactivityDetectionTime",
+    "37": "ReportingTriggers",
+    "38": "RedirectInformation",
+    "39": "ReportType",
+    "40": "OffendingIE",
+    "41": "ForwardingPolicy",
+    "42": "DestinationInterface",
+    "43": "UPFunctionFeatures",
+    "44": "ApplyAction",
+    "45": "DownlinkDataServiceInformation",
+    "46": "DownlinkDataNotificationDelay",
+    "47": "DLBufferingDuration",
+    "48": "DLBufferingSuggestedPacketCount",
+    "49": "PFCPSMReqFlags",
+    "50": "PFCPSRRspFlags",
+    "51": "LoadControlInformation",
+    "52": "SequenceNumber",
+    "53": "Metric",
+    "54": "OverloadControlInformation",
+    "55": "Timer",
+    "56": "PDRID",
+    "57": "FSEID",
+    "58": "ApplicationIDsPFDs",
+    "59": "PFDContext",
+    "60": "NodeID",
+    "61": "PFDContents",
+    "62": "MeasurementMethod",
+    "63": "UsageReportTrigger",
+    "64": "MeasurementPeriod",
+    "65": "FQCSID",
+    "66": "VolumeMeasurement",
+    "67": "DurationMeasurement",
+    "68": "ApplicationDetectionInformation",
+    "69": "TimeOfFirstPacket",
+    "70": "TimeOfLastPacket",
+    "71": "QuotaHoldingTime",
+    "72": "DroppedDLTrafficThreshold",
+    "73": "VolumeQuota",
+    "74": "TimeQuota",
+    "75": "StartTime",
+    "76": "EndTime",
+    "77": "QueryURR",
+    "78": "UsageReportWithinSessionModificationResponse",
+    "79": "UsageReportWithinSessionDeletionResponse",
+    "80": "UsageReportWithinSessionReportRequest",
+    "81": "URRID",
+    "82": "LinkedURRID",
+    "83": "DownlinkDataReport",
+    "84": "OuterHeaderCreation",
+    "85": "CreateBAR",
+    "86": "UpdateBARWithinSessionModificationRequest",
+    "87": "RemoveBAR",
+    "88": "BARID",
+    "89": "CPFunctionFeatures",
+    "90": "UsageInformation",
+    "91": "ApplicationInstanceID",
+    "92": "FlowInformation",
+    "93": "UEIPAddress",
+    "94": "PacketRate",
+    "95": "OuterHeaderRemoval",
+    "96": "RecoveryTimeStamp",
+    "97": "DLFlowLevelMarking",
+    "98": "HeaderEnrichment",
+    "99": "ErrorIndicationReport",
+    "100": "MeasurementInformation",
+    "101": "NodeReportType",
+    "102": "UserPlanePathFailureReport",
+    "103": "RemoteGTPUPeer",
+    "104": "URSEQN",
+    "105": "UpdateDuplicatingParameters",
+    "106": "ActivatePredefinedRules",
+    "107": "DeactivatePredefinedRules",
+    "108": "FARID",
+    "109": "QERID",
+    "110": "OCIFlags",
+    "111": "PFCPAssociationReleaseRequest",
+    "112": "GracefulReleasePeriod",
+    "113": "PDNType",
+    "114": "FailedRuleID",
+    "115": "TimeQuotaMechanism",
+    "116": "UserPlaneIPResourceInformation",
+    "117": "UserPlaneInactivityTimer",
+    "118": "AggregatedURRs",
+    "119": "Multiplier",
+    "120": "AggregatedURRID",
+    "121": "SubsequentVolumeQuota",
+    "122": "SubsequentTimeQuota",
+    "123": "RQI",
+    "124": "QFI",
+    "125": "QueryURRReference",
+    "126": "AdditionalUsageReportsInformation",
+    "127": "CreateTrafficEndpoint",
+    "128": "CreatedTrafficEndpoint",
+    "129": "UpdateTrafficEndpoint",
+    "130": "RemoveTrafficEndpoint",
+    "131": "TrafficEndpointID",
+    "132": "EthernetPacketFilter",
+    "133": "MACAddress",
+    "134": "CTAG",
+    "135": "STAG",
+    "136": "Ethertype",
+    "137": "Proxying",
+    "138": "EthernetFilterID",
+    "139": "EthernetFilterProperties",
+    "140": "SuggestedBufferingPacketsCount",
+    "141": "UserID",
+    "142": "EthernetPDUSessionInformation",
+    "143": "EthernetTrafficInformation",
+    "144": "MACAddressesDetected",
+    "145": "MACAddressesRemoved",
+    "146": "EthernetInactivityTimer",
+    "147": "AdditionalMonitoringTime",
+    "148": "EventQuota",
+    "149": "EventThreshold",
+    "150": "SubsequentEventQuota",
+    "151": "SubsequentEventThreshold",
+    "152": "TraceInformation",
+    "153": "FramedRoute",
+    "154": "FramedRouting",
+    "155": "FramedIPv6Route",
+    "156": "EventTimeStamp",
+    "157": "AveragingWindow",
+    "158": "PagingPolicyIndicator",
+    "159": "APNDNN",
+    "160": "TGPPInterfaceType",
+    "161": "PFCPSRReqFlags",
+    "162": "PFCPAUReqFlags",
+    "163": "ActivationTime",
+    "164": "DeactivationTime",
+    "165": "CreateMAR",
+    "166": "TGPPAccessForwardingActionInformation",
+    "167": "NonTGPPAccessForwardingActionInformation",
+    "168": "RemoveMAR",
+    "169": "UpdateMAR",
+    "170": "MARID",
+    "171": "SteeringFunctionality",
+    "172": "SteeringMode",
+    "173": "Weight",
+    "174": "Priority",
+    "175": "UpdateTGPPAccessForwardingActionInformation",
+    "176": "UpdateNonTGPPAccessForwardingActionInformation",
+    "177": "UEIPAddressPoolIdentity",
+    "178": "AlternativeSMFIPAddress",
+    "179": "PacketReplicationAndDetectionCarryOnInformation",
+    "180": "SMFSetID",
+    "181": "QuotaValidityTime",
+    "182": "NumberOfReports",
+    "183": "PFCPSessionRetentionInformation",
+    "184": "PFCPASRspFlags",
+    "185": "CPPFCPEntityIPAddress",
+    "186": "PFCPSEReqFlags",
+    "187": "UserPlanePathRecoveryReport",
+    "188": "IPMulticastAddressingInfo",
+    "189": "JoinIPMulticastInformationWithinUsageReport",
+    "190": "LeaveIPMulticastInformationWithinUsageReport",
+    "191": "IPMulticastAddress",
+    "192": "SourceIPAddress",
+    "193": "PacketRateStatus",
+    "194": "CreateBridgeInfoForTSC",
+    "195": "CreatedBridgeInfoForTSC",
+    "196": "DSTTPortNumber",
+    "197": "NWTTPortNumber",
+    "198": "TSNBridgeID",
+    "199": "TSCManagementInformationWithinSessionModificationRequest",
+    "200": "TSCManagementInformationWithinSessionModificationResponse",
+    "201": "TSCManagementInformationWithinSessionReportRequest",
+    "202": "PortManagementInformationContainer",
+    "203": "ClockDriftControlInformation",
+    "204": "RequestedClockDriftInformation",
+    "205": "ClockDriftReport",
+    "206": "TSNTimeDomainNumber",
+    "207": "TimeOffsetThreshold",
+    "208": "CumulativeRateRatioThreshold",
+    "209": "TimeOffsetMeasurement",
+    "210": "CumulativeRateRatioMeasurement",
+    "211": "RemoveSRR",
+    "212": "CreateSRR",
+    "213": "UpdateSRR",
+    "214": "SessionReport",
+    "215": "SRRID",
+    "216": "AccessAvailabilityControlInformation",
+    "217": "RequestedAccessAvailabilityInformation",
+    "218": "AccessAvailabilityReport",
+    "219": "AccessAvailabilityInformation",
+    "220": "ProvideATSSSControlInformation",
+    "221": "ATSSSControlParameters",
+    "222": "MPTCPControlInformation",
+    "223": "ATSSSLLControlInformation",
+    "224": "PMFControlInformation",
+    "225": "MPTCPParameters",
+    "226": "ATSSSLLParameters",
+    "227": "PMFParameters",
+    "228": "MPTCPAddressInformation",
+    "229": "UELinkSpecificIPAddress",
+    "230": "PMFAddressInformation",
+    "231": "ATSSSLLInformation",
+    "232": "DataNetworkAccessIdentifier",
+    "233": "UEIPAddressPoolInformation",
+    "234": "AveragePacketDelay",
+    "235": "MinimumPacketDelay",
+    "236": "MaximumPacketDelay",
+    "237": "QoSReportTrigger",
+    "238": "GTPUPathQoSControlInformation",
+    "239": "GTPUPathQoSReport",
+    "240": "QoSInformationInGTPUPathQoSReport",
+    "241": "GTPUPathInterfaceType",
+    "242": "QoSMonitoringPerQoSFlowControlInformation",
+    "243": "RequestedQoSMonitoring",
+    "244": "ReportingFrequency",
+    "245": "PacketDelayThresholds",
+    "246": "MinimumWaitTime",
+    "247": "QoSMonitoringReport",
+    "248": "QoSMonitoringMeasurement",
+    "249": "MTEDTControlInformation",
+    "250": "DLDataPacketsSize",
+    "251": "QERControlIndications",
+    "252": "PacketRateStatusReport",
+    "253": "NFInstanceID",
+    "254": "EthernetContextInformation",
+    "255": "RedundantTransmissionParameters",
+    "256": "UpdatedPDR",
+    "257": "SNSSAI",
+    "258": "IPVersion",
+    "259": "PFCPASReqFlags",
+    "260": "DataStatus",
+    "261": "ProvideRDSConfigurationInformation",
+    "262": "RDSConfigurationInformation",
+    "263": "QueryPacketRateStatusWithinSessionModificationRequest",
+    "264": "PacketRateStatusReportWithinSessionModificationResponse",
+    "265": "MPTCPApplicableIndication",
+    "266": "BridgeManagementInformationContainer",
+    "267": "UEIPAddressUsageInformation",
+    "268": "NumberOfUEIPAddresses",
+    "269": "ValidityTimer",
+    "270": "RedundantTransmissionForwardingParameters",
+    "271": "TransportDelayReporting"
+  },
+  "messages": {
+    "AssociationReleaseRequest": {
+      "source": "message/association-release-request.go",
+      "fields": {
+        "NodeID": {
+          "slice": false
+        }
+      },
+      "bindings": {
+        "60": "NodeID"
+      },
+      "unmarshal_bindings": {
+        "60": "NodeID"
+      }
+    },
+    "AssociationReleaseResponse": {
+      "source": "message/association-release-response.go",
+      "fields": {
+        "NodeID": {
+          "slice": false
+        },
+        "Cause": {
+          "slice": false
+        }
+      },
+      "bindings": {
+        "60": "NodeID",
+        "19": "Cause"
+      },
+      "unmarshal_bindings": {
+        "60": "NodeID",
+        "19": "Cause"
+      }
+    },
+    "AssociationSetupRequest": {
+      "source": "message/association-setup-request.go",
+      "fields": {
+        "NodeID": {
+          "slice": false
+        },
+        "RecoveryTimeStamp": {
+          "slice": false
+        },
+        "UPFunctionFeatures": {
+          "slice": false
+        },
+        "CPFunctionFeatures": {
+          "slice": false
+        },
+        "UserPlaneIPResourceInformation": {
+          "slice": true
+        },
+        "AlternativeSMFIPAddress": {
+          "slice": true
+        },
+        "SMFSetID": {
+          "slice": false
+        },
+        "PFCPSessionRetentionInformation": {
+          "slice": false
+        },
+        "UEIPAddressPoolInformation": {
+          "slice": true
+        },
+        "GTPUPathQoSControlInformation": {
+          "slice": true
+        },
+        "ClockDriftControlInformation": {
+          "slice": true
+        },
+        "UPFInstanceID": {
+          "slice": false
+        },
+        "PFCPASReqFlags": {
+          "slice": false
+        }
+      },
+      "bindings": {
+        "60": "NodeID",
+        "96": "RecoveryTimeStamp",
+        "43": "UPFunctionFeatures",
+        "89": "CPFunctionFeatures",
+        "116": "UserPlaneIPResourceInformation",
+        "178": "AlternativeSMFIPAddress",
+        "180": "SMFSetID",
+        "183": "PFCPSessionRetentionInformation",
+        "233": "UEIPAddressPoolInformation",
+        "238": "GTPUPathQoSControlInformation",
+        "203": "ClockDriftControlInformation",
+        "253": "UPFInstanceID",
+        "259": "PFCPASReqFlags"
+      },
+      "unmarshal_bindings": {
+        "60": "NodeID",
+        "96": "RecoveryTimeStamp",
+        "43": "UPFunctionFeatures",
+        "89": "CPFunctionFeatures",
+        "116": "UserPlaneIPResourceInformation",
+        "178": "AlternativeSMFIPAddress",
+        "180": "SMFSetID",
+        "183": "PFCPSessionRetentionInformation",
+        "233": "UEIPAddressPoolInformation",
+        "238": "GTPUPathQoSControlInformation",
+        "203": "ClockDriftControlInformation",
+        "253": "UPFInstanceID",
+        "259": "PFCPASReqFlags"
+      }
+    },
+    "AssociationSetupResponse": {
+      "source": "message/association-setup-response.go",
+      "fields": {
+        "NodeID": {
+          "slice": false
+        },
+        "Cause": {
+          "slice": false
+        },
+        "RecoveryTimeStamp": {
+          "slice": false
+        },
+        "UPFunctionFeatures": {
+          "slice": false
+        },
+        "CPFunctionFeatures": {
+          "slice": false
+        },
+        "UserPlaneIPResourceInformation": {
+          "slice": true
+        },
+        "AlternativeSMFIPAddress": {
+          "slice": true
+        },
+        "PFCPASRspFlags": {
+          "slice": false
+        },
+        "UEIPAddressPoolInformation": {
+          "slice": true
+        },
+        "GTPUPathQoSControlInformation": {
+          "slice": true
+        },
+        "ClockDriftControlInformation": {
+          "slice": true
+        },
+        "UPFInstanceID": {
+          "slice": false
+        }
+      },
+      "bindings": {
+        "60": "NodeID",
+        "19": "Cause",
+        "96": "RecoveryTimeStamp",
+        "43": "UPFunctionFeatures",
+        "89": "CPFunctionFeatures",
+        "116": "UserPlaneIPResourceInformation",
+        "178": "AlternativeSMFIPAddress",
+        "184": "PFCPASRspFlags",
+        "233": "UEIPAddressPoolInformation",
+        "238": "GTPUPathQoSControlInformation",
+        "203": "ClockDriftControlInformation",
+        "253": "UPFInstanceID"
+      },
+      "unmarshal_bindings": {
+        "60": "NodeID",
+        "19": "Cause",
+        "96": "RecoveryTimeStamp",
+        "43": "UPFunctionFeatures",
+        "89": "CPFunctionFeatures",
+        "116": "UserPlaneIPResourceInformation",
+        "178": "AlternativeSMFIPAddress",
+        "184": "PFCPASRspFlags",
+        "233": "UEIPAddressPoolInformation",
+        "238": "GTPUPathQoSControlInformation",
+        "203": "ClockDriftControlInformation",
+        "253": "UPFInstanceID"
+      }
+    },
+    "AssociationUpdateRequest": {
+      "source": "message/association-update-request.go",
+      "fields": {
+        "NodeID": {
+          "slice": false
+        },
+        "UPFunctionFeatures": {
+          "slice": false
+        },
+        "CPFunctionFeatures": {
+          "slice": false
+        },
+        "PFCPAssociationReleaseRequest": {
+          "slice": false
+        },
+        "GracefulReleasePeriod": {
+          "slice": false
+        },
+        "PFCPAUReqFlags": {
+          "slice": false
+        },
+        "AlternativeSMFIPAddress": {
+          "slice": true
+        },
+        "ClockDriftControlInformation": {
+          "slice": true
+        },
+        "UEIPAddressPoolInformation": {
+          "slice": true
+        },
+        "GTPUPathQoSControlInformation": {
+          "slice": true
+        },
+        "UEIPAddressUsageInformation": {
+          "slice": true
+        }
+      },
+      "bindings": {
+        "60": "NodeID",
+        "43": "UPFunctionFeatures",
+        "89": "CPFunctionFeatures",
+        "111": "PFCPAssociationReleaseRequest",
+        "112": "GracefulReleasePeriod",
+        "162": "PFCPAUReqFlags",
+        "178": "AlternativeSMFIPAddress",
+        "203": "ClockDriftControlInformation",
+        "233": "UEIPAddressPoolInformation",
+        "238": "GTPUPathQoSControlInformation",
+        "267": "UEIPAddressUsageInformation"
+      },
+      "unmarshal_bindings": {
+        "60": "NodeID",
+        "43": "UPFunctionFeatures",
+        "89": "CPFunctionFeatures",
+        "111": "PFCPAssociationReleaseRequest",
+        "112": "GracefulReleasePeriod",
+        "162": "PFCPAUReqFlags",
+        "178": "AlternativeSMFIPAddress",
+        "203": "ClockDriftControlInformation",
+        "233": "UEIPAddressPoolInformation",
+        "238": "GTPUPathQoSControlInformation",
+        "267": "UEIPAddressUsageInformation"
+      }
+    },
+    "AssociationUpdateResponse": {
+      "source": "message/association-update-response.go",
+      "fields": {
+        "NodeID": {
+          "slice": false
+        },
+        "Cause": {
+          "slice": false
+        },
+        "UPFunctionFeatures": {
+          "slice": false
+        },
+        "CPFunctionFeatures": {
+          "slice": false
+        }
+      },
+      "bindings": {
+        "60": "NodeID",
+        "19": "Cause",
+        "43": "UPFunctionFeatures",
+        "89": "CPFunctionFeatures"
+      },
+      "unmarshal_bindings": {
+        "60": "NodeID",
+        "19": "Cause",
+        "43": "UPFunctionFeatures",
+        "89": "CPFunctionFeatures"
+      }
+    },
+    "Generic": {
+      "source": "message/generic.go",
+      "fields": {},
+      "bindings": {},
+      "unmarshal_bindings": {}
+    },
+    "HeartbeatRequest": {
+      "source": "message/heartbeat-request.go",
+      "fields": {
+        "RecoveryTimeStamp": {
+          "slice": false
+        },
+        "SourceIPAddress": {
+          "slice": false
+        }
+      },
+      "bindings": {
+        "96": "RecoveryTimeStamp",
+        "192": "SourceIPAddress"
+      },
+      "unmarshal_bindings": {
+        "96": "RecoveryTimeStamp",
+        "192": "SourceIPAddress"
+      }
+    },
+    "HeartbeatResponse": {
+      "source": "message/heartbeat-response.go",
+      "fields": {
+        "RecoveryTimeStamp": {
+          "slice": false
+        }
+      },
+      "bindings": {
+        "96": "RecoveryTimeStamp"
+      },
+      "unmarshal_bindings": {
+        "96": "RecoveryTimeStamp"
+      }
+    },
+    "NodeReportRequest": {
+      "source": "message/node-report-request.go",
+      "fields": {
+        "NodeID": {
+          "slice": false
+        },
+        "NodeReportType": {
+          "slice": false
+        },
+        "UserPlanePathFailureReport": {
+          "slice": false
+        },
+        "UserPlanePathRecoveryReport": {
+          "slice": false
+        },
+        "ClockDriftReport": {
+          "slice": true
+        },
+        "GTPUPathQoSReport": {
+          "slice": true
+        }
+      },
+      "bindings": {
+        "60": "NodeID",
+        "101": "NodeReportType",
+        "102": "UserPlanePathFailureReport",
+        "187": "UserPlanePathRecoveryReport",
+        "205": "ClockDriftReport",
+        "239": "GTPUPathQoSReport"
+      },
+      "unmarshal_bindings": {
+        "60": "NodeID",
+        "101": "NodeReportType",
+        "102": "UserPlanePathFailureReport",
+        "187": "UserPlanePathRecoveryReport",
+        "205": "ClockDriftReport",
+        "239": "GTPUPathQoSReport"
+      }
+    },
+    "NodeReportResponse": {
+      "source": "message/node-report-response.go",
+      "fields": {
+        "NodeID": {
+          "slice": false
+        },
+        "Cause": {
+          "slice": false
+        },
+        "OffendingIE": {
+          "slice": false
+        }
+      },
+      "bindings": {
+        "60": "NodeID",
+        "19": "Cause",
+        "40": "OffendingIE"
+      },
+      "unmarshal_bindings": {
+        "60": "NodeID",
+        "19": "Cause",
+        "40": "OffendingIE"
+      }
+    },
+    "PFDManagementRequest": {
+      "source": "message/pfd-management-request.go",
+      "fields": {
+        "ApplicationIDsPFDs": {
+          "slice": true
+        }
+      },
+      "bindings": {
+        "58": "ApplicationIDsPFDs"
+      },
+      "unmarshal_bindings": {
+        "58": "ApplicationIDsPFDs"
+      }
+    },
+    "PFDManagementResponse": {
+      "source": "message/pfd-management-response.go",
+      "fields": {
+        "Cause": {
+          "slice": false
+        },
+        "OffendingIE": {
+          "slice": false
+        }
+      },
+      "bindings": {
+        "19": "Cause",
+        "40": "OffendingIE"
+      },
+      "unmarshal_bindings": {
+        "19": "Cause",
+        "40": "OffendingIE"
+      }
+    },
+    "SessionDeletionRequest": {
+      "source": "message/session-deletion-request.go",
+      "fields": {},
+      "bindings": {},
+      "unmarshal_bindings": {}
+    },
+    "SessionDeletionResponse": {
+      "source": "message/session-deletion-response.go",
+      "fields": {
+        "Cause": {
+          "slice": false
+        },
+        "OffendingIE": {
+          "slice": false
+        },
+        "LoadControlInformation": {
+          "slice": false
+        },
+        "OverloadControlInformation": {
+          "slice": false
+        },
+        "UsageReport": {
+          "slice": true
+        },
+        "AdditionalUsageReportsInformation": {
+          "slice": false
+        }
+      },
+      "bindings": {
+        "19": "Cause",
+        "40": "OffendingIE",
+        "51": "LoadControlInformation",
+        "54": "OverloadControlInformation",
+        "79": "UsageReport",
+        "126": "AdditionalUsageReportsInformation"
+      },
+      "unmarshal_bindings": {
+        "19": "Cause",
+        "40": "OffendingIE",
+        "51": "LoadControlInformation",
+        "54": "OverloadControlInformation",
+        "79": "UsageReport",
+        "126": "AdditionalUsageReportsInformation"
+      }
+    },
+    "SessionEstablishmentRequest": {
+      "source": "message/session-establishment-request.go",
+      "fields": {
+        "NodeID": {
+          "slice": false
+        },
+        "CPFSEID": {
+          "slice": false
+        },
+        "CreatePDR": {
+          "slice": true
+        },
+        "CreateFAR": {
+          "slice": true
+        },
+        "CreateURR": {
+          "slice": true
+        },
+        "CreateQER": {
+          "slice": true
+        },
+        "CreateBAR": {
+          "slice": false
+        },
+        "CreateTrafficEndpoint": {
+          "slice": true
+        },
+        "PDNType": {
+          "slice": false
+        },
+        "FQCSID": {
+          "slice": false
+        },
+        "UserPlaneInactivityTimer": {
+          "slice": false
+        },
+        "UserID": {
+          "slice": false
+        },
+        "TraceInformation": {
+          "slice": false
+        },
+        "APNDNN": {
+          "slice": false
+        },
+        "CreateMAR": {
+          "slice": true
+        },
+        "PFCPSEReqFlags": {
+          "slice": false
+        },
+        "CreateBridgeInfoForTSC": {
+          "slice": false
+        },
+        "CreateSRR": {
+          "slice": true
+        },
+        "ProvideATSSSControlInformation": {
+          "slice": false
+        },
+        "RecoveryTimeStamp": {
+          "slice": false
+        },
+        "SNSSAI": {
+          "slice": false
+        },
+        "ProvideRDSConfigurationInformation": {
+          "slice": false
+        }
+      },
+      "bindings": {
+        "60": "NodeID",
+        "57": "CPFSEID",
+        "1": "CreatePDR",
+        "3": "CreateFAR",
+        "6": "CreateURR",
+        "7": "CreateQER",
+        "85": "CreateBAR",
+        "127": "CreateTrafficEndpoint",
+        "113": "PDNType",
+        "65": "FQCSID",
+        "117": "UserPlaneInactivityTimer",
+        "141": "UserID",
+        "152": "TraceInformation",
+        "159": "APNDNN",
+        "165": "CreateMAR",
+        "186": "PFCPSEReqFlags",
+        "194": "CreateBridgeInfoForTSC",
+        "212": "CreateSRR",
+        "220": "ProvideATSSSControlInformation",
+        "96": "RecoveryTimeStamp",
+        "257": "SNSSAI",
+        "261": "ProvideRDSConfigurationInformation"
+      },
+      "unmarshal_bindings": {
+        "60": "NodeID",
+        "57": "CPFSEID",
+        "1": "CreatePDR",
+        "3": "CreateFAR",
+        "6": "CreateURR",
+        "7": "CreateQER",
+        "85": "CreateBAR",
+        "127": "CreateTrafficEndpoint",
+        "113": "PDNType",
+        "65": "FQCSID",
+        "117": "UserPlaneInactivityTimer",
+        "141": "UserID",
+        "152": "TraceInformation",
+        "159": "APNDNN",
+        "165": "CreateMAR",
+        "186": "PFCPSEReqFlags",
+        "194": "CreateBridgeInfoForTSC",
+        "212": "CreateSRR",
+        "220": "ProvideATSSSControlInformation",
+        "96": "RecoveryTimeStamp",
+        "257": "SNSSAI",
+        "261": "ProvideRDSConfigurationInformation"
+      }
+    },
+    "SessionEstablishmentResponse": {
+      "source": "message/session-establishment-response.go",
+      "fields": {
+        "NodeID": {
+          "slice": false
+        },
+        "Cause": {
+          "slice": false
+        },
+        "OffendingIE": {
+          "slice": false
+        },
+        "UPFSEID": {
+          "slice": false
+        },
+        "CreatedPDR": {
+          "slice": true
+        },
+        "LoadControlInformation": {
+          "slice": false
+        },
+        "OverloadControlInformation": {
+          "slice": false
+        },
+        "FQCSID": {
+          "slice": false
+        },
+        "FailedRuleID": {
+          "slice": false
+        },
+        "CreatedTrafficEndpoint": {
+          "slice": true
+        },
+        "CreatedBridgeInfoForTSC": {
+          "slice": false
+        },
+        "ATSSSControlParameters": {
+          "slice": false
+        }
+      },
+      "bindings": {
+        "60": "NodeID",
+        "19": "Cause",
+        "40": "OffendingIE",
+        "57": "UPFSEID",
+        "8": "CreatedPDR",
+        "51": "LoadControlInformation",
+        "54": "OverloadControlInformation",
+        "65": "FQCSID",
+        "114": "FailedRuleID",
+        "128": "CreatedTrafficEndpoint",
+        "195": "CreatedBridgeInfoForTSC",
+        "221": "ATSSSControlParameters"
+      },
+      "unmarshal_bindings": {
+        "60": "NodeID",
+        "19": "Cause",
+        "40": "OffendingIE",
+        "57": "UPFSEID",
+        "8": "CreatedPDR",
+        "51": "LoadControlInformation",
+        "54": "OverloadControlInformation",
+        "65": "FQCSID",
+        "114": "FailedRuleID",
+        "128": "CreatedTrafficEndpoint",
+        "195": "CreatedBridgeInfoForTSC",
+        "221": "ATSSSControlParameters"
+      }
+    },
+    "SessionModificationRequest": {
+      "source": "message/session-modification-request.go",
+      "fields": {
+        "CPFSEID": {
+          "slice": false
+        },
+        "RemovePDR": {
+          "slice": true
+        },
+        "RemoveFAR": {
+          "slice": true
+        },
+        "RemoveURR": {
+          "slice": true
+        },
+        "RemoveQER": {
+          "slice": true
+        },
+        "RemoveBAR": {
+          "slice": false
+        },
+        "RemoveTrafficEndpoint": {
+          "slice": true
+        },
+        "CreatePDR": {
+          "slice": true
+        },
+        "CreateFAR": {
+          "slice": true
+        },
+        "CreateURR": {
+          "slice": true
+        },
+        "CreateQER": {
+          "slice": true
+        },
+        "CreateBAR": {
+          "slice": false
+        },
+        "CreateTrafficEndpoint": {
+          "slice": true
+        },
+        "UpdatePDR": {
+          "slice": true
+        },
+        "UpdateFAR": {
+          "slice": true
+        },
+        "UpdateURR": {
+          "slice": true
+        },
+        "UpdateQER": {
+          "slice": true
+        },
+        "UpdateBAR": {
+          "slice": false
+        },
+        "UpdateTrafficEndpoint": {
+          "slice": true
+        },
+        "PFCPSMReqFlags": {
+          "slice": false
+        },
+        "QueryURR": {
+          "slice": true
+        },
+        "FQCSID": {
+          "slice": false
+        },
+        "UserPlaneInactivityTimer": {
+          "slice": false
+        },
+        "QueryURRReference": {
+          "slice": false
+        },
+        "TraceInformation": {
+          "slice": false
+        },
+        "RemoveMAR": {
+          "slice": true
+        },
+        "UpdateMAR": {
+          "slice": true
+        },
+        "CreateMAR": {
+          "slice": true
+        },
+        "NodeID": {
+          "slice": false
+        },
+        "TSCManagementInformation": {
+          "slice": false
+        },
+        "RemoveSRR": {
+          "slice": true
+        },
+        "CreateSRR": {
+          "slice": true
+        },
+        "UpdateSRR": {
+          "slice": true
+        },
+        "ProvideATSSSControlInformation": {
+          "slice": false
+        },
+        "EthernetContextInformation": {
+          "slice": false
+        },
+        "AccessAvailabilityInformation": {
+          "slice": true
+        },
+        "QueryPacketRateStatus": {
+          "slice": true
+        },
+        "SNSSAI": {
+          "slice": false
+        }
+      },
+      "bindings": {
+        "57": "CPFSEID",
+        "15": "RemovePDR",
+        "16": "RemoveFAR",
+        "17": "RemoveURR",
+        "18": "RemoveQER",
+        "87": "RemoveBAR",
+        "130": "RemoveTrafficEndpoint",
+        "1": "CreatePDR",
+        "3": "CreateFAR",
+        "6": "CreateURR",
+        "7": "CreateQER",
+        "85": "CreateBAR",
+        "127": "CreateTrafficEndpoint",
+        "9": "UpdatePDR",
+        "10": "UpdateFAR",
+        "13": "UpdateURR",
+        "14": "UpdateQER",
+        "86": "UpdateBAR",
+        "129": "UpdateTrafficEndpoint",
+        "49": "PFCPSMReqFlags",
+        "77": "QueryURR",
+        "65": "FQCSID",
+        "117": "UserPlaneInactivityTimer",
+        "125": "QueryURRReference",
+        "152": "TraceInformation",
+        "168": "RemoveMAR",
+        "169": "UpdateMAR",
+        "165": "CreateMAR",
+        "60": "NodeID",
+        "199": "TSCManagementInformation",
+        "211": "RemoveSRR",
+        "212": "CreateSRR",
+        "213": "UpdateSRR",
+        "220": "ProvideATSSSControlInformation",
+        "254": "EthernetContextInformation",
+        "219": "AccessAvailabilityInformation",
+        "263": "QueryPacketRateStatus",
+        "257": "SNSSAI"
+      },
+      "unmarshal_bindings": {
+        "57": "CPFSEID",
+        "15": "RemovePDR",
+        "16": "RemoveFAR",
+        "17": "RemoveURR",
+        "18": "RemoveQER",
+        "87": "RemoveBAR",
+        "130": "RemoveTrafficEndpoint",
+        "1": "CreatePDR",
+        "3": "CreateFAR",
+        "6": "CreateURR",
+        "7": "CreateQER",
+        "85": "CreateBAR",
+        "127": "CreateTrafficEndpoint",
+        "9": "UpdatePDR",
+        "10": "UpdateFAR",
+        "13": "UpdateURR",
+        "14": "UpdateQER",
+        "86": "UpdateBAR",
+        "129": "UpdateTrafficEndpoint",
+        "49": "PFCPSMReqFlags",
+        "77": "QueryURR",
+        "65": "FQCSID",
+        "117": "UserPlaneInactivityTimer",
+        "125": "QueryURRReference",
+        "152": "TraceInformation",
+        "168": "RemoveMAR",
+        "169": "UpdateMAR",
+        "165": "CreateMAR",
+        "60": "NodeID",
+        "199": "TSCManagementInformation",
+        "211": "RemoveSRR",
+        "212": "CreateSRR",
+        "213": "UpdateSRR",
+        "220": "ProvideATSSSControlInformation",
+        "254": "EthernetContextInformation",
+        "219": "AccessAvailabilityInformation",
+        "263": "QueryPacketRateStatus",
+        "257": "SNSSAI"
+      }
+    },
+    "SessionModificationResponse": {
+      "source": "message/session-modification-response.go",
+      "fields": {
+        "Cause": {
+          "slice": false
+        },
+        "OffendingIE": {
+          "slice": false
+        },
+        "CreatedPDR": {
+          "slice": true
+        },
+        "LoadControlInformation": {
+          "slice": false
+        },
+        "OverloadControlInformation": {
+          "slice": false
+        },
+        "UsageReport": {
+          "slice": true
+        },
+        "FailedRuleID": {
+          "slice": false
+        },
+        "AdditionalUsageReportsInformation": {
+          "slice": false
+        },
+        "CreatedUpdatedTrafficEndpoint": {
+          "slice": true
+        },
+        "CreatedBridgeInfoForTSC": {
+          "slice": false
+        },
+        "ATSSSControlParameters": {
+          "slice": false
+        },
+        "UpdatedPDR": {
+          "slice": true
+        },
+        "PacketRateStatusReport": {
+          "slice": true
+        }
+      },
+      "bindings": {
+        "19": "Cause",
+        "40": "OffendingIE",
+        "8": "CreatedPDR",
+        "51": "LoadControlInformation",
+        "54": "OverloadControlInformation",
+        "78": "UsageReport",
+        "114": "FailedRuleID",
+        "126": "AdditionalUsageReportsInformation",
+        "128": "CreatedUpdatedTrafficEndpoint",
+        "195": "CreatedBridgeInfoForTSC",
+        "221": "ATSSSControlParameters",
+        "256": "UpdatedPDR",
+        "252": "PacketRateStatusReport"
+      },
+      "unmarshal_bindings": {
+        "19": "Cause",
+        "40": "OffendingIE",
+        "8": "CreatedPDR",
+        "51": "LoadControlInformation",
+        "54": "OverloadControlInformation",
+        "78": "UsageReport",
+        "114": "FailedRuleID",
+        "126": "AdditionalUsageReportsInformation",
+        "128": "CreatedUpdatedTrafficEndpoint",
+        "195": "CreatedBridgeInfoForTSC",
+        "221": "ATSSSControlParameters",
+        "256": "UpdatedPDR",
+        "252": "PacketRateStatusReport"
+      }
+    },
+    "SessionReportRequest": {
+      "source": "message/session-report-request.go",
+      "fields": {
+        "ReportType": {
+          "slice": false
+        },
+        "DownlinkDataReport": {
+          "slice": false
+        },
+        "UsageReport": {
+          "slice": true
+        },
+        "ErrorIndicationReport": {
+          "slice": false
+        },
+        "LoadControlInformation": {
+          "slice": false
+        },
+        "OverloadControlInformation": {
+          "slice": false
+        },
+        "AdditionalUsageReportsInformation": {
+          "slice": false
+        },
+        "PFCPSRReqFlags": {
+          "slice": false
+        },
+        "OldCPFSEID": {
+          "slice": false
+        },
+        "PacketRateStatusReport": {
+          "slice": false
+        },
+        "PortManagementInformationForTSC": {
+          "slice": false
+        },
+        "SessionReport": {
+          "slice": true
+        }
+      },
+      "bindings": {
+        "39": "ReportType",
+        "83": "DownlinkDataReport",
+        "80": "UsageReport",
+        "99": "ErrorIndicationReport",
+        "51": "LoadControlInformation",
+        "54": "OverloadControlInformation",
+        "126": "AdditionalUsageReportsInformation",
+        "161": "PFCPSRReqFlags",
+        "57": "OldCPFSEID",
+        "252": "PacketRateStatusReport",
+        "201": "PortManagementInformationForTSC",
+        "214": "SessionReport"
+      },
+      "unmarshal_bindings": {
+        "39": "ReportType",
+        "83": "DownlinkDataReport",
+        "80": "UsageReport",
+        "99": "ErrorIndicationReport",
+        "51": "LoadControlInformation",
+        "54": "OverloadControlInformation",
+        "126": "AdditionalUsageReportsInformation",
+        "161": "PFCPSRReqFlags",
+        "57": "OldCPFSEID",
+        "252": "PacketRateStatusReport",
+        "201": "PortManagementInformationForTSC",
+        "214": "SessionReport"
+      }
+    },
+    "SessionReportResponse": {
+      "source": "message/session-report-response.go",
+      "fields": {
+        "Cause": {
+          "slice": false
+        },
+        "OffendingIE": {
+          "slice": false
+        },
+        "UpdateBAR": {
+          "slice": false
+        },
+        "PFCPSRRspFlags": {
+          "slice": false
+        },
+        "CPFSEID": {
+          "slice": false
+        },
+        "N4UFTEID": {
+          "slice": false
+        },
+        "AlternativeSMFIPAddress": {
+          "slice": false
+        }
+      },
+      "bindings": {
+        "19": "Cause",
+        "40": "OffendingIE",
+        "12": "UpdateBAR",
+        "50": "PFCPSRRspFlags",
+        "57": "CPFSEID",
+        "21": "N4UFTEID",
+        "178": "AlternativeSMFIPAddress"
+      },
+      "unmarshal_bindings": {
+        "19": "Cause",
+        "40": "OffendingIE",
+        "12": "UpdateBAR",
+        "50": "PFCPSRRspFlags",
+        "57": "CPFSEID",
+        "21": "N4UFTEID",
+        "178": "AlternativeSMFIPAddress"
+      }
+    },
+    "SessionSetDeletionRequest": {
+      "source": "message/session-set-deletion-request.go",
+      "fields": {
+        "NodeID": {
+          "slice": false
+        },
+        "FQCSID": {
+          "slice": false
+        }
+      },
+      "bindings": {
+        "60": "NodeID",
+        "65": "FQCSID"
+      },
+      "unmarshal_bindings": {
+        "60": "NodeID",
+        "65": "FQCSID"
+      }
+    },
+    "SessionSetDeletionResponse": {
+      "source": "message/session-set-deletion-response.go",
+      "fields": {
+        "NodeID": {
+          "slice": false
+        },
+        "Cause": {
+          "slice": false
+        },
+        "OffendingIE": {
+          "slice": false
+        }
+      },
+      "bindings": {
+        "60": "NodeID",
+        "19": "Cause",
+        "40": "OffendingIE"
+      },
+      "unmarshal_bindings": {
+        "60": "NodeID",
+        "19": "Cause",
+        "40": "OffendingIE"
+      }
+    },
+    "VersionNotSupportedResponse": {
+      "source": "message/version-not-supported-response.go",
+      "fields": {},
+      "bindings": {},
+      "unmarshal_bindings": {}
+    }
+  },
+  "grouped_types": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    51,
+    54,
+    58,
+    59,
+    68,
+    77,
+    78,
+    79,
+    80,
+    83,
+    85,
+    86,
+    87,
+    99,
+    102,
+    105,
+    118,
+    127,
+    128,
+    129,
+    130,
+    132,
+    143,
+    147,
+    165,
+    166,
+    167,
+    168,
+    169,
+    175,
+    176,
+    183,
+    187,
+    188,
+    189,
+    190,
+    195,
+    199,
+    200,
+    201,
+    203,
+    205,
+    211,
+    212,
+    213,
+    214,
+    216,
+    218,
+    220,
+    221,
+    225,
+    226,
+    227,
+    233,
+    238,
+    239,
+    240,
+    242,
+    247,
+    252,
+    254,
+    255,
+    256,
+    261,
+    263,
+    264,
+    267,
+    270,
+    271
+  ]
+}
