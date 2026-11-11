@@ -19,6 +19,12 @@ import (
 )
 
 func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
 	var (
 		server = flag.String("s", "127.0.0.2:8805", "server's addr/port")
 	)
@@ -26,12 +32,12 @@ func main() {
 
 	raddr, err := net.ResolveUDPAddr("udp", *server)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	conn, err := net.DialUDP("udp", nil, raddr)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	defer func() { _ = conn.Close() }()
@@ -43,16 +49,16 @@ func main() {
 		ie.NewSourceIPAddress(net.ParseIP("127.0.0.1"), net.ParseIP("2001::1"), 0),
 	).Marshal()
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	if _, err := conn.Write(hbreq); err != nil {
-		log.Fatal(err)
+		return err
 	}
 	log.Printf("sent Heartbeat Request to: %s", raddr)
 
 	if err := conn.SetReadDeadline(time.Now().Add(3 * time.Second)); err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	buf := make([]byte, 65535)
@@ -60,7 +66,7 @@ func main() {
 	for waiting {
 		n, addr, err := conn.ReadFrom(buf)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		msg, err := message.Parse(buf[:n])
@@ -83,8 +89,9 @@ func main() {
 		ts, err := hbres.RecoveryTimeStamp.RecoveryTimeStamp()
 		if err != nil {
 			log.Printf("got Heartbeat Response with invalid TS: %s, from: %s", err, addr)
-			break
+			return err
 		}
 		log.Printf("got Heartbeat Response with TS: %s, from: %s", ts, addr)
 	}
+	return nil
 }
