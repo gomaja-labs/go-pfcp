@@ -18,11 +18,7 @@ type AssociationReleaseRequest struct {
 // NewAssociationReleaseRequest creates a new AssociationReleaseRequest.
 func NewAssociationReleaseRequest(seq uint32, id *ie.IE, ies ...*ie.IE) *AssociationReleaseRequest {
 	m := &AssociationReleaseRequest{
-		Header: NewHeader(
-			1, 0, 0, 0,
-			MsgTypeAssociationReleaseRequest, 0, seq, 0,
-			nil,
-		),
+		Header: NewHeader(MsgTypeAssociationReleaseRequest, 0, seq, nil),
 		NodeID: id,
 		IEs:    ies,
 	}
@@ -33,41 +29,15 @@ func NewAssociationReleaseRequest(seq uint32, id *ie.IE, ies ...*ie.IE) *Associa
 
 // Marshal returns the byte sequence generated from a AssociationReleaseRequest.
 func (m *AssociationReleaseRequest) Marshal() ([]byte, error) {
-	b := make([]byte, m.MarshalLen())
-	if err := m.MarshalTo(b); err != nil {
-		return nil, err
-	}
-
-	return b, nil
+	return marshalMessage(m)
 }
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (m *AssociationReleaseRequest) MarshalTo(b []byte) error {
-	if m.Header.Payload != nil {
-		m.Header.Payload = nil
+	if m == nil {
+		return ErrNilMessage
 	}
-	m.Header.Payload = make([]byte, m.MarshalLen()-m.Header.MarshalLen())
-
-	offset := 0
-	if i := m.NodeID; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		if err := ie.MarshalTo(m.Header.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += ie.MarshalLen()
-	}
-
-	m.Header.SetLength()
-	return m.Header.MarshalTo(b)
+	return marshalMessageTo(m.Header, m.messageIEs(), b)
 }
 
 // ParseAssociationReleaseRequest decodes a given byte sequence as a AssociationReleaseRequest.
@@ -81,53 +51,38 @@ func ParseAssociationReleaseRequest(b []byte) (*AssociationReleaseRequest, error
 
 // UnmarshalBinary decodes a given byte sequence as a AssociationReleaseRequest.
 func (m *AssociationReleaseRequest) UnmarshalBinary(b []byte) error {
-	var err error
-	m.Header, err = ParseHeader(b)
+	if m == nil {
+		return ErrNilMessage
+	}
+	h, err := parseMessageHeader(b, MsgTypeAssociationReleaseRequest)
 	if err != nil {
 		return err
 	}
-	if len(m.Header.Payload) < 2 {
-		return nil
-	}
+	*m = AssociationReleaseRequest{Header: h}
 
 	ies, err := ie.ParseMultiIEs(m.Header.Payload)
 	if err != nil {
 		return err
 	}
 
-	for _, i := range ies {
-		switch i.Type {
-		case ie.NodeID:
-			m.NodeID = i
-		default:
-			m.IEs = append(m.IEs, i)
-		}
-	}
+	m.addIEs(ies)
 
 	return nil
 }
 
 // MarshalLen returns the serial length of Data.
 func (m *AssociationReleaseRequest) MarshalLen() int {
-	l := m.Header.MarshalLen() - len(m.Header.Payload)
-
-	if i := m.NodeID; i != nil {
-		l += i.MarshalLen()
+	if m == nil {
+		return 0
 	}
-
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		l += ie.MarshalLen()
-	}
-
-	return l
+	return messageLen(m.Header, m.messageIEs())
 }
 
 // SetLength sets the length in Length field.
 func (m *AssociationReleaseRequest) SetLength() {
-	m.Header.Length = uint16(m.MarshalLen() - 4)
+	if m != nil && m.Header != nil {
+		m.Header.Length = uint16(m.MarshalLen() - 4)
+	}
 }
 
 // MessageTypeName returns the name of protocol.
@@ -137,10 +92,37 @@ func (m *AssociationReleaseRequest) MessageTypeName() string {
 
 // SEID returns the SEID in uint64.
 func (m *AssociationReleaseRequest) SEID() uint64 {
+	if m == nil {
+		return 0
+	}
 	return m.Header.seid()
 }
 
 // IsRequest reports whether the message is a request.
 func (m *AssociationReleaseRequest) IsRequest() bool {
 	return true
+}
+
+func (m *AssociationReleaseRequest) messageIEs() []*ie.IE {
+	if m == nil {
+		return nil
+	}
+	ies := make([]*ie.IE, 0, 1+len(m.IEs))
+	ies = append(ies, m.NodeID)
+	ies = append(ies, m.IEs...)
+	return ies
+}
+
+func (m *AssociationReleaseRequest) addIEs(ies []*ie.IE) {
+	for _, i := range ies {
+		if i == nil {
+			continue
+		}
+		switch i.Type {
+		case ie.NodeID:
+			assignIE(&m.NodeID, i, &m.IEs)
+		default:
+			m.IEs = append(m.IEs, i)
+		}
+	}
 }

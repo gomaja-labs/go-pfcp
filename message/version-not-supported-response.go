@@ -17,12 +17,8 @@ type VersionNotSupportedResponse struct {
 // NewVersionNotSupportedResponse creates a new VersionNotSupportedResponse.
 func NewVersionNotSupportedResponse(seq uint32, ies ...*ie.IE) *VersionNotSupportedResponse {
 	m := &VersionNotSupportedResponse{
-		Header: NewHeader(
-			1, 0, 0, 0,
-			MsgTypeVersionNotSupportedResponse, 0, seq, 0,
-			nil,
-		),
-		IEs: ies,
+		Header: NewHeader(MsgTypeVersionNotSupportedResponse, 0, seq, nil),
+		IEs:    ies,
 	}
 	m.SetLength()
 
@@ -31,34 +27,15 @@ func NewVersionNotSupportedResponse(seq uint32, ies ...*ie.IE) *VersionNotSuppor
 
 // Marshal returns the byte sequence generated from a VersionNotSupportedResponse.
 func (m *VersionNotSupportedResponse) Marshal() ([]byte, error) {
-	b := make([]byte, m.MarshalLen())
-	if err := m.MarshalTo(b); err != nil {
-		return nil, err
-	}
-
-	return b, nil
+	return marshalMessage(m)
 }
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (m *VersionNotSupportedResponse) MarshalTo(b []byte) error {
-	if m.Header.Payload != nil {
-		m.Header.Payload = nil
+	if m == nil {
+		return ErrNilMessage
 	}
-	m.Header.Payload = make([]byte, m.MarshalLen()-m.Header.MarshalLen())
-
-	offset := 0
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		if err := ie.MarshalTo(m.Header.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += ie.MarshalLen()
-	}
-
-	m.Header.SetLength()
-	return m.Header.MarshalTo(b)
+	return marshalMessageTo(m.Header, m.messageIEs(), b)
 }
 
 // ParseVersionNotSupportedResponse decodes a given byte sequence as a VersionNotSupportedResponse.
@@ -72,14 +49,14 @@ func ParseVersionNotSupportedResponse(b []byte) (*VersionNotSupportedResponse, e
 
 // UnmarshalBinary decodes a given byte sequence as a VersionNotSupportedResponse.
 func (m *VersionNotSupportedResponse) UnmarshalBinary(b []byte) error {
-	var err error
-	m.Header, err = ParseHeader(b)
+	if m == nil {
+		return ErrNilMessage
+	}
+	h, err := parseMessageHeader(b, MsgTypeVersionNotSupportedResponse)
 	if err != nil {
 		return err
 	}
-	if len(m.Header.Payload) < 2 {
-		return nil
-	}
+	*m = VersionNotSupportedResponse{Header: h}
 
 	ies, err := ie.ParseMultiIEs(m.Header.Payload)
 	if err != nil {
@@ -93,21 +70,17 @@ func (m *VersionNotSupportedResponse) UnmarshalBinary(b []byte) error {
 
 // MarshalLen returns the serial length of Data.
 func (m *VersionNotSupportedResponse) MarshalLen() int {
-	l := m.Header.MarshalLen() - len(m.Header.Payload)
-
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		l += ie.MarshalLen()
+	if m == nil {
+		return 0
 	}
-
-	return l
+	return messageLen(m.Header, m.messageIEs())
 }
 
 // SetLength sets the length in Length field.
 func (m *VersionNotSupportedResponse) SetLength() {
-	m.Header.Length = uint16(m.MarshalLen() - 4)
+	if m != nil && m.Header != nil {
+		m.Header.Length = uint16(m.MarshalLen() - 4)
+	}
 }
 
 // MessageTypeName returns the name of protocol.
@@ -117,10 +90,22 @@ func (m *VersionNotSupportedResponse) MessageTypeName() string {
 
 // SEID returns the SEID in uint64.
 func (m *VersionNotSupportedResponse) SEID() uint64 {
+	if m == nil {
+		return 0
+	}
 	return m.Header.seid()
 }
 
 // IsRequest reports whether the message is a request.
 func (m *VersionNotSupportedResponse) IsRequest() bool {
 	return false
+}
+
+func (m *VersionNotSupportedResponse) messageIEs() []*ie.IE {
+	if m == nil {
+		return nil
+	}
+	ies := make([]*ie.IE, 0, len(m.IEs))
+	ies = append(ies, m.IEs...)
+	return ies
 }

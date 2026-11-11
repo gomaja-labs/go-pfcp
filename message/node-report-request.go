@@ -23,31 +23,10 @@ type NodeReportRequest struct {
 // NewNodeReportRequest creates a new NodeReportRequest.
 func NewNodeReportRequest(seq uint32, ies ...*ie.IE) *NodeReportRequest {
 	m := &NodeReportRequest{
-		Header: NewHeader(
-			1, 0, 0, 0,
-			MsgTypeNodeReportRequest, 0, seq, 0,
-			nil,
-		),
+		Header: NewHeader(MsgTypeNodeReportRequest, 0, seq, nil),
 	}
 
-	for _, i := range ies {
-		switch i.Type {
-		case ie.NodeID:
-			m.NodeID = i
-		case ie.NodeReportType:
-			m.NodeReportType = i
-		case ie.UserPlanePathFailureReport:
-			m.UserPlanePathFailureReport = i
-		case ie.UserPlanePathRecoveryReport:
-			m.UserPlanePathRecoveryReport = i
-		case ie.ClockDriftReport:
-			m.ClockDriftReport = append(m.ClockDriftReport, i)
-		case ie.GTPUPathQoSReport:
-			m.GTPUPathQoSReport = append(m.GTPUPathQoSReport, i)
-		default:
-			m.IEs = append(m.IEs, i)
-		}
-	}
+	m.addIEs(ies)
 
 	m.SetLength()
 	return m
@@ -55,71 +34,15 @@ func NewNodeReportRequest(seq uint32, ies ...*ie.IE) *NodeReportRequest {
 
 // Marshal returns the byte sequence generated from a NodeReportRequest.
 func (m *NodeReportRequest) Marshal() ([]byte, error) {
-	b := make([]byte, m.MarshalLen())
-	if err := m.MarshalTo(b); err != nil {
-		return nil, err
-	}
-
-	return b, nil
+	return marshalMessage(m)
 }
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (m *NodeReportRequest) MarshalTo(b []byte) error {
-	if m.Header.Payload != nil {
-		m.Header.Payload = nil
+	if m == nil {
+		return ErrNilMessage
 	}
-	m.Header.Payload = make([]byte, m.MarshalLen()-m.Header.MarshalLen())
-
-	offset := 0
-	if i := m.NodeID; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.NodeReportType; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.UserPlanePathFailureReport; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.UserPlanePathRecoveryReport; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.ClockDriftReport {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.GTPUPathQoSReport {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		if err := ie.MarshalTo(m.Header.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += ie.MarshalLen()
-	}
-
-	m.Header.SetLength()
-	return m.Header.MarshalTo(b)
+	return marshalMessageTo(m.Header, m.messageIEs(), b)
 }
 
 // ParseNodeReportRequest decodes a given byte sequence as a NodeReportRequest.
@@ -133,78 +56,38 @@ func ParseNodeReportRequest(b []byte) (*NodeReportRequest, error) {
 
 // UnmarshalBinary decodes a given byte sequence as a NodeReportRequest.
 func (m *NodeReportRequest) UnmarshalBinary(b []byte) error {
-	var err error
-	m.Header, err = ParseHeader(b)
+	if m == nil {
+		return ErrNilMessage
+	}
+	h, err := parseMessageHeader(b, MsgTypeNodeReportRequest)
 	if err != nil {
 		return err
 	}
-	if len(m.Header.Payload) < 2 {
-		return nil
-	}
+	*m = NodeReportRequest{Header: h}
 
 	ies, err := ie.ParseMultiIEs(m.Header.Payload)
 	if err != nil {
 		return err
 	}
 
-	for _, i := range ies {
-		switch i.Type {
-		case ie.NodeID:
-			m.NodeID = i
-		case ie.NodeReportType:
-			m.NodeReportType = i
-		case ie.UserPlanePathFailureReport:
-			m.UserPlanePathFailureReport = i
-		case ie.UserPlanePathRecoveryReport:
-			m.UserPlanePathRecoveryReport = i
-		case ie.ClockDriftReport:
-			m.ClockDriftReport = append(m.ClockDriftReport, i)
-		case ie.GTPUPathQoSReport:
-			m.GTPUPathQoSReport = append(m.GTPUPathQoSReport, i)
-		default:
-			m.IEs = append(m.IEs, i)
-		}
-	}
+	m.addIEs(ies)
 
 	return nil
 }
 
 // MarshalLen returns the serial length of Data.
 func (m *NodeReportRequest) MarshalLen() int {
-	l := m.Header.MarshalLen() - len(m.Header.Payload)
-
-	if i := m.NodeID; i != nil {
-		l += i.MarshalLen()
+	if m == nil {
+		return 0
 	}
-	if i := m.NodeReportType; i != nil {
-		l += i.MarshalLen()
-	}
-	if i := m.UserPlanePathFailureReport; i != nil {
-		l += i.MarshalLen()
-	}
-	if i := m.UserPlanePathRecoveryReport; i != nil {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.ClockDriftReport {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.GTPUPathQoSReport {
-		l += i.MarshalLen()
-	}
-
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		l += ie.MarshalLen()
-	}
-
-	return l
+	return messageLen(m.Header, m.messageIEs())
 }
 
 // SetLength sets the length in Length field.
 func (m *NodeReportRequest) SetLength() {
-	m.Header.Length = uint16(m.MarshalLen() - 4)
+	if m != nil && m.Header != nil {
+		m.Header.Length = uint16(m.MarshalLen() - 4)
+	}
 }
 
 // MessageTypeName returns the name of protocol.
@@ -214,10 +97,52 @@ func (m *NodeReportRequest) MessageTypeName() string {
 
 // SEID returns the SEID in uint64.
 func (m *NodeReportRequest) SEID() uint64 {
+	if m == nil {
+		return 0
+	}
 	return m.Header.seid()
 }
 
 // IsRequest reports whether the message is a request.
 func (m *NodeReportRequest) IsRequest() bool {
 	return true
+}
+
+func (m *NodeReportRequest) messageIEs() []*ie.IE {
+	if m == nil {
+		return nil
+	}
+	ies := make([]*ie.IE, 0, 4+len(m.ClockDriftReport)+len(m.GTPUPathQoSReport)+len(m.IEs))
+	ies = append(ies, m.NodeID)
+	ies = append(ies, m.NodeReportType)
+	ies = append(ies, m.UserPlanePathFailureReport)
+	ies = append(ies, m.UserPlanePathRecoveryReport)
+	ies = append(ies, m.ClockDriftReport...)
+	ies = append(ies, m.GTPUPathQoSReport...)
+	ies = append(ies, m.IEs...)
+	return ies
+}
+
+func (m *NodeReportRequest) addIEs(ies []*ie.IE) {
+	for _, i := range ies {
+		if i == nil {
+			continue
+		}
+		switch i.Type {
+		case ie.NodeID:
+			assignIE(&m.NodeID, i, &m.IEs)
+		case ie.NodeReportType:
+			assignIE(&m.NodeReportType, i, &m.IEs)
+		case ie.UserPlanePathFailureReport:
+			assignIE(&m.UserPlanePathFailureReport, i, &m.IEs)
+		case ie.UserPlanePathRecoveryReport:
+			assignIE(&m.UserPlanePathRecoveryReport, i, &m.IEs)
+		case ie.ClockDriftReport:
+			m.ClockDriftReport = append(m.ClockDriftReport, i)
+		case ie.GTPUPathQoSReport:
+			m.GTPUPathQoSReport = append(m.GTPUPathQoSReport, i)
+		default:
+			m.IEs = append(m.IEs, i)
+		}
+	}
 }

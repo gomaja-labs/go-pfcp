@@ -30,45 +30,10 @@ type AssociationSetupRequest struct {
 // NewAssociationSetupRequest creates a new AssociationSetupRequest.
 func NewAssociationSetupRequest(seq uint32, ies ...*ie.IE) *AssociationSetupRequest {
 	m := &AssociationSetupRequest{
-		Header: NewHeader(
-			1, 0, 0, 0,
-			MsgTypeAssociationSetupRequest, 0, seq, 0,
-			nil,
-		),
+		Header: NewHeader(MsgTypeAssociationSetupRequest, 0, seq, nil),
 	}
 
-	for _, i := range ies {
-		switch i.Type {
-		case ie.NodeID:
-			m.NodeID = i
-		case ie.RecoveryTimeStamp:
-			m.RecoveryTimeStamp = i
-		case ie.UPFunctionFeatures:
-			m.UPFunctionFeatures = i
-		case ie.CPFunctionFeatures:
-			m.CPFunctionFeatures = i
-		case ie.UserPlaneIPResourceInformation:
-			m.UserPlaneIPResourceInformation = append(m.UserPlaneIPResourceInformation, i)
-		case ie.AlternativeSMFIPAddress:
-			m.AlternativeSMFIPAddress = append(m.AlternativeSMFIPAddress, i)
-		case ie.SMFSetID:
-			m.SMFSetID = i
-		case ie.PFCPSessionRetentionInformation:
-			m.PFCPSessionRetentionInformation = i
-		case ie.UEIPAddressPoolInformation:
-			m.UEIPAddressPoolInformation = append(m.UEIPAddressPoolInformation, i)
-		case ie.GTPUPathQoSControlInformation:
-			m.GTPUPathQoSControlInformation = append(m.GTPUPathQoSControlInformation, i)
-		case ie.ClockDriftControlInformation:
-			m.ClockDriftControlInformation = append(m.ClockDriftControlInformation, i)
-		case ie.NFInstanceID:
-			m.UPFInstanceID = i
-		case ie.PFCPASReqFlags:
-			m.PFCPASReqFlags = i
-		default:
-			m.IEs = append(m.IEs, i)
-		}
-	}
+	m.addIEs(ies)
 
 	m.SetLength()
 	return m
@@ -76,113 +41,15 @@ func NewAssociationSetupRequest(seq uint32, ies ...*ie.IE) *AssociationSetupRequ
 
 // Marshal returns the byte sequence generated from a AssociationSetupRequest.
 func (m *AssociationSetupRequest) Marshal() ([]byte, error) {
-	b := make([]byte, m.MarshalLen())
-	if err := m.MarshalTo(b); err != nil {
-		return nil, err
-	}
-
-	return b, nil
+	return marshalMessage(m)
 }
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (m *AssociationSetupRequest) MarshalTo(b []byte) error {
-	if m.Header.Payload != nil {
-		m.Header.Payload = nil
+	if m == nil {
+		return ErrNilMessage
 	}
-	m.Header.Payload = make([]byte, m.MarshalLen()-m.Header.MarshalLen())
-
-	offset := 0
-	if i := m.NodeID; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.RecoveryTimeStamp; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.UPFunctionFeatures; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.CPFunctionFeatures; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.UserPlaneIPResourceInformation {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.AlternativeSMFIPAddress {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.SMFSetID; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.PFCPSessionRetentionInformation; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.UEIPAddressPoolInformation {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.GTPUPathQoSControlInformation {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.ClockDriftControlInformation {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.UPFInstanceID; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.PFCPASReqFlags; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		if err := ie.MarshalTo(m.Header.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += ie.MarshalLen()
-	}
-
-	m.Header.SetLength()
-	return m.Header.MarshalTo(b)
+	return marshalMessageTo(m.Header, m.messageIEs(), b)
 }
 
 // ParseAssociationSetupRequest decodes a given byte sequence as a AssociationSetupRequest.
@@ -196,113 +63,38 @@ func ParseAssociationSetupRequest(b []byte) (*AssociationSetupRequest, error) {
 
 // UnmarshalBinary decodes a given byte sequence as a AssociationSetupRequest.
 func (m *AssociationSetupRequest) UnmarshalBinary(b []byte) error {
-	var err error
-	m.Header, err = ParseHeader(b)
+	if m == nil {
+		return ErrNilMessage
+	}
+	h, err := parseMessageHeader(b, MsgTypeAssociationSetupRequest)
 	if err != nil {
 		return err
 	}
-	if len(m.Header.Payload) < 2 {
-		return nil
-	}
+	*m = AssociationSetupRequest{Header: h}
 
 	ies, err := ie.ParseMultiIEs(m.Header.Payload)
 	if err != nil {
 		return err
 	}
 
-	for _, i := range ies {
-		switch i.Type {
-		case ie.NodeID:
-			m.NodeID = i
-		case ie.RecoveryTimeStamp:
-			m.RecoveryTimeStamp = i
-		case ie.UPFunctionFeatures:
-			m.UPFunctionFeatures = i
-		case ie.CPFunctionFeatures:
-			m.CPFunctionFeatures = i
-		case ie.UserPlaneIPResourceInformation:
-			m.UserPlaneIPResourceInformation = append(m.UserPlaneIPResourceInformation, i)
-		case ie.AlternativeSMFIPAddress:
-			m.AlternativeSMFIPAddress = append(m.AlternativeSMFIPAddress, i)
-		case ie.SMFSetID:
-			m.SMFSetID = i
-		case ie.PFCPSessionRetentionInformation:
-			m.PFCPSessionRetentionInformation = i
-		case ie.UEIPAddressPoolInformation:
-			m.UEIPAddressPoolInformation = append(m.UEIPAddressPoolInformation, i)
-		case ie.GTPUPathQoSControlInformation:
-			m.GTPUPathQoSControlInformation = append(m.GTPUPathQoSControlInformation, i)
-		case ie.ClockDriftControlInformation:
-			m.ClockDriftControlInformation = append(m.ClockDriftControlInformation, i)
-		case ie.NFInstanceID:
-			m.UPFInstanceID = i
-		case ie.PFCPASReqFlags:
-			m.PFCPASReqFlags = i
-		default:
-			m.IEs = append(m.IEs, i)
-		}
-	}
+	m.addIEs(ies)
 
 	return nil
 }
 
 // MarshalLen returns the serial length of Data.
 func (m *AssociationSetupRequest) MarshalLen() int {
-	l := m.Header.MarshalLen() - len(m.Header.Payload)
-
-	if i := m.NodeID; i != nil {
-		l += i.MarshalLen()
+	if m == nil {
+		return 0
 	}
-	if i := m.RecoveryTimeStamp; i != nil {
-		l += i.MarshalLen()
-	}
-	if i := m.UPFunctionFeatures; i != nil {
-		l += i.MarshalLen()
-	}
-	if i := m.CPFunctionFeatures; i != nil {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.UserPlaneIPResourceInformation {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.AlternativeSMFIPAddress {
-		l += i.MarshalLen()
-	}
-	if i := m.SMFSetID; i != nil {
-		l += i.MarshalLen()
-	}
-	if i := m.PFCPSessionRetentionInformation; i != nil {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.UEIPAddressPoolInformation {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.GTPUPathQoSControlInformation {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.ClockDriftControlInformation {
-		l += i.MarshalLen()
-	}
-	if i := m.UPFInstanceID; i != nil {
-		l += i.MarshalLen()
-	}
-	if i := m.PFCPASReqFlags; i != nil {
-		l += i.MarshalLen()
-	}
-
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		l += ie.MarshalLen()
-	}
-
-	return l
+	return messageLen(m.Header, m.messageIEs())
 }
 
 // SetLength sets the length in Length field.
 func (m *AssociationSetupRequest) SetLength() {
-	m.Header.Length = uint16(m.MarshalLen() - 4)
+	if m != nil && m.Header != nil {
+		m.Header.Length = uint16(m.MarshalLen() - 4)
+	}
 }
 
 // MessageTypeName returns the name of protocol.
@@ -312,10 +104,73 @@ func (m *AssociationSetupRequest) MessageTypeName() string {
 
 // SEID returns the SEID in uint64.
 func (m *AssociationSetupRequest) SEID() uint64 {
+	if m == nil {
+		return 0
+	}
 	return m.Header.seid()
 }
 
 // IsRequest reports whether the message is a request.
 func (m *AssociationSetupRequest) IsRequest() bool {
 	return true
+}
+
+func (m *AssociationSetupRequest) messageIEs() []*ie.IE {
+	if m == nil {
+		return nil
+	}
+	ies := make([]*ie.IE, 0, 8+len(m.UserPlaneIPResourceInformation)+len(m.AlternativeSMFIPAddress)+len(m.UEIPAddressPoolInformation)+len(m.GTPUPathQoSControlInformation)+len(m.ClockDriftControlInformation)+len(m.IEs))
+	ies = append(ies, m.NodeID)
+	ies = append(ies, m.RecoveryTimeStamp)
+	ies = append(ies, m.UPFunctionFeatures)
+	ies = append(ies, m.CPFunctionFeatures)
+	ies = append(ies, m.UserPlaneIPResourceInformation...)
+	ies = append(ies, m.AlternativeSMFIPAddress...)
+	ies = append(ies, m.SMFSetID)
+	ies = append(ies, m.PFCPSessionRetentionInformation)
+	ies = append(ies, m.UEIPAddressPoolInformation...)
+	ies = append(ies, m.GTPUPathQoSControlInformation...)
+	ies = append(ies, m.ClockDriftControlInformation...)
+	ies = append(ies, m.UPFInstanceID)
+	ies = append(ies, m.PFCPASReqFlags)
+	ies = append(ies, m.IEs...)
+	return ies
+}
+
+func (m *AssociationSetupRequest) addIEs(ies []*ie.IE) {
+	for _, i := range ies {
+		if i == nil {
+			continue
+		}
+		switch i.Type {
+		case ie.NodeID:
+			assignIE(&m.NodeID, i, &m.IEs)
+		case ie.RecoveryTimeStamp:
+			assignIE(&m.RecoveryTimeStamp, i, &m.IEs)
+		case ie.UPFunctionFeatures:
+			assignIE(&m.UPFunctionFeatures, i, &m.IEs)
+		case ie.CPFunctionFeatures:
+			assignIE(&m.CPFunctionFeatures, i, &m.IEs)
+		case ie.UserPlaneIPResourceInformation:
+			m.UserPlaneIPResourceInformation = append(m.UserPlaneIPResourceInformation, i)
+		case ie.AlternativeSMFIPAddress:
+			m.AlternativeSMFIPAddress = append(m.AlternativeSMFIPAddress, i)
+		case ie.SMFSetID:
+			assignIE(&m.SMFSetID, i, &m.IEs)
+		case ie.PFCPSessionRetentionInformation:
+			assignIE(&m.PFCPSessionRetentionInformation, i, &m.IEs)
+		case ie.UEIPAddressPoolInformation:
+			m.UEIPAddressPoolInformation = append(m.UEIPAddressPoolInformation, i)
+		case ie.GTPUPathQoSControlInformation:
+			m.GTPUPathQoSControlInformation = append(m.GTPUPathQoSControlInformation, i)
+		case ie.ClockDriftControlInformation:
+			m.ClockDriftControlInformation = append(m.ClockDriftControlInformation, i)
+		case ie.NFInstanceID:
+			assignIE(&m.UPFInstanceID, i, &m.IEs)
+		case ie.PFCPASReqFlags:
+			assignIE(&m.PFCPASReqFlags, i, &m.IEs)
+		default:
+			m.IEs = append(m.IEs, i)
+		}
+	}
 }

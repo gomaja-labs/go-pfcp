@@ -20,11 +20,7 @@ type SessionSetDeletionResponse struct {
 // NewSessionSetDeletionResponse creates a new SessionSetDeletionResponse.
 func NewSessionSetDeletionResponse(seq uint32, id, cause, offending *ie.IE, ies ...*ie.IE) *SessionSetDeletionResponse {
 	m := &SessionSetDeletionResponse{
-		Header: NewHeader(
-			1, 0, 0, 0,
-			MsgTypeSessionSetDeletionResponse, 0, seq, 0,
-			nil,
-		),
+		Header:      NewHeader(MsgTypeSessionSetDeletionResponse, 0, seq, nil),
 		NodeID:      id,
 		Cause:       cause,
 		OffendingIE: offending,
@@ -37,53 +33,15 @@ func NewSessionSetDeletionResponse(seq uint32, id, cause, offending *ie.IE, ies 
 
 // Marshal returns the byte sequence generated from a SessionSetDeletionResponse.
 func (m *SessionSetDeletionResponse) Marshal() ([]byte, error) {
-	b := make([]byte, m.MarshalLen())
-	if err := m.MarshalTo(b); err != nil {
-		return nil, err
-	}
-
-	return b, nil
+	return marshalMessage(m)
 }
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (m *SessionSetDeletionResponse) MarshalTo(b []byte) error {
-	if m.Header.Payload != nil {
-		m.Header.Payload = nil
+	if m == nil {
+		return ErrNilMessage
 	}
-	m.Header.Payload = make([]byte, m.MarshalLen()-m.Header.MarshalLen())
-
-	offset := 0
-	if i := m.NodeID; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.Cause; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.OffendingIE; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		if err := ie.MarshalTo(m.Header.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += ie.MarshalLen()
-	}
-
-	m.Header.SetLength()
-	return m.Header.MarshalTo(b)
+	return marshalMessageTo(m.Header, m.messageIEs(), b)
 }
 
 // ParseSessionSetDeletionResponse decodes a given byte sequence as a SessionSetDeletionResponse.
@@ -97,63 +55,38 @@ func ParseSessionSetDeletionResponse(b []byte) (*SessionSetDeletionResponse, err
 
 // UnmarshalBinary decodes a given byte sequence as a SessionSetDeletionResponse.
 func (m *SessionSetDeletionResponse) UnmarshalBinary(b []byte) error {
-	var err error
-	m.Header, err = ParseHeader(b)
+	if m == nil {
+		return ErrNilMessage
+	}
+	h, err := parseMessageHeader(b, MsgTypeSessionSetDeletionResponse)
 	if err != nil {
 		return err
 	}
-	if len(m.Header.Payload) < 2 {
-		return nil
-	}
+	*m = SessionSetDeletionResponse{Header: h}
 
 	ies, err := ie.ParseMultiIEs(m.Header.Payload)
 	if err != nil {
 		return err
 	}
 
-	for _, i := range ies {
-		switch i.Type {
-		case ie.NodeID:
-			m.NodeID = i
-		case ie.Cause:
-			m.Cause = i
-		case ie.OffendingIE:
-			m.OffendingIE = i
-		default:
-			m.IEs = append(m.IEs, i)
-		}
-	}
+	m.addIEs(ies)
 
 	return nil
 }
 
 // MarshalLen returns the serial length of Data.
 func (m *SessionSetDeletionResponse) MarshalLen() int {
-	l := m.Header.MarshalLen() - len(m.Header.Payload)
-
-	if i := m.NodeID; i != nil {
-		l += i.MarshalLen()
+	if m == nil {
+		return 0
 	}
-	if i := m.Cause; i != nil {
-		l += i.MarshalLen()
-	}
-	if i := m.OffendingIE; i != nil {
-		l += i.MarshalLen()
-	}
-
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		l += ie.MarshalLen()
-	}
-
-	return l
+	return messageLen(m.Header, m.messageIEs())
 }
 
 // SetLength sets the length in Length field.
 func (m *SessionSetDeletionResponse) SetLength() {
-	m.Header.Length = uint16(m.MarshalLen() - 4)
+	if m != nil && m.Header != nil {
+		m.Header.Length = uint16(m.MarshalLen() - 4)
+	}
 }
 
 // MessageTypeName returns the name of protocol.
@@ -163,10 +96,43 @@ func (m *SessionSetDeletionResponse) MessageTypeName() string {
 
 // SEID returns the SEID in uint64.
 func (m *SessionSetDeletionResponse) SEID() uint64 {
+	if m == nil {
+		return 0
+	}
 	return m.Header.seid()
 }
 
 // IsRequest reports whether the message is a request.
 func (m *SessionSetDeletionResponse) IsRequest() bool {
 	return false
+}
+
+func (m *SessionSetDeletionResponse) messageIEs() []*ie.IE {
+	if m == nil {
+		return nil
+	}
+	ies := make([]*ie.IE, 0, 3+len(m.IEs))
+	ies = append(ies, m.NodeID)
+	ies = append(ies, m.Cause)
+	ies = append(ies, m.OffendingIE)
+	ies = append(ies, m.IEs...)
+	return ies
+}
+
+func (m *SessionSetDeletionResponse) addIEs(ies []*ie.IE) {
+	for _, i := range ies {
+		if i == nil {
+			continue
+		}
+		switch i.Type {
+		case ie.NodeID:
+			assignIE(&m.NodeID, i, &m.IEs)
+		case ie.Cause:
+			assignIE(&m.Cause, i, &m.IEs)
+		case ie.OffendingIE:
+			assignIE(&m.OffendingIE, i, &m.IEs)
+		default:
+			m.IEs = append(m.IEs, i)
+		}
+	}
 }

@@ -20,7 +20,7 @@ func TestSessionModificationResponse(t *testing.T) {
 		{
 			Description: "Single IE",
 			Structured: message.NewSessionModificationResponse(
-				mp, fo, seid, seq, pri,
+				seid, seq,
 				ie.NewCause(ie.CauseRequestAccepted),
 				ie.NewOffendingIE(ie.Cause),
 				ie.NewCreatedPDR(
@@ -192,7 +192,7 @@ func TestSessionModificationResponse(t *testing.T) {
 		{
 			Description: "Multiple IEs",
 			Structured: message.NewSessionModificationResponse(
-				mp, fo, seid, seq, pri,
+				seid, seq,
 				ie.NewCause(ie.CauseRequestAccepted),
 				ie.NewOffendingIE(ie.Cause),
 				ie.NewCreatedPDR(

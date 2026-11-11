@@ -2,7 +2,7 @@
 // Use of this source code is governed by a MIT-style license that can be
 // found in the LICENSE file.
 
-// Command hb-server sends a HeartbeatRequest and checks response.
+// Command hb-server receives Heartbeat Requests and sends matching responses.
 //
 // Heartbeat exchanging feature is planned be included in the go-pfcp package's
 // built-in functions in the future.
@@ -34,7 +34,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	buf := make([]byte, 1500)
+	defer func() { _ = conn.Close() }()
+
+	started := time.Now() // Recovery time is when this entity started.
+	buf := make([]byte, 65535)
 	for {
 		log.Printf("waiting for messages to come on: %s", laddr)
 		n, addr, err := conn.ReadFrom(buf)
@@ -44,7 +47,7 @@ func main() {
 
 		msg, err := message.Parse(buf[:n])
 		if err != nil {
-			log.Printf("ignored undecodable message: %x, error: %s", buf[:n], err)
+			log.Printf("ignored undecodable message: %s", err)
 			continue
 		}
 
@@ -54,6 +57,10 @@ func main() {
 			continue
 		}
 
+		if hbreq.RecoveryTimeStamp == nil {
+			log.Printf("ignored Heartbeat Request without Recovery Time Stamp, from: %s", addr)
+			continue
+		}
 		ts, err := hbreq.RecoveryTimeStamp.RecoveryTimeStamp()
 		if err != nil {
 			log.Printf("got Heartbeat Request with invalid TS: %s, from: %s", err, addr)
@@ -62,9 +69,9 @@ func main() {
 			log.Printf("got Heartbeat Request with TS: %s, from: %s", ts, addr)
 		}
 
-		// Timestamp shouldn't be the time message is sent in the real deployment but anyway :D
-		var seq uint32 = 1
-		hbres, err := message.NewHeartbeatResponse(seq, ie.NewRecoveryTimeStamp(time.Now())).Marshal()
+		// TS 29.244 V20.1.0 clause 6.4: a response uses the request's sequence number.
+		seq := hbreq.Sequence()
+		hbres, err := message.NewHeartbeatResponse(seq, ie.NewRecoveryTimeStamp(started)).Marshal()
 		if err != nil {
 			log.Fatal(err)
 		}

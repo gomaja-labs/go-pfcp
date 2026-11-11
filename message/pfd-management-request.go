@@ -18,21 +18,10 @@ type PFDManagementRequest struct {
 // NewPFDManagementRequest creates a new PFDManagementRequest.
 func NewPFDManagementRequest(seq uint32, ies ...*ie.IE) *PFDManagementRequest {
 	m := &PFDManagementRequest{
-		Header: NewHeader(
-			1, 0, 0, 0,
-			MsgTypePFDManagementRequest, 0, seq, 0,
-			nil,
-		),
+		Header: NewHeader(MsgTypePFDManagementRequest, 0, seq, nil),
 	}
 
-	for _, i := range ies {
-		switch i.Type {
-		case ie.ApplicationIDsPFDs:
-			m.ApplicationIDsPFDs = append(m.ApplicationIDsPFDs, i)
-		default:
-			m.IEs = append(m.IEs, i)
-		}
-	}
+	m.addIEs(ies)
 
 	m.SetLength()
 	return m
@@ -40,41 +29,15 @@ func NewPFDManagementRequest(seq uint32, ies ...*ie.IE) *PFDManagementRequest {
 
 // Marshal returns the byte sequence generated from a PFDManagementRequest.
 func (m *PFDManagementRequest) Marshal() ([]byte, error) {
-	b := make([]byte, m.MarshalLen())
-	if err := m.MarshalTo(b); err != nil {
-		return nil, err
-	}
-
-	return b, nil
+	return marshalMessage(m)
 }
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (m *PFDManagementRequest) MarshalTo(b []byte) error {
-	if m.Header.Payload != nil {
-		m.Header.Payload = nil
+	if m == nil {
+		return ErrNilMessage
 	}
-	m.Header.Payload = make([]byte, m.MarshalLen()-m.Header.MarshalLen())
-
-	offset := 0
-	for _, i := range m.ApplicationIDsPFDs {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		if err := ie.MarshalTo(m.Header.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += ie.MarshalLen()
-	}
-
-	m.Header.SetLength()
-	return m.Header.MarshalTo(b)
+	return marshalMessageTo(m.Header, m.messageIEs(), b)
 }
 
 // ParsePFDManagementRequest decodes a given byte sequence as a PFDManagementRequest.
@@ -88,53 +51,38 @@ func ParsePFDManagementRequest(b []byte) (*PFDManagementRequest, error) {
 
 // UnmarshalBinary decodes a given byte sequence as a PFDManagementRequest.
 func (m *PFDManagementRequest) UnmarshalBinary(b []byte) error {
-	var err error
-	m.Header, err = ParseHeader(b)
+	if m == nil {
+		return ErrNilMessage
+	}
+	h, err := parseMessageHeader(b, MsgTypePFDManagementRequest)
 	if err != nil {
 		return err
 	}
-	if len(m.Header.Payload) < 2 {
-		return nil
-	}
+	*m = PFDManagementRequest{Header: h}
 
 	ies, err := ie.ParseMultiIEs(m.Header.Payload)
 	if err != nil {
 		return err
 	}
 
-	for _, i := range ies {
-		switch i.Type {
-		case ie.ApplicationIDsPFDs:
-			m.ApplicationIDsPFDs = append(m.ApplicationIDsPFDs, i)
-		default:
-			m.IEs = append(m.IEs, i)
-		}
-	}
+	m.addIEs(ies)
 
 	return nil
 }
 
 // MarshalLen returns the serial length of Data.
 func (m *PFDManagementRequest) MarshalLen() int {
-	l := m.Header.MarshalLen() - len(m.Header.Payload)
-
-	for _, i := range m.ApplicationIDsPFDs {
-		l += i.MarshalLen()
+	if m == nil {
+		return 0
 	}
-
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		l += ie.MarshalLen()
-	}
-
-	return l
+	return messageLen(m.Header, m.messageIEs())
 }
 
 // SetLength sets the length in Length field.
 func (m *PFDManagementRequest) SetLength() {
-	m.Header.Length = uint16(m.MarshalLen() - 4)
+	if m != nil && m.Header != nil {
+		m.Header.Length = uint16(m.MarshalLen() - 4)
+	}
 }
 
 // MessageTypeName returns the name of protocol.
@@ -144,10 +92,37 @@ func (m *PFDManagementRequest) MessageTypeName() string {
 
 // SEID returns the SEID in uint64.
 func (m *PFDManagementRequest) SEID() uint64 {
+	if m == nil {
+		return 0
+	}
 	return m.Header.seid()
 }
 
 // IsRequest reports whether the message is a request.
 func (m *PFDManagementRequest) IsRequest() bool {
 	return true
+}
+
+func (m *PFDManagementRequest) messageIEs() []*ie.IE {
+	if m == nil {
+		return nil
+	}
+	ies := make([]*ie.IE, 0, len(m.ApplicationIDsPFDs)+len(m.IEs))
+	ies = append(ies, m.ApplicationIDsPFDs...)
+	ies = append(ies, m.IEs...)
+	return ies
+}
+
+func (m *PFDManagementRequest) addIEs(ies []*ie.IE) {
+	for _, i := range ies {
+		if i == nil {
+			continue
+		}
+		switch i.Type {
+		case ie.ApplicationIDsPFDs:
+			m.ApplicationIDsPFDs = append(m.ApplicationIDsPFDs, i)
+		default:
+			m.IEs = append(m.IEs, i)
+		}
+	}
 }

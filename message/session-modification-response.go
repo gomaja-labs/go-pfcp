@@ -32,47 +32,12 @@ type SessionModificationResponse struct {
 }
 
 // NewSessionModificationResponse creates a new SessionModificationResponse.
-func NewSessionModificationResponse(mp, fo uint8, seid uint64, seq uint32, pri uint8, ies ...*ie.IE) *SessionModificationResponse {
+func NewSessionModificationResponse(seid uint64, seq uint32, ies ...*ie.IE) *SessionModificationResponse {
 	m := &SessionModificationResponse{
-		Header: NewHeader(
-			1, fo, mp, 1,
-			MsgTypeSessionModificationResponse, seid, seq, pri,
-			nil,
-		),
+		Header: NewHeader(MsgTypeSessionModificationResponse, seid, seq, nil),
 	}
 
-	for _, i := range ies {
-		switch i.Type {
-		case ie.Cause:
-			m.Cause = i
-		case ie.OffendingIE:
-			m.OffendingIE = i
-		case ie.CreatedPDR:
-			m.CreatedPDR = append(m.CreatedPDR, i)
-		case ie.LoadControlInformation:
-			m.LoadControlInformation = i
-		case ie.OverloadControlInformation:
-			m.OverloadControlInformation = i
-		case ie.UsageReportWithinSessionModificationResponse:
-			m.UsageReport = append(m.UsageReport, i)
-		case ie.FailedRuleID:
-			m.FailedRuleID = i
-		case ie.AdditionalUsageReportsInformation:
-			m.AdditionalUsageReportsInformation = i
-		case ie.CreatedTrafficEndpoint:
-			m.CreatedUpdatedTrafficEndpoint = append(m.CreatedUpdatedTrafficEndpoint, i)
-		case ie.CreatedBridgeInfoForTSC:
-			m.CreatedBridgeInfoForTSC = i
-		case ie.ATSSSControlParameters:
-			m.ATSSSControlParameters = i
-		case ie.UpdatedPDR:
-			m.UpdatedPDR = append(m.UpdatedPDR, i)
-		case ie.PacketRateStatusReport:
-			m.PacketRateStatusReport = append(m.PacketRateStatusReport, i)
-		default:
-			m.IEs = append(m.IEs, i)
-		}
-	}
+	m.addIEs(ies)
 
 	m.SetLength()
 	return m
@@ -80,113 +45,15 @@ func NewSessionModificationResponse(mp, fo uint8, seid uint64, seq uint32, pri u
 
 // Marshal returns the byte sequence generated from a SessionModificationResponse.
 func (m *SessionModificationResponse) Marshal() ([]byte, error) {
-	b := make([]byte, m.MarshalLen())
-	if err := m.MarshalTo(b); err != nil {
-		return nil, err
-	}
-
-	return b, nil
+	return marshalMessage(m)
 }
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (m *SessionModificationResponse) MarshalTo(b []byte) error {
-	if m.Header.Payload != nil {
-		m.Header.Payload = nil
+	if m == nil {
+		return ErrNilMessage
 	}
-	m.Header.Payload = make([]byte, m.MarshalLen()-m.Header.MarshalLen())
-
-	offset := 0
-	if i := m.Cause; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.OffendingIE; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.CreatedPDR {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.LoadControlInformation; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.OverloadControlInformation; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.UsageReport {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.FailedRuleID; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.AdditionalUsageReportsInformation; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.CreatedUpdatedTrafficEndpoint {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.CreatedBridgeInfoForTSC; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.ATSSSControlParameters; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.UpdatedPDR {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.PacketRateStatusReport {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		if err := ie.MarshalTo(m.Header.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += ie.MarshalLen()
-	}
-
-	m.Header.SetLength()
-	return m.Header.MarshalTo(b)
+	return marshalMessageTo(m.Header, m.messageIEs(), b)
 }
 
 // ParseSessionModificationResponse decodes a given byte sequence as a SessionModificationResponse.
@@ -200,113 +67,38 @@ func ParseSessionModificationResponse(b []byte) (*SessionModificationResponse, e
 
 // UnmarshalBinary decodes a given byte sequence as a SessionModificationResponse.
 func (m *SessionModificationResponse) UnmarshalBinary(b []byte) error {
-	var err error
-	m.Header, err = ParseHeader(b)
+	if m == nil {
+		return ErrNilMessage
+	}
+	h, err := parseMessageHeader(b, MsgTypeSessionModificationResponse)
 	if err != nil {
 		return err
 	}
-	if len(m.Header.Payload) < 2 {
-		return nil
-	}
+	*m = SessionModificationResponse{Header: h}
 
 	ies, err := ie.ParseMultiIEs(m.Header.Payload)
 	if err != nil {
 		return err
 	}
 
-	for _, i := range ies {
-		switch i.Type {
-		case ie.Cause:
-			m.Cause = i
-		case ie.OffendingIE:
-			m.OffendingIE = i
-		case ie.CreatedPDR:
-			m.CreatedPDR = append(m.CreatedPDR, i)
-		case ie.LoadControlInformation:
-			m.LoadControlInformation = i
-		case ie.OverloadControlInformation:
-			m.OverloadControlInformation = i
-		case ie.UsageReportWithinSessionModificationResponse:
-			m.UsageReport = append(m.UsageReport, i)
-		case ie.FailedRuleID:
-			m.FailedRuleID = i
-		case ie.AdditionalUsageReportsInformation:
-			m.AdditionalUsageReportsInformation = i
-		case ie.CreatedTrafficEndpoint:
-			m.CreatedUpdatedTrafficEndpoint = append(m.CreatedUpdatedTrafficEndpoint, i)
-		case ie.CreatedBridgeInfoForTSC:
-			m.CreatedBridgeInfoForTSC = i
-		case ie.ATSSSControlParameters:
-			m.ATSSSControlParameters = i
-		case ie.UpdatedPDR:
-			m.UpdatedPDR = append(m.UpdatedPDR, i)
-		case ie.PacketRateStatusReport:
-			m.PacketRateStatusReport = append(m.PacketRateStatusReport, i)
-		default:
-			m.IEs = append(m.IEs, i)
-		}
-	}
+	m.addIEs(ies)
 
 	return nil
 }
 
 // MarshalLen returns the serial length of Data.
 func (m *SessionModificationResponse) MarshalLen() int {
-	l := m.Header.MarshalLen() - len(m.Header.Payload)
-
-	if i := m.Cause; i != nil {
-		l += i.MarshalLen()
+	if m == nil {
+		return 0
 	}
-	if i := m.OffendingIE; i != nil {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.CreatedPDR {
-		l += i.MarshalLen()
-	}
-	if i := m.LoadControlInformation; i != nil {
-		l += i.MarshalLen()
-	}
-	if i := m.OverloadControlInformation; i != nil {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.UsageReport {
-		l += i.MarshalLen()
-	}
-	if i := m.FailedRuleID; i != nil {
-		l += i.MarshalLen()
-	}
-	if i := m.AdditionalUsageReportsInformation; i != nil {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.CreatedUpdatedTrafficEndpoint {
-		l += i.MarshalLen()
-	}
-	if i := m.CreatedBridgeInfoForTSC; i != nil {
-		l += i.MarshalLen()
-	}
-	if i := m.ATSSSControlParameters; i != nil {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.UpdatedPDR {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.PacketRateStatusReport {
-		l += i.MarshalLen()
-	}
-
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		l += ie.MarshalLen()
-	}
-
-	return l
+	return messageLen(m.Header, m.messageIEs())
 }
 
 // SetLength sets the length in Length field.
 func (m *SessionModificationResponse) SetLength() {
-	m.Header.Length = uint16(m.MarshalLen() - 4)
+	if m != nil && m.Header != nil {
+		m.Header.Length = uint16(m.MarshalLen() - 4)
+	}
 }
 
 // MessageTypeName returns the name of protocol.
@@ -316,10 +108,73 @@ func (m *SessionModificationResponse) MessageTypeName() string {
 
 // SEID returns the SEID in uint64.
 func (m *SessionModificationResponse) SEID() uint64 {
+	if m == nil {
+		return 0
+	}
 	return m.Header.seid()
 }
 
 // IsRequest reports whether the message is a request.
 func (m *SessionModificationResponse) IsRequest() bool {
 	return false
+}
+
+func (m *SessionModificationResponse) messageIEs() []*ie.IE {
+	if m == nil {
+		return nil
+	}
+	ies := make([]*ie.IE, 0, 8+len(m.CreatedPDR)+len(m.UsageReport)+len(m.CreatedUpdatedTrafficEndpoint)+len(m.UpdatedPDR)+len(m.PacketRateStatusReport)+len(m.IEs))
+	ies = append(ies, m.Cause)
+	ies = append(ies, m.OffendingIE)
+	ies = append(ies, m.CreatedPDR...)
+	ies = append(ies, m.LoadControlInformation)
+	ies = append(ies, m.OverloadControlInformation)
+	ies = append(ies, m.UsageReport...)
+	ies = append(ies, m.FailedRuleID)
+	ies = append(ies, m.AdditionalUsageReportsInformation)
+	ies = append(ies, m.CreatedUpdatedTrafficEndpoint...)
+	ies = append(ies, m.CreatedBridgeInfoForTSC)
+	ies = append(ies, m.ATSSSControlParameters)
+	ies = append(ies, m.UpdatedPDR...)
+	ies = append(ies, m.PacketRateStatusReport...)
+	ies = append(ies, m.IEs...)
+	return ies
+}
+
+func (m *SessionModificationResponse) addIEs(ies []*ie.IE) {
+	for _, i := range ies {
+		if i == nil {
+			continue
+		}
+		switch i.Type {
+		case ie.Cause:
+			assignIE(&m.Cause, i, &m.IEs)
+		case ie.OffendingIE:
+			assignIE(&m.OffendingIE, i, &m.IEs)
+		case ie.CreatedPDR:
+			m.CreatedPDR = append(m.CreatedPDR, i)
+		case ie.LoadControlInformation:
+			assignIE(&m.LoadControlInformation, i, &m.IEs)
+		case ie.OverloadControlInformation:
+			assignIE(&m.OverloadControlInformation, i, &m.IEs)
+		case ie.UsageReportWithinSessionModificationResponse:
+			m.UsageReport = append(m.UsageReport, i)
+		case ie.FailedRuleID:
+			assignIE(&m.FailedRuleID, i, &m.IEs)
+		case ie.AdditionalUsageReportsInformation:
+			assignIE(&m.AdditionalUsageReportsInformation, i, &m.IEs)
+		case ie.CreatedTrafficEndpoint:
+			m.CreatedUpdatedTrafficEndpoint = append(m.CreatedUpdatedTrafficEndpoint, i)
+		case ie.CreatedBridgeInfoForTSC:
+			assignIE(&m.CreatedBridgeInfoForTSC, i, &m.IEs)
+		case ie.ATSSSControlParameters:
+			assignIE(&m.ATSSSControlParameters, i, &m.IEs)
+		case ie.UpdatedPDR:
+			m.UpdatedPDR = append(m.UpdatedPDR, i)
+		case ie.PacketRateStatusReport:
+			m.PacketRateStatusReport = append(m.PacketRateStatusReport, i)
+		default:
+			m.IEs = append(m.IEs, i)
+		}
+	}
 }
