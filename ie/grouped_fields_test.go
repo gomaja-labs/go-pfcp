@@ -6,6 +6,7 @@ import (
 	"io"
 	"net"
 	"reflect"
+	"slices"
 	"sync"
 	"testing"
 
@@ -150,17 +151,17 @@ func TestGroupedFieldsCatalogue(t *testing.T) {
 			for _, field := range schema {
 				v := fieldValue(t, f, field)
 				if field.slice {
-					if !reflect.DeepEqual(v.Interface(), expected[field.name]) {
+					if !slices.Equal(v.Interface().([]*ie.IE), expected[field.name]) {
 						t.Fatal("list lost a child", field.name)
 					}
 				} else if v.Interface() != expected[field.name][0] {
 					t.Fatal("first occurrence lost", field.name)
 				}
 			}
-			if !reflect.DeepEqual(reflect.ValueOf(f).Elem().FieldByName("OtherIEs").Interface(), others) {
+			if !slices.Equal(reflect.ValueOf(f).Elem().FieldByName("OtherIEs").Interface().([]*ie.IE), others) {
 				t.Fatal("OtherIEs lost duplicates or unknowns")
 			}
-			if !reflect.DeepEqual(f.IE().ChildIEs, canonical) {
+			if !slices.Equal(f.IE().ChildIEs, canonical) {
 				t.Fatal("table order or IE symmetry")
 			}
 			// Direct struct construction, including nil list entries, exercises IE().
@@ -174,7 +175,7 @@ func TestGroupedFieldsCatalogue(t *testing.T) {
 				}
 			}
 			reflect.ValueOf(direct).Elem().FieldByName("OtherIEs").Set(reflect.ValueOf(append([]*ie.IE{nil}, others...)))
-			if !reflect.DeepEqual(direct.IE().ChildIEs, canonical) {
+			if !slices.Equal(direct.IE().ChildIEs, canonical) {
 				t.Fatal("struct fields not encoded")
 			}
 			b := valueBytes(t, f)
