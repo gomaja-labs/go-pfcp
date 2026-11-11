@@ -3,9 +3,10 @@
 package ie
 
 import (
-	"github.com/gomaja-labs/go-pfcp/internal/spec"
 	"strconv"
 	"testing"
+
+	"github.com/gomaja-labs/go-pfcp/internal/spec"
 )
 
 func TestGroupedTypesCatalogue(t *testing.T) {

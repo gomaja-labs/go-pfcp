@@ -407,8 +407,6 @@ var constructors = map[string]constructorEntry{
 	"NewRedundantN3N9TransmissionInformation":                    {ie.NewRedundantN3N9TransmissionInformation, []string{"ies"}},
 	"NewRedundantTransmissionForwardingParameters":               {ie.NewRedundantTransmissionForwardingParameters, []string{"ies"}},
 	"NewRedundantTransmissionParameters":                         {ie.NewRedundantTransmissionParameters, []string{"ies"}},
-	"NewRedundantTransmissionParametersInFAR":                    {ie.NewRedundantTransmissionParametersInFAR, []string{"ohc", "ni"}},
-	"NewRedundantTransmissionParametersInPDI":                    {ie.NewRedundantTransmissionParametersInPDI, []string{"fteid", "ni"}},
 	"NewRemoteGTPUPeer":                                          {ie.NewRemoteGTPUPeer, []string{"flags", "v4", "v6", "di", "ni"}},
 	"NewRemoteGTPUPeerFields":                                    {ie.NewRemoteGTPUPeerFields, []string{"flags", "v4", "v6", "di", "ni"}},
 	"NewRemoteN3N9TunnelInformation":                             {ie.NewRemoteN3N9TunnelInformation, []string{"ies"}},
