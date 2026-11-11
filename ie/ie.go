@@ -569,11 +569,11 @@ func (i *IE) UnmarshalBinary(b []byte) error {
 	length := int(binary.BigEndian.Uint16(b[2:4]))
 	vendor := typ&0x8000 != 0
 	if vendor && length < 2 {
-		return ErrInvalidLength
+		return &DecodeError{Type: typ, Err: ErrInvalidLength}
 	}
 	end := 4 + length
 	if len(b) < end {
-		return io.ErrUnexpectedEOF
+		return &DecodeError{Type: typ, Err: io.ErrUnexpectedEOF}
 	}
 	v := IE{Type: typ}
 	offset := 4
@@ -585,7 +585,7 @@ func (i *IE) UnmarshalBinary(b []byte) error {
 	if v.IsGrouped() {
 		children, err := ParseMultiIEs(payload)
 		if err != nil {
-			return fmt.Errorf("grouped IE %d: %w", typ, err)
+			return &DecodeError{Type: typ, Err: err}
 		}
 		v.ChildIEs = children
 		if v.ChildIEs == nil {
