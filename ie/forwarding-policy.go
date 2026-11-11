@@ -7,8 +7,13 @@ package ie
 import "io"
 
 // NewForwardingPolicy creates a new ForwardingPolicy IE.
+// It returns nil if id exceeds the 255-octet limit.
 func NewForwardingPolicy(id string) *IE {
-	l := len([]byte(id))
+	// TS 29.244 V20.1.0 clause 8.2.23.
+	l := len(id)
+	if l > 255 {
+		return nil
+	}
 	i := New(ForwardingPolicy, make([]byte, 1+l))
 
 	i.Payload[0] = uint8(l)

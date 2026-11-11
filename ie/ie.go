@@ -438,6 +438,12 @@ func (i *IE) ValueAsString() (string, error) {
 		return "", &InvalidTypeError{Type: i.Type}
 	}
 
+	// TS 29.244 V20.1.0 clause 8.1.2 permits a null IE as a removal
+	// instruction; it does not supply a string value.
+	if len(i.Payload) == 0 {
+		return "", io.ErrUnexpectedEOF
+	}
+
 	return string(i.Payload), nil
 }
 

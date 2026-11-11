@@ -163,6 +163,12 @@ func (f *RedirectInformationFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
 	}
+	// TS 29.244 V20.1.0 clause 8.2.20: the two-octet lengths
+	// must describe the actual address strings without narrowing or truncation.
+	if len(f.RedirectServerAddress) != int(f.ServerAddrLength) ||
+		(f.RedirectAddressType == RedirectAddrIPv4AndIPv6 && len(f.OtherRedirectServerAddress) != int(f.OtherServerAddrLength)) {
+		return ErrInvalidLength
+	}
 	if f.MarshalLen() > 65535 {
 		return ErrInvalidLength
 	}

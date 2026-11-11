@@ -89,7 +89,8 @@ func (i *IE) NodeID() (string, error) {
 		return "", io.ErrUnexpectedEOF
 	}
 
-	switch i.Payload[0] {
+	// TS 29.244 V20.1.0 clauses 8.1.2 and 8.2.38: ignore the spare nibble.
+	switch i.Payload[0] & 0x0f {
 	case NodeIDIPv4Address:
 		if len(i.Payload) < 5 {
 			return "", io.ErrUnexpectedEOF
