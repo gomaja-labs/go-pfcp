@@ -28,7 +28,7 @@ func (i *IE) VendorSpecificNodeReportType() (*VendorSpecificNodeReportTypeFields
 	return f, nil
 }
 
-// ParseVendorSpecificNodeReportTypeFields decodes the known fields; unknown extension octets are ignored.
+// ParseVendorSpecificNodeReportTypeFields decodes the enterprise ID and the full vendor bitmask.
 // TS 29.244 V20.1.0 clauses 8.2.217 and 8.1.2.
 func ParseVendorSpecificNodeReportTypeFields(b []byte) (*VendorSpecificNodeReportTypeFields, error) {
 	f := &VendorSpecificNodeReportTypeFields{}

@@ -28,7 +28,7 @@ func (i *IE) HPLMNSNSSAI() (*HPLMNSNSSAIFields, error) {
 	return f, nil
 }
 
-// ParseHPLMNSNSSAIFields decodes the known fields; unknown extension octets are ignored.
+// ParseHPLMNSNSSAIFields decodes exactly four value octets.
 // TS 29.244 V20.1.0 clauses 8.2.232 and 8.1.2.
 func ParseHPLMNSNSSAIFields(b []byte) (*HPLMNSNSSAIFields, error) {
 	f := &HPLMNSNSSAIFields{}
