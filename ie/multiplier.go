@@ -26,6 +26,9 @@ func (i *IE) Multiplier() ([]byte, error) {
 
 	switch i.Type {
 	case Multiplier:
+		if err := i.validateFixedValue(); err != nil {
+			return nil, err
+		}
 		return i.Payload, nil
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
@@ -54,6 +57,9 @@ func (i *IE) Exponent() (uint32, error) {
 
 	switch i.Type {
 	case Multiplier:
+		if err := i.validateFixedValue(); err != nil {
+			return 0, err
+		}
 		if len(i.Payload) < 12 {
 			return 0, io.ErrUnexpectedEOF
 		}

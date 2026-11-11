@@ -158,7 +158,8 @@ func (f *STAGFields) UnmarshalBinary(b []byte) error {
 	}
 
 	if f.HasVID() {
-		f.CVID = binary.BigEndian.Uint16(b[offset:offset+2]) & 0xf0ff
+		// TS 29.244 V20.1.0 clause 8.2.95: VID straddles the flag nibble.
+		f.CVID = uint16(b[offset]&0xf0)<<4 | uint16(b[offset+1])
 	}
 
 	return nil

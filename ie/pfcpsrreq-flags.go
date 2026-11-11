@@ -35,3 +35,7 @@ func (i *IE) HasPSDBU() bool {
 
 	return has1stBit(v)
 }
+
+// HasPPPCP reports whether the PPPCP flag is set.
+// TS 29.244 V20.1.0 clause 8.2.119, octet 5 bit 2.
+func (i *IE) HasPPPCP() bool { return payloadFlag(i, PFCPSRReqFlags, 0, 0x02) }

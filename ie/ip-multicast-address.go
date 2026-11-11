@@ -167,8 +167,9 @@ func (f *IPMulticastAddressFields) UnmarshalBinary(b []byte) error {
 	}
 	*f = IPMulticastAddressFields{}
 
+	// TS 29.244 V20.1.0 clause 8.2.137: Any has no address fields.
 	l := len(b)
-	if l < 2 {
+	if l < 1 {
 		return io.ErrUnexpectedEOF
 	}
 

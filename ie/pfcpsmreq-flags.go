@@ -98,3 +98,30 @@ func (i *IE) HasQAURR() bool {
 		return false
 	}
 }
+
+// HasSUMPC reports whether the SUMPC flag is set.
+// TS 29.244 V20.1.0 clause 8.2.31, octet 5 bit 4.
+func (i *IE) HasSUMPC() bool {
+	if payloadFlag(i, PFCPSEReqFlags, 0, 0x02) {
+		return true
+	}
+	return payloadFlag(i, PFCPSMReqFlags, 0, 0x08)
+}
+
+// HasRUMUC reports whether the RUMUC flag is set.
+// TS 29.244 V20.1.0 clause 8.2.31, octet 5 bit 5.
+func (i *IE) HasRUMUC() bool { return payloadFlag(i, PFCPSMReqFlags, 0, 0x10) }
+
+// HasDETEID reports whether the DETEID flag is set.
+// TS 29.244 V20.1.0 clause 8.2.31, octet 5 bit 6.
+func (i *IE) HasDETEID() bool { return payloadFlag(i, PFCPSMReqFlags, 0, 0x20) }
+
+// HasHRSBOM reports whether the HRSBOM flag is set.
+// TS 29.244 V20.1.0 clause 8.2.31, octet 5 bit 7.
+func (i *IE) HasHRSBOM() bool {
+	// TS 29.244 V20.1.0 clause 8.2.136 also assigns HRSBOM to octet 5 bit 3.
+	if payloadFlag(i, PFCPSEReqFlags, 0, 0x04) {
+		return true
+	}
+	return payloadFlag(i, PFCPSMReqFlags, 0, 0x40)
+}

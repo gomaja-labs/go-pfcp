@@ -19,7 +19,8 @@ func (i *IE) QFI() (uint8, error) {
 
 	switch i.Type {
 	case QFI:
-		return i.ValueAsUint8()
+		// TS 29.244 V20.1.0 clauses 8.1.2 and 8.2.89: ignore spare bits.
+		return i.valueAsUint8Masked(0x3f)
 	case DownlinkDataServiceInformation:
 		// TS 29.244 V20.1.0 clause 8.2.27: PPI and QFI are independently optional.
 		if len(i.Payload) < 1 {
@@ -35,7 +36,7 @@ func (i *IE) QFI() (uint8, error) {
 		if len(i.Payload) <= offset {
 			return 0, io.ErrUnexpectedEOF
 		}
-		return i.Payload[offset], nil
+		return i.Payload[offset] & 0x3f, nil
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

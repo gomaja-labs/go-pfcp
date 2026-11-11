@@ -42,10 +42,8 @@ func (i *IE) AlternativeSMFIPAddress() (*AlternativeSMFIPAddressFields, error) {
 // AlternativeSMFIPAddressFields represents a fields contained in AlternativeSMFIPAddress IE.
 type AlternativeSMFIPAddressFields struct {
 	Flags       uint8
-	TEID        uint32
 	IPv4Address net.IP
 	IPv6Address net.IP
-	ChooseID    []byte
 }
 
 // NewAlternativeSMFIPAddressFields creates a new NewAlternativeSMFIPAddressFields.
@@ -207,4 +205,20 @@ func (f *AlternativeSMFIPAddressFields) MarshalLen() int {
 	}
 
 	return l
+}
+
+// HasPPE reports whether this is the preferred alternative PFCP entity.
+// TS 29.244 V20.1.0 clause 8.2.129, octet 5 bit 3.
+func (i *IE) HasPPE() bool { return payloadFlag(i, AlternativeSMFIPAddress, 0, 0x04) }
+
+// HasPPE reports whether the preferred PFCP entity flag is set.
+// TS 29.244 V20.1.0 clause 8.2.129, octet 5 bit 3.
+func (f *AlternativeSMFIPAddressFields) HasPPE() bool { return f != nil && f.Flags&0x04 != 0 }
+
+// SetPPEFlag marks the alternative SMF address as the preferred PFCP entity.
+// TS 29.244 V20.1.0 clause 8.2.129, octet 5 bit 3.
+func (f *AlternativeSMFIPAddressFields) SetPPEFlag() {
+	if f != nil {
+		f.Flags |= 0x04
+	}
 }

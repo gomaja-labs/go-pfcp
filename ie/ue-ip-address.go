@@ -77,6 +77,11 @@ func (i *IE) HasCHV6() bool {
 // HasIP6PL reports whether an IE has IP6PL bit.
 // This bit has been introduced in release 16.2
 func (i *IE) HasIP6PL() bool {
+	// TS 29.244 V20.1.0 clause 8.2.25, octet 8 bit 6.
+	if i != nil && i.Type == UPFunctionFeatures {
+		return payloadFlag(i, UPFunctionFeatures, 3, 0x20)
+	}
+
 	if i == nil {
 		return false
 	}

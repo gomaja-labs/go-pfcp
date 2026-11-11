@@ -28,3 +28,10 @@ func (i *IE) SteeringFunctionality() (uint8, error) {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
 }
+
+// TS 29.244 V20.1.0 Table 8.2.124-1.
+const (
+	SteeringFunctionalityMPQUICUDP uint8 = 2
+	SteeringFunctionalityMPQUICIP  uint8 = 3
+	SteeringFunctionalityMPQUICE   uint8 = 4
+)

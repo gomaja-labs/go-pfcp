@@ -125,6 +125,9 @@ func (i *IE) ValueAsUint8() (uint8, error) {
 	if i.IsGrouped() {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
+	if err := i.validateFixedValue(); err != nil {
+		return 0, err
+	}
 	if len(i.Payload) < 1 {
 		return 0, io.ErrUnexpectedEOF
 	}
@@ -140,6 +143,9 @@ func (i *IE) ValueAsUint16() (uint16, error) {
 
 	if i.IsGrouped() {
 		return 0, &InvalidTypeError{Type: i.Type}
+	}
+	if err := i.validateFixedValue(); err != nil {
+		return 0, err
 	}
 	if len(i.Payload) < 2 {
 		return 0, io.ErrUnexpectedEOF
@@ -157,6 +163,9 @@ func (i *IE) ValueAsUint32() (uint32, error) {
 	if i.IsGrouped() {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
+	if err := i.validateFixedValue(); err != nil {
+		return 0, err
+	}
 	if len(i.Payload) < 4 {
 		return 0, io.ErrUnexpectedEOF
 	}
@@ -172,6 +181,9 @@ func (i *IE) ValueAsUint64() (uint64, error) {
 
 	if i.IsGrouped() {
 		return 0, &InvalidTypeError{Type: i.Type}
+	}
+	if err := i.validateFixedValue(); err != nil {
+		return 0, err
 	}
 	if len(i.Payload) < 8 {
 		return 0, io.ErrUnexpectedEOF

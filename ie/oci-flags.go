@@ -22,3 +22,7 @@ func (i *IE) OCIFlags() (uint8, error) {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
 }
+
+// HasAOCI reports whether the AOCI flag is set.
+// TS 29.244 V20.1.0 clause 8.2.76, octet 5 bit 1.
+func (i *IE) HasAOCI() bool { return payloadFlag(i, OCIFlags, 0, 0x01) }

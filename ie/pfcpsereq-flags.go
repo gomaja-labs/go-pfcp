@@ -35,3 +35,7 @@ func (i *IE) HasRESTI() bool {
 
 	return has1stBit(v)
 }
+
+// HasEPRI reports whether the EPRI flag is set.
+// TS 29.244 V20.1.0 clause 8.2.136, octet 5 bit 4.
+func (i *IE) HasEPRI() bool { return payloadFlag(i, PFCPSEReqFlags, 0, 0x08) }

@@ -24,6 +24,11 @@ func (i *IE) PFCPASReqFlags() (uint8, error) {
 
 // HasUUPSI reports whether an IE has UUPSI bit.
 func (i *IE) HasUUPSI() bool {
+	// TS 29.244 V20.1.0 clause 8.2.134, octet 5 bit 2.
+	if i != nil && i.Type == PFCPASRspFlags {
+		return payloadFlag(i, PFCPASRspFlags, 0, 0x02)
+	}
+
 	if i == nil {
 		return false
 	}

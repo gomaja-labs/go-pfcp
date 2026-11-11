@@ -4,9 +4,16 @@
 
 package ie
 
+import "io"
+
 // NewSMFSetID creates a new SMFSetID IE.
 func NewSMFSetID(id string) *IE {
-	return newFQDNIE(SMFSetID, id)
+	// TS 29.244 V20.1.0 clause 8.2.131: a spare octet precedes the FQDN.
+	i := newFQDNIE(SMFSetID, id)
+	if i.err == nil {
+		i.Payload = append([]byte{0}, i.Payload...)
+	}
+	return i
 }
 
 // SMFSetID returns SMFSetID in string if the type of IE matches.
@@ -19,5 +26,8 @@ func (i *IE) SMFSetID() (string, error) {
 		return "", &InvalidTypeError{Type: i.Type}
 	}
 
-	return i.ValueAsFQDN()
+	if len(i.Payload) < 2 {
+		return "", io.ErrUnexpectedEOF
+	}
+	return decodeFQDNValue(i.Payload[1:])
 }

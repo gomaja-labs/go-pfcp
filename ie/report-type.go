@@ -77,3 +77,15 @@ func (i *IE) HasDLDR() bool {
 
 	return has1stBit(v)
 }
+
+// HasTMIR reports whether the TMIR flag is set.
+// TS 29.244 V20.1.0 clause 8.2.21, octet 5 bit 5.
+func (i *IE) HasTMIR() bool { return payloadFlag(i, ReportType, 0, 0x10) }
+
+// HasSESR reports whether the SESR flag is set.
+// TS 29.244 V20.1.0 clause 8.2.21, octet 5 bit 6.
+func (i *IE) HasSESR() bool { return payloadFlag(i, ReportType, 0, 0x20) }
+
+// HasUISR reports whether the UISR flag is set.
+// TS 29.244 V20.1.0 clause 8.2.21, octet 5 bit 7.
+func (i *IE) HasUISR() bool { return payloadFlag(i, ReportType, 0, 0x40) }
