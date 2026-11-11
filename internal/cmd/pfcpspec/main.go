@@ -5,6 +5,7 @@ import (
 	"archive/zip"
 	"crypto/sha256"
 	"encoding/xml"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
@@ -144,12 +145,12 @@ type table struct {
 	rows, cells        [][]string
 }
 
-func loadTables(path string) ([]table, error) {
+func loadTables(path string) (result []table, err error) {
 	z, err := zip.OpenReader(path)
 	if err != nil {
 		return nil, err
 	}
-	defer z.Close()
+	defer func() { err = errors.Join(err, z.Close()) }()
 	var root *node
 	for _, f := range z.File {
 		if f.Name == "word/document.xml" {
@@ -586,7 +587,7 @@ func extract(path string) (*spec.Catalogue, error) {
 				continue
 			}
 			ty := number(r[0])
-			if !((ty >= 1 && ty <= 17) || (ty >= 50 && ty <= 57)) {
+			if (ty < 1 || ty > 17) && (ty < 50 || ty > 57) {
 				continue
 			}
 			name := r[1]

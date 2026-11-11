@@ -71,7 +71,7 @@ func Validate(c *Catalogue) error {
 	msgs := map[int]bool{}
 	names = map[string]bool{}
 	for _, m := range c.Messages {
-		if !((m.Type >= 1 && m.Type <= 17) || (m.Type >= 50 && m.Type <= 57)) || msgs[m.Type] || names[m.GoName] || !ident.MatchString(m.GoName) {
+		if (m.Type < 1 || m.Type > 17) && (m.Type < 50 || m.Type > 57) || msgs[m.Type] || names[m.GoName] || !ident.MatchString(m.GoName) {
 			return fail("invalid message coverage or name")
 		}
 		msgs[m.Type] = true
