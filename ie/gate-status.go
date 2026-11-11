@@ -24,28 +24,6 @@ func (i *IE) GateStatus() (uint8, error) {
 	switch i.Type {
 	case GateStatus:
 		return i.ValueAsUint8()
-	case CreateQER:
-		ies, err := i.CreateQER()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == GateStatus {
-				return x.GateStatus()
-			}
-		}
-		return 0, ErrIENotFound
-	case UpdateQER:
-		ies, err := i.UpdateQER()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == GateStatus {
-				return x.GateStatus()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

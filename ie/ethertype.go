@@ -18,28 +18,6 @@ func (i *IE) Ethertype() (uint16, error) {
 	switch i.Type {
 	case Ethertype:
 		return i.ValueAsUint16()
-	case PDI:
-		ies, err := i.PDI()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == Ethertype {
-				return x.Ethertype()
-			}
-		}
-		return 0, ErrIENotFound
-	case EthernetPacketFilter:
-		ies, err := i.EthernetPacketFilter()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == Ethertype {
-				return x.Ethertype()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

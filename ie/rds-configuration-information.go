@@ -18,17 +18,6 @@ func (i *IE) RDSConfigurationInformation() (uint8, error) {
 	switch i.Type {
 	case RDSConfigurationInformation:
 		return i.ValueAsUint8()
-	case ProvideRDSConfigurationInformation:
-		ies, err := i.ProvideRDSConfigurationInformation()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == RDSConfigurationInformation {
-				return x.RDSConfigurationInformation()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

@@ -18,17 +18,6 @@ func (i *IE) DataStatus() (uint8, error) {
 	switch i.Type {
 	case DataStatus:
 		return i.ValueAsUint8()
-	case DownlinkDataReport:
-		ies, err := i.DownlinkDataReport()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == DataStatus {
-				return x.DataStatus()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

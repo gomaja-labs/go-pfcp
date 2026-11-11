@@ -33,28 +33,6 @@ func (i *IE) UEIPAddressPoolIdentity() ([]byte, error) {
 		}
 
 		return i.Payload, nil
-	case CreatePDR:
-		ies, err := i.CreatePDR()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == UEIPAddressPoolIdentity {
-				return x.UEIPAddressPoolIdentity()
-			}
-		}
-		return nil, ErrIENotFound
-	case UEIPAddressPoolInformation:
-		ies, err := i.UEIPAddressPoolInformation()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == UEIPAddressPoolIdentity {
-				return x.UEIPAddressPoolIdentity()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

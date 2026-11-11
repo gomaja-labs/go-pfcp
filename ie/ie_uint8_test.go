@@ -40,8 +40,14 @@ func TestUint8IEs(t *testing.T) {
 			structured: ie.NewAccessAvailabilityReport(
 				ie.NewAccessAvailabilityInformation(3, 3),
 			),
-			decoded:     0x0f,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.AccessAvailabilityInformation() },
+			decoded: 0x0f,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.AccessAvailabilityReport()
+				if err != nil {
+					return 0, err
+				}
+				return f0.AccessAvailabilityInformation[0].AccessAvailabilityInformation()
+			},
 		}, {
 			description: "ATSSSLLControlInformation",
 			structured:  ie.NewATSSSLLControlInformation(1),
@@ -53,8 +59,14 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewMPTCPControlInformation(1),
 				ie.NewATSSSLLControlInformation(1),
 			),
-			decoded:     1,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.ATSSSLLControlInformation() },
+			decoded: 1,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.ProvideATSSSControlInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.ATSSSLLControlInformation.ATSSSLLControlInformation()
+			},
 		}, {
 			description: "ATSSSLLInformation",
 			structured:  ie.NewATSSSLLInformation(1),
@@ -65,8 +77,14 @@ func TestUint8IEs(t *testing.T) {
 			structured: ie.NewATSSSLLParameters(
 				ie.NewATSSSLLInformation(1),
 			),
-			decoded:     1,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.ATSSSLLInformation() },
+			decoded: 1,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.ATSSSLLParameters()
+				if err != nil {
+					return 0, err
+				}
+				return f0.ATSSSLLInformation.ATSSSLLInformation()
+			},
 		}, {
 			description: "ATSSSLLInformation/ATSSSControlParameters",
 			structured: ie.NewATSSSControlParameters(
@@ -78,8 +96,18 @@ func TestUint8IEs(t *testing.T) {
 					ie.NewATSSSLLInformation(1),
 				),
 			),
-			decoded:     1,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.ATSSSLLInformation() },
+			decoded: 1,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.ATSSSControlParameters()
+				if err != nil {
+					return 0, err
+				}
+				f1, err := f0.ATSSSLLParameters.ATSSSLLParameters()
+				if err != nil {
+					return 0, err
+				}
+				return f1.ATSSSLLInformation.ATSSSLLInformation()
+			},
 		}, {
 			description: "BARID",
 			structured:  ie.NewBARID(0xff),
@@ -91,24 +119,42 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewFARID(0xffffffff),
 				ie.NewBARID(0xff),
 			),
-			decoded:     0xff,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.BARID() },
+			decoded: 0xff,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreateFAR()
+				if err != nil {
+					return 0, err
+				}
+				return f0.BARID.BARID()
+			},
 		}, {
 			description: "BARID/UpdateFAR",
 			structured: ie.NewUpdateFAR(
 				ie.NewFARID(0xffffffff),
 				ie.NewBARID(0xff),
 			),
-			decoded:     0xff,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.BARID() },
+			decoded: 0xff,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateFAR()
+				if err != nil {
+					return 0, err
+				}
+				return f0.BARID.BARID()
+			},
 		}, {
 			description: "BARID/CreateBAR",
 			structured: ie.NewCreateBAR(
 				ie.NewBARID(0xff),
 				ie.NewDownlinkDataNotificationDelay(100*time.Millisecond),
 			),
-			decoded:     0xff,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.BARID() },
+			decoded: 0xff,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreateBAR()
+				if err != nil {
+					return 0, err
+				}
+				return f0.BARID.BARID()
+			},
 		}, {
 			description: "BARID/UpdateBARWithinSessionReportResponse",
 			structured: ie.NewUpdateBARWithinSessionReportResponse(
@@ -118,23 +164,41 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewDLBufferingSuggestedPacketCount(0xffff),
 				ie.NewSuggestedBufferingPacketsCount(0x01),
 			),
-			decoded:     0xff,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.BARID() },
+			decoded: 0xff,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateBARWithinSessionReportResponse()
+				if err != nil {
+					return 0, err
+				}
+				return f0.BARID.BARID()
+			},
 		}, {
 			description: "BARID/UpdateBARWithinSessionModificationRequest",
 			structured: ie.NewUpdateBARWithinSessionModificationRequest(
 				ie.NewBARID(0xff),
 				ie.NewDownlinkDataNotificationDelay(100*time.Millisecond),
 			),
-			decoded:     0xff,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.BARID() },
+			decoded: 0xff,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateBARWithinSessionModificationRequest()
+				if err != nil {
+					return 0, err
+				}
+				return f0.BARID.BARID()
+			},
 		}, {
 			description: "BARID/RemoveBAR",
 			structured: ie.NewRemoveBAR(
 				ie.NewBARID(0xff),
 			),
-			decoded:     0xff,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.BARID() },
+			decoded: 0xff,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.RemoveBAR()
+				if err != nil {
+					return 0, err
+				}
+				return f0.BARID.BARID()
+			},
 		}, {
 			description: "Cause",
 			structured:  ie.NewCause(ie.CauseRequestAccepted),
@@ -161,40 +225,70 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewPDRID(0xffff),
 				ie.NewDataStatus(0x03),
 			),
-			decoded:     0x03,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.DataStatus() },
+			decoded: 0x03,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.DownlinkDataReport()
+				if err != nil {
+					return 0, err
+				}
+				return f0.DLDataStatus.DataStatus()
+			},
 		}, {
 			description: "DestinationInterface/ForwardingParameters",
 			structured: ie.NewForwardingParameters(
 				ie.NewDestinationInterface(0xff),
 				ie.NewNetworkInstance("some.instance.example"),
 			),
-			decoded:     0xff,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.DestinationInterface() },
+			decoded: 0xff,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.ForwardingParameters()
+				if err != nil {
+					return 0, err
+				}
+				return f0.DestinationInterface.DestinationInterface()
+			},
 		}, {
 			description: "DestinationInterface/UpdateForwardingParameters",
 			structured: ie.NewUpdateForwardingParameters(
 				ie.NewDestinationInterface(0xff),
 				ie.NewNetworkInstance("some.instance.example"),
 			),
-			decoded:     0xff,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.DestinationInterface() },
+			decoded: 0xff,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateForwardingParameters()
+				if err != nil {
+					return 0, err
+				}
+				return f0.DestinationInterface.DestinationInterface()
+			},
 		}, {
 			description: "DestinationInterface/DuplicatingParameters",
 			structured: ie.NewDuplicatingParameters(
 				ie.NewDestinationInterface(0xff),
 				ie.NewNetworkInstance("some.instance.example"),
 			),
-			decoded:     0xff,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.DestinationInterface() },
+			decoded: 0xff,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.DuplicatingParameters()
+				if err != nil {
+					return 0, err
+				}
+				return f0.DestinationInterface.DestinationInterface()
+			},
 		}, {
 			description: "DestinationInterface/UpdateDuplicatingParameters",
 			structured: ie.NewUpdateDuplicatingParameters(
 				ie.NewDestinationInterface(0xff),
 				ie.NewNetworkInstance("some.instance.example"),
 			),
-			decoded:     0xff,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.DestinationInterface() },
+			decoded: 0xff,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateDuplicatingParameters()
+				if err != nil {
+					return 0, err
+				}
+				return f0.DestinationInterface.DestinationInterface()
+			},
 		}, {
 			description: "DLBufferingSuggestedPacketCount",
 			structured:  ie.NewDLBufferingSuggestedPacketCount(0xff),
@@ -224,16 +318,28 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewSourceInterface(ie.SrcInterfaceAccess),
 				ie.NewEthernetFilterProperties(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.EthernetFilterProperties() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.PDI()
+				if err != nil {
+					return 0, err
+				}
+				return f0.OtherIEs[0].EthernetFilterProperties()
+			},
 		}, {
 			description: "EthernetFilterProperties/EthernetPacketFilter",
 			structured: ie.NewEthernetPacketFilter(
 				ie.NewEthernetFilterID(0xffffffff),
 				ie.NewEthernetFilterProperties(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.EthernetFilterProperties() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.EthernetPacketFilter()
+				if err != nil {
+					return 0, err
+				}
+				return f0.EthernetFilterProperties.EthernetFilterProperties()
+			},
 		}, {
 			description: "EthernetPDUSessionInformation",
 			structured:  ie.NewEthernetPDUSessionInformation(0x01),
@@ -245,16 +351,28 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewSourceInterface(ie.SrcInterfaceAccess),
 				ie.NewEthernetPDUSessionInformation(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.EthernetPDUSessionInformation() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.PDI()
+				if err != nil {
+					return 0, err
+				}
+				return f0.EthernetPDUSessionInformation.EthernetPDUSessionInformation()
+			},
 		}, {
 			description: "EthernetPDUSessionInformation/CreateTrafficEndpoint",
 			structured: ie.NewCreateTrafficEndpoint(
 				ie.NewTrafficEndpointID(0x01),
 				ie.NewEthernetPDUSessionInformation(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.EthernetPDUSessionInformation() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreateTrafficEndpoint()
+				if err != nil {
+					return 0, err
+				}
+				return f0.EthernetPDUSessionInformation.EthernetPDUSessionInformation()
+			},
 		}, {
 			description: "FailedRuleID/RuleIDType",
 			structured:  ie.NewFailedRuleID(ie.RuleIDTypePDR, 0xffff),
@@ -271,8 +389,14 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewPDRID(0xffff),
 				ie.NewFlowInformation(ie.FlowDirectionDownlink, "go-pfcp"),
 			),
-			decoded:     ie.FlowDirectionDownlink,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.FlowDirection() },
+			decoded: ie.FlowDirectionDownlink,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f, err := i.ApplicationDetectionInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f.FlowInformation.FlowDirection()
+			},
 		}, {
 			description: "FQCSID/NodeIDType/IPv4",
 			structured:  ie.NewFQCSID("127.0.0.1", 1),
@@ -349,16 +473,28 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewQERID(0xffffffff),
 				ie.NewGateStatus(ie.GateStatusOpen, ie.GateStatusOpen),
 			),
-			decoded:     0,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.GateStatus() },
+			decoded: 0,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreateQER()
+				if err != nil {
+					return 0, err
+				}
+				return f0.GateStatus.GateStatus()
+			},
 		}, {
 			description: "GateStatus/OpenOpen/UpdateQER",
 			structured: ie.NewUpdateQER(
 				ie.NewQERID(0xffffffff),
 				ie.NewGateStatus(ie.GateStatusOpen, ie.GateStatusOpen),
 			),
-			decoded:     0,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.GateStatus() },
+			decoded: 0,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateQER()
+				if err != nil {
+					return 0, err
+				}
+				return f0.GateStatus.GateStatus()
+			},
 		}, {
 			description: "GTPUPathInterfaceType",
 			structured:  ie.NewGTPUPathInterfaceType(1, 1),
@@ -370,16 +506,28 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example"),
 				ie.NewGTPUPathInterfaceType(1, 1),
 			),
-			decoded:     3,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.GTPUPathInterfaceType() },
+			decoded: 3,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.GTPUPathQoSControlInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.GTPUPathInterfaceType.GTPUPathInterfaceType()
+			},
 		}, {
 			description: "GTPUPathInterfaceType/GTPUPathQoSReport",
 			structured: ie.NewGTPUPathQoSReport(
 				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example"),
 				ie.NewGTPUPathInterfaceType(1, 1),
 			),
-			decoded:     3,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.GTPUPathInterfaceType() },
+			decoded: 3,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.GTPUPathQoSReport()
+				if err != nil {
+					return 0, err
+				}
+				return f0.GTPUPathInterfaceType.GTPUPathInterfaceType()
+			},
 		}, {
 			description: "IPVersion",
 			structured:  ie.NewIPVersion(true, false),
@@ -393,8 +541,14 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewSNSSAI(0x11, 0x223344),
 				ie.NewIPVersion(true, false),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.IPVersion() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UEIPAddressPoolInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.IPVersion.IPVersion()
+			},
 		}, {
 			description: "MeasurementInformation",
 			structured:  ie.NewMeasurementInformation(0x1f),
@@ -406,16 +560,28 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewURRID(0xffffffff),
 				ie.NewMeasurementInformation(0x1f),
 			),
-			decoded:     0x1f,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.MeasurementInformation() },
+			decoded: 0x1f,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreateURR()
+				if err != nil {
+					return 0, err
+				}
+				return f0.MeasurementInformation.MeasurementInformation()
+			},
 		}, {
 			description: "MeasurementInformation/UpdateURR",
 			structured: ie.NewUpdateURR(
 				ie.NewURRID(0xffffffff),
 				ie.NewMeasurementInformation(0x1f),
 			),
-			decoded:     0x1f,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.MeasurementInformation() },
+			decoded: 0x1f,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateURR()
+				if err != nil {
+					return 0, err
+				}
+				return f0.MeasurementInformation.MeasurementInformation()
+			},
 		}, {
 			description: "Metric",
 			structured:  ie.NewMetric(0x01),
@@ -427,16 +593,28 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewSequenceNumber(0xffffffff),
 				ie.NewMetric(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.Metric() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.LoadControlInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.LoadMetric.Metric()
+			},
 		}, {
 			description: "Metric/OverloadControlInformation",
 			structured: ie.NewOverloadControlInformation(
 				ie.NewSequenceNumber(0xffffffff),
 				ie.NewMetric(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.Metric() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.OverloadControlInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.OverloadReductionMetric.Metric()
+			},
 		}, {
 			description: "MPTCPControlInformation",
 			structured:  ie.NewMPTCPControlInformation(1),
@@ -453,16 +631,28 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewPDRID(0xffff),
 				ie.NewMultipathApplicableIndication(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.MultipathApplicableIndication() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreatePDR()
+				if err != nil {
+					return 0, err
+				}
+				return f0.MultipathApplicableIndication.MultipathApplicableIndication()
+			},
 		}, {
 			description: "MPTCPControlInformation/ProvideATSSSControlInformation",
 			structured: ie.NewProvideATSSSControlInformation(
 				ie.NewMPTCPControlInformation(0x01),
 				ie.NewATSSSLLControlInformation(1),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.MPTCPControlInformation() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.ProvideATSSSControlInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.MPTCPControlInformation.MPTCPControlInformation()
+			},
 		}, {
 			description: "MTEDTControlInformation",
 			structured:  ie.NewMTEDTControlInformation(1),
@@ -476,8 +666,14 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewSuggestedBufferingPacketsCount(0x01),
 				ie.NewMTEDTControlInformation(1),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.MTEDTControlInformation() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreateBAR()
+				if err != nil {
+					return 0, err
+				}
+				return f0.MTEDTControlInformation.MTEDTControlInformation()
+			},
 		}, {
 			description: "NodeReportType",
 			structured:  ie.NewNodeReportType(0x01),
@@ -494,8 +690,14 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewSequenceNumber(0xffffffff),
 				ie.NewOCIFlags(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.OCIFlags() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.OverloadControlInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.OverloadControlInformationFlags.OCIFlags()
+			},
 		}, {
 			description: "OuterHeaderRemoval/OuterHeaderRemovalDescription",
 			structured:  ie.NewOuterHeaderRemoval(0x01, 0x02),
@@ -517,8 +719,14 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewPDRID(0xffff),
 				ie.NewPacketReplicationAndDetectionCarryOnInformation(0x0f),
 			),
-			decoded:     0x0f,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.PacketReplicationAndDetectionCarryOnInformation() },
+			decoded: 0x0f,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreatePDR()
+				if err != nil {
+					return 0, err
+				}
+				return f0.PacketReplicationAndDetectionCarryOnInformation.PacketReplicationAndDetectionCarryOnInformation()
+			},
 		}, {
 			description: "PagingPolicyIndicator",
 			structured:  ie.NewPagingPolicyIndicator(1),
@@ -530,16 +738,28 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewQERID(0xffffffff),
 				ie.NewPagingPolicyIndicator(1),
 			),
-			decoded:     1,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.PagingPolicyIndicator() },
+			decoded: 1,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreateQER()
+				if err != nil {
+					return 0, err
+				}
+				return f0.PagingPolicyIndicator.PagingPolicyIndicator()
+			},
 		}, {
 			description: "PagingPolicyIndicator/UpdateQER",
 			structured: ie.NewUpdateQER(
 				ie.NewQERID(0xffffffff),
 				ie.NewPagingPolicyIndicator(1),
 			),
-			decoded:     1,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.PagingPolicyIndicator() },
+			decoded: 1,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateQER()
+				if err != nil {
+					return 0, err
+				}
+				return f0.PagingPolicyIndicator.PagingPolicyIndicator()
+			},
 		}, {
 			description: "PDNType",
 			structured:  ie.NewPDNType(ie.PDNTypeIPv4),
@@ -586,8 +806,14 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewMPTCPControlInformation(1),
 				ie.NewPMFControlInformation(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.PMFControlInformation() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.ProvideATSSSControlInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.PMFControlInformation.PMFControlInformation()
+			},
 		}, {
 			description: "Priority",
 			structured:  ie.NewPriority(ie.PriorityActive),
@@ -604,8 +830,18 @@ func TestUint8IEs(t *testing.T) {
 					ie.NewURRID(0xffffffff),
 				),
 			),
-			decoded:     ie.PriorityActive,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.Priority() },
+			decoded: ie.PriorityActive,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreateMAR()
+				if err != nil {
+					return 0, err
+				}
+				f1, err := f0.TGPPAccessForwardingActionInformation.TGPPAccessForwardingActionInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f1.Priority.Priority()
+			},
 		}, {
 			description: "Priority/UpdateMAR",
 			structured: ie.NewUpdateMAR(
@@ -617,40 +853,74 @@ func TestUint8IEs(t *testing.T) {
 					ie.NewURRID(0xffffffff),
 				),
 			),
-			decoded:     ie.PriorityActive,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.Priority() },
+			decoded: ie.PriorityActive,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateMAR()
+				if err != nil {
+					return 0, err
+				}
+				f1, err := f0.TGPPAccessForwardingActionInformation.TGPPAccessForwardingActionInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f1.Priority.Priority()
+			},
 		}, {
 			description: "Priority/TGPPAccessForwardingActionInformation",
 			structured: ie.NewTGPPAccessForwardingActionInformation(
 				ie.NewFARID(0xffffffff),
 				ie.NewPriority(ie.PriorityActive),
 			),
-			decoded:     ie.PriorityActive,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.Priority() },
+			decoded: ie.PriorityActive,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.TGPPAccessForwardingActionInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.Priority.Priority()
+			},
 		}, {
 			description: "Priority/NonTGPPAccessForwardingActionInformation",
 			structured: ie.NewNonTGPPAccessForwardingActionInformation(
 				ie.NewFARID(0xffffffff),
 				ie.NewPriority(ie.PriorityActive),
 			),
-			decoded:     ie.PriorityActive,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.Priority() },
+			decoded: ie.PriorityActive,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.NonTGPPAccessForwardingActionInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.Priority.Priority()
+			},
 		}, {
 			description: "Priority/UpdateTGPPAccessForwardingActionInformation",
 			structured: ie.NewUpdateTGPPAccessForwardingActionInformation(
 				ie.NewFARID(0xffffffff),
 				ie.NewPriority(ie.PriorityActive),
 			),
-			decoded:     ie.PriorityActive,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.Priority() },
+			decoded: ie.PriorityActive,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateTGPPAccessForwardingActionInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.Priority.Priority()
+			},
 		}, {
 			description: "Priority/UpdateNonTGPPAccessForwardingActionInformation",
 			structured: ie.NewUpdateNonTGPPAccessForwardingActionInformation(
 				ie.NewFARID(0xffffffff),
 				ie.NewPriority(ie.PriorityActive),
 			),
-			decoded:     ie.PriorityActive,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.Priority() },
+			decoded: ie.PriorityActive,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateNonTGPPAccessForwardingActionInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.Priority.Priority()
+			},
 		}, {
 			description: "Proxying",
 			structured:  ie.NewProxying(1, 1),
@@ -662,16 +932,28 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewDestinationInterface(ie.DstInterfaceAccess),
 				ie.NewProxying(1, 1),
 			),
-			decoded:     3,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.Proxying() },
+			decoded: 3,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.ForwardingParameters()
+				if err != nil {
+					return 0, err
+				}
+				return f0.Proxying.Proxying()
+			},
 		}, {
 			description: "Proxying/UpdateForwardingParameters",
 			structured: ie.NewUpdateForwardingParameters(
 				ie.NewDestinationInterface(ie.DstInterfaceAccess),
 				ie.NewProxying(1, 1),
 			),
-			decoded:     3,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.Proxying() },
+			decoded: 3,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateForwardingParameters()
+				if err != nil {
+					return 0, err
+				}
+				return f0.OtherIEs[0].Proxying()
+			},
 		}, {
 			description: "QERControlIndications",
 			structured:  ie.NewQERControlIndications(1, 1, 1),
@@ -683,16 +965,28 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewQERID(0xffffffff),
 				ie.NewQERControlIndications(1, 1, 1),
 			),
-			decoded:     0x07,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.QERControlIndications() },
+			decoded: 0x07,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreateQER()
+				if err != nil {
+					return 0, err
+				}
+				return f0.QERControlIndications.QERControlIndications()
+			},
 		}, {
 			description: "QERControlIndications/UpdateQER",
 			structured: ie.NewUpdateQER(
 				ie.NewQERID(0xffffffff),
 				ie.NewQERControlIndications(1, 1, 1),
 			),
-			decoded:     0x07,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.QERControlIndications() },
+			decoded: 0x07,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateQER()
+				if err != nil {
+					return 0, err
+				}
+				return f0.QERControlIndications.QERControlIndications()
+			},
 		}, {
 			description: "QFI",
 			structured:  ie.NewQFI(0x01),
@@ -704,48 +998,84 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewQERID(0xffffffff),
 				ie.NewQFI(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.QFI() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreateQER()
+				if err != nil {
+					return 0, err
+				}
+				return f0.QoSFlowIdentifier.QFI()
+			},
 		}, {
 			description: "QFI/UpdateQER",
 			structured: ie.NewUpdateQER(
 				ie.NewQERID(0xffffffff),
 				ie.NewQFI(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.QFI() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateQER()
+				if err != nil {
+					return 0, err
+				}
+				return f0.QoSFlowIdentifier.QFI()
+			},
 		}, {
 			description: "QFI/CreateTrafficEndpoint",
 			structured: ie.NewCreateTrafficEndpoint(
 				ie.NewTrafficEndpointID(0x01),
 				ie.NewQFI(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.QFI() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreateTrafficEndpoint()
+				if err != nil {
+					return 0, err
+				}
+				return f0.QFI[0].QFI()
+			},
 		}, {
 			description: "QFI/UpdateTrafficEndpoint",
 			structured: ie.NewUpdateTrafficEndpoint(
 				ie.NewTrafficEndpointID(0x01),
 				ie.NewQFI(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.QFI() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateTrafficEndpoint()
+				if err != nil {
+					return 0, err
+				}
+				return f0.QFI[0].QFI()
+			},
 		}, {
 			description: "QFI/QoSMonitoringPerQoSFlowControlInformation",
 			structured: ie.NewQoSMonitoringPerQoSFlowControlInformation(
 				ie.NewQFI(0x01),
 				ie.NewRequestedQoSMonitoring(1, 1, 1),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.QFI() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.QoSMonitoringPerQoSFlowControlInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.QFI[0].QFI()
+			},
 		}, {
 			description: "QFI/QoSMonitoringReport",
 			structured: ie.NewQoSMonitoringReport(
 				ie.NewQFI(0x01),
 				ie.NewQoSMonitoringMeasurement(0x0f, 0x11111111, 0x22222222, 0x33333333),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.QFI() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.QoSMonitoringReport()
+				if err != nil {
+					return 0, err
+				}
+				return f0.QFI.QFI()
+			},
 		}, {
 			description: "QoSReportTrigger",
 			structured:  ie.NewQoSReportTrigger(1, 1, 1),
@@ -761,8 +1091,14 @@ func TestUint8IEs(t *testing.T) {
 			structured: ie.NewProvideRDSConfigurationInformation(
 				ie.NewRDSConfigurationInformation(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.RDSConfigurationInformation() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.ProvideRDSConfigurationInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.RDSConfigurationInformation.RDSConfigurationInformation()
+			},
 		}, {
 			description: "ReportType",
 			structured:  ie.NewReportType(1, 1, 1, 1),
@@ -779,8 +1115,14 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewRequestedQoSMonitoring(1, 1, 1),
 				ie.NewReportingFrequency(1, 1, 1),
 			),
-			decoded:     0x07,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.ReportingFrequency() },
+			decoded: 0x07,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.QoSMonitoringPerQoSFlowControlInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.ReportingFrequency.ReportingFrequency()
+			},
 		}, {
 			description: "RequestedAccessAvailabilityInformation",
 			structured:  ie.NewRequestedAccessAvailabilityInformation(1),
@@ -791,8 +1133,14 @@ func TestUint8IEs(t *testing.T) {
 			structured: ie.NewAccessAvailabilityControlInformation(
 				ie.NewRequestedAccessAvailabilityInformation(1),
 			),
-			decoded:     1,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.RequestedAccessAvailabilityInformation() },
+			decoded: 1,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.AccessAvailabilityControlInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.RequestedAccessAvailabilityInformation.RequestedAccessAvailabilityInformation()
+			},
 		}, {
 			description: "RequestedClockDriftInformation",
 			structured:  ie.NewRequestedClockDriftInformation(1, 1),
@@ -804,8 +1152,14 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewRequestedClockDriftInformation(1, 1),
 				ie.NewTimeDomainNumber(255),
 			),
-			decoded:     0x03,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.RequestedClockDriftInformation() },
+			decoded: 0x03,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.ClockDriftControlInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.RequestedClockDriftInformation.RequestedClockDriftInformation()
+			},
 		}, {
 			description: "RequestedQoSMonitoring",
 			structured:  ie.NewRequestedQoSMonitoring(1, 1, 1),
@@ -817,8 +1171,14 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewQFI(0x01),
 				ie.NewRequestedQoSMonitoring(1, 1, 1),
 			),
-			decoded:     0x07,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.RequestedQoSMonitoring() },
+			decoded: 0x07,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.QoSMonitoringPerQoSFlowControlInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.RequestedQoSMonitoring.RequestedQoSMonitoring()
+			},
 		}, {
 			description: "RQI",
 			structured:  ie.NewRQI(0x01),
@@ -830,16 +1190,28 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewQERID(0xffffffff),
 				ie.NewRQI(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.RQI() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreateQER()
+				if err != nil {
+					return 0, err
+				}
+				return f0.ReflectiveQoS.RQI()
+			},
 		}, {
 			description: "RQI/UpdateQER",
 			structured: ie.NewUpdateQER(
 				ie.NewQERID(0xffffffff),
 				ie.NewRQI(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.RQI() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateQER()
+				if err != nil {
+					return 0, err
+				}
+				return f0.ReflectiveQoS.RQI()
+			},
 		}, {
 			description: "SNSSAI/SST",
 			structured:  ie.NewSNSSAI(0x11, 0x223344),
@@ -853,8 +1225,14 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewSNSSAI(0x11, 0x223344),
 				ie.NewIPVersion(true, false),
 			),
-			decoded:     0x11,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.SST() },
+			decoded: 0x11,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f, err := i.UEIPAddressPoolInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f.SNSSAI[0].SST()
+			},
 		}, {
 			description: "SourceInterface",
 			structured:  ie.NewSourceInterface(ie.SrcInterfaceAccess),
@@ -868,8 +1246,18 @@ func TestUint8IEs(t *testing.T) {
 					ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 				),
 			),
-			decoded:     ie.SrcInterfaceAccess,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.SourceInterface() },
+			decoded: ie.SrcInterfaceAccess,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreatePDR()
+				if err != nil {
+					return 0, err
+				}
+				f1, err := f0.PDI.PDI()
+				if err != nil {
+					return 0, err
+				}
+				return f1.SourceInterface.SourceInterface()
+			},
 		}, {
 			description: "SourceInterface/UpdatePDR",
 			structured: ie.NewUpdatePDR(
@@ -878,16 +1266,32 @@ func TestUint8IEs(t *testing.T) {
 					ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 				),
 			),
-			decoded:     ie.SrcInterfaceAccess,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.SourceInterface() },
+			decoded: ie.SrcInterfaceAccess,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdatePDR()
+				if err != nil {
+					return 0, err
+				}
+				f1, err := f0.PDI.PDI()
+				if err != nil {
+					return 0, err
+				}
+				return f1.SourceInterface.SourceInterface()
+			},
 		}, {
 			description: "SourceInterface/PDI",
 			structured: ie.NewPDI(
 				ie.NewSourceInterface(ie.SrcInterfaceAccess),
 				ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 			),
-			decoded:     ie.SrcInterfaceAccess,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.SourceInterface() },
+			decoded: ie.SrcInterfaceAccess,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.PDI()
+				if err != nil {
+					return 0, err
+				}
+				return f0.SourceInterface.SourceInterface()
+			},
 		}, {
 			description: "SRRID",
 			structured:  ie.NewSRRID(255),
@@ -898,8 +1302,14 @@ func TestUint8IEs(t *testing.T) {
 			structured: ie.NewRemoveSRR(
 				ie.NewSRRID(255),
 			),
-			decoded:     255,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.SRRID() },
+			decoded: 255,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.RemoveSRR()
+				if err != nil {
+					return 0, err
+				}
+				return f0.SRRID.SRRID()
+			},
 		}, {
 			description: "SRRID/CreateSRR",
 			structured: ie.NewCreateSRR(
@@ -908,8 +1318,14 @@ func TestUint8IEs(t *testing.T) {
 					ie.NewRequestedAccessAvailabilityInformation(1),
 				),
 			),
-			decoded:     255,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.SRRID() },
+			decoded: 255,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreateSRR()
+				if err != nil {
+					return 0, err
+				}
+				return f0.SRRID.SRRID()
+			},
 		}, {
 			description: "SRRID/UpdateSRR",
 			structured: ie.NewUpdateSRR(
@@ -918,8 +1334,14 @@ func TestUint8IEs(t *testing.T) {
 					ie.NewRequestedAccessAvailabilityInformation(1),
 				),
 			),
-			decoded:     255,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.SRRID() },
+			decoded: 255,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateSRR()
+				if err != nil {
+					return 0, err
+				}
+				return f0.SRRID.SRRID()
+			},
 		}, {
 			description: "SRRID/SessionReport",
 			structured: ie.NewSessionReport(
@@ -928,8 +1350,14 @@ func TestUint8IEs(t *testing.T) {
 					ie.NewRequestedAccessAvailabilityInformation(1),
 				),
 			),
-			decoded:     255,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.SRRID() },
+			decoded: 255,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.SessionReport()
+				if err != nil {
+					return 0, err
+				}
+				return f0.SRRID.SRRID()
+			},
 		}, {
 			description: "SteeringFunctionality",
 			structured:  ie.NewSteeringFunctionality(ie.SteeringFunctionalityATSSSLL),
@@ -941,16 +1369,28 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewMARID(0x1111),
 				ie.NewSteeringFunctionality(ie.SteeringFunctionalityATSSSLL),
 			),
-			decoded:     ie.SteeringFunctionalityATSSSLL,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.SteeringFunctionality() },
+			decoded: ie.SteeringFunctionalityATSSSLL,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreateMAR()
+				if err != nil {
+					return 0, err
+				}
+				return f0.SteeringFunctionality.SteeringFunctionality()
+			},
 		}, {
 			description: "SteeringFunctionality/UpdateMAR",
 			structured: ie.NewUpdateMAR(
 				ie.NewMARID(0x1111),
 				ie.NewSteeringFunctionality(ie.SteeringFunctionalityATSSSLL),
 			),
-			decoded:     ie.SteeringFunctionalityATSSSLL,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.SteeringFunctionality() },
+			decoded: ie.SteeringFunctionalityATSSSLL,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateMAR()
+				if err != nil {
+					return 0, err
+				}
+				return f0.SteeringFunctionality.SteeringFunctionality()
+			},
 		}, {
 			description: "SteeringMode",
 			structured:  ie.NewSteeringMode(ie.SteeringModeActiveStandby),
@@ -962,16 +1402,28 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewMARID(0x1111),
 				ie.NewSteeringMode(ie.SteeringModeActiveStandby),
 			),
-			decoded:     ie.SteeringModeActiveStandby,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.SteeringMode() },
+			decoded: ie.SteeringModeActiveStandby,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreateMAR()
+				if err != nil {
+					return 0, err
+				}
+				return f0.SteeringMode.SteeringMode()
+			},
 		}, {
 			description: "SteeringMode/UpdateMAR",
 			structured: ie.NewUpdateMAR(
 				ie.NewMARID(0x1111),
 				ie.NewSteeringMode(ie.SteeringModeActiveStandby),
 			),
-			decoded:     ie.SteeringModeActiveStandby,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.SteeringMode() },
+			decoded: ie.SteeringModeActiveStandby,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateMAR()
+				if err != nil {
+					return 0, err
+				}
+				return f0.SteeringMode.SteeringMode()
+			},
 		}, {
 			description: "SuggestedBufferingPacketsCount",
 			structured:  ie.NewSuggestedBufferingPacketsCount(0x01),
@@ -983,8 +1435,14 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewBARID(0xff),
 				ie.NewSuggestedBufferingPacketsCount(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.SuggestedBufferingPacketsCount() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreateBAR()
+				if err != nil {
+					return 0, err
+				}
+				return f0.SuggestedBufferingPacketsCount.SuggestedBufferingPacketsCount()
+			},
 		}, {
 			description: "SuggestedBufferingPacketsCount/UpdateBARWithinSessionReportResponse",
 			structured: ie.NewUpdateBARWithinSessionReportResponse(
@@ -994,16 +1452,28 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewDLBufferingSuggestedPacketCount(0xffff),
 				ie.NewSuggestedBufferingPacketsCount(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.SuggestedBufferingPacketsCount() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateBARWithinSessionReportResponse()
+				if err != nil {
+					return 0, err
+				}
+				return f0.SuggestedBufferingPacketsCount.SuggestedBufferingPacketsCount()
+			},
 		}, {
 			description: "SuggestedBufferingPacketsCount/UpdateBARWithinSessionModificationRequest",
 			structured: ie.NewUpdateBARWithinSessionModificationRequest(
 				ie.NewBARID(0xff),
 				ie.NewSuggestedBufferingPacketsCount(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.SuggestedBufferingPacketsCount() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateBARWithinSessionModificationRequest()
+				if err != nil {
+					return 0, err
+				}
+				return f0.SuggestedBufferingPacketsCount.SuggestedBufferingPacketsCount()
+			},
 		}, {
 			description: "TGPPInterfaceType",
 			structured:  ie.NewTGPPInterfaceType(ie.TGPPInterfaceTypeS1U),
@@ -1015,16 +1485,28 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewDestinationInterface(ie.DstInterfaceAccess),
 				ie.NewTGPPInterfaceType(ie.TGPPInterfaceTypeS1U),
 			),
-			decoded:     ie.TGPPInterfaceTypeS1U,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.TGPPInterfaceType() },
+			decoded: ie.TGPPInterfaceTypeS1U,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.ForwardingParameters()
+				if err != nil {
+					return 0, err
+				}
+				return f0.DestinationInterfaceType.TGPPInterfaceType()
+			},
 		}, {
 			description: "TGPPInterfaceType/UpdateForwardingParameters",
 			structured: ie.NewUpdateForwardingParameters(
 				ie.NewDestinationInterface(ie.DstInterfaceAccess),
 				ie.NewTGPPInterfaceType(ie.TGPPInterfaceTypeS1U),
 			),
-			decoded:     ie.TGPPInterfaceTypeS1U,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.TGPPInterfaceType() },
+			decoded: ie.TGPPInterfaceTypeS1U,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateForwardingParameters()
+				if err != nil {
+					return 0, err
+				}
+				return f0.DestinationInterfaceType.TGPPInterfaceType()
+			},
 		}, {
 			description: "TrafficEndpointID",
 			structured:  ie.NewTrafficEndpointID(0x01),
@@ -1039,63 +1521,115 @@ func TestUint8IEs(t *testing.T) {
 					ie.NewTrafficEndpointID(0x01),
 				),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.TrafficEndpointID() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreatePDR()
+				if err != nil {
+					return 0, err
+				}
+				f1, err := f0.PDI.PDI()
+				if err != nil {
+					return 0, err
+				}
+				return f1.TrafficEndpointID[0].TrafficEndpointID()
+			},
 		}, {
 			description: "TrafficEndpointID/PDI",
 			structured: ie.NewPDI(
 				ie.NewSourceInterface(ie.SrcInterfaceAccess),
 				ie.NewTrafficEndpointID(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.TrafficEndpointID() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.PDI()
+				if err != nil {
+					return 0, err
+				}
+				return f0.TrafficEndpointID[0].TrafficEndpointID()
+			},
 		}, {
 			description: "TrafficEndpointID/ForwardingParameters",
 			structured: ie.NewForwardingParameters(
 				ie.NewDestinationInterface(ie.DstInterfaceAccess),
 				ie.NewTrafficEndpointID(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.TrafficEndpointID() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.ForwardingParameters()
+				if err != nil {
+					return 0, err
+				}
+				return f0.LinkedTrafficEndpointID.TrafficEndpointID()
+			},
 		}, {
 			description: "TrafficEndpointID/UpdateForwardingParameters",
 			structured: ie.NewUpdateForwardingParameters(
 				ie.NewDestinationInterface(ie.DstInterfaceAccess),
 				ie.NewTrafficEndpointID(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.TrafficEndpointID() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateForwardingParameters()
+				if err != nil {
+					return 0, err
+				}
+				return f0.LinkedTrafficEndpointID.TrafficEndpointID()
+			},
 		}, {
 			description: "TrafficEndpointID/CreateTrafficEndpoint",
 			structured: ie.NewCreateTrafficEndpoint(
 				ie.NewTrafficEndpointID(0x01),
 				ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.TrafficEndpointID() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreateTrafficEndpoint()
+				if err != nil {
+					return 0, err
+				}
+				return f0.TrafficEndpointID.TrafficEndpointID()
+			},
 		}, {
 			description: "TrafficEndpointID/CreatedTrafficEndpoint",
 			structured: ie.NewCreatedTrafficEndpoint(
 				ie.NewTrafficEndpointID(0x01),
 				ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.TrafficEndpointID() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreatedTrafficEndpoint()
+				if err != nil {
+					return 0, err
+				}
+				return f0.TrafficEndpointID.TrafficEndpointID()
+			},
 		}, {
 			description: "TrafficEndpointID/UpdateTrafficEndpoint",
 			structured: ie.NewUpdateTrafficEndpoint(
 				ie.NewTrafficEndpointID(0x01),
 				ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.TrafficEndpointID() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateTrafficEndpoint()
+				if err != nil {
+					return 0, err
+				}
+				return f0.TrafficEndpointID.TrafficEndpointID()
+			},
 		}, {
 			description: "TrafficEndpointID/RemoveTrafficEndpoint",
 			structured: ie.NewRemoveTrafficEndpoint(
 				ie.NewTrafficEndpointID(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.TrafficEndpointID() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.RemoveTrafficEndpoint()
+				if err != nil {
+					return 0, err
+				}
+				return f0.TrafficEndpointID.TrafficEndpointID()
+			},
 		}, {
 			description: "TimeDomainNumber",
 			structured:  ie.NewTimeDomainNumber(255),
@@ -1107,16 +1641,28 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewRequestedClockDriftInformation(1, 1),
 				ie.NewTimeDomainNumber(255),
 			),
-			decoded:     255,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.TimeDomainNumber() },
+			decoded: 255,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.ClockDriftControlInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.TimeDomainNumber[0].TimeDomainNumber()
+			},
 		}, {
 			description: "TimeDomainNumber/ClockDriftReport",
 			structured: ie.NewClockDriftReport(
 				ie.NewTimeDomainNumber(255),
 				ie.NewTimeOffsetThreshold(10*time.Second),
 			),
-			decoded:     255,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.TimeDomainNumber() },
+			decoded: 255,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.ClockDriftReport()
+				if err != nil {
+					return 0, err
+				}
+				return f0.TimeDomainNumber.TimeDomainNumber()
+			},
 		}, {
 			description: "UsageInformation",
 			structured:  ie.NewUsageInformation(1, 1, 1, 1),
@@ -1128,24 +1674,42 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewURRID(0xffffffff),
 				ie.NewUsageInformation(1, 1, 1, 1),
 			),
-			decoded:     0x0f,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.UsageInformation() },
+			decoded: 0x0f,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UsageReportWithinSessionModificationResponse()
+				if err != nil {
+					return 0, err
+				}
+				return f0.UsageInformation.UsageInformation()
+			},
 		}, {
 			description: "UsageInformation/UsageReportWithinSessionDeletionResponse",
 			structured: ie.NewUsageReportWithinSessionDeletionResponse(
 				ie.NewURRID(0xffffffff),
 				ie.NewUsageInformation(1, 1, 1, 1),
 			),
-			decoded:     0x0f,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.UsageInformation() },
+			decoded: 0x0f,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UsageReportWithinSessionDeletionResponse()
+				if err != nil {
+					return 0, err
+				}
+				return f0.UsageInformation.UsageInformation()
+			},
 		}, {
 			description: "UsageInformation/UsageReportWithinSessionReportRequest",
 			structured: ie.NewUsageReportWithinSessionReportRequest(
 				ie.NewURRID(0xffffffff),
 				ie.NewUsageInformation(1, 1, 1, 1),
 			),
-			decoded:     0x0f,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.UsageInformation() },
+			decoded: 0x0f,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UsageReportWithinSessionReportRequest()
+				if err != nil {
+					return 0, err
+				}
+				return f0.UsageInformation.UsageInformation()
+			},
 		}, {
 			description: "Weight",
 			structured:  ie.NewWeight(0x01),
@@ -1160,8 +1724,18 @@ func TestUint8IEs(t *testing.T) {
 					ie.NewWeight(0x01),
 				),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.Weight() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.CreateMAR()
+				if err != nil {
+					return 0, err
+				}
+				f1, err := f0.TGPPAccessForwardingActionInformation.TGPPAccessForwardingActionInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f1.Weight.Weight()
+			},
 		}, {
 			description: "Weight/UpdateMAR",
 			structured: ie.NewUpdateMAR(
@@ -1171,40 +1745,74 @@ func TestUint8IEs(t *testing.T) {
 					ie.NewWeight(0x01),
 				),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.Weight() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateMAR()
+				if err != nil {
+					return 0, err
+				}
+				f1, err := f0.TGPPAccessForwardingActionInformation.TGPPAccessForwardingActionInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f1.Weight.Weight()
+			},
 		}, {
 			description: "Weight/TGPPAccessForwardingActionInformation",
 			structured: ie.NewTGPPAccessForwardingActionInformation(
 				ie.NewFARID(0xffffffff),
 				ie.NewWeight(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.Weight() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.TGPPAccessForwardingActionInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.Weight.Weight()
+			},
 		}, {
 			description: "Weight/NonTGPPAccessForwardingActionInformation",
 			structured: ie.NewNonTGPPAccessForwardingActionInformation(
 				ie.NewFARID(0xffffffff),
 				ie.NewWeight(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.Weight() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.NonTGPPAccessForwardingActionInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.Weight.Weight()
+			},
 		}, {
 			description: "Weight/UpdateTGPPAccessForwardingActionInformation",
 			structured: ie.NewUpdateTGPPAccessForwardingActionInformation(
 				ie.NewFARID(0xffffffff),
 				ie.NewWeight(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.Weight() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateTGPPAccessForwardingActionInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.Weight.Weight()
+			},
 		}, {
 			description: "Weight/UpdateNonTGPPAccessForwardingActionInformation",
 			structured: ie.NewUpdateNonTGPPAccessForwardingActionInformation(
 				ie.NewFARID(0xffffffff),
 				ie.NewWeight(0x01),
 			),
-			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.Weight() },
+			decoded: 0x01,
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f0, err := i.UpdateNonTGPPAccessForwardingActionInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.Weight.Weight()
+			},
 		},
 	}
 

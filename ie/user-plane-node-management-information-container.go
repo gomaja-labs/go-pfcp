@@ -20,19 +20,6 @@ func (i *IE) UserPlaneNodeManagementInformationContainer() (string, error) {
 	switch i.Type {
 	case UserPlaneNodeManagementInformationContainer:
 		return i.ValueAsString()
-	case TSCManagementInformationWithinSessionModificationRequest,
-		TSCManagementInformationWithinSessionModificationResponse,
-		TSCManagementInformationWithinSessionReportRequest:
-		ies, err := i.TSCManagementInformation()
-		if err != nil {
-			return "", err
-		}
-		for _, x := range ies {
-			if x.Type == UserPlaneNodeManagementInformationContainer {
-				return x.UserPlaneNodeManagementInformationContainer()
-			}
-		}
-		return "", ErrIENotFound
 	default:
 		return "", &InvalidTypeError{Type: i.Type}
 	}

@@ -30,17 +30,6 @@ func (i *IE) MinimumWaitTime() (time.Duration, error) {
 		}
 
 		return time.Duration(binary.BigEndian.Uint32(i.Payload[0:4])) * time.Second, nil
-	case QoSMonitoringPerQoSFlowControlInformation:
-		ies, err := i.QoSMonitoringPerQoSFlowControlInformation()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == MinimumWaitTime {
-				return x.MinimumWaitTime()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

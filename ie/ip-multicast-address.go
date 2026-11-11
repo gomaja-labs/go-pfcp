@@ -35,61 +35,6 @@ func (i *IE) IPMulticastAddress() (*IPMulticastAddressFields, error) {
 		}
 
 		return fields, nil
-	case CreatePDR:
-		ies, err := i.CreatePDR()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == IPMulticastAddressingInfo {
-				return x.IPMulticastAddress()
-			}
-		}
-		return nil, ErrIENotFound
-	case UpdatePDR:
-		ies, err := i.UpdatePDR()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == IPMulticastAddressingInfo {
-				return x.IPMulticastAddress()
-			}
-		}
-		return nil, ErrIENotFound
-	case IPMulticastAddressingInfo:
-		ies, err := i.IPMulticastAddressingInfo()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == IPMulticastAddress {
-				return x.IPMulticastAddress()
-			}
-		}
-		return nil, ErrIENotFound
-	case JoinIPMulticastInformationWithinUsageReport:
-		ies, err := i.JoinIPMulticastInformationWithinUsageReport()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == IPMulticastAddress {
-				return x.IPMulticastAddress()
-			}
-		}
-		return nil, ErrIENotFound
-	case LeaveIPMulticastInformationWithinUsageReport:
-		ies, err := i.LeaveIPMulticastInformationWithinUsageReport()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == IPMulticastAddress {
-				return x.IPMulticastAddress()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

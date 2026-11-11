@@ -24,19 +24,6 @@ func (i *IE) TimeOfLastPacket() (time.Time, error) {
 	switch i.Type {
 	case TimeOfLastPacket:
 		return i.valueAs3GPPTimestamp()
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest:
-		ies, err := i.UsageReport()
-		if err != nil {
-			return time.Time{}, err
-		}
-		for _, x := range ies {
-			if x.Type == TimeOfLastPacket {
-				return x.TimeOfLastPacket()
-			}
-		}
-		return time.Time{}, ErrIENotFound
 	default:
 		return time.Time{}, &InvalidTypeError{Type: i.Type}
 	}

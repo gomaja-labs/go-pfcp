@@ -195,6 +195,9 @@ func TestTypeNamesCatalogue(t *testing.T) {
 	if err := put("message/catalogue_gen_test.go", &b); err != nil {
 		return nil, err
 	}
+	if err := generateGrouped(c, types, out); err != nil {
+		return nil, err
+	}
 	return out, nil
 }
 

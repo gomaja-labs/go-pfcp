@@ -24,28 +24,6 @@ func (i *IE) ActivationTime() (time.Time, error) {
 	switch i.Type {
 	case ActivationTime:
 		return i.valueAs3GPPTimestamp()
-	case CreatePDR:
-		ies, err := i.CreatePDR()
-		if err != nil {
-			return time.Time{}, err
-		}
-		for _, x := range ies {
-			if x.Type == ActivationTime {
-				return x.ActivationTime()
-			}
-		}
-		return time.Time{}, ErrIENotFound
-	case UpdatePDR:
-		ies, err := i.UpdatePDR()
-		if err != nil {
-			return time.Time{}, err
-		}
-		for _, x := range ies {
-			if x.Type == ActivationTime {
-				return x.ActivationTime()
-			}
-		}
-		return time.Time{}, ErrIENotFound
 	default:
 		return time.Time{}, &InvalidTypeError{Type: i.Type}
 	}

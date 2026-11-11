@@ -18,28 +18,6 @@ func (i *IE) FramedRoute() (string, error) {
 	switch i.Type {
 	case FramedRoute:
 		return i.ValueAsString()
-	case CreateTrafficEndpoint:
-		ies, err := i.CreateTrafficEndpoint()
-		if err != nil {
-			return "", err
-		}
-		for _, x := range ies {
-			if x.Type == FramedRoute {
-				return x.FramedRoute()
-			}
-		}
-		return "", ErrIENotFound
-	case UpdateTrafficEndpoint:
-		ies, err := i.UpdateTrafficEndpoint()
-		if err != nil {
-			return "", err
-		}
-		for _, x := range ies {
-			if x.Type == FramedRoute {
-				return x.FramedRoute()
-			}
-		}
-		return "", ErrIENotFound
 	default:
 		return "", &InvalidTypeError{Type: i.Type}
 	}

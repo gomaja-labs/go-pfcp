@@ -18,17 +18,6 @@ func (i *IE) RequestedQoSMonitoring() (uint8, error) {
 	switch i.Type {
 	case RequestedQoSMonitoring:
 		return i.ValueAsUint8()
-	case QoSMonitoringPerQoSFlowControlInformation:
-		ies, err := i.QoSMonitoringPerQoSFlowControlInformation()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == RequestedQoSMonitoring {
-				return x.RequestedQoSMonitoring()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

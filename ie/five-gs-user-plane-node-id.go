@@ -65,17 +65,6 @@ func (i *IE) FiveGSUserPlaneNodeID() (net.HardwareAddr, error) {
 			return net.HardwareAddr(i.Payload[1:7]), nil
 		}
 		return net.HardwareAddr(i.Payload[1:9]), nil
-	case CreatedBridgeRouterInfo:
-		ies, err := i.CreatedBridgeRouterInfo()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == FiveGSUserPlaneNodeID {
-				return x.FiveGSUserPlaneNodeID()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

@@ -18,28 +18,6 @@ func (i *IE) ActivatePredefinedRules() (string, error) {
 	switch i.Type {
 	case ActivatePredefinedRules:
 		return i.ValueAsString()
-	case CreatePDR:
-		ies, err := i.CreatePDR()
-		if err != nil {
-			return "", err
-		}
-		for _, x := range ies {
-			if x.Type == ActivatePredefinedRules {
-				return x.ActivatePredefinedRules()
-			}
-		}
-		return "", ErrIENotFound
-	case UpdatePDR:
-		ies, err := i.UpdatePDR()
-		if err != nil {
-			return "", err
-		}
-		for _, x := range ies {
-			if x.Type == ActivatePredefinedRules {
-				return x.ActivatePredefinedRules()
-			}
-		}
-		return "", ErrIENotFound
 	default:
 		return "", &InvalidTypeError{Type: i.Type}
 	}

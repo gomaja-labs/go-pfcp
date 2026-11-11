@@ -18,17 +18,6 @@ func (i *IE) PacketReplicationAndDetectionCarryOnInformation() (uint8, error) {
 	switch i.Type {
 	case PacketReplicationAndDetectionCarryOnInformation:
 		return i.ValueAsUint8()
-	case CreatePDR:
-		ies, err := i.CreatePDR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == PacketReplicationAndDetectionCarryOnInformation {
-				return x.PacketReplicationAndDetectionCarryOnInformation()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

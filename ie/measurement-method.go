@@ -18,39 +18,6 @@ func (i *IE) MeasurementMethod() (uint8, error) {
 	switch i.Type {
 	case MeasurementMethod:
 		return i.ValueAsUint8()
-	case CreateURR:
-		ies, err := i.CreateURR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == MeasurementMethod {
-				return x.MeasurementMethod()
-			}
-		}
-		return 0, ErrIENotFound
-	case UpdateURR:
-		ies, err := i.UpdateURR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == MeasurementMethod {
-				return x.MeasurementMethod()
-			}
-		}
-		return 0, ErrIENotFound
-	case GTPUPathQoSControlInformation:
-		ies, err := i.GTPUPathQoSControlInformation()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == MeasurementMethod {
-				return x.MeasurementMethod()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

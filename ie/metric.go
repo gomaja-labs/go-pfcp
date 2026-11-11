@@ -18,28 +18,6 @@ func (i *IE) Metric() (uint8, error) {
 	switch i.Type {
 	case Metric:
 		return i.ValueAsUint8()
-	case LoadControlInformation:
-		ies, err := i.LoadControlInformation()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == Metric {
-				return x.Metric()
-			}
-		}
-		return 0, ErrIENotFound
-	case OverloadControlInformation:
-		ies, err := i.OverloadControlInformation()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == Metric {
-				return x.Metric()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

@@ -24,51 +24,6 @@ func (i *IE) EventTimeStamp() (time.Time, error) {
 	switch i.Type {
 	case EventTimeStamp:
 		return i.valueAs3GPPTimestamp()
-	case UsageReportWithinSessionReportRequest:
-		ies, err := i.UsageReport()
-		if err != nil {
-			return time.Time{}, err
-		}
-		for _, x := range ies {
-			if x.Type == EventTimeStamp {
-				return x.EventTimeStamp()
-			}
-		}
-		return time.Time{}, ErrIENotFound
-	case GTPUPathQoSReport:
-		ies, err := i.GTPUPathQoSReport()
-		if err != nil {
-			return time.Time{}, err
-		}
-		for _, x := range ies {
-			if x.Type == EventTimeStamp {
-				return x.EventTimeStamp()
-			}
-		}
-		return time.Time{}, ErrIENotFound
-	case QoSMonitoringReport:
-		ies, err := i.QoSMonitoringReport()
-		if err != nil {
-			return time.Time{}, err
-		}
-		for _, x := range ies {
-			if x.Type == EventTimeStamp {
-				return x.EventTimeStamp()
-			}
-		}
-		return time.Time{}, ErrIENotFound
-	case ClockDriftReport:
-		ies, err := i.ClockDriftReport()
-		if err != nil {
-			return time.Time{}, err
-		}
-
-		for _, x := range ies {
-			if x.Type == EventTimeStamp {
-				return x.EventTimeStamp()
-			}
-		}
-		return time.Time{}, ErrIENotFound
 	default:
 		return time.Time{}, &InvalidTypeError{Type: i.Type}
 	}

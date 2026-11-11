@@ -8,7 +8,11 @@ import (
 
 func TestGroupedNetworkInstanceFQDN(t *testing.T) {
 	parent := ie.NewPDI(ie.NewFQDNIE(ie.NetworkInstance, "a.b"))
-	for _, i := range []*ie.IE{parent, parent.ChildIEs[0]} {
+	fields, err := parent.PDI()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, i := range []*ie.IE{fields.NetworkInstance, parent.ChildIEs[0]} {
 		v, err := i.NetworkInstanceFQDN()
 		if err != nil || v != "a.b" {
 			t.Errorf("FQDN value %q error %v", v, err)

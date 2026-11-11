@@ -35,19 +35,6 @@ func (i *IE) VolumeMeasurement() (*VolumeMeasurementFields, error) {
 		}
 
 		return fields, nil
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest:
-		ies, err := i.UsageReport()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == VolumeMeasurement {
-				return x.VolumeMeasurement()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

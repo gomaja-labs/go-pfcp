@@ -18,61 +18,6 @@ func (i *IE) ApplicationID() (string, error) {
 	switch i.Type {
 	case ApplicationID:
 		return i.ValueAsString()
-	case CreatePDR:
-		ies, err := i.CreatePDR()
-		if err != nil {
-			return "", err
-		}
-		for _, x := range ies {
-			if x.Type == PDI {
-				return x.ApplicationID()
-			}
-		}
-		return "", ErrIENotFound
-	case PDI:
-		ies, err := i.PDI()
-		if err != nil {
-			return "", err
-		}
-		for _, x := range ies {
-			if x.Type == ApplicationID {
-				return x.ApplicationID()
-			}
-		}
-		return "", ErrIENotFound
-	case ApplicationIDsPFDs:
-		ies, err := i.ApplicationIDsPFDs()
-		if err != nil {
-			return "", err
-		}
-		for _, x := range ies {
-			if x.Type == ApplicationID {
-				return x.ApplicationID()
-			}
-		}
-		return "", ErrIENotFound
-	case ApplicationDetectionInformation:
-		ies, err := i.ApplicationDetectionInformation()
-		if err != nil {
-			return "", err
-		}
-		for _, x := range ies {
-			if x.Type == ApplicationID {
-				return x.ApplicationID()
-			}
-		}
-		return "", ErrIENotFound
-	case UsageReportWithinSessionReportRequest:
-		ies, err := i.UsageReport()
-		if err != nil {
-			return "", err
-		}
-		for _, x := range ies {
-			if x.Type == ApplicationDetectionInformation {
-				return x.ApplicationID()
-			}
-		}
-		return "", ErrIENotFound
 	default:
 		return "", &InvalidTypeError{Type: i.Type}
 	}

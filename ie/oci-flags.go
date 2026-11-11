@@ -18,17 +18,6 @@ func (i *IE) OCIFlags() (uint8, error) {
 	switch i.Type {
 	case OCIFlags:
 		return i.ValueAsUint8()
-	case OverloadControlInformation:
-		ies, err := i.OverloadControlInformation()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == OCIFlags {
-				return x.OCIFlags()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

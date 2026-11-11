@@ -35,28 +35,6 @@ func (i *IE) MACAddress() (*MACAddressFields, error) {
 		}
 
 		return fields, nil
-	case PDI:
-		ies, err := i.PDI()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == EthernetPacketFilter {
-				return x.MACAddress()
-			}
-		}
-		return nil, ErrIENotFound
-	case EthernetPacketFilter:
-		ies, err := i.EthernetPacketFilter()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == MACAddress {
-				return x.MACAddress()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

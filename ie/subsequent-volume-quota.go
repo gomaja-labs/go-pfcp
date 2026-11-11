@@ -35,39 +35,6 @@ func (i *IE) SubsequentVolumeQuota() (*SubsequentVolumeQuotaFields, error) {
 		}
 
 		return fields, nil
-	case CreateURR:
-		ies, err := i.CreateURR()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == SubsequentVolumeQuota {
-				return x.SubsequentVolumeQuota()
-			}
-		}
-		return nil, ErrIENotFound
-	case UpdateURR:
-		ies, err := i.UpdateURR()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == SubsequentVolumeQuota {
-				return x.SubsequentVolumeQuota()
-			}
-		}
-		return nil, ErrIENotFound
-	case AdditionalMonitoringTime:
-		ies, err := i.AdditionalMonitoringTime()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == SubsequentVolumeQuota {
-				return x.SubsequentVolumeQuota()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

@@ -36,39 +36,6 @@ func (i *IE) PacketRateStatus() (*PacketRateStatusFields, error) {
 		}
 
 		return f, nil
-	case CreateQER:
-		ies, err := i.CreateQER()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == PacketRateStatus {
-				return x.PacketRateStatus()
-			}
-		}
-		return nil, ErrIENotFound
-	case UpdateQER:
-		ies, err := i.UpdateQER()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == PacketRateStatus {
-				return x.PacketRateStatus()
-			}
-		}
-		return nil, ErrIENotFound
-	case PacketRateStatusReport:
-		ies, err := i.PacketRateStatusReport()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == PacketRateStatus {
-				return x.PacketRateStatus()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

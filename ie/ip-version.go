@@ -25,17 +25,6 @@ func (i *IE) IPVersion() (uint8, error) {
 	switch i.Type {
 	case IPVersion:
 		return i.ValueAsUint8()
-	case UEIPAddressPoolInformation:
-		ies, err := i.UEIPAddressPoolInformation()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == IPVersion {
-				return x.IPVersion()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

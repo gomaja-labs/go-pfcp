@@ -18,17 +18,6 @@ func (i *IE) DeactivatePredefinedRules() (string, error) {
 	switch i.Type {
 	case DeactivatePredefinedRules:
 		return i.ValueAsString()
-	case UpdatePDR:
-		ies, err := i.UpdatePDR()
-		if err != nil {
-			return "", err
-		}
-		for _, x := range ies {
-			if x.Type == DeactivatePredefinedRules {
-				return x.DeactivatePredefinedRules()
-			}
-		}
-		return "", ErrIENotFound
 	default:
 		return "", &InvalidTypeError{Type: i.Type}
 	}

@@ -29,29 +29,6 @@ func (i *IE) DownlinkDataNotificationDelay() (time.Duration, error) {
 		}
 
 		return time.Duration(int64(i.Payload[0]) * 50000000), nil
-	case CreateBAR:
-		ies, err := i.CreateBAR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == DownlinkDataNotificationDelay {
-				return x.DownlinkDataNotificationDelay()
-			}
-		}
-		return 0, ErrIENotFound
-	case UpdateBARWithinSessionReportResponse,
-		UpdateBARWithinSessionModificationRequest:
-		ies, err := i.UpdateBAR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == DownlinkDataNotificationDelay {
-				return x.DownlinkDataNotificationDelay()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

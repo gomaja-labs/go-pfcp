@@ -23,7 +23,7 @@ func TestGenerate(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(a) != 30 {
+	if len(a) != 152 {
 		t.Fatalf("got %d generated files", len(a))
 	}
 	for name, src := range a {
@@ -35,6 +35,30 @@ func TestGenerate(t *testing.T) {
 		}
 		if _, err := parser.ParseFile(token.NewFileSet(), name, src, parser.AllErrors); err != nil {
 			t.Fatal(err)
+		}
+	}
+}
+
+func TestGenerateGroupedFields(t *testing.T) {
+	c, err := spec.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	files, err := generate(c)
+	if err != nil {
+		t.Fatal(err)
+	}
+	seen := map[int]bool{}
+	for _, g := range c.Grouped {
+		if seen[g.Type] {
+			continue
+		}
+		seen[g.Type] = true
+		src := string(files["ie/"+fileName(g.GoName+"Fields")])
+		for _, part := range []string{"type " + g.GoName + "Fields struct", "func New" + g.GoName + "(", "func Parse" + g.GoName + "Fields(", "OtherIEs []*IE"} {
+			if !strings.Contains(src, part) {
+				t.Errorf("%s missing %q", g.GoName, part)
+			}
 		}
 	}
 }
@@ -72,5 +96,22 @@ func TestGenerateAssignedTypes(t *testing.T) {
 	}
 	if !strings.Contains(string(files["ie/types_gen.go"]), "CurrentName IEType = 19") {
 		t.Fatal("historical name overrides current name")
+	}
+}
+
+func TestGroupedUnionOrder(t *testing.T) {
+	c, err := spec.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	files, err := generate(c)
+	if err != nil {
+		t.Fatal(err)
+	}
+	src := string(files["ie/session-report-fields_gen.go"])
+	access := strings.Index(src, "AccessAvailabilityReport *IE")
+	qos := strings.Index(src, "QoSMonitoringReport []*IE")
+	if access < 0 || qos < 0 || access > qos {
+		t.Fatal("union violates Table 7.5.8.6-1 order")
 	}
 }

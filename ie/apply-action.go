@@ -23,28 +23,6 @@ func (i *IE) ApplyAction() ([]byte, error) {
 			return nil, io.ErrUnexpectedEOF
 		}
 		return i.Payload, nil
-	case CreateFAR:
-		ies, err := i.CreateFAR()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == ApplyAction {
-				return x.ApplyAction()
-			}
-		}
-		return nil, ErrIENotFound
-	case UpdateFAR:
-		ies, err := i.UpdateFAR()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == ApplyAction {
-				return x.ApplyAction()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
@@ -104,13 +82,13 @@ func (i *IE) HasDROP() bool {
 	}
 
 	switch i.Type {
-	case CreateFAR, UpdateFAR, ApplyAction:
+	case ApplyAction:
 		v, err := i.ApplyAction()
 		if err != nil {
 			return false
 		}
 		return has1stBit(v[0])
-	case DownlinkDataReport, DataStatus:
+	case DataStatus:
 		v, err := i.DataStatus()
 		if err != nil {
 			return false
@@ -141,13 +119,13 @@ func (i *IE) HasBUFF() bool {
 	}
 
 	switch i.Type {
-	case CreateFAR, UpdateFAR, ApplyAction:
+	case ApplyAction:
 		v, err := i.ApplyAction()
 		if err != nil {
 			return false
 		}
 		return has3rdBit(v[0])
-	case DownlinkDataReport, DataStatus:
+	case DataStatus:
 		v, err := i.DataStatus()
 		if err != nil {
 			return false

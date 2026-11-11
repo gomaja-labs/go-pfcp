@@ -35,17 +35,6 @@ func (i *IE) CPPFCPEntityIPAddress() (*CPPFCPEntityIPAddressFields, error) {
 		}
 
 		return fields, nil
-	case PFCPSessionRetentionInformation:
-		ies, err := i.PFCPSessionRetentionInformation()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == CPPFCPEntityIPAddress {
-				return x.CPPFCPEntityIPAddress()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

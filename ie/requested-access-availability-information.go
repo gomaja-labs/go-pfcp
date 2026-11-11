@@ -18,18 +18,6 @@ func (i *IE) RequestedAccessAvailabilityInformation() (uint8, error) {
 	switch i.Type {
 	case RequestedAccessAvailabilityInformation:
 		return i.ValueAsUint8()
-	case AccessAvailabilityControlInformation:
-		ies, err := i.AccessAvailabilityControlInformation()
-		if err != nil {
-			return 0, err
-		}
-
-		for _, x := range ies {
-			if x.Type == RequestedAccessAvailabilityInformation {
-				return x.RequestedAccessAvailabilityInformation()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

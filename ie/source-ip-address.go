@@ -35,50 +35,6 @@ func (i *IE) SourceIPAddress() (*SourceIPAddressFields, error) {
 		}
 
 		return fields, nil
-	case CreatePDR:
-		ies, err := i.CreatePDR()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == IPMulticastAddressingInfo {
-				return x.SourceIPAddress()
-			}
-		}
-		return nil, ErrIENotFound
-	case IPMulticastAddressingInfo:
-		ies, err := i.IPMulticastAddressingInfo()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == SourceIPAddress {
-				return x.SourceIPAddress()
-			}
-		}
-		return nil, ErrIENotFound
-	case JoinIPMulticastInformationWithinUsageReport:
-		ies, err := i.JoinIPMulticastInformationWithinUsageReport()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == SourceIPAddress {
-				return x.SourceIPAddress()
-			}
-		}
-		return nil, ErrIENotFound
-	case LeaveIPMulticastInformationWithinUsageReport:
-		ies, err := i.LeaveIPMulticastInformationWithinUsageReport()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == SourceIPAddress {
-				return x.SourceIPAddress()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

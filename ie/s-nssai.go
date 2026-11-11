@@ -31,17 +31,6 @@ func (i *IE) SNSSAI() ([]byte, error) {
 		}
 
 		return i.Payload[0:4], nil
-	case UEIPAddressPoolInformation:
-		ies, err := i.UEIPAddressPoolInformation()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == SNSSAI {
-				return x.SNSSAI()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

@@ -18,28 +18,6 @@ func (i *IE) InactivityDetectionTime() (uint32, error) {
 	switch i.Type {
 	case InactivityDetectionTime:
 		return i.ValueAsUint32()
-	case CreateURR:
-		ies, err := i.CreateURR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == InactivityDetectionTime {
-				return x.InactivityDetectionTime()
-			}
-		}
-		return 0, ErrIENotFound
-	case UpdateURR:
-		ies, err := i.UpdateURR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == InactivityDetectionTime {
-				return x.InactivityDetectionTime()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

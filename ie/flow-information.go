@@ -39,28 +39,6 @@ func (i *IE) FlowInformation() ([]byte, error) {
 	switch i.Type {
 	case FlowInformation:
 		return i.Payload, nil
-	case ApplicationDetectionInformation:
-		ies, err := i.ApplicationDetectionInformation()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == FlowInformation {
-				return x.FlowInformation()
-			}
-		}
-		return nil, ErrIENotFound
-	case UsageReportWithinSessionReportRequest:
-		ies, err := i.UsageReport()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == ApplicationDetectionInformation {
-				return x.FlowInformation()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
@@ -78,17 +56,6 @@ func (i *IE) FlowDirection() (uint8, error) {
 			return 0, io.ErrUnexpectedEOF
 		}
 		return i.Payload[0] & 0x07, nil
-	case ApplicationDetectionInformation:
-		ies, err := i.ApplicationDetectionInformation()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == FlowInformation {
-				return x.FlowDirection()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
@@ -113,17 +80,6 @@ func (i *IE) FlowDescription() (string, error) {
 		}
 
 		return string(i.Payload[3 : 3+l]), nil
-	case ApplicationDetectionInformation:
-		ies, err := i.ApplicationDetectionInformation()
-		if err != nil {
-			return "", err
-		}
-		for _, x := range ies {
-			if x.Type == FlowInformation {
-				return x.FlowDescription()
-			}
-		}
-		return "", ErrIENotFound
 	default:
 		return "", &InvalidTypeError{Type: i.Type}
 	}

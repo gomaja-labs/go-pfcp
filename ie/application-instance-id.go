@@ -18,28 +18,6 @@ func (i *IE) ApplicationInstanceID() (string, error) {
 	switch i.Type {
 	case ApplicationInstanceID:
 		return i.ValueAsString()
-	case ApplicationDetectionInformation:
-		ies, err := i.ApplicationDetectionInformation()
-		if err != nil {
-			return "", err
-		}
-		for _, x := range ies {
-			if x.Type == ApplicationInstanceID {
-				return x.ApplicationInstanceID()
-			}
-		}
-		return "", ErrIENotFound
-	case UsageReportWithinSessionReportRequest:
-		ies, err := i.UsageReport()
-		if err != nil {
-			return "", err
-		}
-		for _, x := range ies {
-			if x.Type == ApplicationDetectionInformation {
-				return x.ApplicationInstanceID()
-			}
-		}
-		return "", ErrIENotFound
 	default:
 		return "", &InvalidTypeError{Type: i.Type}
 	}

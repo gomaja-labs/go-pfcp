@@ -18,50 +18,6 @@ func (i *IE) MARID() (uint16, error) {
 	switch i.Type {
 	case MARID:
 		return i.ValueAsUint16()
-	case CreatePDR:
-		ies, err := i.CreatePDR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == MARID {
-				return x.MARID()
-			}
-		}
-		return 0, ErrIENotFound
-	case CreateMAR:
-		ies, err := i.CreateMAR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == MARID {
-				return x.MARID()
-			}
-		}
-		return 0, ErrIENotFound
-	case RemoveMAR:
-		ies, err := i.RemoveMAR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == MARID {
-				return x.MARID()
-			}
-		}
-		return 0, ErrIENotFound
-	case UpdateMAR:
-		ies, err := i.UpdateMAR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == MARID {
-				return x.MARID()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

@@ -31,50 +31,6 @@ func (i *IE) ForwardingPolicy() ([]byte, error) {
 	switch i.Type {
 	case ForwardingPolicy:
 		return i.Payload, nil
-	case ForwardingParameters:
-		ies, err := i.ForwardingParameters()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == ForwardingPolicy {
-				return x.ForwardingPolicy()
-			}
-		}
-		return nil, ErrIENotFound
-	case UpdateForwardingParameters:
-		ies, err := i.UpdateForwardingParameters()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == ForwardingPolicy {
-				return x.ForwardingPolicy()
-			}
-		}
-		return nil, ErrIENotFound
-	case DuplicatingParameters:
-		ies, err := i.DuplicatingParameters()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == ForwardingPolicy {
-				return x.ForwardingPolicy()
-			}
-		}
-		return nil, ErrIENotFound
-	case UpdateDuplicatingParameters:
-		ies, err := i.UpdateDuplicatingParameters()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == ForwardingPolicy {
-				return x.ForwardingPolicy()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

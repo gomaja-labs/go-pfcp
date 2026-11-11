@@ -34,17 +34,6 @@ func (i *IE) NumberOfUEIPAddresses() (*NumberOfUEIPAddressesFields, error) {
 			return nil, err
 		}
 		return fields, nil
-	case UEIPAddressUsageInformation:
-		ies, err := i.UEIPAddressUsageInformation()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == NumberOfUEIPAddresses {
-				return x.NumberOfUEIPAddresses()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

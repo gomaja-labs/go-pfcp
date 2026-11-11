@@ -26,19 +26,6 @@ func (i *IE) UsageReportTrigger() ([]byte, error) {
 		}
 
 		return i.Payload, nil
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest:
-		ies, err := i.UsageReport()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == UsageReportTrigger {
-				return x.UsageReportTrigger()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
@@ -51,10 +38,7 @@ func (i *IE) HasIMMER() bool {
 	}
 
 	switch i.Type {
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
+	case UsageReportTrigger:
 		v, err := i.UsageReportTrigger()
 		if err != nil {
 			return false
@@ -72,10 +56,7 @@ func (i *IE) HasMONIT() bool {
 	}
 
 	switch i.Type {
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
+	case UsageReportTrigger:
 		v, err := i.UsageReportTrigger()
 		if err != nil {
 			return false
@@ -93,10 +74,7 @@ func (i *IE) HasTERMR() bool {
 	}
 
 	switch i.Type {
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
+	case UsageReportTrigger:
 		v, err := i.UsageReportTrigger()
 		if err != nil {
 			return false
@@ -114,10 +92,7 @@ func (i *IE) HasEMRRE() bool {
 	}
 
 	switch i.Type {
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
+	case UsageReportTrigger:
 		v, err := i.UsageReportTrigger()
 		if err != nil {
 			return false
@@ -140,10 +115,7 @@ func (i *IE) HasTEBUR() bool {
 	}
 
 	switch i.Type {
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
+	case UsageReportTrigger:
 		v, err := i.UsageReportTrigger()
 		if err != nil {
 			return false

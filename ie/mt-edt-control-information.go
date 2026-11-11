@@ -18,17 +18,6 @@ func (i *IE) MTEDTControlInformation() (uint8, error) {
 	switch i.Type {
 	case MTEDTControlInformation:
 		return i.ValueAsUint8()
-	case CreateBAR:
-		ies, err := i.CreateBAR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == MTEDTControlInformation {
-				return x.MTEDTControlInformation()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
