@@ -102,7 +102,7 @@ func (i *IE) FlowDescription() (string, error) {
 
 	switch i.Type {
 	case FlowInformation:
-		// TS 29.244 V20.1.0 clause 8.2.60: the length excludes the
+		// TS 29.244 V20.1.0 clause 8.2.61: the length excludes the
 		// direction octet and the two-octet length field.
 		if len(i.Payload) < 3 {
 			return "", io.ErrUnexpectedEOF
