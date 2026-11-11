@@ -4,81 +4,27 @@
 
 package ie
 
-// NewCreatedTrafficEndpoint creates a new CreatedTrafficEndpoint IE.
-func NewCreatedTrafficEndpoint(ies ...*IE) *IE {
-	return newGroupedIE(CreatedTrafficEndpoint, 0, ies...)
+// LocalFTEID returns the first Local F-TEID in structured form.
+// TS 29.244 V20.1.0 Table 7.5.3.3-1 shares the F-TEID type between local roles.
+func (f *CreatedTrafficEndpointFields) LocalFTEID() (*FTEIDFields, error) {
+	return f.LocalFTEIDN(1)
 }
 
-// CreatedTrafficEndpoint returns the IEs above CreatedTrafficEndpoint if the type of IE matches.
-func (i *IE) CreatedTrafficEndpoint() ([]*IE, error) {
-	if i == nil {
+// LocalFTEIDN returns the nth Local F-TEID in structured form, counting from one.
+// It reports ErrIENotFound for a nil receiver or a missing occurrence.
+func (f *CreatedTrafficEndpointFields) LocalFTEIDN(n int) (*FTEIDFields, error) {
+	if f == nil || n < 1 {
 		return nil, ErrIENotFound
 	}
-
-	if i.Type != CreatedTrafficEndpoint {
-		return nil, &InvalidTypeError{Type: i.Type}
-	}
-
-	return i.ValueAsGrouped()
-}
-
-// LocalFTEID returns FTEID that is found first in a grouped IE in structured format
-// if the type of IE matches.
-//
-// This can only be used on the grouped IEs that may have multiple Local F-TEID IEs.
-func (i *IE) LocalFTEID() (*FTEIDFields, error) {
-	if i == nil {
-		return nil, ErrIENotFound
-	}
-
-	switch i.Type {
-	case CreatedTrafficEndpoint:
-		ies, err := i.CreatedTrafficEndpoint()
-		if err != nil {
-			return nil, err
+	count := 0
+	for _, child := range f.FTEID {
+		if child == nil {
+			continue
 		}
-		for _, x := range ies {
-			if x.Type == FTEID {
-				return x.FTEID()
-			}
+		count++
+		if count == n {
+			return child.FTEID()
 		}
-		return nil, ErrIENotFound
-	default:
-		return nil, &InvalidTypeError{Type: i.Type}
 	}
-}
-
-// LocalFTEIDN returns FTEID that is found Nth in a grouped IE in structured format
-// if the type of IE matches.
-//
-// This can only be used on the grouped IEs that may have multiple Local F-TEID IEs.
-func (i *IE) LocalFTEIDN(n int) (*FTEIDFields, error) {
-	if i == nil {
-		return nil, ErrIENotFound
-	}
-
-	if n < 1 {
-		return nil, ErrIENotFound
-	}
-
-	switch i.Type {
-	case CreatedTrafficEndpoint: // has two F-TEID
-		ies, err := i.CreatedTrafficEndpoint()
-		if err != nil {
-			return nil, err
-		}
-
-		c := 0
-		for _, x := range ies {
-			if x.Type == FTEID {
-				c++
-				if c == n {
-					return x.FTEID()
-				}
-			}
-		}
-		return nil, ErrIENotFound
-	default:
-		return nil, &InvalidTypeError{Type: i.Type}
-	}
+	return nil, ErrIENotFound
 }

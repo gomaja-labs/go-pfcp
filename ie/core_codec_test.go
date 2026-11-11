@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/gomaja-labs/go-pfcp/ie"
+	"github.com/gomaja-labs/go-pfcp/internal/spec"
 )
 
 func TestStrictIEBounds(t *testing.T) {
@@ -155,7 +156,11 @@ func TestGroupedSourceOfTruth(t *testing.T) {
 	if decoded.Payload != nil || len(decoded.ChildIEs) != 1 {
 		t.Error("decoded group must store children only")
 	}
-	v, err := decoded.PDRID()
+	fields, err := decoded.CreatePDR()
+	if err != nil {
+		t.Fatal(err)
+	}
+	v, err := fields.PDRID.PDRID()
 	if err != nil || v != 7 {
 		t.Errorf("child lookup %d %v", v, err)
 	}
@@ -164,7 +169,11 @@ func TestGroupedSourceOfTruth(t *testing.T) {
 		t.Fatal("constructor must collect children only")
 	}
 	i.ChildIEs[0].Payload[1] = 9
-	v, err = i.PDRID()
+	fields, err = i.CreatePDR()
+	if err != nil {
+		t.Fatal(err)
+	}
+	v, err = fields.PDRID.PDRID()
 	if err != nil || v != 9 {
 		t.Errorf("lookup used stale payload: %d %v", v, err)
 	}
@@ -205,94 +214,15 @@ func TestGroupedEditErrors(t *testing.T) {
 
 func TestGroupedCatalogue(t *testing.T) {
 	// TS 29.244 V20.1.0 Table 8.1.2-1: definitions in clause 7 are grouped.
-	grouped := map[ie.IEType]bool{
-		1:   true,
-		2:   true,
-		3:   true,
-		4:   true,
-		5:   true,
-		6:   true,
-		7:   true,
-		8:   true,
-		9:   true,
-		10:  true,
-		11:  true,
-		12:  true,
-		13:  true,
-		14:  true,
-		15:  true,
-		16:  true,
-		17:  true,
-		18:  true,
-		51:  true,
-		54:  true,
-		58:  true,
-		59:  true,
-		68:  true,
-		77:  true,
-		78:  true,
-		79:  true,
-		80:  true,
-		83:  true,
-		85:  true,
-		86:  true,
-		87:  true,
-		99:  true,
-		102: true,
-		105: true,
-		118: true,
-		127: true,
-		128: true,
-		129: true,
-		130: true,
-		132: true,
-		143: true,
-		147: true,
-		165: true,
-		166: true,
-		167: true,
-		168: true,
-		169: true,
-		175: true,
-		176: true,
-		183: true,
-		187: true,
-		188: true,
-		189: true,
-		190: true,
-		195: true,
-		199: true,
-		200: true,
-		201: true,
-		203: true,
-		205: true,
-		211: true,
-		212: true,
-		213: true,
-		214: true,
-		216: true,
-		218: true,
-		220: true,
-		221: true,
-		225: true,
-		226: true,
-		227: true,
-		233: true,
-		238: true,
-		239: true,
-		240: true,
-		242: true,
-		247: true,
-		252: true,
-		254: true,
-		255: true,
-		256: true,
-		261: true,
-		263: true,
-		264: true,
-		267: true,
-		270: true,
-		271: true,
+	c, err := spec.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	grouped := map[ie.IEType]bool{}
+	for _, entry := range c.IETypes {
+		if entry.Kind == "grouped" {
+			grouped[ie.IEType(entry.Type)] = true
+		}
 	}
 	for n := 1; n <= 65535; n++ {
 		typ := ie.IEType(n)

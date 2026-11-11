@@ -35,41 +35,6 @@ func (i *IE) MACAddressesDetected() (*MACAddressesDetectedFields, error) {
 		}
 
 		return fields, nil
-	case EthernetTrafficInformation:
-		ies, err := i.EthernetTrafficInformation()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == MACAddressesDetected {
-				return x.MACAddressesDetected()
-			}
-		}
-		return nil, ErrIENotFound
-	case EthernetContextInformation:
-		ies, err := i.EthernetContextInformation()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == MACAddressesDetected {
-				return x.MACAddressesDetected()
-			}
-		}
-		return nil, ErrIENotFound
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest:
-		ies, err := i.UsageReport()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == EthernetTrafficInformation {
-				return x.MACAddressesDetected()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

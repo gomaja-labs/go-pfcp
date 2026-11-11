@@ -30,17 +30,6 @@ func (i *IE) ValidityTimer() (time.Duration, error) {
 		}
 
 		return time.Duration(binary.BigEndian.Uint16(i.Payload[0:2])) * time.Second, nil
-	case UEIPAddressUsageInformation:
-		ies, err := i.UEIPAddressUsageInformation()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == ValidityTimer {
-				return x.ValidityTimer()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

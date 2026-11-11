@@ -27,17 +27,6 @@ func (i *IE) Multiplier() ([]byte, error) {
 	switch i.Type {
 	case Multiplier:
 		return i.Payload, nil
-	case AggregatedURRs:
-		ies, err := i.AggregatedURRs()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == Multiplier {
-				return x.Multiplier()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
@@ -52,17 +41,6 @@ func (i *IE) ValueDigits() (uint64, error) {
 	switch i.Type {
 	case Multiplier:
 		return i.ValueAsUint64()
-	case AggregatedURRs:
-		ies, err := i.AggregatedURRs()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == Multiplier {
-				return x.ValueDigits()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
@@ -81,17 +59,6 @@ func (i *IE) Exponent() (uint32, error) {
 		}
 
 		return binary.BigEndian.Uint32(i.Payload[8:12]), nil
-	case AggregatedURRs:
-		ies, err := i.AggregatedURRs()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == Multiplier {
-				return x.Exponent()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

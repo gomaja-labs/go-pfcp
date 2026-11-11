@@ -30,39 +30,6 @@ func (i *IE) AveragePacketDelay() (time.Duration, error) {
 		}
 
 		return time.Duration(binary.BigEndian.Uint32(i.Payload[0:4])) * time.Millisecond, nil
-	case GTPUPathQoSControlInformation:
-		ies, err := i.GTPUPathQoSControlInformation()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == AveragePacketDelay {
-				return x.AveragePacketDelay()
-			}
-		}
-		return 0, ErrIENotFound
-	case GTPUPathQoSReport:
-		ies, err := i.GTPUPathQoSReport()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == AveragePacketDelay {
-				return x.AveragePacketDelay()
-			}
-		}
-		return 0, ErrIENotFound
-	case QoSInformationInGTPUPathQoSReport:
-		ies, err := i.QoSInformationInGTPUPathQoSReport()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == AveragePacketDelay {
-				return x.AveragePacketDelay()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

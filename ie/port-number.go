@@ -20,17 +20,6 @@ func (i *IE) PortNumber() (uint32, error) {
 	switch i.Type {
 	case PortNumber:
 		return i.ValueAsUint32()
-	case CreatedBridgeRouterInfo:
-		ies, err := i.CreatedBridgeRouterInfo()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == PortNumber {
-				return x.PortNumber()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

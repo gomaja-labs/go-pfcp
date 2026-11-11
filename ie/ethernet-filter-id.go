@@ -18,28 +18,6 @@ func (i *IE) EthernetFilterID() (uint32, error) {
 	switch i.Type {
 	case EthernetFilterID:
 		return i.ValueAsUint32()
-	case PDI:
-		ies, err := i.PDI()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == EthernetPacketFilter {
-				return x.EthernetFilterID()
-			}
-		}
-		return 0, ErrIENotFound
-	case EthernetPacketFilter:
-		ies, err := i.EthernetPacketFilter()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == EthernetFilterID {
-				return x.EthernetFilterID()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

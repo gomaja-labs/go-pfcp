@@ -18,18 +18,6 @@ func (i *IE) RequestedClockDriftInformation() (uint8, error) {
 	switch i.Type {
 	case RequestedClockDriftInformation:
 		return i.ValueAsUint8()
-	case ClockDriftControlInformation:
-		ies, err := i.ClockDriftControlInformation()
-		if err != nil {
-			return 0, err
-		}
-
-		for _, x := range ies {
-			if x.Type == RequestedClockDriftInformation {
-				return x.RequestedClockDriftInformation()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

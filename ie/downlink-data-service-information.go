@@ -32,17 +32,6 @@ func (i *IE) DownlinkDataServiceInformation() ([]byte, error) {
 	switch i.Type {
 	case DownlinkDataServiceInformation:
 		return i.Payload, nil
-	case DownlinkDataReport:
-		ies, err := i.DownlinkDataReport()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == DownlinkDataServiceInformation {
-				return x.DownlinkDataServiceInformation()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

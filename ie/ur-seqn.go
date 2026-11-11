@@ -18,19 +18,6 @@ func (i *IE) URSEQN() (uint32, error) {
 	switch i.Type {
 	case URSEQN:
 		return i.ValueAsUint32()
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest:
-		ies, err := i.UsageReport()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == URSEQN {
-				return x.URSEQN()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

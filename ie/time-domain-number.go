@@ -20,30 +20,6 @@ func (i *IE) TimeDomainNumber() (uint8, error) {
 	switch i.Type {
 	case TimeDomainNumber:
 		return i.ValueAsUint8()
-	case ClockDriftControlInformation:
-		ies, err := i.ClockDriftControlInformation()
-		if err != nil {
-			return 0, err
-		}
-
-		for _, x := range ies {
-			if x.Type == TimeDomainNumber {
-				return x.TimeDomainNumber()
-			}
-		}
-		return 0, ErrIENotFound
-	case ClockDriftReport:
-		ies, err := i.ClockDriftReport()
-		if err != nil {
-			return 0, err
-		}
-
-		for _, x := range ies {
-			if x.Type == TimeDomainNumber {
-				return x.TimeDomainNumber()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

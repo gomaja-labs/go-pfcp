@@ -18,17 +18,6 @@ func (i *IE) NWTTPortNumber() (uint32, error) {
 	switch i.Type {
 	case NWTTPortNumber:
 		return i.ValueAsUint32()
-	case CreatedBridgeRouterInfo:
-		ies, err := i.CreatedBridgeRouterInfo()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == NWTTPortNumber {
-				return x.NWTTPortNumber()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

@@ -24,41 +24,6 @@ func (i *IE) StartTime() (time.Time, error) {
 	switch i.Type {
 	case StartTime:
 		return i.valueAs3GPPTimestamp()
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest:
-		ies, err := i.UsageReport()
-		if err != nil {
-			return time.Time{}, err
-		}
-		for _, x := range ies {
-			if x.Type == StartTime {
-				return x.StartTime()
-			}
-		}
-		return time.Time{}, ErrIENotFound
-	case GTPUPathQoSReport:
-		ies, err := i.GTPUPathQoSReport()
-		if err != nil {
-			return time.Time{}, err
-		}
-		for _, x := range ies {
-			if x.Type == StartTime {
-				return x.StartTime()
-			}
-		}
-		return time.Time{}, ErrIENotFound
-	case QoSMonitoringReport:
-		ies, err := i.QoSMonitoringReport()
-		if err != nil {
-			return time.Time{}, err
-		}
-		for _, x := range ies {
-			if x.Type == StartTime {
-				return x.StartTime()
-			}
-		}
-		return time.Time{}, ErrIENotFound
 	default:
 		return time.Time{}, &InvalidTypeError{Type: i.Type}
 	}

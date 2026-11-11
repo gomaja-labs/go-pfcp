@@ -101,11 +101,10 @@ func FuzzFields(f *testing.F) {
 				continue
 			}
 			fields := values[0].Interface().(interface {
-				Marshal() ([]byte, error)
 				MarshalTo([]byte) error
 				MarshalLen() int
 			})
-			if _, err := fields.Marshal(); err != nil {
+			if err := fields.MarshalTo(make([]byte, fields.MarshalLen())); err != nil {
 				continue
 			}
 			if n := fields.MarshalLen(); n > 0 {

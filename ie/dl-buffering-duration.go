@@ -81,17 +81,6 @@ func (i *IE) DLBufferingDuration() (time.Duration, error) {
 			d = 0
 		}
 		return d, nil
-	case UpdateBARWithinSessionReportResponse:
-		ies, err := i.UpdateBAR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == DLBufferingDuration {
-				return x.DLBufferingDuration()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

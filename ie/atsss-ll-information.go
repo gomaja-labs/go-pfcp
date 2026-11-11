@@ -18,28 +18,6 @@ func (i *IE) ATSSSLLInformation() (uint8, error) {
 	switch i.Type {
 	case ATSSSLLInformation:
 		return i.ValueAsUint8()
-	case ATSSSControlParameters:
-		ies, err := i.ATSSSControlParameters()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == ATSSSLLParameters {
-				return x.ATSSSLLInformation()
-			}
-		}
-		return 0, ErrIENotFound
-	case ATSSSLLParameters:
-		ies, err := i.ATSSSLLParameters()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == ATSSSLLInformation {
-				return x.ATSSSLLInformation()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

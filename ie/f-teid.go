@@ -6,7 +6,6 @@ package ie
 
 import (
 	"encoding/binary"
-	"errors"
 	"io"
 	"net"
 )
@@ -37,86 +36,6 @@ func (i *IE) FTEID() (*FTEIDFields, error) {
 		}
 
 		return fields, nil
-	case PDI:
-		ies, err := i.PDI()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			switch x.Type {
-			case FTEID, RedundantTransmissionParameters:
-				return x.FTEID()
-			}
-		}
-		return nil, ErrIENotFound
-	case CreatedPDR:
-		ies, err := i.CreatedPDR()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == FTEID {
-				return x.FTEID()
-			}
-		}
-		return nil, ErrIENotFound
-	case ErrorIndicationReport:
-		ies, err := i.ErrorIndicationReport()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == FTEID {
-				return x.FTEID()
-			}
-		}
-		return nil, ErrIENotFound
-	case CreateTrafficEndpoint:
-		ies, err := i.CreateTrafficEndpoint()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == FTEID {
-				return x.FTEID()
-			}
-		}
-		return nil, ErrIENotFound
-	case CreatedTrafficEndpoint:
-		return nil, errors.New("cannot determine which value to return. Use LocalFTEID or LocalFTEIDN instead")
-	case UpdateTrafficEndpoint:
-		ies, err := i.UpdateTrafficEndpoint()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == FTEID {
-				return x.FTEID()
-			}
-		}
-		return nil, ErrIENotFound
-	case RedundantTransmissionParameters:
-		ies, err := i.RedundantTransmissionParameters()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == FTEID {
-				return x.FTEID()
-			}
-		}
-		return nil, ErrIENotFound
-	case UpdatedPDR:
-		ies, err := i.UpdatedPDR()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == FTEID {
-				return x.FTEID()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

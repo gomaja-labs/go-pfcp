@@ -18,17 +18,6 @@ func (i *IE) AggregatedURRID() (uint32, error) {
 	switch i.Type {
 	case AggregatedURRID:
 		return i.ValueAsUint32()
-	case AggregatedURRs:
-		ies, err := i.AggregatedURRs()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == AggregatedURRID {
-				return x.AggregatedURRID()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

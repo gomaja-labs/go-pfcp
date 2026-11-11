@@ -35,17 +35,6 @@ func (i *IE) QoSMonitoringMeasurement() (*QoSMonitoringMeasurementFields, error)
 		}
 
 		return fields, nil
-	case QoSMonitoringReport:
-		ies, err := i.QoSMonitoringReport()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == QoSMonitoringMeasurement {
-				return x.QoSMonitoringMeasurement()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

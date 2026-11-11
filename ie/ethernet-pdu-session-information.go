@@ -18,39 +18,6 @@ func (i *IE) EthernetPDUSessionInformation() (uint8, error) {
 	switch i.Type {
 	case EthernetPDUSessionInformation:
 		return i.ValueAsUint8()
-	case CreatePDR:
-		ies, err := i.CreatePDR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == PDI {
-				return x.EthernetPDUSessionInformation()
-			}
-		}
-		return 0, ErrIENotFound
-	case PDI:
-		ies, err := i.PDI()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == EthernetPDUSessionInformation {
-				return x.EthernetPDUSessionInformation()
-			}
-		}
-		return 0, ErrIENotFound
-	case CreateTrafficEndpoint:
-		ies, err := i.CreateTrafficEndpoint()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == EthernetPDUSessionInformation {
-				return x.EthernetPDUSessionInformation()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

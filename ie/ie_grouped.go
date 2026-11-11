@@ -1,103 +1,13 @@
 package ie
 
 // IsGrouped reports whether the type is a grouped IE defined by
-// TS 29.244 V20.1.0 Table 8.1.2-1 (types 1 through 271).
+// TS 29.244 V20.1.0 Table 8.1.2-1 (all assigned grouped types).
 // Vendor-specific IEs require explicit interpretation with ValueAsGrouped.
 func (i *IE) IsGrouped() bool {
 	if i == nil {
 		return false
 	}
-	switch i.Type {
-	case IPMulticastAddressingInfo, CreatePDR,
-		PDI,
-		CreateFAR,
-		ForwardingParameters,
-		DuplicatingParameters,
-		CreateURR,
-		CreateQER,
-		CreatedPDR,
-		UpdatePDR,
-		UpdateFAR,
-		UpdateForwardingParameters,
-		UpdateBARWithinSessionReportResponse,
-		UpdateURR,
-		UpdateQER,
-		RemovePDR,
-		RemoveFAR,
-		RemoveURR,
-		RemoveQER,
-		LoadControlInformation,
-		OverloadControlInformation,
-		ApplicationIDsPFDs,
-		PFDContext,
-		ApplicationDetectionInformation,
-		QueryURR,
-		UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		DownlinkDataReport,
-		CreateBAR,
-		UpdateBARWithinSessionModificationRequest,
-		RemoveBAR,
-		ErrorIndicationReport,
-		UserPlanePathFailureReport,
-		UpdateDuplicatingParameters,
-		AggregatedURRs,
-		CreateTrafficEndpoint,
-		CreatedTrafficEndpoint,
-		UpdateTrafficEndpoint,
-		RemoveTrafficEndpoint,
-		EthernetPacketFilter,
-		EthernetTrafficInformation,
-		AdditionalMonitoringTime,
-		CreateMAR,
-		TGPPAccessForwardingActionInformation,
-		NonTGPPAccessForwardingActionInformation,
-		RemoveMAR,
-		UpdateMAR,
-		UpdateTGPPAccessForwardingActionInformation,
-		UpdateNonTGPPAccessForwardingActionInformation,
-		PFCPSessionRetentionInformation,
-		UserPlanePathRecoveryReport,
-		JoinIPMulticastInformationWithinUsageReport,
-		LeaveIPMulticastInformationWithinUsageReport,
-		CreatedBridgeRouterInfo,
-		TSCManagementInformationWithinSessionModificationRequest,
-		TSCManagementInformationWithinSessionModificationResponse,
-		TSCManagementInformationWithinSessionReportRequest,
-		ClockDriftControlInformation,
-		ClockDriftReport,
-		RemoveSRR,
-		CreateSRR,
-		UpdateSRR,
-		SessionReport,
-		AccessAvailabilityControlInformation,
-		AccessAvailabilityReport,
-		ProvideATSSSControlInformation,
-		ATSSSControlParameters,
-		MPTCPParameters,
-		ATSSSLLParameters,
-		PMFParameters,
-		UEIPAddressPoolInformation,
-		GTPUPathQoSControlInformation,
-		GTPUPathQoSReport,
-		QoSInformationInGTPUPathQoSReport,
-		QoSMonitoringPerQoSFlowControlInformation,
-		QoSMonitoringReport,
-		PacketRateStatusReport,
-		EthernetContextInformation,
-		RedundantTransmissionParameters,
-		UpdatedPDR,
-		ProvideRDSConfigurationInformation,
-		QueryPacketRateStatusWithinSessionModificationRequest,
-		PacketRateStatusReportWithinSessionModificationResponse,
-		UEIPAddressUsageInformation,
-		RedundantTransmissionForwardingParameters,
-		TransportDelayReporting:
-		return true
-	default:
-		return false
-	}
+	return isGroupedType(i.Type)
 }
 
 // Add appends non-nil children to a grouped IE. A raw payload is parsed first.

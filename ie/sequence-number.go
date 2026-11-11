@@ -18,28 +18,6 @@ func (i *IE) SequenceNumber() (uint32, error) {
 	switch i.Type {
 	case SequenceNumber:
 		return i.ValueAsUint32()
-	case LoadControlInformation:
-		ies, err := i.LoadControlInformation()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == SequenceNumber {
-				return x.SequenceNumber()
-			}
-		}
-		return 0, ErrIENotFound
-	case OverloadControlInformation:
-		ies, err := i.OverloadControlInformation()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == SequenceNumber {
-				return x.SequenceNumber()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

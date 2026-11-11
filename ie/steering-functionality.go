@@ -24,28 +24,6 @@ func (i *IE) SteeringFunctionality() (uint8, error) {
 	switch i.Type {
 	case SteeringFunctionality:
 		return i.ValueAsUint8()
-	case CreateMAR:
-		ies, err := i.CreateMAR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == SteeringFunctionality {
-				return x.SteeringFunctionality()
-			}
-		}
-		return 0, ErrIENotFound
-	case UpdateMAR:
-		ies, err := i.UpdateMAR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == SteeringFunctionality {
-				return x.SteeringFunctionality()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

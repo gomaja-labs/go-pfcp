@@ -35,50 +35,6 @@ func (i *IE) RemoteGTPUPeer() (*RemoteGTPUPeerFields, error) {
 		}
 
 		return fields, nil
-	case UserPlanePathFailureReport:
-		ies, err := i.UserPlanePathFailureReport()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == RemoteGTPUPeer {
-				return x.RemoteGTPUPeer()
-			}
-		}
-		return nil, ErrIENotFound
-	case UserPlanePathRecoveryReport:
-		ies, err := i.UserPlanePathRecoveryReport()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == RemoteGTPUPeer {
-				return x.RemoteGTPUPeer()
-			}
-		}
-		return nil, ErrIENotFound
-	case GTPUPathQoSControlInformation:
-		ies, err := i.GTPUPathQoSControlInformation()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == RemoteGTPUPeer {
-				return x.RemoteGTPUPeer()
-			}
-		}
-		return nil, ErrIENotFound
-	case GTPUPathQoSReport:
-		ies, err := i.GTPUPathQoSReport()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == RemoteGTPUPeer {
-				return x.RemoteGTPUPeer()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

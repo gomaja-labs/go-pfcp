@@ -30,28 +30,6 @@ func (i *IE) EthernetInactivityTimer() (time.Duration, error) {
 		}
 
 		return time.Duration(binary.BigEndian.Uint32(i.Payload[0:4])) * time.Second, nil
-	case CreateURR:
-		ies, err := i.CreateURR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == EthernetInactivityTimer {
-				return x.EthernetInactivityTimer()
-			}
-		}
-		return 0, ErrIENotFound
-	case UpdateURR:
-		ies, err := i.UpdateURR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == EthernetInactivityTimer {
-				return x.EthernetInactivityTimer()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

@@ -18,17 +18,6 @@ func (i *IE) ReportingFrequency() (uint8, error) {
 	switch i.Type {
 	case ReportingFrequency:
 		return i.ValueAsUint8()
-	case QoSMonitoringPerQoSFlowControlInformation:
-		ies, err := i.QoSMonitoringPerQoSFlowControlInformation()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == ReportingFrequency {
-				return x.ReportingFrequency()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

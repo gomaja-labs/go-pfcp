@@ -27,39 +27,6 @@ func (i *IE) SourceInterface() (uint8, error) {
 	switch i.Type {
 	case SourceInterface:
 		return i.ValueAsUint8()
-	case CreatePDR:
-		ies, err := i.CreatePDR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == PDI {
-				return x.SourceInterface()
-			}
-		}
-		return 0, ErrIENotFound
-	case UpdatePDR:
-		ies, err := i.UpdatePDR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == PDI {
-				return x.SourceInterface()
-			}
-		}
-		return 0, ErrIENotFound
-	case PDI:
-		ies, err := i.PDI()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == SourceInterface {
-				return x.SourceInterface()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

@@ -18,28 +18,6 @@ func (i *IE) DataNetworkAccessIdentifier() (string, error) {
 	switch i.Type {
 	case DataNetworkAccessIdentifier:
 		return i.ValueAsString()
-	case ForwardingParameters:
-		ies, err := i.ForwardingParameters()
-		if err != nil {
-			return "", err
-		}
-		for _, x := range ies {
-			if x.Type == DataNetworkAccessIdentifier {
-				return x.DataNetworkAccessIdentifier()
-			}
-		}
-		return "", ErrIENotFound
-	case UpdateForwardingParameters:
-		ies, err := i.UpdateForwardingParameters()
-		if err != nil {
-			return "", err
-		}
-		for _, x := range ies {
-			if x.Type == DataNetworkAccessIdentifier {
-				return x.DataNetworkAccessIdentifier()
-			}
-		}
-		return "", ErrIENotFound
 	default:
 		return "", &InvalidTypeError{Type: i.Type}
 	}

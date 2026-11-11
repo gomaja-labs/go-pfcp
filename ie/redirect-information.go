@@ -34,28 +34,6 @@ func (i *IE) RedirectInformation() (*RedirectInformationFields, error) {
 			return nil, err
 		}
 		return f, nil
-	case ForwardingParameters:
-		ies, err := i.ForwardingParameters()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == RedirectInformation {
-				return x.RedirectInformation()
-			}
-		}
-		return nil, ErrIENotFound
-	case UpdateForwardingParameters:
-		ies, err := i.UpdateForwardingParameters()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == RedirectInformation {
-				return x.RedirectInformation()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

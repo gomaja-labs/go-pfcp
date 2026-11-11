@@ -18,18 +18,6 @@ func (i *IE) QueryURRReference() (uint32, error) {
 	switch i.Type {
 	case QueryURRReference:
 		return i.ValueAsUint32()
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionReportRequest:
-		ies, err := i.UsageReport()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == QueryURRReference {
-				return x.QueryURRReference()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

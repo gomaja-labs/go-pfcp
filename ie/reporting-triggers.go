@@ -26,28 +26,6 @@ func (i *IE) ReportingTriggers() ([]byte, error) {
 		}
 
 		return i.Payload, nil
-	case CreateURR:
-		ies, err := i.CreateURR()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == ReportingTriggers {
-				return x.ReportingTriggers()
-			}
-		}
-		return nil, ErrIENotFound
-	case UpdateURR:
-		ies, err := i.UpdateURR()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == ReportingTriggers {
-				return x.ReportingTriggers()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
@@ -60,16 +38,13 @@ func (i *IE) HasLIUSA() bool {
 	}
 
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
+	case ReportingTriggers:
 		v, err := i.ReportingTriggers()
 		if err != nil {
 			return false
 		}
 		return has8thBit(v[0])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
+	case UsageReportTrigger:
 		v, err := i.UsageReportTrigger()
 		if err != nil {
 			return false
@@ -87,16 +62,13 @@ func (i *IE) HasDROTH() bool {
 	}
 
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
+	case ReportingTriggers:
 		v, err := i.ReportingTriggers()
 		if err != nil {
 			return false
 		}
 		return has7thBit(v[0])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
+	case UsageReportTrigger:
 		v, err := i.UsageReportTrigger()
 		if err != nil {
 			return false
@@ -114,16 +86,13 @@ func (i *IE) HasSTOPT() bool {
 	}
 
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
+	case ReportingTriggers:
 		v, err := i.ReportingTriggers()
 		if err != nil {
 			return false
 		}
 		return has6thBit(v[0])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
+	case UsageReportTrigger:
 		v, err := i.UsageReportTrigger()
 		if err != nil {
 			return false
@@ -141,16 +110,13 @@ func (i *IE) HasSTART() bool {
 	}
 
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
+	case ReportingTriggers:
 		v, err := i.ReportingTriggers()
 		if err != nil {
 			return false
 		}
 		return has5thBit(v[0])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
+	case UsageReportTrigger:
 		v, err := i.UsageReportTrigger()
 		if err != nil {
 			return false
@@ -168,16 +134,13 @@ func (i *IE) HasQUHTI() bool {
 	}
 
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
+	case ReportingTriggers:
 		v, err := i.ReportingTriggers()
 		if err != nil {
 			return false
 		}
 		return has4thBit(v[0])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
+	case UsageReportTrigger:
 		v, err := i.UsageReportTrigger()
 		if err != nil {
 			return false
@@ -195,16 +158,13 @@ func (i *IE) HasTIMTH() bool {
 	}
 
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
+	case ReportingTriggers:
 		v, err := i.ReportingTriggers()
 		if err != nil {
 			return false
 		}
 		return has3rdBit(v[0])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
+	case UsageReportTrigger:
 		v, err := i.UsageReportTrigger()
 		if err != nil {
 			return false
@@ -222,16 +182,13 @@ func (i *IE) HasVOLTH() bool {
 	}
 
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
+	case ReportingTriggers:
 		v, err := i.ReportingTriggers()
 		if err != nil {
 			return false
 		}
 		return has2ndBit(v[0])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
+	case UsageReportTrigger:
 		v, err := i.UsageReportTrigger()
 		if err != nil {
 			return false
@@ -249,23 +206,19 @@ func (i *IE) HasPERIO() bool {
 	}
 
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
+	case ReportingTriggers:
 		v, err := i.ReportingTriggers()
 		if err != nil {
 			return false
 		}
 		return has1stBit(v[0])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
+	case UsageReportTrigger:
 		v, err := i.UsageReportTrigger()
 		if err != nil {
 			return false
 		}
 		return has1stBit(v[0])
-	case QoSMonitoringPerQoSFlowControlInformation,
-		ReportingFrequency:
+	case ReportingFrequency:
 		v, err := i.ReportingFrequency()
 		if err != nil {
 			return false
@@ -283,16 +236,13 @@ func (i *IE) HasQUVTI() bool {
 	}
 
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
+	case ReportingTriggers:
 		v, err := i.ReportingTriggers()
 		if err != nil {
 			return false
 		}
 		return has8thBit(v[1])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
+	case UsageReportTrigger:
 		v, err := i.UsageReportTrigger()
 		if err != nil {
 			return false
@@ -315,16 +265,13 @@ func (i *IE) HasIPMJL() bool {
 	}
 
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
+	case ReportingTriggers:
 		v, err := i.ReportingTriggers()
 		if err != nil {
 			return false
 		}
 		return has7thBit(v[1])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
+	case UsageReportTrigger:
 		v, err := i.UsageReportTrigger()
 		if err != nil {
 			return false
@@ -347,16 +294,13 @@ func (i *IE) HasEVEQU() bool {
 	}
 
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
+	case ReportingTriggers:
 		v, err := i.ReportingTriggers()
 		if err != nil {
 			return false
 		}
 		return has6thBit(v[1])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
+	case UsageReportTrigger:
 		v, err := i.UsageReportTrigger()
 		if err != nil {
 			return false
@@ -379,16 +323,13 @@ func (i *IE) HasEVETH() bool {
 	}
 
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
+	case ReportingTriggers:
 		v, err := i.ReportingTriggers()
 		if err != nil {
 			return false
 		}
 		return has5thBit(v[1])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
+	case UsageReportTrigger:
 		v, err := i.UsageReportTrigger()
 		if err != nil {
 			return false
@@ -406,16 +347,13 @@ func (i *IE) HasMACAR() bool {
 	}
 
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
+	case ReportingTriggers:
 		v, err := i.ReportingTriggers()
 		if err != nil {
 			return false
 		}
 		return has4thBit(v[1])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
+	case UsageReportTrigger:
 		v, err := i.UsageReportTrigger()
 		if err != nil {
 			return false
@@ -433,16 +371,13 @@ func (i *IE) HasENVCL() bool {
 	}
 
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
+	case ReportingTriggers:
 		v, err := i.ReportingTriggers()
 		if err != nil {
 			return false
 		}
 		return has3rdBit(v[1])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
+	case UsageReportTrigger:
 		v, err := i.UsageReportTrigger()
 		if err != nil {
 			return false
@@ -460,16 +395,13 @@ func (i *IE) HasTIMQU() bool {
 	}
 
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
+	case ReportingTriggers:
 		v, err := i.ReportingTriggers()
 		if err != nil {
 			return false
 		}
 		return has2ndBit(v[1])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
+	case UsageReportTrigger:
 		v, err := i.UsageReportTrigger()
 		if err != nil {
 			return false
@@ -487,16 +419,13 @@ func (i *IE) HasVOLQU() bool {
 	}
 
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
+	case ReportingTriggers:
 		v, err := i.ReportingTriggers()
 		if err != nil {
 			return false
 		}
 		return has1stBit(v[1])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
+	case UsageReportTrigger:
 		v, err := i.UsageReportTrigger()
 		if err != nil {
 			return false
@@ -514,7 +443,7 @@ func (i *IE) HasUPINT() bool {
 	}
 
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
+	case ReportingTriggers:
 		v, err := i.ReportingTriggers()
 		if err != nil {
 			return false
@@ -525,10 +454,7 @@ func (i *IE) HasUPINT() bool {
 			return false
 		}
 		return has2ndBit(v[2])
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest,
-		UsageReportTrigger:
+	case UsageReportTrigger:
 		v, err := i.UsageReportTrigger()
 		if err != nil {
 			return false
@@ -551,7 +477,7 @@ func (i *IE) HasREEMR() bool {
 	}
 
 	switch i.Type {
-	case CreateURR, UpdateURR, ReportingTriggers:
+	case ReportingTriggers:
 		v, err := i.ReportingTriggers()
 		if err != nil {
 			return false

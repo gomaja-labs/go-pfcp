@@ -28,50 +28,6 @@ func (i *IE) DestinationInterface() (uint8, error) {
 	switch i.Type {
 	case DestinationInterface:
 		return i.ValueAsUint8()
-	case ForwardingParameters:
-		ies, err := i.ForwardingParameters()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == DestinationInterface {
-				return x.DestinationInterface()
-			}
-		}
-		return 0, ErrIENotFound
-	case UpdateForwardingParameters:
-		ies, err := i.UpdateForwardingParameters()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == DestinationInterface {
-				return x.DestinationInterface()
-			}
-		}
-		return 0, ErrIENotFound
-	case DuplicatingParameters:
-		ies, err := i.DuplicatingParameters()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == DestinationInterface {
-				return x.DestinationInterface()
-			}
-		}
-		return 0, ErrIENotFound
-	case UpdateDuplicatingParameters:
-		ies, err := i.UpdateDuplicatingParameters()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == DestinationInterface {
-				return x.DestinationInterface()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

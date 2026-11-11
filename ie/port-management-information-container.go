@@ -18,19 +18,6 @@ func (i *IE) PortManagementInformationContainer() (string, error) {
 	switch i.Type {
 	case PortManagementInformationContainer:
 		return i.ValueAsString()
-	case TSCManagementInformationWithinSessionModificationRequest,
-		TSCManagementInformationWithinSessionModificationResponse,
-		TSCManagementInformationWithinSessionReportRequest:
-		ies, err := i.TSCManagementInformation()
-		if err != nil {
-			return "", err
-		}
-		for _, x := range ies {
-			if x.Type == PortManagementInformationContainer {
-				return x.PortManagementInformationContainer()
-			}
-		}
-		return "", ErrIENotFound
 	default:
 		return "", &InvalidTypeError{Type: i.Type}
 	}

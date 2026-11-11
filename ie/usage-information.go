@@ -18,19 +18,6 @@ func (i *IE) UsageInformation() (uint8, error) {
 	switch i.Type {
 	case UsageInformation:
 		return i.ValueAsUint8()
-	case UsageReportWithinSessionModificationResponse,
-		UsageReportWithinSessionDeletionResponse,
-		UsageReportWithinSessionReportRequest:
-		ies, err := i.UsageReport()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == UsageInformation {
-				return x.UsageInformation()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

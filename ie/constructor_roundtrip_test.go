@@ -147,12 +147,6 @@ func callConstructor(entry constructorEntry) []reflect.Value {
 				args[k] = reflect.ValueOf(ie.CreatePDR)
 			case reflect.ValueOf(ie.NewVendorSpecificIE).Pointer(), reflect.ValueOf(ie.NewVendorSpecificGroupedIE).Pointer():
 				args[k] = reflect.ValueOf(ie.IEType(0x8001))
-			case reflect.ValueOf(ie.NewUsageReport).Pointer():
-				args[k] = reflect.ValueOf(ie.UsageReportWithinSessionReportRequest)
-			case reflect.ValueOf(ie.NewTSCManagementInformation).Pointer():
-				args[k] = reflect.ValueOf(ie.TSCManagementInformationWithinSessionModificationRequest)
-			case reflect.ValueOf(ie.NewUpdateBAR).Pointer():
-				args[k] = reflect.ValueOf(ie.UpdateBARWithinSessionReportResponse)
 			}
 		}
 		if name == "flags" && (fn.Pointer() == reflect.ValueOf(ie.NewFTEID).Pointer() || fn.Pointer() == reflect.ValueOf(ie.NewFTEIDFields).Pointer()) {

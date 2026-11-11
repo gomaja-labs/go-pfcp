@@ -29,28 +29,6 @@ func (i *IE) QuotaValidityTime() (time.Duration, error) {
 
 		t := binary.BigEndian.Uint32(i.Payload[0:4])
 		return time.Duration(t) * time.Second, nil
-	case CreateURR:
-		ies, err := i.CreateURR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == QuotaValidityTime {
-				return x.QuotaValidityTime()
-			}
-		}
-		return 0, ErrIENotFound
-	case UpdateURR:
-		ies, err := i.UpdateURR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == QuotaValidityTime {
-				return x.QuotaValidityTime()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

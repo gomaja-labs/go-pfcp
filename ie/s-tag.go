@@ -35,28 +35,7 @@ func (i *IE) STAG() (*STAGFields, error) {
 		}
 
 		return fields, nil
-	case PDI:
-		ies, err := i.PDI()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == EthernetPacketFilter {
-				return x.STAG()
-			}
-		}
-		return nil, ErrIENotFound
-	case EthernetPacketFilter:
-		ies, err := i.EthernetPacketFilter()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == STAG {
-				return x.STAG()
-			}
-		}
-		return nil, ErrIENotFound
+
 	case MACAddressesDetected:
 		x, err := i.MACAddressesDetected()
 		if err != nil {
@@ -69,17 +48,6 @@ func (i *IE) STAG() (*STAGFields, error) {
 			return nil, err
 		}
 		return ParseSTAGFields(x.STAG)
-	case EthernetContextInformation:
-		ies, err := i.EthernetContextInformation()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == MACAddressesDetected {
-				return x.STAG()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

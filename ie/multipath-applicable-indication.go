@@ -20,17 +20,6 @@ func (i *IE) MultipathApplicableIndication() (uint8, error) {
 	switch i.Type {
 	case MultipathApplicableIndication:
 		return i.ValueAsUint8()
-	case CreatePDR:
-		ies, err := i.CreatePDR()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == MultipathApplicableIndication {
-				return x.MultipathApplicableIndication()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

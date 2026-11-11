@@ -37,28 +37,6 @@ func (i *IE) LinkSpecificMultipathIPAddress() (*LinkSpecificMultipathIPAddressFi
 		}
 
 		return fields, nil
-	case ATSSSControlParameters:
-		ies, err := i.ATSSSControlParameters()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == MPTCPParameters {
-				return x.LinkSpecificMultipathIPAddress()
-			}
-		}
-		return nil, ErrIENotFound
-	case MPTCPParameters:
-		ies, err := i.MPTCPParameters()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == LinkSpecificMultipathIPAddress {
-				return x.LinkSpecificMultipathIPAddress()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

@@ -38,8 +38,14 @@ func TestUint32IEs(t *testing.T) {
 				ie.NewAggregatedURRID(0xffffffff),
 				ie.NewMultiplier(0xffffffffffffffff, 0x11223344),
 			),
-			decoded:     0xffffffff,
-			decoderFunc: func(i *ie.IE) (uint32, error) { return i.AggregatedURRID() },
+			decoded: 0xffffffff,
+			decoderFunc: func(i *ie.IE) (uint32, error) {
+				f0, err := i.AggregatedURRs()
+				if err != nil {
+					return 0, err
+				}
+				return f0.AggregatedURRID.AggregatedURRID()
+			},
 		}, {
 			description: "AveragingWindow",
 			structured:  ie.NewAveragingWindow(0xffffffff),
@@ -62,8 +68,14 @@ func TestUint32IEs(t *testing.T) {
 				ie.NewAveragingWindow(0xffffffff),
 				ie.NewQERControlIndications(1, 1, 1),
 			),
-			decoded:     0xffffffff,
-			decoderFunc: func(i *ie.IE) (uint32, error) { return i.AveragingWindow() },
+			decoded: 0xffffffff,
+			decoderFunc: func(i *ie.IE) (uint32, error) {
+				f0, err := i.CreateQER()
+				if err != nil {
+					return 0, err
+				}
+				return f0.AveragingWindow.AveragingWindow()
+			},
 		}, {
 			description: "CumulativeRateRatioMeasurement",
 			structured:  ie.NewCumulativeRateRatioMeasurement(0xffffffff),
@@ -82,8 +94,14 @@ func TestUint32IEs(t *testing.T) {
 				ie.NewTimeOffsetThreshold(10*time.Second),
 				ie.NewCumulativeRateRatioThreshold(0xffffffff),
 			),
-			decoded:     0xffffffff,
-			decoderFunc: func(i *ie.IE) (uint32, error) { return i.CumulativeRateRatioThreshold() },
+			decoded: 0xffffffff,
+			decoderFunc: func(i *ie.IE) (uint32, error) {
+				f0, err := i.ClockDriftControlInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f0.CumulativeRateRatioThreshold.CumulativeRateRatioThreshold()
+			},
 		}, {
 			description: "CumulativeRateRatioThreshold/ClockDriftReport",
 			structured: ie.NewClockDriftReport(
@@ -92,8 +110,14 @@ func TestUint32IEs(t *testing.T) {
 				ie.NewCumulativeRateRatioThreshold(0xffffffff),
 				ie.NewEventTimeStamp(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
 			),
-			decoded:     0xffffffff,
-			decoderFunc: func(i *ie.IE) (uint32, error) { return i.CumulativeRateRatioThreshold() },
+			decoded: 0xffffffff,
+			decoderFunc: func(i *ie.IE) (uint32, error) {
+				f0, err := i.ClockDriftReport()
+				if err != nil {
+					return 0, err
+				}
+				return f0.OtherIEs[1].CumulativeRateRatioThreshold()
+			},
 		}, {
 			description: "PortNumber",
 			structured:  ie.NewPortNumber(0xffffffff),
@@ -106,8 +130,14 @@ func TestUint32IEs(t *testing.T) {
 				ie.NewNWTTPortNumber(0xffffffff),
 				ie.NewFiveGSUserPlaneNodeID(mac1),
 			),
-			decoded:     0xffffffff,
-			decoderFunc: func(i *ie.IE) (uint32, error) { return i.PortNumber() },
+			decoded: 0xffffffff,
+			decoderFunc: func(i *ie.IE) (uint32, error) {
+				f0, err := i.CreatedBridgeRouterInfo()
+				if err != nil {
+					return 0, err
+				}
+				return f0.PortNumber.PortNumber()
+			},
 		}, {
 			description: "EthernetFilterID",
 			structured:  ie.NewEthernetFilterID(0xffffffff),
@@ -138,8 +168,18 @@ func TestUint32IEs(t *testing.T) {
 					ie.NewSDFFilter("aaaaaaaa", "bb", "cccc", "ddd", 0xffffffff),
 				),
 			),
-			decoded:     0xffffffff,
-			decoderFunc: func(i *ie.IE) (uint32, error) { return i.EthernetFilterID() },
+			decoded: 0xffffffff,
+			decoderFunc: func(i *ie.IE) (uint32, error) {
+				f0, err := i.PDI()
+				if err != nil {
+					return 0, err
+				}
+				f1, err := f0.EthernetPacketFilter[0].EthernetPacketFilter()
+				if err != nil {
+					return 0, err
+				}
+				return f1.EthernetFilterID.EthernetFilterID()
+			},
 		}, {
 			description: "EthernetFilterID/EthernetPacketFilter",
 			structured: ie.NewEthernetPacketFilter(
@@ -151,8 +191,14 @@ func TestUint32IEs(t *testing.T) {
 				ie.NewSTAG(0x07, 1, 1, 4095),
 				ie.NewSDFFilter("aaaaaaaa", "bb", "cccc", "ddd", 0xffffffff),
 			),
-			decoded:     0xffffffff,
-			decoderFunc: func(i *ie.IE) (uint32, error) { return i.EthernetFilterID() },
+			decoded: 0xffffffff,
+			decoderFunc: func(i *ie.IE) (uint32, error) {
+				f0, err := i.EthernetPacketFilter()
+				if err != nil {
+					return 0, err
+				}
+				return f0.EthernetFilterID.EthernetFilterID()
+			},
 		}, {
 			description: "EventQuota",
 			structured:  ie.NewEventQuota(0xffffffff),
@@ -202,8 +248,14 @@ func TestUint32IEs(t *testing.T) {
 				),
 				ie.NewNumberOfReports(0x1111),
 			),
-			decoded:     0xffffffff,
-			decoderFunc: func(i *ie.IE) (uint32, error) { return i.EventQuota() },
+			decoded: 0xffffffff,
+			decoderFunc: func(i *ie.IE) (uint32, error) {
+				f0, err := i.CreateURR()
+				if err != nil {
+					return 0, err
+				}
+				return f0.EventQuota.EventQuota()
+			},
 		}, {
 			description: "EventQuota/UpdateURR",
 			structured: ie.NewUpdateURR(
@@ -248,8 +300,14 @@ func TestUint32IEs(t *testing.T) {
 				),
 				ie.NewNumberOfReports(0x1111),
 			),
-			decoded:     0xffffffff,
-			decoderFunc: func(i *ie.IE) (uint32, error) { return i.EventQuota() },
+			decoded: 0xffffffff,
+			decoderFunc: func(i *ie.IE) (uint32, error) {
+				f0, err := i.UpdateURR()
+				if err != nil {
+					return 0, err
+				}
+				return f0.EventQuota.EventQuota()
+			},
 		}, {
 			description: "EventQuota/AdditionalMonitoringTime",
 			structured: ie.NewAdditionalMonitoringTime(
@@ -261,8 +319,14 @@ func TestUint32IEs(t *testing.T) {
 				ie.NewEventThreshold(0xffffffff),
 				ie.NewEventQuota(0xffffffff),
 			),
-			decoded:     0xffffffff,
-			decoderFunc: func(i *ie.IE) (uint32, error) { return i.EventQuota() },
+			decoded: 0xffffffff,
+			decoderFunc: func(i *ie.IE) (uint32, error) {
+				f0, err := i.AdditionalMonitoringTime()
+				if err != nil {
+					return 0, err
+				}
+				return f0.SubsequentEventQuota.EventQuota()
+			},
 		}, {
 			description: "EventThreshold",
 			structured:  ie.NewEventThreshold(0xffffffff),
@@ -312,8 +376,14 @@ func TestUint32IEs(t *testing.T) {
 				),
 				ie.NewNumberOfReports(0x1111),
 			),
-			decoded:     0xffffffff,
-			decoderFunc: func(i *ie.IE) (uint32, error) { return i.EventThreshold() },
+			decoded: 0xffffffff,
+			decoderFunc: func(i *ie.IE) (uint32, error) {
+				f0, err := i.CreateURR()
+				if err != nil {
+					return 0, err
+				}
+				return f0.EventThreshold.EventThreshold()
+			},
 		}, {
 			description: "EventThreshold/UpdateURR",
 			structured: ie.NewUpdateURR(
@@ -358,8 +428,14 @@ func TestUint32IEs(t *testing.T) {
 				),
 				ie.NewNumberOfReports(0x1111),
 			),
-			decoded:     0xffffffff,
-			decoderFunc: func(i *ie.IE) (uint32, error) { return i.EventThreshold() },
+			decoded: 0xffffffff,
+			decoderFunc: func(i *ie.IE) (uint32, error) {
+				f0, err := i.UpdateURR()
+				if err != nil {
+					return 0, err
+				}
+				return f0.EventThreshold.EventThreshold()
+			},
 		}, {
 			description: "EventThreshold/AdditionalMonitoringTime",
 			structured: ie.NewAdditionalMonitoringTime(
@@ -371,8 +447,14 @@ func TestUint32IEs(t *testing.T) {
 				ie.NewEventThreshold(0xffffffff),
 				ie.NewEventQuota(0xffffffff),
 			),
-			decoded:     0xffffffff,
-			decoderFunc: func(i *ie.IE) (uint32, error) { return i.EventThreshold() },
+			decoded: 0xffffffff,
+			decoderFunc: func(i *ie.IE) (uint32, error) {
+				f0, err := i.AdditionalMonitoringTime()
+				if err != nil {
+					return 0, err
+				}
+				return f0.SubsequentEventThreshold.EventThreshold()
+			},
 		}, {
 			description: "Multiplier/Exponent",
 			structured:  ie.NewMultiplier(0xffffffffffffffff, 0x11223344),
@@ -391,8 +473,14 @@ func TestUint32IEs(t *testing.T) {
 				ie.NewSNSSAI(0x11, 0x223344),
 				ie.NewIPVersion(true, false),
 			),
-			decoded:     0x223344,
-			decoderFunc: func(i *ie.IE) (uint32, error) { return i.SD() },
+			decoded: 0x223344,
+			decoderFunc: func(i *ie.IE) (uint32, error) {
+				f, err := i.UEIPAddressPoolInformation()
+				if err != nil {
+					return 0, err
+				}
+				return f.SNSSAI[0].SD()
+			},
 		},
 	}
 

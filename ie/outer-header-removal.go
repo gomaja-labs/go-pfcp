@@ -27,28 +27,6 @@ func (i *IE) OuterHeaderRemoval() ([]byte, error) {
 		}
 
 		return i.Payload, nil
-	case CreatePDR:
-		ies, err := i.CreatePDR()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == OuterHeaderRemoval {
-				return x.OuterHeaderRemoval()
-			}
-		}
-		return nil, ErrIENotFound
-	case UpdatePDR:
-		ies, err := i.UpdatePDR()
-		if err != nil {
-			return nil, err
-		}
-		for _, x := range ies {
-			if x.Type == OuterHeaderRemoval {
-				return x.OuterHeaderRemoval()
-			}
-		}
-		return nil, ErrIENotFound
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

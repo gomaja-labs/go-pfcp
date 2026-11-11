@@ -18,28 +18,6 @@ func (i *IE) RQI() (uint8, error) {
 	switch i.Type {
 	case RQI:
 		return i.ValueAsUint8()
-	case CreateQER:
-		ies, err := i.CreateQER()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == RQI {
-				return x.RQI()
-			}
-		}
-		return 0, ErrIENotFound
-	case UpdateQER:
-		ies, err := i.UpdateQER()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == RQI {
-				return x.RQI()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

@@ -81,28 +81,6 @@ func (i *IE) Timer() (time.Duration, error) {
 			d = 0
 		}
 		return d, nil
-	case OverloadControlInformation:
-		ies, err := i.OverloadControlInformation()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == Timer {
-				return x.Timer()
-			}
-		}
-		return 0, ErrIENotFound
-	case GTPUPathQoSControlInformation:
-		ies, err := i.GTPUPathQoSControlInformation()
-		if err != nil {
-			return 0, err
-		}
-		for _, x := range ies {
-			if x.Type == Timer {
-				return x.Timer()
-			}
-		}
-		return 0, ErrIENotFound
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
