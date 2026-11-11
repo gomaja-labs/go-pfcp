@@ -47,10 +47,10 @@ func messageLen(h *Header, ies []*ie.IE) int {
 	return n
 }
 
-// orderedIEs keeps the received top-level order, including repeated singleton
-// fields retained in IEs. Removed fields disappear and newly added fields append
-// in the normal constructor order. Payload is only an ordering template; all
-// values are encoded from the current exported IE fields.
+// orderedIEs uses the received top-level type order as a template. Within a
+// type, occurrences follow their current field/list order. Excess occurrences
+// append in constructor order. Payload supplies only the type-order template;
+// all values are encoded from the current exported IE fields.
 // TS 29.244 V20.1.0 clauses 7.2.1 and 7.2.3.4.
 func orderedIEs(h *Header, ies []*ie.IE) []*ie.IE {
 	if len(h.Payload) == 0 {

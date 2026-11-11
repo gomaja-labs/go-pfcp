@@ -27,7 +27,9 @@
 //
 // Decoded payloads borrow the input buffer. Keep the buffer unchanged while
 // using the decoded message. Appending to a header payload cannot overwrite
-// another frame. Encoding reads the current IE fields, retains received IE
-// order, drops removed fields and appends newly added fields in constructor
-// order. Additional occurrences of a named singleton are retained in IEs.
+// another frame. Encoding reads current IE fields, using the received IE type
+// order as a template. Occurrences of each type use their current field/list
+// order; excess occurrences append in constructor order. Unedited messages
+// retain their wire order. Additional occurrences of a named singleton are
+// retained in IEs.
 package message
