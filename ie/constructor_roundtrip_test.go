@@ -149,6 +149,9 @@ func callConstructor(entry constructorEntry) []reflect.Value {
 				args[k] = reflect.ValueOf(ie.IEType(0x8001))
 			}
 		}
+		if name == "flags" && (fn.Pointer() == reflect.ValueOf(ie.NewPacketRateStatus).Pointer() || fn.Pointer() == reflect.ValueOf(ie.NewPacketRateStatusFields).Pointer()) {
+			args[k].SetUint(7)
+		}
 		if name == "flags" && (fn.Pointer() == reflect.ValueOf(ie.NewFTEID).Pointer() || fn.Pointer() == reflect.ValueOf(ie.NewFTEIDFields).Pointer()) {
 			args[k].SetUint(3)
 		}
@@ -286,6 +289,11 @@ func TestFlagDrivenConstructorRoundTrips(t *testing.T) {
 						excluded++
 						continue
 					}
+				case "NewPacketRateStatusFields":
+					if flags&^7 != 0 {
+						excluded++
+						continue
+					}
 				case "NewPacketRateFields":
 					if flags&7 == 0 {
 						excluded++
@@ -316,6 +324,16 @@ func TestFlagDrivenConstructorRoundTrips(t *testing.T) {
 					}
 				}
 
+				if name == "NewPacketRateStatusFields" {
+					for n, param := range entry.params {
+						if (param == "ul" && flags&1 == 0) || (param == "dl" && flags&2 == 0) || (param == "aul" && (flags&5 != 5)) || (param == "adl" && (flags&6 != 6)) {
+							args[n].SetUint(0)
+						}
+						if param == "vtime" && flags&3 == 0 {
+							args[n] = reflect.Zero(args[n].Type())
+						}
+					}
+				}
 				if name == "NewFTEIDFields" {
 					if flags&4 != 0 {
 						args[1].SetUint(0)

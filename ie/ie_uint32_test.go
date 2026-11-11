@@ -78,9 +78,9 @@ func TestUint32IEs(t *testing.T) {
 			},
 		}, {
 			description: "CumulativeRateRatioMeasurement",
-			structured:  ie.NewCumulativeRateRatioMeasurement(0xffffffff),
+			structured:  ie.NewCumulativeRateRatioMeasurement(-1),
 			decoded:     0xffffffff,
-			decoderFunc: func(i *ie.IE) (uint32, error) { return i.CumulativeRateRatioMeasurement() },
+			decoderFunc: func(i *ie.IE) (uint32, error) { v, e := i.CumulativeRateRatioMeasurement(); return uint32(v), e },
 		}, {
 			description: "CumulativeRateRatioThreshold",
 			structured:  ie.NewCumulativeRateRatioThreshold(0xffffffff),

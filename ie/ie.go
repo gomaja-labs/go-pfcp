@@ -525,12 +525,12 @@ func newGroupedIE(itype IEType, eid uint16, ies ...*IE) *IE {
 // TS 29.244 V20.1.0 clause 8.2.65 and RFC 5905 section 6 specify seconds
 // since 1900 modulo 2^32. With no era carried on the wire, this package chooses
 // the Unix window [1970-01-01, 2106-02-07T06:28:15Z]. A time outside that
-// window gives an IE whose Marshal reports ErrInvalidValue. Fractional seconds
-// are discarded.
+// window, or a time with fractional seconds, gives an IE whose Marshal reports
+// ErrInvalidValue. Rejecting fractions prevents silently changing the input instant.
 func new3GPPTimestampIE(typ IEType, ts time.Time) *IE {
 	seconds := ts.Unix()
-	if seconds < 0 || seconds > 1<<32-1 {
-		return newInvalidIE(typ, fmt.Errorf("%w: %s is outside 1970-01-01T00:00:00Z to 2106-02-07T06:28:15Z",
+	if seconds < 0 || seconds > 1<<32-1 || ts.Nanosecond() != 0 {
+		return newInvalidIE(typ, fmt.Errorf("%w: %s is not a whole second within 1970-01-01T00:00:00Z to 2106-02-07T06:28:15Z",
 			ErrInvalidValue, ts.UTC().Format(time.RFC3339)))
 	}
 	return newUint32ValIE(typ, uint32(seconds+2208988800))

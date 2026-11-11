@@ -5,18 +5,24 @@
 package ie
 
 import (
+	"bytes"
 	"encoding/binary"
+	"fmt"
 	"io"
 	"time"
 )
 
-// NewPacketRateStatus creates a new PacketRateStatus IE.
+// NewPacketRateStatus creates a PacketRateStatus IE. The timestamp uses the
+// Unix window [1970-01-01, 2106-02-07T06:28:15.999999999Z], with nanosecond
+// precision rounded to the nearest NTP fraction. Invalid arguments return an
+// IE whose Marshal reports ErrInvalidValue. A no-limit record requires zero
+// counters and time.Time{}. TS 29.244 V20.1.0 clause 8.2.139; RFC 5905 section 6.
 func NewPacketRateStatus(flags uint8, ul, aul, dl, adl uint16, vtime time.Time) *IE {
 	f := NewPacketRateStatusFields(flags, ul, aul, dl, adl, vtime)
 
 	b, err := f.Marshal()
 	if err != nil {
-		return nil
+		return newInvalidIE(PacketRateStatus, err)
 	}
 
 	return New(PacketRateStatus, b)
@@ -49,27 +55,22 @@ type PacketRateStatusFields struct {
 	NumberOfRemainingDownlinkPacketsAllowed           uint16
 	NumberOfRemainingAdditionalDownlinkPacketsAllowed uint16
 	RateControlStatusValidityTime                     time.Time
+	// Retain fractions finer than time.Time can express when the decoded time
+	// is unchanged. Editing the public time recomputes the NTP timestamp.
+	wireTimestamp    uint64
+	wireTime         time.Time
+	hasWireTimestamp bool
 }
 
 // NewPacketRateStatusFields creates a new NewPacketRateStatusFields.
 func NewPacketRateStatusFields(flags uint8, ul, aul, dl, adl uint16, vtime time.Time) *PacketRateStatusFields {
 	f := &PacketRateStatusFields{
-		Flags:                         flags,
-		RateControlStatusValidityTime: vtime,
-	}
-
-	if f.HasUL() {
-		f.NumberOfRemainingUplinkPacketsAllowed = ul
-		if f.HasAPR() {
-			f.NumberOfRemainingAdditionalUplinkPacketsAllowed = aul
-		}
-	}
-
-	if f.HasDL() {
-		f.NumberOfRemainingDownlinkPacketsAllowed = dl
-		if f.HasAPR() {
-			f.NumberOfRemainingAdditionalDownlinkPacketsAllowed = adl
-		}
+		Flags:                                 flags,
+		NumberOfRemainingUplinkPacketsAllowed: ul,
+		NumberOfRemainingAdditionalUplinkPacketsAllowed:   aul,
+		NumberOfRemainingDownlinkPacketsAllowed:           dl,
+		NumberOfRemainingAdditionalDownlinkPacketsAllowed: adl,
+		RateControlStatusValidityTime:                     vtime,
 	}
 
 	return f
@@ -146,11 +147,11 @@ func (f *PacketRateStatusFields) UnmarshalBinary(b []byte) error {
 	*f = PacketRateStatusFields{}
 
 	l := len(b)
-	if l < 2 {
+	if l < 1 {
 		return io.ErrUnexpectedEOF
 	}
 
-	f.Flags = b[0]
+	f.Flags = b[0] & 0x07
 	offset := 1
 
 	if f.HasUL() {
@@ -185,10 +186,20 @@ func (f *PacketRateStatusFields) UnmarshalBinary(b []byte) error {
 		}
 	}
 
-	if l < offset+8 {
-		return io.ErrUnexpectedEOF
+	// TS 29.244 V20.1.0 clause 8.2.139: validity time exists only with UL or DL.
+	if f.HasUL() || f.HasDL() {
+		if l < offset+8 {
+			return io.ErrUnexpectedEOF
+		}
+		value := binary.BigEndian.Uint64(b[offset : offset+8])
+		// RFC 5905 section 6: high 32 bits are seconds, low 32 bits are fractions.
+		seconds := int64(uint32(value>>32) - 2208988800)
+		nanos := (uint64(uint32(value))*1000000000 + (1 << 31)) >> 32
+		f.RateControlStatusValidityTime = time.Unix(seconds, int64(nanos)).UTC()
+		f.wireTimestamp = value
+		f.wireTime = f.RateControlStatusValidityTime
+		f.hasWireTimestamp = true
 	}
-	f.RateControlStatusValidityTime = time.Unix(int64(binary.BigEndian.Uint64(b[offset:offset+8])-2208988800), 0)
 
 	return nil
 }
@@ -211,6 +222,37 @@ func (f *PacketRateStatusFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
 	}
+	// TS 29.244 V20.1.0 clause 8.2.139: do not discard unflagged arguments.
+	if f.Flags&^uint8(7) != 0 {
+		return fmt.Errorf("%w: packet-rate flags include spare bits", ErrInvalidValue)
+	}
+	if !f.HasUL() && (f.NumberOfRemainingUplinkPacketsAllowed != 0 || f.NumberOfRemainingAdditionalUplinkPacketsAllowed != 0) {
+		return fmt.Errorf("%w: uplink counters require UL", ErrInvalidValue)
+	}
+	if !f.HasDL() && (f.NumberOfRemainingDownlinkPacketsAllowed != 0 || f.NumberOfRemainingAdditionalDownlinkPacketsAllowed != 0) {
+		return fmt.Errorf("%w: downlink counters require DL", ErrInvalidValue)
+	}
+	if !f.HasAPR() && (f.NumberOfRemainingAdditionalUplinkPacketsAllowed != 0 || f.NumberOfRemainingAdditionalDownlinkPacketsAllowed != 0) {
+		return fmt.Errorf("%w: additional counters require APR", ErrInvalidValue)
+	}
+	if !f.HasUL() && !f.HasDL() && !f.RateControlStatusValidityTime.IsZero() {
+		return fmt.Errorf("%w: validity time requires UL or DL", ErrInvalidValue)
+	}
+
+	var timestamp uint64
+	if f.HasUL() || f.HasDL() {
+		if f.hasWireTimestamp && f.RateControlStatusValidityTime.Equal(f.wireTime) {
+			timestamp = f.wireTimestamp
+		} else {
+			seconds := f.RateControlStatusValidityTime.Unix()
+			if seconds < 0 || seconds > 1<<32-1 {
+				return fmt.Errorf("%w: packet-rate timestamp is outside the Unix era window", ErrInvalidValue)
+			}
+			fraction := (uint64(f.RateControlStatusValidityTime.Nanosecond())<<32 + 500000000) / 1000000000
+			timestamp = uint64(uint32(seconds+2208988800))<<32 | fraction
+		}
+	}
+
 	if f.MarshalLen() > 65535 {
 		return ErrInvalidLength
 	}
@@ -258,10 +300,12 @@ func (f *PacketRateStatusFields) MarshalTo(b []byte) error {
 		}
 	}
 
-	if l < offset+8 {
-		return io.ErrUnexpectedEOF
+	if f.HasUL() || f.HasDL() {
+		if l < offset+8 {
+			return io.ErrUnexpectedEOF
+		}
+		binary.BigEndian.PutUint64(b[offset:offset+8], timestamp)
 	}
-	binary.BigEndian.PutUint64(b[offset:offset+8], uint64(f.RateControlStatusValidityTime.Sub(time.Date(1900, time.January, 1, 0, 0, 0, 0, time.UTC)))/1000000000)
 
 	return nil
 }
@@ -272,7 +316,10 @@ func (f *PacketRateStatusFields) MarshalLen() int {
 		return 0
 	}
 
-	l := 1 + 8
+	l := 1
+	if f.HasUL() || f.HasDL() {
+		l += 8
+	}
 	if f.HasUL() {
 		l += 2
 		if f.HasAPR() {
@@ -287,4 +334,15 @@ func (f *PacketRateStatusFields) MarshalLen() int {
 	}
 
 	return l
+}
+
+// Equal reports whether two PacketRateStatusFields values have the same encoding.
+// This compares retained NTP fractions at their full wire precision.
+func (f *PacketRateStatusFields) Equal(other *PacketRateStatusFields) bool {
+	if f == nil || other == nil {
+		return f == other
+	}
+	a, ea := f.Marshal()
+	b, eb := other.Marshal()
+	return ea == nil && eb == nil && bytes.Equal(a, b)
 }
