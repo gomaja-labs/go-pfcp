@@ -107,7 +107,7 @@ func (i *IE) Add(ies ...*IE) error {
 		return ErrIENotFound
 	}
 
-	if !i.IsGrouped() {
+	if !i.IsGrouped() && i.ChildIEs == nil {
 		return ErrInvalidType
 	}
 	children, err := i.ValueAsGrouped()
@@ -133,7 +133,7 @@ func (i *IE) Remove(typ IEType) error {
 		return ErrIENotFound
 	}
 
-	if !i.IsGrouped() {
+	if !i.IsGrouped() && i.ChildIEs == nil {
 		return ErrInvalidType
 	}
 	children, err := i.ValueAsGrouped()
@@ -155,7 +155,7 @@ func (i *IE) FindByType(typ IEType) (*IE, error) {
 	if i == nil {
 		return nil, ErrIENotFound
 	}
-	if !i.IsGrouped() {
+	if !i.IsGrouped() && i.ChildIEs == nil {
 		return nil, ErrInvalidType
 	}
 	children, err := i.ValueAsGrouped()
