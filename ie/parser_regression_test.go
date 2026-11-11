@@ -22,10 +22,6 @@ func TestMalformedFields(t *testing.T) {
 		{"FlowDescriptionShort", func() error { _, e := ie.New(ie.FlowInformation, nil).FlowDescription(); return e }},
 		{"FlowDescriptionLength", func() error { _, e := ie.New(ie.FlowInformation, []byte{1, 0, 5, 1, 2}).FlowDescription(); return e }},
 		{"RemoteGTPUPeerDI", func() error { _, e := ie.ParseRemoteGTPUPeerFields([]byte{4, 0, 0}); return e }},
-		{"UserPlaneSource", func() error {
-			_, e := ie.ParseUserPlaneIPResourceInformationFields([]byte{0x61, 127, 0, 0, 1})
-			return e
-		}},
 		{"FQCSIDShortNode", func() error { _, e := ie.New(ie.FQCSID, []byte{0}).CSIDs(); return e }},
 		{"TraceSingleOctet", func() error { _, e := ie.ParseTraceInformationFields(make([]byte, 6)); return e }},
 		{"SourceMPL", func() error { _, e := ie.ParseSourceIPAddressFields([]byte{6, 127, 0, 0, 1}); return e }},
@@ -50,13 +46,8 @@ func TestEmptyFlagHelpers(t *testing.T) {
 		name string
 		call func()
 	}{
-		{"TEIDRI", func() {
-			if ie.New(ie.UserPlaneIPResourceInformation, nil).TEIDRI() != 0 {
-				t.Error("nonzero TEIDRI")
-			}
-		}},
 		{"HasMAC", func() {
-			if ie.New(ie.TSNBridgeID, nil).HasMAC() {
+			if ie.New(ie.FiveGSUserPlaneNodeID, nil).HasMAC() {
 				t.Error("unexpected MAC")
 			}
 		}},
@@ -96,29 +87,6 @@ func TestPFDContentsFlagRoundTrip(t *testing.T) {
 				}
 				if !reflect.DeepEqual(got, want) {
 					t.Error("PFD contents lost fields")
-				}
-			}); p != nil {
-				t.Fatalf("panic %v", p)
-			}
-		})
-	}
-}
-
-func TestUserPlaneResourceFlagRoundTrip(t *testing.T) {
-	for flags := 0; flags < 128; flags++ {
-		t.Run(fmt.Sprintf("flags_%02x", flags), func(t *testing.T) {
-			want := ie.NewUserPlaneIPResourceInformationFields(byte(flags), 0x80, "192.0.2.1", "2001:db8::1", "abc", 2)
-			if p := panicOf(func() {
-				b, e := want.Marshal()
-				if e != nil {
-					t.Fatal(e)
-				}
-				got, e := ie.ParseUserPlaneIPResourceInformationFields(b)
-				if e != nil {
-					t.Fatal(e)
-				}
-				if !reflect.DeepEqual(got, want) {
-					t.Error("UP resources lost fields")
 				}
 			}); p != nil {
 				t.Fatalf("panic %v", p)

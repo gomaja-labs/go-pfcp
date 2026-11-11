@@ -386,7 +386,7 @@ func TestDurationIEs(t *testing.T) {
 		}, {
 			description: "TimeOffsetThreshold/ClockDriftReport",
 			structured: ie.NewClockDriftReport(
-				ie.NewTSNTimeDomainNumber(255),
+				ie.NewTimeDomainNumber(255),
 				ie.NewTimeOffsetThreshold(10*time.Second),
 			),
 			decoded:     10 * time.Second,

@@ -1,9 +1,8 @@
 # TS 29.244 V20.1.0 catalogue
 
 `ts29244-v20.1.0.json` is the validated catalogue extracted from 3GPP TS
-29.244 V20.1.0 (2026-09). It is copied byte-for-byte from the validated
-catalogue; SHA-256:
-`89d2169da288b95b041f7e0b8436b578050056bb265f927844faee5706477e34`.
+29.244 V20.1.0 (2026-09). It includes the approved current IE and message field names; SHA-256:
+`82c8de9f31082d39d3d3e6c0d778dabeddf8cd3c577589dff5d1a7cd772830c6`.
 
 The [3GPP archive](https://www.3gpp.org/ftp/Specs/archive/29_series/29.244/)
 was checked on 2026-11-11. The newest publication listed was
@@ -64,12 +63,11 @@ remain in the unchanged JSON for provenance.
 - Same-type rows share one slice field, including the FQ-CSID roles. This does
   not infer arbitrary multiplicity or remove interface-specific conditions.
   Other lists require the explicit bounded repetition evidence in the JSON.
-- Recommended renames of existing IE constants are deferred. Existing names
-  remain where present; deprecated 199–201 constant aliases are removed.
-- Type 116 is reserved in this version. Its existing constant remains to build
-  the separately maintained historical IE helpers; it is absent from generated
-  message schemas. Types 273 and 381 have no assigned IE semantics. Generated
-  declarations document their registry status rather than inventing payloads.
+- Current IE names and message fields are emitted from `go_name` and `go_field`.
+  `existing_go_name` and `go-surface.json` retain the historical API record.
+- Types 116 (reserved, clause 8.2.82 is Void), 273 (spare), and 381 (can be
+  used) have no generated constants. A received IE of these types is retained
+  as an unknown IE (clause 7.6.9).
 
 Seven row-comment references are resolved against the actual child definitions:
 

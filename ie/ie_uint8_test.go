@@ -72,7 +72,7 @@ func TestUint8IEs(t *testing.T) {
 			structured: ie.NewATSSSControlParameters(
 				ie.NewMPTCPParameters(
 					ie.NewMPTCPAddressInformation(ie.MPTCPProxyTransportConverter, 8080, net.ParseIP("127.0.0.1"), net.ParseIP("2001::1")),
-					ie.NewUELinkSpecificIPAddress(net.ParseIP("127.0.0.1"), net.ParseIP("2001::1"), net.ParseIP("127.0.0.1"), net.ParseIP("2001::1")),
+					ie.NewLinkSpecificMultipathIPAddress(net.ParseIP("127.0.0.1"), net.ParseIP("2001::1"), net.ParseIP("127.0.0.1"), net.ParseIP("2001::1")),
 				),
 				ie.NewATSSSLLParameters(
 					ie.NewATSSSLLInformation(1),
@@ -141,10 +141,10 @@ func TestUint8IEs(t *testing.T) {
 			decoded:     ie.CauseRequestAccepted,
 			decoderFunc: func(i *ie.IE) (uint8, error) { return i.Cause() },
 		}, {
-			description: "CreateBridgeInfoForTSC",
-			structured:  ie.NewCreateBridgeInfoForTSC(1),
+			description: "CreateBridgeRouterInfo",
+			structured:  ie.NewCreateBridgeRouterInfo(1),
 			decoded:     1,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.CreateBridgeInfoForTSC() },
+			decoderFunc: func(i *ie.IE) (uint8, error) { return i.CreateBridgeRouterInfo() },
 		}, {
 			description: "DestinationInterface",
 			structured:  ie.NewDestinationInterface(ie.DstInterfaceAccess),
@@ -443,18 +443,18 @@ func TestUint8IEs(t *testing.T) {
 			decoded:     1,
 			decoderFunc: func(i *ie.IE) (uint8, error) { return i.MPTCPControlInformation() },
 		}, {
-			description: "MPTCPApplicableIndication",
-			structured:  ie.NewMPTCPApplicableIndication(0x01),
+			description: "MultipathApplicableIndication",
+			structured:  ie.NewMultipathApplicableIndication(0x01),
 			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.MPTCPApplicableIndication() },
+			decoderFunc: func(i *ie.IE) (uint8, error) { return i.MultipathApplicableIndication() },
 		}, {
-			description: "MPTCPApplicableIndication/CreatePDR",
+			description: "MultipathApplicableIndication/CreatePDR",
 			structured: ie.NewCreatePDR(
 				ie.NewPDRID(0xffff),
-				ie.NewMPTCPApplicableIndication(0x01),
+				ie.NewMultipathApplicableIndication(0x01),
 			),
 			decoded:     0x01,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.MPTCPApplicableIndication() },
+			decoderFunc: func(i *ie.IE) (uint8, error) { return i.MultipathApplicableIndication() },
 		}, {
 			description: "MPTCPControlInformation/ProvideATSSSControlInformation",
 			structured: ie.NewProvideATSSSControlInformation(
@@ -802,7 +802,7 @@ func TestUint8IEs(t *testing.T) {
 			description: "RequestedClockDriftInformation/ClockDriftControlInformation",
 			structured: ie.NewClockDriftControlInformation(
 				ie.NewRequestedClockDriftInformation(1, 1),
-				ie.NewTSNTimeDomainNumber(255),
+				ie.NewTimeDomainNumber(255),
 			),
 			decoded:     0x03,
 			decoderFunc: func(i *ie.IE) (uint8, error) { return i.RequestedClockDriftInformation() },
@@ -1097,26 +1097,26 @@ func TestUint8IEs(t *testing.T) {
 			decoded:     0x01,
 			decoderFunc: func(i *ie.IE) (uint8, error) { return i.TrafficEndpointID() },
 		}, {
-			description: "TSNTimeDomainNumber",
-			structured:  ie.NewTSNTimeDomainNumber(255),
+			description: "TimeDomainNumber",
+			structured:  ie.NewTimeDomainNumber(255),
 			decoded:     255,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.TSNTimeDomainNumber() },
+			decoderFunc: func(i *ie.IE) (uint8, error) { return i.TimeDomainNumber() },
 		}, {
-			description: "TSNTimeDomainNumber/ClockDriftControlInformation",
+			description: "TimeDomainNumber/ClockDriftControlInformation",
 			structured: ie.NewClockDriftControlInformation(
 				ie.NewRequestedClockDriftInformation(1, 1),
-				ie.NewTSNTimeDomainNumber(255),
+				ie.NewTimeDomainNumber(255),
 			),
 			decoded:     255,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.TSNTimeDomainNumber() },
+			decoderFunc: func(i *ie.IE) (uint8, error) { return i.TimeDomainNumber() },
 		}, {
-			description: "TSNTimeDomainNumber/ClockDriftReport",
+			description: "TimeDomainNumber/ClockDriftReport",
 			structured: ie.NewClockDriftReport(
-				ie.NewTSNTimeDomainNumber(255),
+				ie.NewTimeDomainNumber(255),
 				ie.NewTimeOffsetThreshold(10*time.Second),
 			),
 			decoded:     255,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.TSNTimeDomainNumber() },
+			decoderFunc: func(i *ie.IE) (uint8, error) { return i.TimeDomainNumber() },
 		}, {
 			description: "UsageInformation",
 			structured:  ie.NewUsageInformation(1, 1, 1, 1),

@@ -277,6 +277,7 @@ func registry(tables []table, surface *spec.Surface) ([]spec.IEType, error) {
 		if prefix := map[string]string{"reserved": "Reserved", "spare": "Spare", "can-be-used": "CanBeUsed"}[kind]; prefix != "" {
 			gn = prefix + strconv.Itoa(ty)
 		}
+		gn = currentName(ty, gn)
 		e := spec.IEType{Type: ty, Name: name, GoName: gn, Kind: kind, DefinedIn: references(ref), ExistingGoName: existing, Note: ref}
 		if regexp.MustCompile(`^\d+$`).MatchString(fixed) {
 			e.FixedOctets = ptr(number(fixed))
@@ -436,7 +437,7 @@ func (v *resolver) rows(t table, msg string, visiting map[string]bool) ([]spec.R
 		}
 		field := goName(r.name)
 		if old := v.surface.Messages[msg].Bindings[strconv.Itoa(ty)]; old != "" {
-			field = old
+			field = currentField(ty, old)
 		}
 		row := spec.Row{Name: r.name, Presence: r.presence, IEType: ty, IETypeName: r.ieName, Multiple: multi, MultipleEvidence: evidence, Applicability: r.applicability, ChildTable: child, GoField: field}
 		if r.blank {
@@ -458,6 +459,7 @@ func (v *resolver) rows(t table, msg string, visiting map[string]bool) ([]spec.R
 		if field == "" {
 			field = v.byType[r.IEType].GoName
 		}
+		field = currentField(r.IEType, field)
 		r.GoField = field
 		r.SharedTypeGroup = ptr(field)
 	}
@@ -654,4 +656,36 @@ func main() {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+}
+
+// currentName applies the approved TS 29.244 V20.1.0 Table 8.1.2-1 names.
+func currentName(typ int, name string) string {
+	switch typ {
+	case 194:
+		return "CreateBridgeRouterInfo"
+	case 195:
+		return "CreatedBridgeRouterInfo"
+	case 196:
+		return "PortNumber"
+	case 198:
+		return "FiveGSUserPlaneNodeID"
+	case 206:
+		return "TimeDomainNumber"
+	case 229:
+		return "LinkSpecificMultipathIPAddress"
+	case 265:
+		return "MultipathApplicableIndication"
+	case 266:
+		return "UserPlaneNodeManagementInformationContainer"
+	default:
+		return name
+	}
+}
+
+func currentField(typ int, name string) string {
+	// TS 29.244 V20.1.0 Table 7.5.8.1-1.
+	if typ == 201 {
+		return "TSCManagementInformation"
+	}
+	return currentName(typ, name)
 }

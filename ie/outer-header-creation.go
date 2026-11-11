@@ -157,12 +157,6 @@ func (i *IE) HasIPv4() bool {
 		}
 
 		return has2ndBit(i.Payload[0]) && !has5thBit(i.Payload[0])
-	case UserPlaneIPResourceInformation:
-		if len(i.Payload) < 1 {
-			return false
-		}
-
-		return has1stBit(i.Payload[0])
 	case FSEID:
 		v, err := i.FSEID()
 		if err != nil {
@@ -209,12 +203,6 @@ func (i *IE) HasIPv6() bool {
 		}
 
 		return has1stBit(i.Payload[0]) && !has5thBit(i.Payload[0])
-	case UserPlaneIPResourceInformation:
-		if len(i.Payload) < 1 {
-			return false
-		}
-
-		return has2ndBit(i.Payload[0])
 	case FSEID:
 		v, err := i.FSEID()
 		if err != nil {

@@ -122,7 +122,7 @@ func TestTimeIEs(t *testing.T) {
 		}, {
 			description: "EventTimeStamp/ClockDriftReport",
 			structured: ie.NewClockDriftReport(
-				ie.NewTSNTimeDomainNumber(255),
+				ie.NewTimeDomainNumber(255),
 				ie.NewEventTimeStamp(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
 			),
 			decoded:     time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC),

@@ -4,19 +4,21 @@
 
 package ie
 
-// NewTSNTimeDomainNumber creates a new TSNTimeDomainNumber IE.
-func NewTSNTimeDomainNumber(num uint8) *IE {
-	return newUint8ValIE(TSNTimeDomainNumber, num)
+// TS 29.244 V20.1.0 clause 8.2.146.
+
+// NewTimeDomainNumber creates a new TimeDomainNumber IE.
+func NewTimeDomainNumber(num uint8) *IE {
+	return newUint8ValIE(TimeDomainNumber, num)
 }
 
-// TSNTimeDomainNumber returns TSNTimeDomainNumber in uint8 if the type of IE matches.
-func (i *IE) TSNTimeDomainNumber() (uint8, error) {
+// TimeDomainNumber returns TimeDomainNumber in uint8 if the type of IE matches.
+func (i *IE) TimeDomainNumber() (uint8, error) {
 	if i == nil {
 		return 0, ErrIENotFound
 	}
 
 	switch i.Type {
-	case TSNTimeDomainNumber:
+	case TimeDomainNumber:
 		return i.ValueAsUint8()
 	case ClockDriftControlInformation:
 		ies, err := i.ClockDriftControlInformation()
@@ -25,8 +27,8 @@ func (i *IE) TSNTimeDomainNumber() (uint8, error) {
 		}
 
 		for _, x := range ies {
-			if x.Type == TSNTimeDomainNumber {
-				return x.TSNTimeDomainNumber()
+			if x.Type == TimeDomainNumber {
+				return x.TimeDomainNumber()
 			}
 		}
 		return 0, ErrIENotFound
@@ -37,8 +39,8 @@ func (i *IE) TSNTimeDomainNumber() (uint8, error) {
 		}
 
 		for _, x := range ies {
-			if x.Type == TSNTimeDomainNumber {
-				return x.TSNTimeDomainNumber()
+			if x.Type == TimeDomainNumber {
+				return x.TimeDomainNumber()
 			}
 		}
 		return 0, ErrIENotFound

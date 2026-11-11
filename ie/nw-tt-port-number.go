@@ -18,8 +18,8 @@ func (i *IE) NWTTPortNumber() (uint32, error) {
 	switch i.Type {
 	case NWTTPortNumber:
 		return i.ValueAsUint32()
-	case CreatedBridgeInfoForTSC:
-		ies, err := i.CreatedBridgeInfoForTSC()
+	case CreatedBridgeRouterInfo:
+		ies, err := i.CreatedBridgeRouterInfo()
 		if err != nil {
 			return 0, err
 		}

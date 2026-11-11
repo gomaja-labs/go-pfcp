@@ -120,7 +120,7 @@ assocSetupReq := message.NewAssociationSetupRequest(
 	),
 	ie.NewClockDriftControlInformation(
 		ie.NewRequestedClockDriftInformation(1, 1),
-		ie.NewTSNTimeDomainNumber(255),
+		ie.NewTimeDomainNumber(255),
 		ie.NewTimeOffsetThreshold(10*time.Second),
 		ie.NewCumulativeRateRatioThreshold(0xffffffff),
 	),
@@ -137,7 +137,6 @@ type AssociationSetupRequest struct {
 	RecoveryTimeStamp               *ie.IE
 	UPFunctionFeatures              *ie.IE
 	CPFunctionFeatures              *ie.IE
-	UserPlaneIPResourceInformation  []*ie.IE
 	AlternativeSMFIPAddress         []*ie.IE
 	SMFSetID                        *ie.IE
 	PFCPSessionRetentionInformation *ie.IE

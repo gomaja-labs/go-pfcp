@@ -4,19 +4,21 @@
 
 package ie
 
-// NewMPTCPApplicableIndication creates a new MPTCPApplicableIndication IE.
-func NewMPTCPApplicableIndication(flag uint8) *IE {
-	return newUint8ValIE(MPTCPApplicableIndication, flag)
+// TS 29.244 V20.1.0 clause 8.2.181.
+
+// NewMultipathApplicableIndication creates a new MultipathApplicableIndication IE.
+func NewMultipathApplicableIndication(flag uint8) *IE {
+	return newUint8ValIE(MultipathApplicableIndication, flag)
 }
 
-// MPTCPApplicableIndication returns MPTCPApplicableIndication in uint8 if the type of IE matches.
-func (i *IE) MPTCPApplicableIndication() (uint8, error) {
+// MultipathApplicableIndication returns MultipathApplicableIndication in uint8 if the type of IE matches.
+func (i *IE) MultipathApplicableIndication() (uint8, error) {
 	if i == nil {
 		return 0, ErrIENotFound
 	}
 
 	switch i.Type {
-	case MPTCPApplicableIndication:
+	case MultipathApplicableIndication:
 		return i.ValueAsUint8()
 	case CreatePDR:
 		ies, err := i.CreatePDR()
@@ -24,8 +26,8 @@ func (i *IE) MPTCPApplicableIndication() (uint8, error) {
 			return 0, err
 		}
 		for _, x := range ies {
-			if x.Type == MPTCPApplicableIndication {
-				return x.MPTCPApplicableIndication()
+			if x.Type == MultipathApplicableIndication {
+				return x.MultipathApplicableIndication()
 			}
 		}
 		return 0, ErrIENotFound
@@ -41,7 +43,7 @@ func (i *IE) HasMAI() bool {
 	}
 
 	switch i.Type {
-	case MPTCPApplicableIndication:
+	case MultipathApplicableIndication:
 		if len(i.Payload) < 1 {
 			return false
 		}

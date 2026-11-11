@@ -4,32 +4,34 @@
 
 package ie
 
+// TS 29.244 V20.1.0 clause 8.2.158.
+
 import (
 	"io"
 	"net"
 )
 
-// NewUELinkSpecificIPAddress creates a new UELinkSpecificIPAddress IE.
-func NewUELinkSpecificIPAddress(v4, v6, nv4, nv6 net.IP) *IE {
-	fields := NewUELinkSpecificIPAddressFields(v4, v6, nv4, nv6)
+// NewLinkSpecificMultipathIPAddress creates a new LinkSpecificMultipathIPAddress IE.
+func NewLinkSpecificMultipathIPAddress(v4, v6, nv4, nv6 net.IP) *IE {
+	fields := NewLinkSpecificMultipathIPAddressFields(v4, v6, nv4, nv6)
 
 	b, err := fields.Marshal()
 	if err != nil {
 		return nil
 	}
 
-	return New(UELinkSpecificIPAddress, b)
+	return New(LinkSpecificMultipathIPAddress, b)
 }
 
-// UELinkSpecificIPAddress returns UELinkSpecificIPAddress in structured format if the type of IE matches.
-func (i *IE) UELinkSpecificIPAddress() (*UELinkSpecificIPAddressFields, error) {
+// LinkSpecificMultipathIPAddress returns LinkSpecificMultipathIPAddress in structured format if the type of IE matches.
+func (i *IE) LinkSpecificMultipathIPAddress() (*LinkSpecificMultipathIPAddressFields, error) {
 	if i == nil {
 		return nil, ErrIENotFound
 	}
 
 	switch i.Type {
-	case UELinkSpecificIPAddress:
-		fields, err := ParseUELinkSpecificIPAddressFields(i.Payload)
+	case LinkSpecificMultipathIPAddress:
+		fields, err := ParseLinkSpecificMultipathIPAddressFields(i.Payload)
 		if err != nil {
 			return nil, err
 		}
@@ -42,7 +44,7 @@ func (i *IE) UELinkSpecificIPAddress() (*UELinkSpecificIPAddressFields, error) {
 		}
 		for _, x := range ies {
 			if x.Type == MPTCPParameters {
-				return x.UELinkSpecificIPAddress()
+				return x.LinkSpecificMultipathIPAddress()
 			}
 		}
 		return nil, ErrIENotFound
@@ -52,8 +54,8 @@ func (i *IE) UELinkSpecificIPAddress() (*UELinkSpecificIPAddressFields, error) {
 			return nil, err
 		}
 		for _, x := range ies {
-			if x.Type == UELinkSpecificIPAddress {
-				return x.UELinkSpecificIPAddress()
+			if x.Type == LinkSpecificMultipathIPAddress {
+				return x.LinkSpecificMultipathIPAddress()
 			}
 		}
 		return nil, ErrIENotFound
@@ -62,8 +64,8 @@ func (i *IE) UELinkSpecificIPAddress() (*UELinkSpecificIPAddressFields, error) {
 	}
 }
 
-// UELinkSpecificIPAddressFields represents a fields contained in UELinkSpecificIPAddress IE.
-type UELinkSpecificIPAddressFields struct {
+// LinkSpecificMultipathIPAddressFields represents a fields contained in LinkSpecificMultipathIPAddress IE.
+type LinkSpecificMultipathIPAddressFields struct {
 	Flags                                     uint8
 	UELinkSpecificIPv4AddressFor3GPPAccess    net.IP
 	UELinkSpecificIPv6AddressFor3GPPAccess    net.IP
@@ -71,9 +73,9 @@ type UELinkSpecificIPAddressFields struct {
 	UELinkSpecificIPv6AddressForNon3GPPAccess net.IP
 }
 
-// NewUELinkSpecificIPAddressFields creates a new NewUELinkSpecificIPAddressFields.
-func NewUELinkSpecificIPAddressFields(v4, v6, nv4, nv6 net.IP) *UELinkSpecificIPAddressFields {
-	f := &UELinkSpecificIPAddressFields{Flags: 0x00}
+// NewLinkSpecificMultipathIPAddressFields creates a new NewLinkSpecificMultipathIPAddressFields.
+func NewLinkSpecificMultipathIPAddressFields(v4, v6, nv4, nv6 net.IP) *LinkSpecificMultipathIPAddressFields {
+	f := &LinkSpecificMultipathIPAddressFields{Flags: 0x00}
 
 	if v4 != nil {
 		f.SetIPv4Flag()
@@ -97,7 +99,7 @@ func NewUELinkSpecificIPAddressFields(v4, v6, nv4, nv6 net.IP) *UELinkSpecificIP
 }
 
 // HasNV6 reports whether NV6 flag is set.
-func (f *UELinkSpecificIPAddressFields) HasNV6() bool {
+func (f *LinkSpecificMultipathIPAddressFields) HasNV6() bool {
 	if f == nil {
 		return false
 	}
@@ -105,8 +107,8 @@ func (f *UELinkSpecificIPAddressFields) HasNV6() bool {
 	return has4thBit(f.Flags)
 }
 
-// SetNV6Flag sets NV6 flag in UELinkSpecificIPAddress.
-func (f *UELinkSpecificIPAddressFields) SetNV6Flag() {
+// SetNV6Flag sets NV6 flag in LinkSpecificMultipathIPAddress.
+func (f *LinkSpecificMultipathIPAddressFields) SetNV6Flag() {
 	if f == nil {
 		return
 	}
@@ -115,7 +117,7 @@ func (f *UELinkSpecificIPAddressFields) SetNV6Flag() {
 }
 
 // HasNV4 reports whether NV4 flag is set.
-func (f *UELinkSpecificIPAddressFields) HasNV4() bool {
+func (f *LinkSpecificMultipathIPAddressFields) HasNV4() bool {
 	if f == nil {
 		return false
 	}
@@ -123,8 +125,8 @@ func (f *UELinkSpecificIPAddressFields) HasNV4() bool {
 	return has3rdBit(f.Flags)
 }
 
-// SetNV4Flag sets NV4 flag in UELinkSpecificIPAddress.
-func (f *UELinkSpecificIPAddressFields) SetNV4Flag() {
+// SetNV4Flag sets NV4 flag in LinkSpecificMultipathIPAddress.
+func (f *LinkSpecificMultipathIPAddressFields) SetNV4Flag() {
 	if f == nil {
 		return
 	}
@@ -133,7 +135,7 @@ func (f *UELinkSpecificIPAddressFields) SetNV4Flag() {
 }
 
 // HasIPv6 reports whether IPv6 flag is set.
-func (f *UELinkSpecificIPAddressFields) HasIPv6() bool {
+func (f *LinkSpecificMultipathIPAddressFields) HasIPv6() bool {
 	if f == nil {
 		return false
 	}
@@ -141,8 +143,8 @@ func (f *UELinkSpecificIPAddressFields) HasIPv6() bool {
 	return has2ndBit(f.Flags)
 }
 
-// SetIPv6Flag sets IPv6 flag in UELinkSpecificIPAddress.
-func (f *UELinkSpecificIPAddressFields) SetIPv6Flag() {
+// SetIPv6Flag sets IPv6 flag in LinkSpecificMultipathIPAddress.
+func (f *LinkSpecificMultipathIPAddressFields) SetIPv6Flag() {
 	if f == nil {
 		return
 	}
@@ -151,7 +153,7 @@ func (f *UELinkSpecificIPAddressFields) SetIPv6Flag() {
 }
 
 // HasIPv4 reports whether IPv4 flag is set.
-func (f *UELinkSpecificIPAddressFields) HasIPv4() bool {
+func (f *LinkSpecificMultipathIPAddressFields) HasIPv4() bool {
 	if f == nil {
 		return false
 	}
@@ -159,8 +161,8 @@ func (f *UELinkSpecificIPAddressFields) HasIPv4() bool {
 	return has1stBit(f.Flags)
 }
 
-// SetIPv4Flag sets IPv4 flag in UELinkSpecificIPAddress.
-func (f *UELinkSpecificIPAddressFields) SetIPv4Flag() {
+// SetIPv4Flag sets IPv4 flag in LinkSpecificMultipathIPAddress.
+func (f *LinkSpecificMultipathIPAddressFields) SetIPv4Flag() {
 	if f == nil {
 		return
 	}
@@ -168,9 +170,9 @@ func (f *UELinkSpecificIPAddressFields) SetIPv4Flag() {
 	f.Flags |= 0x01
 }
 
-// ParseUELinkSpecificIPAddressFields parses b into UELinkSpecificIPAddressFields.
-func ParseUELinkSpecificIPAddressFields(b []byte) (*UELinkSpecificIPAddressFields, error) {
-	f := &UELinkSpecificIPAddressFields{}
+// ParseLinkSpecificMultipathIPAddressFields parses b into LinkSpecificMultipathIPAddressFields.
+func ParseLinkSpecificMultipathIPAddressFields(b []byte) (*LinkSpecificMultipathIPAddressFields, error) {
+	f := &LinkSpecificMultipathIPAddressFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
 		return nil, err
 	}
@@ -178,11 +180,11 @@ func ParseUELinkSpecificIPAddressFields(b []byte) (*UELinkSpecificIPAddressField
 }
 
 // UnmarshalBinary parses b into IE.
-func (f *UELinkSpecificIPAddressFields) UnmarshalBinary(b []byte) error {
+func (f *LinkSpecificMultipathIPAddressFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
 	}
-	*f = UELinkSpecificIPAddressFields{}
+	*f = LinkSpecificMultipathIPAddressFields{}
 
 	l := len(b)
 	if l < 1 {
@@ -226,8 +228,8 @@ func (f *UELinkSpecificIPAddressFields) UnmarshalBinary(b []byte) error {
 	return nil
 }
 
-// Marshal returns the serialized bytes of UELinkSpecificIPAddressFields.
-func (f *UELinkSpecificIPAddressFields) Marshal() ([]byte, error) {
+// Marshal returns the serialized bytes of LinkSpecificMultipathIPAddressFields.
+func (f *LinkSpecificMultipathIPAddressFields) Marshal() ([]byte, error) {
 	if f == nil {
 		return nil, ErrIENotFound
 	}
@@ -240,7 +242,7 @@ func (f *UELinkSpecificIPAddressFields) Marshal() ([]byte, error) {
 }
 
 // MarshalTo puts the byte sequence in the byte array given as b.
-func (f *UELinkSpecificIPAddressFields) MarshalTo(b []byte) error {
+func (f *LinkSpecificMultipathIPAddressFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
 	}
@@ -294,7 +296,7 @@ func (f *UELinkSpecificIPAddressFields) MarshalTo(b []byte) error {
 }
 
 // MarshalLen returns field length in integer.
-func (f *UELinkSpecificIPAddressFields) MarshalLen() int {
+func (f *LinkSpecificMultipathIPAddressFields) MarshalLen() int {
 	if f == nil {
 		return 0
 	}

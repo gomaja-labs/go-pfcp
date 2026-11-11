@@ -46,10 +46,10 @@ func TestSessionEstablishmentResponse(t *testing.T) {
 					ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 					ie.NewUEIPAddress(0x02, "127.0.0.1", "", 0, 0),
 				),
-				ie.NewCreatedBridgeInfoForTSC(
-					ie.NewDSTTPortNumber(0xffffffff),
+				ie.NewCreatedBridgeRouterInfo(
+					ie.NewPortNumber(0xffffffff),
 					ie.NewNWTTPortNumber(0xffffffff),
-					ie.NewTSNBridgeID(mac1),
+					ie.NewFiveGSUserPlaneNodeID(mac1),
 				),
 				ie.NewProvideATSSSControlInformation(
 					ie.NewMPTCPControlInformation(1),
@@ -125,10 +125,10 @@ func TestSessionEstablishmentResponse(t *testing.T) {
 					ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 					ie.NewUEIPAddress(0x02, "127.0.0.1", "", 0, 0),
 				),
-				ie.NewCreatedBridgeInfoForTSC(
-					ie.NewDSTTPortNumber(0xffffffff),
+				ie.NewCreatedBridgeRouterInfo(
+					ie.NewPortNumber(0xffffffff),
 					ie.NewNWTTPortNumber(0xffffffff),
-					ie.NewTSNBridgeID(tsnBridgeMac),
+					ie.NewFiveGSUserPlaneNodeID(tsnBridgeMac),
 				),
 				ie.NewProvideATSSSControlInformation(
 					ie.NewMPTCPControlInformation(1),

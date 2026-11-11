@@ -4,19 +4,21 @@
 
 package ie
 
-// NewCreateBridgeInfoForTSC creates a new CreateBridgeInfoForTSC IE.
-func NewCreateBridgeInfoForTSC(bii uint8) *IE {
-	return newUint8ValIE(CreateBridgeInfoForTSC, bii&0x01)
+// TS 29.244 V20.1.0 clause 8.2.140.
+
+// NewCreateBridgeRouterInfo creates a new CreateBridgeRouterInfo IE.
+func NewCreateBridgeRouterInfo(bii uint8) *IE {
+	return newUint8ValIE(CreateBridgeRouterInfo, bii&0x01)
 }
 
-// CreateBridgeInfoForTSC returns CreateBridgeInfoForTSC in uint8 if the type of IE matches.
-func (i *IE) CreateBridgeInfoForTSC() (uint8, error) {
+// CreateBridgeRouterInfo returns CreateBridgeRouterInfo in uint8 if the type of IE matches.
+func (i *IE) CreateBridgeRouterInfo() (uint8, error) {
 	if i == nil {
 		return 0, ErrIENotFound
 	}
 
 	switch i.Type {
-	case CreateBridgeInfoForTSC:
+	case CreateBridgeRouterInfo:
 		return i.ValueAsUint8()
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
@@ -29,7 +31,7 @@ func (i *IE) HasBII() bool {
 		return false
 	}
 
-	v, err := i.CreateBridgeInfoForTSC()
+	v, err := i.CreateBridgeRouterInfo()
 	if err != nil {
 		return false
 	}

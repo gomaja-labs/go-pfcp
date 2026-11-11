@@ -292,3 +292,30 @@ func TestEveryMessageConcurrentMarshal(t *testing.T) {
 		})
 	}
 }
+
+// TS 29.244 V20.1.0 clause 8.2.82 is void; clause 7.6.9 preserves unknown IEs.
+func TestReservedType116(t *testing.T) {
+	for _, payload := range [][]byte{nil, {0xff, 0x01, 0x02}} {
+		for _, m := range catalogueMessages(ie.New(116, payload)) {
+			t.Run(m.MessageTypeName(), func(t *testing.T) {
+				b := encodeTestMessage(t, m)
+				got, err := Parse(b)
+				if err != nil {
+					t.Fatal(err)
+				}
+				field := reflect.ValueOf(got).Elem().FieldByName("OtherIEs")
+				others, ok := field.Interface().([]*ie.IE)
+				if !ok || len(others) != 1 || others[0].Type != 116 || !bytes.Equal(others[0].Payload, payload) {
+					t.Fatal("reserved IE not retained as unknown")
+				}
+				after := encodeTestMessage(t, got)
+				if !bytes.Equal(b, after) {
+					t.Fatal("unknown IE bytes changed")
+				}
+			})
+		}
+	}
+	if ie.IEType(116).String() != "IEType(116)" {
+		t.Fatal("reserved type has an assigned name")
+	}
+}

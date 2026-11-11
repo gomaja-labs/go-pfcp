@@ -78,7 +78,7 @@ func TestUint32IEs(t *testing.T) {
 			description: "CumulativeRateRatioThreshold/ClockDriftControlInformation",
 			structured: ie.NewClockDriftControlInformation(
 				ie.NewRequestedClockDriftInformation(1, 1),
-				ie.NewTSNTimeDomainNumber(255),
+				ie.NewTimeDomainNumber(255),
 				ie.NewTimeOffsetThreshold(10*time.Second),
 				ie.NewCumulativeRateRatioThreshold(0xffffffff),
 			),
@@ -87,7 +87,7 @@ func TestUint32IEs(t *testing.T) {
 		}, {
 			description: "CumulativeRateRatioThreshold/ClockDriftReport",
 			structured: ie.NewClockDriftReport(
-				ie.NewTSNTimeDomainNumber(255),
+				ie.NewTimeDomainNumber(255),
 				ie.NewTimeOffsetThreshold(10*time.Second),
 				ie.NewCumulativeRateRatioThreshold(0xffffffff),
 				ie.NewEventTimeStamp(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
@@ -95,19 +95,19 @@ func TestUint32IEs(t *testing.T) {
 			decoded:     0xffffffff,
 			decoderFunc: func(i *ie.IE) (uint32, error) { return i.CumulativeRateRatioThreshold() },
 		}, {
-			description: "DSTTPortNumber",
-			structured:  ie.NewDSTTPortNumber(0xffffffff),
+			description: "PortNumber",
+			structured:  ie.NewPortNumber(0xffffffff),
 			decoded:     0xffffffff,
-			decoderFunc: func(i *ie.IE) (uint32, error) { return i.DSTTPortNumber() },
+			decoderFunc: func(i *ie.IE) (uint32, error) { return i.PortNumber() },
 		}, {
-			description: "DSTTPortNumber/CreatedBridgeInfoForTSC",
-			structured: ie.NewCreatedBridgeInfoForTSC(
-				ie.NewDSTTPortNumber(0xffffffff),
+			description: "PortNumber/CreatedBridgeRouterInfo",
+			structured: ie.NewCreatedBridgeRouterInfo(
+				ie.NewPortNumber(0xffffffff),
 				ie.NewNWTTPortNumber(0xffffffff),
-				ie.NewTSNBridgeID(mac1),
+				ie.NewFiveGSUserPlaneNodeID(mac1),
 			),
 			decoded:     0xffffffff,
-			decoderFunc: func(i *ie.IE) (uint32, error) { return i.DSTTPortNumber() },
+			decoderFunc: func(i *ie.IE) (uint32, error) { return i.PortNumber() },
 		}, {
 			description: "EthernetFilterID",
 			structured:  ie.NewEthernetFilterID(0xffffffff),
