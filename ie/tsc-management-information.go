@@ -46,19 +46,19 @@ func NewPortManagementInformationForTSC(typ IEType, info *IE) *IE {
 	return newGroupedIE(typ, 0, info)
 }
 
-// NewPortManagementInformationForTSCWithinSessionModificationRequest creates a new PortManagementInformationForTSCWithinSessionModificationRequest IE.
+// NewPortManagementInformationForTSCWithinSessionModificationRequest creates a new TSCManagementInformationWithinSessionModificationRequest IE.
 func NewPortManagementInformationForTSCWithinSessionModificationRequest(info *IE) *IE {
-	return newGroupedIE(PortManagementInformationForTSCWithinSessionModificationRequest, 0, info)
+	return newGroupedIE(TSCManagementInformationWithinSessionModificationRequest, 0, info)
 }
 
-// NewPortManagementInformationForTSCWithinSessionModificationResponse creates a new PortManagementInformationForTSCWithinSessionModificationResponse IE.
+// NewPortManagementInformationForTSCWithinSessionModificationResponse creates a new TSCManagementInformationWithinSessionModificationResponse IE.
 func NewPortManagementInformationForTSCWithinSessionModificationResponse(info *IE) *IE {
-	return newGroupedIE(PortManagementInformationForTSCWithinSessionModificationResponse, 0, info)
+	return newGroupedIE(TSCManagementInformationWithinSessionModificationResponse, 0, info)
 }
 
-// NewPortManagementInformationForTSCWithinSessionReportRequest creates a new PortManagementInformationForTSCWithinSessionReportRequest IE.
+// NewPortManagementInformationForTSCWithinSessionReportRequest creates a new TSCManagementInformationWithinSessionReportRequest IE.
 func NewPortManagementInformationForTSCWithinSessionReportRequest(info *IE) *IE {
-	return newGroupedIE(PortManagementInformationForTSCWithinSessionReportRequest, 0, info)
+	return newGroupedIE(TSCManagementInformationWithinSessionReportRequest, 0, info)
 }
 
 // PortManagementInformationForTSC returns the IEs above PortManagementInformationForTSC if the type of IE matches.
@@ -68,9 +68,9 @@ func (i *IE) PortManagementInformationForTSC() ([]*IE, error) {
 	}
 
 	switch i.Type {
-	case PortManagementInformationForTSCWithinSessionModificationRequest,
-		PortManagementInformationForTSCWithinSessionModificationResponse,
-		PortManagementInformationForTSCWithinSessionReportRequest:
+	case TSCManagementInformationWithinSessionModificationRequest,
+		TSCManagementInformationWithinSessionModificationResponse,
+		TSCManagementInformationWithinSessionReportRequest:
 
 		return i.ValueAsGrouped()
 	default:

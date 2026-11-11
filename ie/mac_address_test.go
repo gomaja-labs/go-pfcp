@@ -1,6 +1,7 @@
 package ie_test
 
 import (
+	"errors"
 	"io"
 	"net"
 	"testing"
@@ -104,7 +105,7 @@ func TestParseMACAddressFields(t *testing.T) {
 	for _, c := range cases {
 		t.Run(c.description, func(t *testing.T) {
 			got, err := ie.ParseMACAddressFields(c.serialized)
-			if err != c.err {
+			if !errors.Is(err, c.err) {
 				t.Errorf("expected error %v but got %v", c.err, err)
 				t.Fatal(err)
 			}
