@@ -166,3 +166,19 @@ func TestPacketRateStatusWireFractionBoundary(t *testing.T) {
 		}
 	}
 }
+
+func TestPacketRateStatusEraWindow(t *testing.T) {
+	for _, want := range []time.Time{
+		time.Unix(0, 0).UTC(), time.Date(2036, 2, 7, 6, 28, 15, 0, time.UTC), time.Date(2036, 2, 7, 6, 28, 16, 0, time.UTC), time.Date(2105, 1, 1, 0, 0, 0, 0, time.UTC), time.Unix(1<<32-1, 999999999).UTC(),
+	} {
+		f, e := ie.NewPacketRateStatus(1, 1, 0, 0, 0, want).PacketRateStatus()
+		if e != nil || !f.RateControlStatusValidityTime.Equal(want) {
+			t.Fatalf("era window changed %v: %v", want, e)
+		}
+	}
+	// 0.999999999 seconds is nearest to fraction 2^32-4 (not 2^32-5).
+	i := ie.NewPacketRateStatus(1, 1, 0, 0, 0, time.Unix(1700000000, 999999999))
+	if v := binary.BigEndian.Uint32(i.Payload[7:]); v != 0xfffffffc {
+		t.Fatalf("nearest NTP fraction %d; want 2^32-4", v)
+	}
+}
