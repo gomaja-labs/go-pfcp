@@ -35,7 +35,7 @@ func (i *IE) OffendingIEInformation() (*OffendingIEInformationFields, error) {
 	return f, nil
 }
 
-// ParseOffendingIEInformationFields decodes the known fields; unknown extension octets are ignored.
+// ParseOffendingIEInformationFields decodes the type and the remaining offending value.
 // TS 29.244 V20.1.0 clauses 8.2.185 and 8.1.2.
 func ParseOffendingIEInformationFields(b []byte) (*OffendingIEInformationFields, error) {
 	f := &OffendingIEInformationFields{}
