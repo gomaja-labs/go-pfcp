@@ -239,7 +239,7 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewDestinationInterface(0xff),
 				ie.NewNetworkInstance("some.instance.example"),
 			),
-			decoded: 0xff,
+			decoded: 0x0f,
 			decoderFunc: func(i *ie.IE) (uint8, error) {
 				f0, err := i.ForwardingParameters()
 				if err != nil {
@@ -253,7 +253,7 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewDestinationInterface(0xff),
 				ie.NewNetworkInstance("some.instance.example"),
 			),
-			decoded: 0xff,
+			decoded: 0x0f,
 			decoderFunc: func(i *ie.IE) (uint8, error) {
 				f0, err := i.UpdateForwardingParameters()
 				if err != nil {
@@ -267,7 +267,7 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewDestinationInterface(0xff),
 				ie.NewNetworkInstance("some.instance.example"),
 			),
-			decoded: 0xff,
+			decoded: 0x0f,
 			decoderFunc: func(i *ie.IE) (uint8, error) {
 				f0, err := i.DuplicatingParameters()
 				if err != nil {
@@ -281,7 +281,7 @@ func TestUint8IEs(t *testing.T) {
 				ie.NewDestinationInterface(0xff),
 				ie.NewNetworkInstance("some.instance.example"),
 			),
-			decoded: 0xff,
+			decoded: 0x0f,
 			decoderFunc: func(i *ie.IE) (uint8, error) {
 				f0, err := i.UpdateDuplicatingParameters()
 				if err != nil {

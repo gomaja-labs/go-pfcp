@@ -41,3 +41,23 @@ func (i *IE) Cause() (uint8, error) {
 	}
 	return i.ValueAsUint8()
 }
+
+// TS 29.244 V20.1.0 Table 8.2.1-1.
+const (
+	CauseMoreUsageReportsToSend                uint8 = 2
+	CauseRequestPartiallyAccepted              uint8 = 3
+	CauseAllDynamicAddressesOccupied           uint8 = 79
+	CauseUnknownPredefinedRule                 uint8 = 80
+	CauseUnknownApplicationID                  uint8 = 81
+	CauseL2TPTunnelEstablishmentFailure        uint8 = 82
+	CauseL2TPSessionEstablishmentFailure       uint8 = 83
+	CauseL2TPTunnelRelease                     uint8 = 84
+	CauseL2TPSessionRelease                    uint8 = 85
+	CauseSessionRestorationResourceUnavailable uint8 = 86
+	CauseL2TPTunnelAuthenticationFailure       uint8 = 87
+	CauseL2TPSessionAuthenticationFailure      uint8 = 88
+	CauseL2TPLNSUnreachable                    uint8 = 89
+	CausePFDContentsSyntaxError                uint8 = 90
+	CausePFDContentsSemanticsError             uint8 = 91
+	CausePFDApplicationIDUnknown               uint8 = 92
+)

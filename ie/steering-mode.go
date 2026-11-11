@@ -30,3 +30,8 @@ func (i *IE) SteeringMode() (uint8, error) {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
 }
+
+// TS 29.244 V20.1.0 Table 8.2.125-1.
+const (
+	SteeringModeRedundant uint8 = 4
+)

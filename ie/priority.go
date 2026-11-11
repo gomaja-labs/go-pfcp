@@ -31,3 +31,9 @@ func (i *IE) Priority() (uint8, error) {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
 }
+
+// TS 29.244 V20.1.0 Table 8.2.127-1.
+const (
+	PriorityPrimary   uint8 = 5
+	PrioritySecondary uint8 = 6
+)

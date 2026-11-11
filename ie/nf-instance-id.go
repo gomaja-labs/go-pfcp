@@ -25,6 +25,9 @@ func (i *IE) NFInstanceID() ([]byte, error) {
 
 	switch i.Type {
 	case NFInstanceID:
+		if err := i.validateFixedValue(); err != nil {
+			return nil, err
+		}
 		if len(i.Payload) < 16 {
 			return nil, io.ErrUnexpectedEOF
 		}

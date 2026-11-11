@@ -79,7 +79,8 @@ func (i *IE) GracefulReleasePeriod() (time.Duration, error) {
 	case 0x00:
 		d = time.Duration(i.Payload[0]&0x1f) * 2 * time.Second
 	default:
-		d = 0
+		// TS 29.244 V20.1.0 clause 8.2.78: unassigned units mean minutes.
+		d = time.Duration(i.Payload[0]&0x1f) * time.Minute
 	}
 
 	return d, nil

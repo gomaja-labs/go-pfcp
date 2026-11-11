@@ -26,6 +26,9 @@ func (i *IE) SNSSAI() ([]byte, error) {
 
 	switch i.Type {
 	case SNSSAI:
+		if err := i.validateFixedValue(); err != nil {
+			return nil, err
+		}
 		if len(i.Payload) < 4 {
 			return nil, io.ErrUnexpectedEOF
 		}

@@ -53,3 +53,18 @@ func (i *IE) TGPPInterfaceType() (uint8, error) {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
 }
+
+// TS 29.244 V20.1.0 Table 8.2.118-1.
+const (
+	TGPPInterfaceTypeN9Roaming        uint8 = 21
+	TGPPInterfaceTypeIuU              uint8 = 22
+	TGPPInterfaceTypeN9DataForwarding uint8 = 23
+	TGPPInterfaceTypeSxaU             uint8 = 24
+	TGPPInterfaceTypeSxbU             uint8 = 25
+	TGPPInterfaceTypeSxcU             uint8 = 26
+	TGPPInterfaceTypeN4U              uint8 = 27
+	TGPPInterfaceTypeSGWUPFUL         uint8 = 28
+	TGPPInterfaceTypeN6mbNmb9         uint8 = 29
+	TGPPInterfaceTypeN3mb             uint8 = 30
+	TGPPInterfaceTypeN19mb            uint8 = 31
+)

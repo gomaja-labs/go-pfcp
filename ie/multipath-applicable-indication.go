@@ -42,3 +42,11 @@ func (i *IE) HasMAI() bool {
 		return false
 	}
 }
+
+// HasMTAI reports whether the MTAI flag is set.
+// TS 29.244 V20.1.0 clause 8.2.181, octet 5 bit 1.
+func (i *IE) HasMTAI() bool { return payloadFlag(i, MultipathApplicableIndication, 0, 0x01) }
+
+// HasMQAI reports whether the MQAI flag is set.
+// TS 29.244 V20.1.0 clause 8.2.181, octet 5 bit 2.
+func (i *IE) HasMQAI() bool { return payloadFlag(i, MultipathApplicableIndication, 0, 0x02) }

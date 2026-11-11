@@ -27,7 +27,8 @@ func (i *IE) DestinationInterface() (uint8, error) {
 
 	switch i.Type {
 	case DestinationInterface:
-		return i.ValueAsUint8()
+		// TS 29.244 V20.1.0 clauses 8.1.2 and 8.2.24: ignore spare bits.
+		return i.valueAsUint8Masked(0x0f)
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

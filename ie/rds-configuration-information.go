@@ -25,6 +25,11 @@ func (i *IE) RDSConfigurationInformation() (uint8, error) {
 
 // HasRDS reports whether an IE has RDS bit.
 func (i *IE) HasRDS() bool {
+	// TS 29.244 V20.1.0 clause 8.2.25, octet 9 bit 8.
+	if i != nil && i.Type == UPFunctionFeatures {
+		return payloadFlag(i, UPFunctionFeatures, 4, 0x80)
+	}
+
 	if i == nil {
 		return false
 	}

@@ -147,7 +147,8 @@ func (i *IE) HasIPv6() bool {
 			return false
 		}
 
-		return has1stBit(i.Payload[0]) && !has5thBit(i.Payload[0])
+		// TS 29.244 V20.1.0 clause 8.2.62: CHV6, not CHV4, suppresses IPv6.
+		return has1stBit(i.Payload[0]) && !has6thBit(i.Payload[0])
 	case FSEID:
 		v, err := i.FSEID()
 		if err != nil {

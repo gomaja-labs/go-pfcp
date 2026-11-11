@@ -86,3 +86,15 @@ func (i *IE) HasMBQE() bool {
 
 	return has1stBit(i.Payload[0])
 }
+
+// HasSSPOC reports whether the SSPOC flag is set.
+// TS 29.244 V20.1.0 clause 8.2.68, octet 5 bit 6.
+func (i *IE) HasSSPOC() bool { return payloadFlag(i, MeasurementInformation, 0, 0x20) }
+
+// HasASPOC reports whether the ASPOC flag is set.
+// TS 29.244 V20.1.0 clause 8.2.68, octet 5 bit 7.
+func (i *IE) HasASPOC() bool { return payloadFlag(i, MeasurementInformation, 0, 0x40) }
+
+// HasCIAM reports whether the CIAM flag is set.
+// TS 29.244 V20.1.0 clause 8.2.68, octet 5 bit 8.
+func (i *IE) HasCIAM() bool { return payloadFlag(i, MeasurementInformation, 0, 0x80) }

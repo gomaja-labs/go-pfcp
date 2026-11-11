@@ -29,5 +29,6 @@ func (i *IE) PDNType() (uint8, error) {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
 
-	return i.ValueAsUint8()
+	// TS 29.244 V20.1.0 clauses 8.1.2 and 8.2.79: ignore spare bits.
+	return i.valueAsUint8Masked(0x07)
 }

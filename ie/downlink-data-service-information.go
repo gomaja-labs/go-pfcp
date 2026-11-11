@@ -78,9 +78,16 @@ func (i *IE) PPI() (uint8, error) {
 	if i.Type != DownlinkDataServiceInformation {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
+	if len(i.Payload) == 0 {
+		return 0, io.ErrUnexpectedEOF
+	}
+	// TS 29.244 V20.1.0 clause 8.2.27: QFI is not a missing PPI.
+	if !i.HasPPI() {
+		return 0, ErrIENotFound
+	}
 	if len(i.Payload) < 2 {
 		return 0, io.ErrUnexpectedEOF
 	}
 
-	return i.Payload[1], nil
+	return i.Payload[1] & 0x07, nil
 }

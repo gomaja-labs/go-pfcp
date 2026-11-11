@@ -38,8 +38,8 @@ func (i *IE) ValidateApplyAction() error {
 	if i.Type != ApplyAction {
 		return &InvalidTypeError{Type: i.Type}
 	}
-	// One and only one of the DROP, FORW, BUFF, IPMA and IPMD flags shall be set to "1".
-	flags := []bool{i.HasDROP(), i.HasFORW(), i.HasBUFF(), i.HasIPMA(), i.HasIPMD()}
+	// TS 29.244 V20.1.0 clause 8.2.26: FSSM and/or MBSU form one forwarding choice.
+	flags := []bool{i.HasDROP(), i.HasFORW(), i.HasBUFF(), i.HasIPMA(), i.HasIPMD(), i.HasFSSM() || i.HasMBSU()}
 	counter := 0
 	for _, v := range flags {
 		if v {
@@ -58,7 +58,6 @@ func (i *IE) ValidateApplyAction() error {
 		return ErrMalformed
 	}
 	// The DFRT flag may only be set if the FORW flag is set.
-	// Note: in TS 29.244 V18.0.1 (most recent as of writing), there is a typo and DFRN is stated instead of DFRT
 	if i.HasDFRT() && !i.HasFORW() {
 		return ErrMalformed
 	}
@@ -67,11 +66,8 @@ func (i *IE) ValidateApplyAction() error {
 		return ErrMalformed
 	}
 
-	// Note: The following is also stated in TS 29.244 section 8.2.26 V18.0.1,
-	// but since "may" is used and not "may only"
-	// it cannot be used to check for inconsistent IEs:
-	// - The EDRT flag may be set if the FORW flag is set.
-	// - Both the MBSU flag and the FSSM flag may be set […]
+	// Clause 8.2.26 permits EDRT with FORW without making that combination exclusive.
+
 	return nil
 }
 

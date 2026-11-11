@@ -8,7 +8,7 @@ package ie
 
 // NewCreateBridgeRouterInfo creates a new CreateBridgeRouterInfo IE.
 func NewCreateBridgeRouterInfo(bii uint8) *IE {
-	return newUint8ValIE(CreateBridgeRouterInfo, bii&0x01)
+	return newUint8ValIE(CreateBridgeRouterInfo, bii&0x03)
 }
 
 // CreateBridgeRouterInfo returns CreateBridgeRouterInfo in uint8 if the type of IE matches.
@@ -19,7 +19,7 @@ func (i *IE) CreateBridgeRouterInfo() (uint8, error) {
 
 	switch i.Type {
 	case CreateBridgeRouterInfo:
-		return i.ValueAsUint8()
+		return i.valueAsUint8Masked(0x03)
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
@@ -38,3 +38,7 @@ func (i *IE) HasBII() bool {
 
 	return has1stBit(v)
 }
+
+// HasRII reports whether the RII flag is set.
+// TS 29.244 V20.1.0 clause 8.2.140, octet 5 bit 2.
+func (i *IE) HasRII() bool { return payloadFlag(i, CreateBridgeRouterInfo, 0, 0x02) }
