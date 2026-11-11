@@ -136,7 +136,6 @@ func TestMessagesCatalogue(t *testing.T) {
 			}
 			// Build an independently ordered frame. Sorting on encode must fail here.
 			var payload []byte
-			reverse := []*ie.IE{}
 			for n := len(input) - 1; n >= 0; n-- {
 				if input[n] == nil {
 					continue
@@ -146,7 +145,6 @@ func TestMessagesCatalogue(t *testing.T) {
 					t.Fatal(err)
 				}
 				payload = append(payload, b...)
-				reverse = append(reverse, input[n])
 			}
 			flags := byte(0x20)
 			headerSize := 8
