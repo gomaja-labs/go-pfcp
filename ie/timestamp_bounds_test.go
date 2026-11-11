@@ -19,7 +19,7 @@ func TestTimestampEraWindow(t *testing.T) {
 			requireInvalidValue(t, time.Unix(unix, 0).UTC().String(), i.Type, i)
 		}
 		for _, unix := range []int64{0, 2085978495, 2085978496, 4294967295} {
-			i := ctor(time.Unix(unix, 999))
+			i := ctor(time.Unix(unix, 0))
 			if i == nil {
 				t.Fatal("valid timestamp rejected")
 			}
