@@ -11,6 +11,10 @@ func NewPFCPSMReqFlags(flag uint8) *IE {
 
 // PFCPSMReqFlags returns PFCPSMReqFlags in uint8 if the type of IE matches.
 func (i *IE) PFCPSMReqFlags() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case PFCPSMReqFlags:
 		return i.ValueAsUint8()
@@ -43,6 +47,10 @@ func (i *IE) PFCPSMReqFlags() (uint8, error) {
 
 // HasDROBU reports whether an IE has DROBU bit.
 func (i *IE) HasDROBU() bool {
+	if i == nil {
+		return false
+	}
+
 	if len(i.Payload) < 1 {
 		return false
 	}
@@ -69,6 +77,10 @@ func (i *IE) HasDROBU() bool {
 
 // HasSNDEM reports whether an IE has SNDEM bit.
 func (i *IE) HasSNDEM() bool {
+	if i == nil {
+		return false
+	}
+
 	if len(i.Payload) < 1 {
 		return false
 	}
@@ -88,6 +100,10 @@ func (i *IE) HasSNDEM() bool {
 
 // HasQAURR reports whether an IE has QAURR bit.
 func (i *IE) HasQAURR() bool {
+	if i == nil {
+		return false
+	}
+
 	if len(i.Payload) < 1 {
 		return false
 	}

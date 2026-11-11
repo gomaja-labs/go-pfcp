@@ -11,6 +11,10 @@ func NewATSSSLLControlInformation(lli uint8) *IE {
 
 // ATSSSLLControlInformation returns ATSSSLLControlInformation in uint8 if the type of IE matches.
 func (i *IE) ATSSSLLControlInformation() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case ATSSSLLControlInformation:
 		return i.ValueAsUint8()
@@ -32,6 +36,10 @@ func (i *IE) ATSSSLLControlInformation() (uint8, error) {
 
 // HasLLI reports whether an IE has LLI bit.
 func (i *IE) HasLLI() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case ATSSSLLControlInformation, ATSSSLLInformation:
 		if len(i.Payload) < 1 {

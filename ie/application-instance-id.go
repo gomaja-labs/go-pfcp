@@ -11,6 +11,10 @@ func NewApplicationInstanceID(id string) *IE {
 
 // ApplicationInstanceID returns ApplicationInstanceID in string if the type of IE matches.
 func (i *IE) ApplicationInstanceID() (string, error) {
+	if i == nil {
+		return "", ErrIENotFound
+	}
+
 	switch i.Type {
 	case ApplicationInstanceID:
 		return i.ValueAsString()

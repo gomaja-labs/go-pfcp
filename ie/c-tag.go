@@ -23,6 +23,10 @@ func NewCTAG(flags, pcp, deiFlag uint8, cvid uint16) *IE {
 
 // CTAG returns CTAG in structured format if the type of IE matches.
 func (i *IE) CTAG() (*CTAGFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case CTAG:
 		fields, err := ParseCTAGFields(i.Payload)
@@ -101,31 +105,55 @@ func NewCTAGFields(flags, pcp, deiFlag uint8, cvid uint16) *CTAGFields {
 
 // HasVID reports whether VID flag is set.
 func (f *CTAGFields) HasVID() bool {
+	if f == nil {
+		return false
+	}
+
 	return has3rdBit(f.Flags)
 }
 
 // SetVIDFlag sets VID flag in CTAG.
 func (f *CTAGFields) SetVIDFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x04
 }
 
 // HasDEI reports whether DEI flag is set.
 func (f *CTAGFields) HasDEI() bool {
+	if f == nil {
+		return false
+	}
+
 	return has2ndBit(f.Flags)
 }
 
 // SetDEIFlag sets DEI flag in CTAG.
 func (f *CTAGFields) SetDEIFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x02
 }
 
 // HasPCP reports whether PCP flag is set.
 func (f *CTAGFields) HasPCP() bool {
+	if f == nil {
+		return false
+	}
+
 	return has1stBit(f.Flags)
 }
 
 // SetPCPFlag sets PCP flag in CTAG.
 func (f *CTAGFields) SetPCPFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x01
 }
 
@@ -140,6 +168,11 @@ func ParseCTAGFields(b []byte) (*CTAGFields, error) {
 
 // UnmarshalBinary parses b into IE.
 func (f *CTAGFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = CTAGFields{}
+
 	l := len(b)
 	if l < 3 {
 		return io.ErrUnexpectedEOF
@@ -165,6 +198,10 @@ func (f *CTAGFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of CTAGFields.
 func (f *CTAGFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -174,6 +211,16 @@ func (f *CTAGFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *CTAGFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -188,5 +235,9 @@ func (f *CTAGFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *CTAGFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	return 3
 }

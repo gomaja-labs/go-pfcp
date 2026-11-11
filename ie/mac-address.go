@@ -23,6 +23,10 @@ func NewMACAddress(src, dst, upperSrc, upperDst net.HardwareAddr) *IE {
 
 // MACAddress returns MACAddress in structured format if the type of IE matches.
 func (i *IE) MACAddress() (*MACAddressFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case MACAddress:
 		fields, err := ParseMACAddressFields(i.Payload)
@@ -96,41 +100,73 @@ func NewMACAddressFields(src, dst, upperSrc, upperDst net.HardwareAddr) *MACAddr
 
 // HasUDES reports whether UDES flag is set.
 func (f *MACAddressFields) HasUDES() bool {
+	if f == nil {
+		return false
+	}
+
 	return has4thBit(f.Flags)
 }
 
 // SetUDESFlag sets UDES flag in MACAddress.
 func (f *MACAddressFields) SetUDESFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x08
 }
 
 // HasUSOU reports whether USOU flag is set.
 func (f *MACAddressFields) HasUSOU() bool {
+	if f == nil {
+		return false
+	}
+
 	return has3rdBit(f.Flags)
 }
 
 // SetUSOUFlag sets USOU flag in MACAddress.
 func (f *MACAddressFields) SetUSOUFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x04
 }
 
 // HasDEST reports whether DEST flag is set.
 func (f *MACAddressFields) HasDEST() bool {
+	if f == nil {
+		return false
+	}
+
 	return has2ndBit(f.Flags)
 }
 
 // SetDESTFlag sets DEST flag in MACAddress.
 func (f *MACAddressFields) SetDESTFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x02
 }
 
 // HasSOUR reports whether SOUR flag is set.
 func (f *MACAddressFields) HasSOUR() bool {
+	if f == nil {
+		return false
+	}
+
 	return has1stBit(f.Flags)
 }
 
 // SetSOURFlag sets SOUR flag in MACAddress.
 func (f *MACAddressFields) SetSOURFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x01
 }
 
@@ -145,6 +181,11 @@ func ParseMACAddressFields(b []byte) (*MACAddressFields, error) {
 
 // UnmarshalBinary parses b into IE.
 func (f *MACAddressFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = MACAddressFields{}
+
 	l := len(b)
 	if l < 2 {
 		return io.ErrUnexpectedEOF
@@ -193,6 +234,10 @@ func (f *MACAddressFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of MACAddressFields.
 func (f *MACAddressFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -202,6 +247,16 @@ func (f *MACAddressFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *MACAddressFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -246,6 +301,10 @@ func (f *MACAddressFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *MACAddressFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 1
 	if f.SourceMACAddress != nil {
 		l += 6

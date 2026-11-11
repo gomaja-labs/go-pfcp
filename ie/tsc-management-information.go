@@ -26,12 +26,16 @@ func NewTSCManagementInformationWithinSessionReportRequest(ies ...*IE) *IE {
 
 // TSCManagementInformation returns the IEs above TSCManagementInformation if the type of IE matches.
 func (i *IE) TSCManagementInformation() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case TSCManagementInformationWithinSessionModificationRequest,
 		TSCManagementInformationWithinSessionModificationResponse,
 		TSCManagementInformationWithinSessionReportRequest:
 
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
@@ -59,12 +63,16 @@ func NewPortManagementInformationForTSCWithinSessionReportRequest(info *IE) *IE 
 
 // PortManagementInformationForTSC returns the IEs above PortManagementInformationForTSC if the type of IE matches.
 func (i *IE) PortManagementInformationForTSC() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case PortManagementInformationForTSCWithinSessionModificationRequest,
 		PortManagementInformationForTSCWithinSessionModificationResponse,
 		PortManagementInformationForTSCWithinSessionReportRequest:
 
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

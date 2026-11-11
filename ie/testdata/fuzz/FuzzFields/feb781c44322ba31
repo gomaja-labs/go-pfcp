@@ -1,0 +1,2 @@
+go test fuzz v1
+[]byte("\a\b!C\x152Tv\x98\xf0\b!C\x152Tv\x98\xf0\b!C\x152Tv\x98\xf0")

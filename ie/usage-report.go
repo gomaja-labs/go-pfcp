@@ -26,12 +26,16 @@ func NewUsageReportWithinSessionReportRequest(ies ...*IE) *IE {
 
 // UsageReport returns the IEs above UsageReport if the type of IE matches.
 func (i *IE) UsageReport() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case UsageReportWithinSessionModificationResponse,
 		UsageReportWithinSessionDeletionResponse,
 		UsageReportWithinSessionReportRequest:
 
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

@@ -42,6 +42,10 @@ func NewDroppedDLTrafficThreshold(dlpa, dlby bool, packets, bytes uint64) *IE {
 //
 // TODO: implement!
 func (i *IE) DroppedDLTrafficThreshold() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case DroppedDLTrafficThreshold:
 		return i.ValueAsUint8()
@@ -74,6 +78,10 @@ func (i *IE) DroppedDLTrafficThreshold() (uint8, error) {
 
 // HasDLBY reports whether an IE has DLBY bit.
 func (i *IE) HasDLBY() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.DroppedDLTrafficThreshold()
 	if err != nil {
 		return false
@@ -84,6 +92,10 @@ func (i *IE) HasDLBY() bool {
 
 // HasDLPA reports whether an IE has DLPA bit.
 func (i *IE) HasDLPA() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.DroppedDLTrafficThreshold()
 	if err != nil {
 		return false

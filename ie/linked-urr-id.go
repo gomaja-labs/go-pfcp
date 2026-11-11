@@ -11,6 +11,10 @@ func NewLinkedURRID(id uint32) *IE {
 
 // LinkedURRID returns LinkedURRID in uint32 if the type of IE matches.
 func (i *IE) LinkedURRID() (uint32, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case LinkedURRID:
 		return i.ValueAsUint32()

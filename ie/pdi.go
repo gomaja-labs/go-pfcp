@@ -11,9 +11,13 @@ func NewPDI(ies ...*IE) *IE {
 
 // PDI returns the IEs above PDI if the type of IE matches.
 func (i *IE) PDI() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case PDI:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	case CreatePDR:
 		ies, err := i.CreatePDR()
 		if err != nil {

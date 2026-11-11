@@ -17,6 +17,10 @@ func NewGateStatus(ul, dl uint8) *IE {
 
 // GateStatus returns GateStatus in uint8 if the type of IE matches.
 func (i *IE) GateStatus() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case GateStatus:
 		return i.ValueAsUint8()
@@ -49,6 +53,10 @@ func (i *IE) GateStatus() (uint8, error) {
 
 // GateStatusUL returns GateStatusUL in uint8 if the type of IE matches.
 func (i *IE) GateStatusUL() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	v, err := i.GateStatus()
 	if err != nil {
 		return 0, err
@@ -59,6 +67,10 @@ func (i *IE) GateStatusUL() (uint8, error) {
 
 // GateStatusDL returns GateStatusDL in uint8 if the type of IE matches.
 func (i *IE) GateStatusDL() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	v, err := i.GateStatus()
 	if err != nil {
 		return 0, err
@@ -69,6 +81,10 @@ func (i *IE) GateStatusDL() (uint8, error) {
 
 // GateStatusULDL returns GateStatusUL and GateStatusDL in uint8 if the type of IE matches.
 func (i *IE) GateStatusULDL() (uint8, uint8, error) {
+	if i == nil {
+		return 0, 0, ErrIENotFound
+	}
+
 	v, err := i.GateStatus()
 	if err != nil {
 		return 0, 0, err

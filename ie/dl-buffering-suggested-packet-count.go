@@ -19,13 +19,17 @@ func NewDLBufferingSuggestedPacketCount(count uint16) *IE {
 
 // DLBufferingSuggestedPacketCount returns DLBufferingSuggestedPacketCount in uint16 if the type of IE matches.
 func (i *IE) DLBufferingSuggestedPacketCount() (uint16, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case DLBufferingSuggestedPacketCount:
-		if i.Length == 1 {
+		if len(i.Payload) == 1 {
 			return uint16(i.Payload[0]), nil
 		}
 
-		if i.Length >= 2 {
+		if len(i.Payload) >= 2 {
 			return i.ValueAsUint16()
 		}
 

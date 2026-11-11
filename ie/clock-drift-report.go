@@ -11,9 +11,13 @@ func NewClockDriftReport(ies ...*IE) *IE {
 
 // ClockDriftReport returns the IEs above ClockDriftReport if the type of IE matches.
 func (i *IE) ClockDriftReport() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != ClockDriftReport {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

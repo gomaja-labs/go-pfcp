@@ -11,9 +11,13 @@ func NewCreateFAR(ies ...*IE) *IE {
 
 // CreateFAR returns the IEs above CreateFAR if the type of IE matches.
 func (i *IE) CreateFAR() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != CreateFAR {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

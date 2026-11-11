@@ -23,6 +23,10 @@ func NewRedirectInformation(addrType uint8, addrs ...string) *IE {
 
 // RedirectInformation returns RedirectInformation in structured format if the type of IE matches.
 func (i *IE) RedirectInformation() (*RedirectInformationFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case RedirectInformation:
 		f, err := ParseRedirectInformationFields(i.Payload)
@@ -90,7 +94,7 @@ func NewRedirectInformationFields(addrType uint8, addrs ...string) *RedirectInfo
 		RedirectServerAddress: addrs[0],
 	}
 
-	if len(addrs) >= 2 {
+	if addrType == RedirectAddrIPv4AndIPv6 && len(addrs) >= 2 {
 		f.OtherServerAddrLength = uint16(len(addrs[1]))
 		f.OtherRedirectServerAddress = addrs[1]
 	}
@@ -109,30 +113,33 @@ func ParseRedirectInformationFields(b []byte) (*RedirectInformationFields, error
 
 // UnmarshalBinary parses b into IE.
 func (f *RedirectInformationFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = RedirectInformationFields{}
+
 	l := len(b)
 	if l < 3 {
 		return io.ErrUnexpectedEOF
 	}
 
-	f.RedirectAddressType = b[0]
+	// TS 29.244 V20.1.0 clause 8.2.20: only address type 4 carries
+	// the second address supported by this constructor.
+	*f = RedirectInformationFields{RedirectAddressType: b[0] & 0x0f}
 	offset := 1
-
-	f.ServerAddrLength = binary.BigEndian.Uint16(b[offset : offset+2])
-	offset += 2
-
-	if l < offset+int(f.ServerAddrLength) {
-		return io.ErrUnexpectedEOF
+	first, err := takeLength16(b, &offset)
+	if err != nil {
+		return err
 	}
-	f.RedirectServerAddress = string(b[offset : offset+int(f.ServerAddrLength)])
-
-	f.OtherServerAddrLength = binary.BigEndian.Uint16(b[1:3])
-	if f.OtherServerAddrLength != 0 {
-		offset += 2
-
-		if l < offset+int(f.OtherServerAddrLength) {
-			return io.ErrUnexpectedEOF
+	f.ServerAddrLength = uint16(len(first))
+	f.RedirectServerAddress = string(first)
+	if f.RedirectAddressType == RedirectAddrIPv4AndIPv6 {
+		other, err := takeLength16(b, &offset)
+		if err != nil {
+			return err
 		}
-		f.OtherRedirectServerAddress = string(b[offset : offset+int(f.OtherServerAddrLength)])
+		f.OtherServerAddrLength = uint16(len(other))
+		f.OtherRedirectServerAddress = string(other)
 	}
 
 	return nil
@@ -140,6 +147,10 @@ func (f *RedirectInformationFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of RedirectInformationFields.
 func (f *RedirectInformationFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -149,6 +160,16 @@ func (f *RedirectInformationFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *RedirectInformationFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -167,8 +188,7 @@ func (f *RedirectInformationFields) MarshalTo(b []byte) error {
 	copy(b[offset:offset+int(f.ServerAddrLength)], f.RedirectServerAddress)
 	offset += int(f.ServerAddrLength)
 
-	if f.OtherRedirectServerAddress == "" {
-		binary.BigEndian.PutUint16(b[offset:offset+2], f.OtherServerAddrLength)
+	if f.RedirectAddressType != RedirectAddrIPv4AndIPv6 {
 		return nil
 	}
 
@@ -185,5 +205,13 @@ func (f *RedirectInformationFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *RedirectInformationFields) MarshalLen() int {
-	return 3 + int(f.ServerAddrLength) + 2 + int(f.OtherServerAddrLength)
+	if f == nil {
+		return 0
+	}
+
+	length := 3 + int(f.ServerAddrLength)
+	if f.RedirectAddressType == RedirectAddrIPv4AndIPv6 {
+		length += 2 + int(f.OtherServerAddrLength)
+	}
+	return length
 }

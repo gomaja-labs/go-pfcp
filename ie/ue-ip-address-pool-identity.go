@@ -22,12 +22,16 @@ func NewUEIPAddressPoolIdentity(id string) *IE {
 
 // UEIPAddressPoolIdentity returns UEIPAddressPoolIdentity in []byte if the type of IE matches.
 func (i *IE) UEIPAddressPoolIdentity() ([]byte, error) {
-	if len(i.Payload) < 1 {
-		return nil, io.ErrUnexpectedEOF
+	if i == nil {
+		return nil, ErrIENotFound
 	}
 
 	switch i.Type {
 	case UEIPAddressPoolIdentity:
+		if len(i.Payload) < 1 {
+			return nil, io.ErrUnexpectedEOF
+		}
+
 		return i.Payload, nil
 	case CreatePDR:
 		ies, err := i.CreatePDR()
@@ -58,6 +62,10 @@ func (i *IE) UEIPAddressPoolIdentity() ([]byte, error) {
 
 // UEIPAddressPoolIdentityString returns UEIPAddressPoolIdentity in string if the type of IE matches.
 func (i *IE) UEIPAddressPoolIdentityString() (string, error) {
+	if i == nil {
+		return "", ErrIENotFound
+	}
+
 	v, err := i.UEIPAddressPoolIdentity()
 	if err != nil {
 		return "", err

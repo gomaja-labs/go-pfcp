@@ -23,6 +23,10 @@ func NewPacketDelayThresholds(flags uint8, dl, ul, rp uint32) *IE {
 
 // PacketDelayThresholds returns PacketDelayThresholds in structured format if the type of IE matches.
 func (i *IE) PacketDelayThresholds() (*PacketDelayThresholdsFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case PacketDelayThresholds:
 		fields, err := ParsePacketDelayThresholdsFields(i.Payload)
@@ -67,31 +71,55 @@ func NewPacketDelayThresholdsFields(flags uint8, dl, ul, rp uint32) *PacketDelay
 
 // HasRP reports whether RP flag is set.
 func (f *PacketDelayThresholdsFields) HasRP() bool {
+	if f == nil {
+		return false
+	}
+
 	return has3rdBit(f.Flags)
 }
 
 // SetRPFlag sets RP flag in PacketDelayThresholds.
 func (f *PacketDelayThresholdsFields) SetRPFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x04
 }
 
 // HasUL reports whether UL flag is set.
 func (f *PacketDelayThresholdsFields) HasUL() bool {
+	if f == nil {
+		return false
+	}
+
 	return has2ndBit(f.Flags)
 }
 
 // SetULFlag sets UL flag in PacketDelayThresholds.
 func (f *PacketDelayThresholdsFields) SetULFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x02
 }
 
 // HasDL reports whether DL flag is set.
 func (f *PacketDelayThresholdsFields) HasDL() bool {
+	if f == nil {
+		return false
+	}
+
 	return has1stBit(f.Flags)
 }
 
 // SetDLFlag sets DL flag in PacketDelayThresholds.
 func (f *PacketDelayThresholdsFields) SetDLFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x01
 }
 
@@ -106,6 +134,11 @@ func ParsePacketDelayThresholdsFields(b []byte) (*PacketDelayThresholdsFields, e
 
 // UnmarshalBinary parses b into IE.
 func (f *PacketDelayThresholdsFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = PacketDelayThresholdsFields{}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -142,6 +175,10 @@ func (f *PacketDelayThresholdsFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of PacketDelayThresholdsFields.
 func (f *PacketDelayThresholdsFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -151,6 +188,16 @@ func (f *PacketDelayThresholdsFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *PacketDelayThresholdsFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -187,6 +234,10 @@ func (f *PacketDelayThresholdsFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *PacketDelayThresholdsFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 1
 	if f.HasDL() {
 		l += 4

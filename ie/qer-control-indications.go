@@ -11,6 +11,10 @@ func NewQERControlIndications(nord, mode, rcsr int) *IE {
 
 // QERControlIndications returns QERControlIndications in uint8 if the type of IE matches.
 func (i *IE) QERControlIndications() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case QERControlIndications:
 		return i.ValueAsUint8()
@@ -44,6 +48,10 @@ func (i *IE) QERControlIndications() (uint8, error) {
 
 // HasNORD reports whether an IE has NORD bit.
 func (i *IE) HasNORD() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.QERControlIndications()
 	if err != nil {
 		return false
@@ -54,6 +62,10 @@ func (i *IE) HasNORD() bool {
 
 // HasMODE reports whether an IE has MODE bit.
 func (i *IE) HasMODE() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.QERControlIndications()
 	if err != nil {
 		return false
@@ -64,6 +76,10 @@ func (i *IE) HasMODE() bool {
 
 // HasRCSR reports whether an IE has RCSR bit.
 func (i *IE) HasRCSR() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.QERControlIndications()
 	if err != nil {
 		return false

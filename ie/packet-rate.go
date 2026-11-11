@@ -31,6 +31,10 @@ func NewPacketRate(flags uint8, ulunit uint8, ulpackets uint16, dlunit uint8, dl
 
 // PacketRate returns PacketRate in *PacketRateFields if the type of IE matches.
 func (i *IE) PacketRate() (*PacketRateFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case PacketRate:
 		f, err := ParsePacketRateFields(i.Payload)
@@ -68,6 +72,10 @@ func (i *IE) PacketRate() (*PacketRateFields, error) {
 
 // HasDLPR reports whether an IE has DLPR bit.
 func (i *IE) HasDLPR() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != PacketRate {
 		return false
 	}
@@ -80,6 +88,10 @@ func (i *IE) HasDLPR() bool {
 
 // HasULPR reports whether an IE has ULPR bit.
 func (i *IE) HasULPR() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != PacketRate {
 		return false
 	}
@@ -127,8 +139,14 @@ func ParsePacketRateFields(b []byte) (*PacketRateFields, error) {
 
 // UnmarshalBinary parses b into IE.
 func (f *PacketRateFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = PacketRateFields{}
+
 	l := len(b)
-	if l < 2 {
+	// TS 29.244 V20.1.0 clause 8.2.63: one fixed flags octet.
+	if l < 1 {
 		return io.ErrUnexpectedEOF
 	}
 
@@ -157,6 +175,10 @@ func (f *PacketRateFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of PacketRateFields.
 func (f *PacketRateFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -166,8 +188,19 @@ func (f *PacketRateFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *PacketRateFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
-	if l < 2 {
+	// TS 29.244 V20.1.0 clause 8.2.63: one fixed flags octet.
+	if l < 1 {
 		return io.ErrUnexpectedEOF
 	}
 
@@ -190,6 +223,10 @@ func (f *PacketRateFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *PacketRateFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 1
 	if has1stBit(f.Flags) {
 		l += 3

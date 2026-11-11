@@ -24,6 +24,10 @@ func NewUserID(flags uint8, imsi, imei, msisdn, nai string) *IE {
 
 // UserID returns UserID in structured format if the type of IE matches.
 func (i *IE) UserID() (*UserIDFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != UserID {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
@@ -100,6 +104,11 @@ func ParseUserIDFields(b []byte) (*UserIDFields, error) {
 
 // UnmarshalBinary parses b into IE.
 func (f *UserIDFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = UserIDFields{}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -168,6 +177,10 @@ func (f *UserIDFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of UserIDFields.
 func (f *UserIDFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -177,6 +190,16 @@ func (f *UserIDFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *UserIDFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -193,6 +216,9 @@ func (f *UserIDFields) MarshalTo(b []byte) error {
 		if err != nil {
 			return err
 		}
+		if len(v) != int(f.IMSILength) {
+			return ErrInvalidLength
+		}
 		copy(b[offset:offset+int(f.IMSILength)], v)
 		offset += int(f.IMSILength)
 	}
@@ -204,6 +230,9 @@ func (f *UserIDFields) MarshalTo(b []byte) error {
 		v, err := utils.StrToSwappedBytes(f.IMEI, "f")
 		if err != nil {
 			return err
+		}
+		if len(v) != int(f.IMEILength) {
+			return ErrInvalidLength
 		}
 		copy(b[offset:offset+int(f.IMEILength)], v)
 		offset += int(f.IMEILength)
@@ -217,6 +246,9 @@ func (f *UserIDFields) MarshalTo(b []byte) error {
 		if err != nil {
 			return err
 		}
+		if len(v) != int(f.MSISDNLength) {
+			return ErrInvalidLength
+		}
 		copy(b[offset:offset+int(f.MSISDNLength)], v)
 		offset += int(f.MSISDNLength)
 	}
@@ -225,6 +257,9 @@ func (f *UserIDFields) MarshalTo(b []byte) error {
 		b[offset] = f.NAILength
 		offset++
 
+		if len(f.NAI) != int(f.NAILength) {
+			return ErrInvalidLength
+		}
 		copy(b[offset:offset+int(f.NAILength)], f.NAI)
 	}
 
@@ -233,6 +268,10 @@ func (f *UserIDFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *UserIDFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 1
 	if has1stBit(f.Flags) {
 		l += 1 + int(f.IMSILength)

@@ -7,7 +7,6 @@ package ie
 import (
 	"io"
 	"net"
-	"strings"
 
 	"github.com/gomaja-labs/go-pfcp/internal/utils"
 )
@@ -36,9 +35,11 @@ func NewNodeID(ipv4, ipv6, fqdn string) *IE {
 		p[0] = NodeIDIPv6Address
 		copy(p[1:], net.ParseIP(ipv6).To16())
 	case fqdn != "":
-		p = make([]byte, 2+len([]byte(fqdn)))
-		p[0] = NodeIDFQDN
-		copy(p[1:], utils.EncodeFQDN(fqdn))
+		encoded := utils.EncodeFQDN(fqdn)
+		if encoded == nil {
+			return nil
+		}
+		p = append([]byte{NodeIDFQDN}, encoded...)
 	default: // all params are empty
 		return nil
 	}
@@ -65,9 +66,11 @@ func NewNodeIDHeuristic(nodeID string) *IE {
 			copy(p[1:], ip.To16())
 		}
 	} else { // FQDN
-		p = make([]byte, 2+len([]byte(nodeID)))
-		p[0] = NodeIDFQDN
-		copy(p[1:], utils.EncodeFQDN(nodeID))
+		encoded := utils.EncodeFQDN(nodeID)
+		if encoded == nil {
+			return nil
+		}
+		p = append([]byte{NodeIDFQDN}, encoded...)
 	}
 
 	return New(NodeID, p)
@@ -75,6 +78,10 @@ func NewNodeIDHeuristic(nodeID string) *IE {
 
 // NodeID returns NodeID in string if the type of IE matches.
 func (i *IE) NodeID() (string, error) {
+	if i == nil {
+		return "", ErrIENotFound
+	}
+
 	if i.Type != NodeID {
 		return "", &InvalidTypeError{Type: i.Type}
 	}
@@ -84,29 +91,19 @@ func (i *IE) NodeID() (string, error) {
 
 	switch i.Payload[0] {
 	case NodeIDIPv4Address:
-		return net.IP(i.Payload[1:]).To4().String(), nil
-	case NodeIDIPv6Address:
-		return net.IP(i.Payload[1:]).To16().String(), nil
-	case NodeIDFQDN:
-		b := i.Payload[1:]
-		var (
-			nodeID []string
-			offset int
-		)
-		max := len(b)
-		for {
-			if offset >= max {
-				break
-			}
-			l := int(b[offset])
-			if offset+l+1 > max {
-				break
-			}
-			nodeID = append(nodeID, string(b[offset+1:offset+l+1]))
-			offset += l + 1
+		if len(i.Payload) < 5 {
+			return "", io.ErrUnexpectedEOF
 		}
+		return net.IP(i.Payload[1:5:5]).String(), nil
+	case NodeIDIPv6Address:
+		if len(i.Payload) < 17 {
+			return "", io.ErrUnexpectedEOF
+		}
+		return net.IP(i.Payload[1:17:17]).String(), nil
+	case NodeIDFQDN:
+		// TS 29.244 V20.1.0 clause 8.2.38; RFC 1035 section 3.1.
+		return decodeFQDNValue(i.Payload[1:])
 
-		return strings.Join(nodeID, "."), nil
 	default:
 		return "", &InvalidNodeIDError{ID: i.Payload[0]}
 	}

@@ -11,6 +11,10 @@ func NewAPNDNN(apn string) *IE {
 
 // APNDNN returns APNDNN in string if the type of IE matches.
 func (i *IE) APNDNN() (string, error) {
+	if i == nil {
+		return "", ErrIENotFound
+	}
+
 	if i.Type != APNDNN {
 		return "", &InvalidTypeError{Type: i.Type}
 	}
@@ -21,6 +25,10 @@ func (i *IE) APNDNN() (string, error) {
 // MustAPNDNN returns APNDNN in string, ignoring errors.
 // This should only be used if it is assured to have the value.
 func (i *IE) MustAPNDNN() string {
+	if i == nil {
+		return ""
+	}
+
 	v, _ := i.APNDNN()
 	return v
 }

@@ -11,6 +11,10 @@ func NewPFCPSRReqFlags(flag uint8) *IE {
 
 // PFCPSRReqFlags returns PFCPSRReqFlags in uint8 if the type of IE matches.
 func (i *IE) PFCPSRReqFlags() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	if i.Type != PFCPSRReqFlags {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
@@ -20,6 +24,10 @@ func (i *IE) PFCPSRReqFlags() (uint8, error) {
 
 // HasPSDBU reports whether an IE has PSDBU bit.
 func (i *IE) HasPSDBU() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.PFCPSRReqFlags()
 	if err != nil {
 		return false

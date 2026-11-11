@@ -7,6 +7,8 @@ package utils
 import (
 	"encoding/binary"
 	"encoding/hex"
+	"fmt"
+	"io"
 	"strings"
 )
 
@@ -41,7 +43,9 @@ func SwappedBytesToStr(raw []byte, cutLastDigit bool) string {
 
 	s := hex.EncodeToString(swap(raw))
 	if cutLastDigit {
-		s = s[:len(s)-1]
+		// TS 29.244 V20.1.0 clause 8.2.101 carries TBCD identities.
+		// Only an actual high-nibble filler removes a final digit.
+		s = strings.TrimSuffix(s, "f")
 	}
 
 	return s
@@ -88,6 +92,15 @@ func Uint64To40(n uint64) []byte {
 
 // EncodePLMN encodes MCC and MNC as BCD-encoded bytes.
 func EncodePLMN(mcc, mnc string) ([]byte, error) {
+	if len(mcc) != 3 || (len(mnc) != 2 && len(mnc) != 3) {
+		return nil, fmt.Errorf("invalid PLMN length")
+	}
+	for _, digit := range mcc + mnc {
+		if digit < '0' || digit > '9' {
+			return nil, fmt.Errorf("invalid PLMN digit")
+		}
+	}
+
 	c, err := StrToSwappedBytes(mcc, "f")
 	if err != nil {
 		return nil, err
@@ -113,6 +126,10 @@ func EncodePLMN(mcc, mnc string) ([]byte, error) {
 
 // DecodePLMN decodes BCD-encoded bytes into MCC and MNC.
 func DecodePLMN(b []byte) (mcc, mnc string, err error) {
+	if len(b) < 3 {
+		return "", "", io.ErrUnexpectedEOF
+	}
+
 	raw := hex.EncodeToString(b)
 	mcc = string(raw[1]) + string(raw[0]) + string(raw[3])
 	mnc = string(raw[5]) + string(raw[4])
@@ -132,42 +149,54 @@ func ParseECI(eci uint32) (enbID uint32, cellID uint8, err error) {
 	return
 }
 
-// EncodeFQDN encodes the given string as the Name Syntax defined
-// in RFC 2181, RFC 1035 and RFC 1123.
+// EncodeFQDN encodes a PFCP length-delimited name without a root terminator.
+// A trailing dot is accepted as an explicit root. Invalid names return nil:
+// labels must contain 1..63 octets and the DNS name, including the implicit
+// root octet, must fit in 255 octets (RFC 1035 section 3.1; RFC 2181 section 11).
 func EncodeFQDN(fqdn string) []byte {
-	b := make([]byte, len(fqdn)+1)
-
-	var offset = 0
-	for _, label := range strings.Split(fqdn, ".") {
-		l := len(label)
-		b[offset] = uint8(l)
-		copy(b[offset+1:], label)
-		offset += l + 1
+	if fqdn == "" || fqdn == "." {
+		return []byte{0}
 	}
-
+	fqdn = strings.TrimSuffix(fqdn, ".")
+	if len(fqdn)+2 > 255 {
+		return nil
+	}
+	b := make([]byte, 0, len(fqdn)+1)
+	for _, label := range strings.Split(fqdn, ".") {
+		if len(label) == 0 || len(label) > 63 {
+			return nil
+		}
+		b = append(b, byte(len(label)))
+		b = append(b, label...)
+	}
 	return b
 }
 
-// DecodeFQDN decodes the given Name Syntax-encoded []byte as
-// a string.
+// DecodeFQDN decodes an uncompressed PFCP name. A malformed name returns the
+// empty string, never a partial prefix. Compression pointers are not accepted.
+// RFC 1035 section 3.1; RFC 2181 section 11.
 func DecodeFQDN(b []byte) string {
-	var (
-		fqdn   []string
-		offset int
-	)
-
-	max := len(b)
-	for {
-		if offset >= max {
-			break
-		}
-		l := int(b[offset])
-		if offset+l+1 > max {
-			break
-		}
-		fqdn = append(fqdn, string(b[offset+1:offset+l+1]))
-		offset += l + 1
+	if len(b) > 255 {
+		return ""
 	}
-
-	return strings.Join(fqdn, ".")
+	var labels []string
+	for offset := 0; offset < len(b); {
+		length := int(b[offset])
+		offset++
+		if length == 0 {
+			if offset != len(b) {
+				return ""
+			}
+			return strings.Join(labels, ".")
+		}
+		if length > 63 || length > len(b)-offset {
+			return ""
+		}
+		labels = append(labels, string(b[offset:offset+length]))
+		offset += length
+	}
+	if len(b) > 254 {
+		return ""
+	}
+	return strings.Join(labels, ".")
 }

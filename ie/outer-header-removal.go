@@ -13,15 +13,19 @@ func NewOuterHeaderRemoval(desc, ext uint8) *IE {
 
 // OuterHeaderRemoval returns OuterHeaderRemoval in []byte if the type of IE matches.
 func (i *IE) OuterHeaderRemoval() ([]byte, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	// The size of the OuterHeaderRemoval IE was one octet in 3GPP TS 29.244 up to V15.3.0,
 	// but it has been changed to two octets since V15.4.0.
 	// For backward compatibility, one octet is also accepted.
-	if len(i.Payload) < 1 {
-		return nil, io.ErrUnexpectedEOF
-	}
-
 	switch i.Type {
 	case OuterHeaderRemoval:
+		if len(i.Payload) < 1 {
+			return nil, io.ErrUnexpectedEOF
+		}
+
 		return i.Payload, nil
 	case CreatePDR:
 		ies, err := i.CreatePDR()
@@ -52,6 +56,10 @@ func (i *IE) OuterHeaderRemoval() ([]byte, error) {
 
 // OuterHeaderRemovalDescription returns OuterHeaderRemovalDescription in uint8 if the type of IE matches.
 func (i *IE) OuterHeaderRemovalDescription() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	v, err := i.OuterHeaderRemoval()
 	if err != nil {
 		return 0, err
@@ -62,6 +70,10 @@ func (i *IE) OuterHeaderRemovalDescription() (uint8, error) {
 
 // GTPUExtensionHeaderDeletion returns GTPUExtensionHeaderDeletion in uint8 if the type of IE matches.
 func (i *IE) GTPUExtensionHeaderDeletion() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	v, err := i.OuterHeaderRemoval()
 	if err != nil {
 		return 0, err

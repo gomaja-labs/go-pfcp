@@ -20,12 +20,16 @@ func NewMBR(ul, dl uint64) *IE {
 
 // MBR returns MBR in []byte if the type of IE matches.
 func (i *IE) MBR() ([]byte, error) {
-	if len(i.Payload) < 10 {
-		return nil, io.ErrUnexpectedEOF
+	if i == nil {
+		return nil, ErrIENotFound
 	}
 
 	switch i.Type {
 	case MBR:
+		if len(i.Payload) < 10 {
+			return nil, io.ErrUnexpectedEOF
+		}
+
 		return i.Payload, nil
 	case CreateQER:
 		ies, err := i.CreateQER()
@@ -56,6 +60,10 @@ func (i *IE) MBR() ([]byte, error) {
 
 // MBRUL returns MBRUL in uint64 if the type of IE matches.
 func (i *IE) MBRUL() (uint64, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	v, err := i.MBR()
 	if err != nil {
 		return 0, err
@@ -65,6 +73,10 @@ func (i *IE) MBRUL() (uint64, error) {
 
 // MBRDL returns MBRDL in uint64 if the type of IE matches.
 func (i *IE) MBRDL() (uint64, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	v, err := i.MBR()
 	if err != nil {
 		return 0, err

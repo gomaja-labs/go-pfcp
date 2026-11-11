@@ -11,9 +11,13 @@ func NewRemoveFAR(far *IE) *IE {
 
 // RemoveFAR returns the IEs above RemoveFAR if the type of IE matches.
 func (i *IE) RemoveFAR() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != RemoveFAR {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

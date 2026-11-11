@@ -11,6 +11,10 @@ func NewDataStatus(flag uint8) *IE {
 
 // DataStatus returns DataStatus in uint8 if the type of IE matches.
 func (i *IE) DataStatus() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case DataStatus:
 		return i.ValueAsUint8()

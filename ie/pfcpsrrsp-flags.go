@@ -11,6 +11,10 @@ func NewPFCPSRRspFlags(flag uint8) *IE {
 
 // PFCPSRRspFlags returns PFCPSRRspFlags in uint8 if the type of IE matches.
 func (i *IE) PFCPSRRspFlags() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	if i.Type != PFCPSRRspFlags {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

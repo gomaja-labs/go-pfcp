@@ -11,6 +11,10 @@ func NewWeight(weight uint8) *IE {
 
 // Weight returns Weight in uint8 if the type of IE matches.
 func (i *IE) Weight() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case Weight:
 		return i.ValueAsUint8()

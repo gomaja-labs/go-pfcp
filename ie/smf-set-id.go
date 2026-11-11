@@ -11,6 +11,10 @@ func NewSMFSetID(id string) *IE {
 
 // SMFSetID returns SMFSetID in string if the type of IE matches.
 func (i *IE) SMFSetID() (string, error) {
+	if i == nil {
+		return "", ErrIENotFound
+	}
+
 	if i.Type != SMFSetID {
 		return "", &InvalidTypeError{Type: i.Type}
 	}

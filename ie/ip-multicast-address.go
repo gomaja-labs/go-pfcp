@@ -23,6 +23,10 @@ func NewIPMulticastAddress(sv4, sv6, ev4, ev6 net.IP) *IE {
 
 // IPMulticastAddress returns IPMulticastAddress in structured format if the type of IE matches.
 func (i *IE) IPMulticastAddress() (*IPMulticastAddressFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case IPMulticastAddress:
 		fields, err := ParseIPMulticastAddressFields(i.Payload)
@@ -132,41 +136,73 @@ func NewIPMulticastAddressFields(sv4, sv6, ev4, ev6 net.IP) *IPMulticastAddressF
 
 // HasAny reports whether Any flag is set.
 func (f *IPMulticastAddressFields) HasAny() bool {
+	if f == nil {
+		return false
+	}
+
 	return has4thBit(f.Flags)
 }
 
 // SetAnyFlag sets Any flag in IPMulticastAddress.
 func (f *IPMulticastAddressFields) SetAnyFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x08
 }
 
 // HasRange reports whether Range flag is set.
 func (f *IPMulticastAddressFields) HasRange() bool {
+	if f == nil {
+		return false
+	}
+
 	return has3rdBit(f.Flags)
 }
 
 // SetRangeFlag sets Range flag in IPMulticastAddress.
 func (f *IPMulticastAddressFields) SetRangeFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x04
 }
 
 // HasIPv4 reports whether IPv4 flag is set.
 func (f *IPMulticastAddressFields) HasIPv4() bool {
+	if f == nil {
+		return false
+	}
+
 	return has2ndBit(f.Flags)
 }
 
 // SetIPv4Flag sets IPv4 flag in IPMulticastAddress.
 func (f *IPMulticastAddressFields) SetIPv4Flag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x02
 }
 
 // HasIPv6 reports whether IPv6 flag is set.
 func (f *IPMulticastAddressFields) HasIPv6() bool {
+	if f == nil {
+		return false
+	}
+
 	return has1stBit(f.Flags)
 }
 
 // SetIPv6Flag sets IPv6 flag in IPMulticastAddress.
 func (f *IPMulticastAddressFields) SetIPv6Flag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x01
 }
 
@@ -181,6 +217,11 @@ func ParseIPMulticastAddressFields(b []byte) (*IPMulticastAddressFields, error) 
 
 // UnmarshalBinary parses b into IE.
 func (f *IPMulticastAddressFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = IPMulticastAddressFields{}
+
 	l := len(b)
 	if l < 2 {
 		return io.ErrUnexpectedEOF
@@ -232,6 +273,10 @@ func (f *IPMulticastAddressFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of IPMulticastAddressFields.
 func (f *IPMulticastAddressFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -241,6 +286,16 @@ func (f *IPMulticastAddressFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *IPMulticastAddressFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -291,6 +346,10 @@ func (f *IPMulticastAddressFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *IPMulticastAddressFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 1
 	if f.StartIPv4Address != nil {
 		l += 4

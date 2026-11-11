@@ -11,6 +11,10 @@ func NewQERID(id uint32) *IE {
 
 // QERID returns QERID in uint32 if the type of IE matches.
 func (i *IE) QERID() (uint32, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case QERID:
 		return i.ValueAsUint32()

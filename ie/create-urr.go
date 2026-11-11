@@ -12,9 +12,13 @@ func NewCreateURR(ies ...*IE) *IE {
 
 // CreateURR returns the IEs above CreateURR if the type of IE matches.
 func (i *IE) CreateURR() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != CreateURR {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

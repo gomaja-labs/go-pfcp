@@ -11,9 +11,13 @@ func NewRemoveBAR(barID *IE) *IE {
 
 // RemoveBAR returns the IEs above RemoveBAR if the type of IE matches.
 func (i *IE) RemoveBAR() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != RemoveBAR {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

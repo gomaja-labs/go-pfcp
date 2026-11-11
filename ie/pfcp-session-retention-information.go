@@ -11,9 +11,13 @@ func NewPFCPSessionRetentionInformation(cpIP *IE) *IE {
 
 // PFCPSessionRetentionInformation returns the IEs above PFCPSessionRetentionInformation if the type of IE matches.
 func (i *IE) PFCPSessionRetentionInformation() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != PFCPSessionRetentionInformation {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

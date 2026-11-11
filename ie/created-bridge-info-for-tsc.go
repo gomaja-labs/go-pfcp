@@ -11,9 +11,13 @@ func NewCreatedBridgeInfoForTSC(ies ...*IE) *IE {
 
 // CreatedBridgeInfoForTSC returns the IEs above CreatedBridgeInfoForTSC if the type of IE matches.
 func (i *IE) CreatedBridgeInfoForTSC() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != CreatedBridgeInfoForTSC {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

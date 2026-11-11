@@ -11,6 +11,10 @@ func NewRequestedQoSMonitoring(rp, ul, dl int) *IE {
 
 // RequestedQoSMonitoring returns RequestedQoSMonitoring in uint8 if the type of IE matches.
 func (i *IE) RequestedQoSMonitoring() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case RequestedQoSMonitoring:
 		return i.ValueAsUint8()
@@ -33,6 +37,10 @@ func (i *IE) RequestedQoSMonitoring() (uint8, error) {
 
 // HasRP reports whether an IE has RP bit.
 func (i *IE) HasRP() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.RequestedQoSMonitoring()
 	if err != nil {
 		return false
@@ -43,6 +51,10 @@ func (i *IE) HasRP() bool {
 
 // HasUL reports whether an IE has UL bit.
 func (i *IE) HasUL() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.RequestedQoSMonitoring()
 	if err != nil {
 		return false
@@ -53,6 +65,10 @@ func (i *IE) HasUL() bool {
 
 // HasDL reports whether an IE has DL bit.
 func (i *IE) HasDL() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.RequestedQoSMonitoring()
 	if err != nil {
 		return false

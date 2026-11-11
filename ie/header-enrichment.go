@@ -26,6 +26,10 @@ func NewHeaderEnrichment(typ uint8, name, value string) *IE {
 
 // HeaderEnrichment returns HeaderEnrichment in *HeaderEnrichmentFields if the type of IE matches.
 func (i *IE) HeaderEnrichment() (*HeaderEnrichmentFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case HeaderEnrichment:
 		f, err := ParseHeaderEnrichmentFields(i.Payload)
@@ -92,6 +96,11 @@ func ParseHeaderEnrichmentFields(b []byte) (*HeaderEnrichmentFields, error) {
 
 // UnmarshalBinary parses b into IE.
 func (f *HeaderEnrichmentFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = HeaderEnrichmentFields{}
+
 	l := len(b)
 	if l < 2 {
 		return io.ErrUnexpectedEOF
@@ -123,6 +132,10 @@ func (f *HeaderEnrichmentFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of HeaderEnrichmentFields.
 func (f *HeaderEnrichmentFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -131,7 +144,21 @@ func (f *HeaderEnrichmentFields) Marshal() ([]byte, error) {
 }
 
 // MarshalTo puts the byte sequence in the byte array given as b.
+// TS 29.244 V20.1.0 clause 8.2.67: name and value use one-octet lengths.
 func (f *HeaderEnrichmentFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if int(f.NameLength) != len(f.HeaderFieldName) || int(f.ValueLength) != len(f.HeaderFieldValue) {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 2 {
 		return io.ErrUnexpectedEOF
@@ -154,6 +181,10 @@ func (f *HeaderEnrichmentFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *HeaderEnrichmentFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 3
 	l += len([]byte(f.HeaderFieldName))
 	l += len([]byte(f.HeaderFieldValue))

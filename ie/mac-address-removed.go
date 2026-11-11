@@ -23,6 +23,10 @@ func NewMACAddressesRemoved(ctag, stag *IE, macs ...net.HardwareAddr) *IE {
 
 // MACAddressesRemoved returns MACAddressesRemoved in structured format if the type of IE matches.
 func (i *IE) MACAddressesRemoved() (*MACAddressesRemovedFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case MACAddressesRemoved:
 		fields, err := ParseMACAddressesRemovedFields(i.Payload)
@@ -72,7 +76,13 @@ type MACAddressesRemovedFields struct {
 
 // NewMACAddressesRemovedFields creates a new NewMACAddressesRemovedFields.
 func NewMACAddressesRemovedFields(ctag, stag *IE, macs ...net.HardwareAddr) *MACAddressesRemovedFields {
-	ct, st := ctag.Payload, stag.Payload
+	var ct, st []byte
+	if ctag != nil {
+		ct = ctag.Payload
+	}
+	if stag != nil {
+		st = stag.Payload
+	}
 	return &MACAddressesRemovedFields{
 		NumberOfMACAddresses: uint8(len(macs)),
 		MACAddresses:         macs,
@@ -93,48 +103,53 @@ func ParseMACAddressesRemovedFields(b []byte) (*MACAddressesRemovedFields, error
 }
 
 // UnmarshalBinary parses b into IE.
+// TS 29.244 V20.1.0 clause 8.2.104: exactly count MAC addresses,
+// followed by independently length-prefixed C-TAG and S-TAG values.
 func (f *MACAddressesRemovedFields) UnmarshalBinary(b []byte) error {
-	l := len(b)
-	if l < 1 {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = MACAddressesRemovedFields{}
+
+	if len(b) < 1 {
 		return io.ErrUnexpectedEOF
 	}
-
-	f.NumberOfMACAddresses = b[0]
+	*f = MACAddressesRemovedFields{NumberOfMACAddresses: b[0]}
+	f.MACAddresses = make([]net.HardwareAddr, 0, int(b[0]))
 	offset := 1
-
-	for i := 0; i <= int(f.NumberOfMACAddresses); i++ {
-		if l < offset+6 {
-			return io.ErrUnexpectedEOF
+	for n := 0; n < int(f.NumberOfMACAddresses); n++ {
+		mac, err := takePayload(b, &offset, 6)
+		if err != nil {
+			return err
 		}
-		f.MACAddresses = append(f.MACAddresses, b[offset:offset+6])
-		offset += 6
+		f.MACAddresses = append(f.MACAddresses, net.HardwareAddr(mac))
 	}
-
-	if l < offset {
-		return io.ErrUnexpectedEOF
+	for _, field := range []struct {
+		length *uint8
+		value  *[]byte
+	}{{&f.CTAGLength, &f.CTAG}, {&f.STAGLength, &f.STAG}} {
+		length, err := takePayload(b, &offset, 1)
+		if err != nil {
+			return err
+		}
+		*field.length = length[0]
+		value, err := takePayload(b, &offset, int(length[0]))
+		if err != nil {
+			return err
+		}
+		if len(value) > 0 {
+			*field.value = value
+		}
 	}
-	f.CTAGLength = b[offset]
-
-	if l < offset+int(f.CTAGLength) {
-		return io.ErrUnexpectedEOF
-	}
-	copy(f.CTAG, b[offset:offset+int(f.CTAGLength)])
-
-	if l < offset {
-		return io.ErrUnexpectedEOF
-	}
-	f.STAGLength = b[offset]
-
-	if l < offset+int(f.STAGLength) {
-		return io.ErrUnexpectedEOF
-	}
-	copy(f.STAG, b[offset:offset+int(f.STAGLength)])
-
 	return nil
 }
 
 // Marshal returns the serialized bytes of MACAddressesRemovedFields.
 func (f *MACAddressesRemovedFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -144,6 +159,25 @@ func (f *MACAddressesRemovedFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *MACAddressesRemovedFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if int(f.NumberOfMACAddresses) != len(f.MACAddresses) || int(f.CTAGLength) != len(f.CTAG) || int(f.STAGLength) != len(f.STAG) {
+		return ErrInvalidLength
+	}
+	for _, mac := range f.MACAddresses {
+		if len(mac) != 6 {
+			return ErrInvalidLength
+		}
+	}
+
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -171,6 +205,10 @@ func (f *MACAddressesRemovedFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *MACAddressesRemovedFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 3
 	l += int(f.NumberOfMACAddresses) * 6
 	l += int(f.CTAGLength)

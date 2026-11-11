@@ -1,0 +1,3 @@
+go test fuzz v1
+uint16(182)
+[]byte("\x11\x11")

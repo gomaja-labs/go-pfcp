@@ -22,6 +22,10 @@ func NewDLFlowLevelMarking(flags uint8, ttc, sci uint16) *IE {
 
 // DLFlowLevelMarking returns DLFlowLevelMarking in *DLFlowLevelMarkingFields if the type of IE matches.
 func (i *IE) DLFlowLevelMarking() (*DLFlowLevelMarkingFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case DLFlowLevelMarking:
 		f, err := ParseDLFlowLevelMarkingFields(i.Payload)
@@ -59,6 +63,10 @@ func (i *IE) DLFlowLevelMarking() (*DLFlowLevelMarkingFields, error) {
 
 // HasTTC reports whether an IE has TTC bit.
 func (i *IE) HasTTC() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != DLFlowLevelMarking {
 		return false
 	}
@@ -71,6 +79,10 @@ func (i *IE) HasTTC() bool {
 
 // HasSCI reports whether an IE has SCI bit.
 func (i *IE) HasSCI() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != DLFlowLevelMarking {
 		return false
 	}
@@ -114,6 +126,11 @@ func ParseDLFlowLevelMarkingFields(b []byte) (*DLFlowLevelMarkingFields, error) 
 
 // UnmarshalBinary parses b into IE.
 func (f *DLFlowLevelMarkingFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = DLFlowLevelMarkingFields{}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -142,6 +159,10 @@ func (f *DLFlowLevelMarkingFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of DLFlowLevelMarkingFields.
 func (f *DLFlowLevelMarkingFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -151,8 +172,19 @@ func (f *DLFlowLevelMarkingFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *DLFlowLevelMarkingFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
-	if l < 2 {
+	// TS 29.244 V20.1.0 clause 8.2.66: the presence flags are one octet.
+	if l < 1 {
 		return io.ErrUnexpectedEOF
 	}
 
@@ -173,6 +205,10 @@ func (f *DLFlowLevelMarkingFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *DLFlowLevelMarkingFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 1
 	if has1stBit(f.Flags) {
 		l += 2

@@ -13,6 +13,10 @@ func NewCPFunctionFeatures(features ...uint8) *IE {
 
 // CPFunctionFeatures returns CPFunctionFeatures in []byte if the type of IE matches.
 func (i *IE) CPFunctionFeatures() ([]byte, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != CPFunctionFeatures {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
@@ -24,6 +28,10 @@ func (i *IE) CPFunctionFeatures() ([]byte, error) {
 
 // HasLOAD reports whether an IE has LOAD bit.
 func (i *IE) HasLOAD() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != CPFunctionFeatures {
 		return false
 	}
@@ -36,6 +44,10 @@ func (i *IE) HasLOAD() bool {
 
 // HasOVRL reports whether an IE has OVRL bit.
 func (i *IE) HasOVRL() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != CPFunctionFeatures {
 		return false
 	}
@@ -48,6 +60,10 @@ func (i *IE) HasOVRL() bool {
 
 // HasARDR reports whether an IE has ARDR bit.
 func (i *IE) HasARDR() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != CPFunctionFeatures {
 		return false
 	}
@@ -60,6 +76,10 @@ func (i *IE) HasARDR() bool {
 
 // HasUIAUR reports whether an IE has UIAUR bit.
 func (i *IE) HasUIAUR() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != CPFunctionFeatures {
 		return false
 	}
@@ -72,6 +92,10 @@ func (i *IE) HasUIAUR() bool {
 
 // HasPSUCC reports whether an IE has PSUCC bit.
 func (i *IE) HasPSUCC() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != CPFunctionFeatures {
 		return false
 	}
@@ -84,6 +108,10 @@ func (i *IE) HasPSUCC() bool {
 
 // HasRPGUR reports whether an IE has RPGUR bit.
 func (i *IE) HasRPGUR() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != CPFunctionFeatures {
 		return false
 	}

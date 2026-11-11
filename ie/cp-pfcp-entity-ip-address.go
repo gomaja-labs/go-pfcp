@@ -23,6 +23,10 @@ func NewCPPFCPEntityIPAddress(v4, v6 net.IP) *IE {
 
 // CPPFCPEntityIPAddress returns CPPFCPEntityIPAddress in structured format if the type of IE matches.
 func (i *IE) CPPFCPEntityIPAddress() (*CPPFCPEntityIPAddressFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case CPPFCPEntityIPAddress:
 		fields, err := ParseCPPFCPEntityIPAddressFields(i.Payload)
@@ -74,21 +78,37 @@ func NewCPPFCPEntityIPAddressFields(v4, v6 net.IP) *CPPFCPEntityIPAddressFields 
 
 // HasIPv4 reports whether IPv4 flag is set.
 func (f *CPPFCPEntityIPAddressFields) HasIPv4() bool {
+	if f == nil {
+		return false
+	}
+
 	return has2ndBit(f.Flags)
 }
 
 // SetIPv4Flag sets IPv4 flag in CPPFCPEntityIPAddress.
 func (f *CPPFCPEntityIPAddressFields) SetIPv4Flag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x02
 }
 
 // HasIPv6 reports whether IPv6 flag is set.
 func (f *CPPFCPEntityIPAddressFields) HasIPv6() bool {
+	if f == nil {
+		return false
+	}
+
 	return has1stBit(f.Flags)
 }
 
 // SetIPv6Flag sets IPv6 flag in CPPFCPEntityIPAddress.
 func (f *CPPFCPEntityIPAddressFields) SetIPv6Flag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x01
 }
 
@@ -103,6 +123,11 @@ func ParseCPPFCPEntityIPAddressFields(b []byte) (*CPPFCPEntityIPAddressFields, e
 
 // UnmarshalBinary parses b into IE.
 func (f *CPPFCPEntityIPAddressFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = CPPFCPEntityIPAddressFields{}
+
 	l := len(b)
 	if l < 2 {
 		return io.ErrUnexpectedEOF
@@ -131,6 +156,10 @@ func (f *CPPFCPEntityIPAddressFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of CPPFCPEntityIPAddressFields.
 func (f *CPPFCPEntityIPAddressFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -140,6 +169,16 @@ func (f *CPPFCPEntityIPAddressFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *CPPFCPEntityIPAddressFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -167,6 +206,10 @@ func (f *CPPFCPEntityIPAddressFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *CPPFCPEntityIPAddressFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 1
 	if f.IPv4Address != nil {
 		l += 4

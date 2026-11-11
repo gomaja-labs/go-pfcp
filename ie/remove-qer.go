@@ -11,9 +11,13 @@ func NewRemoveQER(qer *IE) *IE {
 
 // RemoveQER returns the IEs above RemoveQER if the type of IE matches.
 func (i *IE) RemoveQER() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != RemoveQER {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

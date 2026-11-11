@@ -11,6 +11,10 @@ func NewMARID(id uint16) *IE {
 
 // MARID returns MARID in uint16 if the type of IE matches.
 func (i *IE) MARID() (uint16, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case MARID:
 		return i.ValueAsUint16()

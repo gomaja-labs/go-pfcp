@@ -11,9 +11,13 @@ func NewRemoveTrafficEndpoint(id *IE) *IE {
 
 // RemoveTrafficEndpoint returns the IEs above RemoveTrafficEndpoint if the type of IE matches.
 func (i *IE) RemoveTrafficEndpoint() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != RemoveTrafficEndpoint {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

@@ -15,12 +15,16 @@ func NewUsageReportTrigger(triggerOctets ...uint8) *IE {
 
 // UsageReportTrigger returns UsageReportTrigger in []byte if the type of IE matches.
 func (i *IE) UsageReportTrigger() ([]byte, error) {
-	if len(i.Payload) < 2 {
-		return nil, io.ErrUnexpectedEOF
+	if i == nil {
+		return nil, ErrIENotFound
 	}
 
 	switch i.Type {
 	case UsageReportTrigger:
+		if len(i.Payload) < 2 {
+			return nil, io.ErrUnexpectedEOF
+		}
+
 		return i.Payload, nil
 	case UsageReportWithinSessionModificationResponse,
 		UsageReportWithinSessionDeletionResponse,
@@ -42,6 +46,10 @@ func (i *IE) UsageReportTrigger() ([]byte, error) {
 
 // HasIMMER reports whether an IE has IMMER bit.
 func (i *IE) HasIMMER() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case UsageReportWithinSessionModificationResponse,
 		UsageReportWithinSessionDeletionResponse,
@@ -59,6 +67,10 @@ func (i *IE) HasIMMER() bool {
 
 // HasMONIT reports whether an IE has MONIT bit.
 func (i *IE) HasMONIT() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case UsageReportWithinSessionModificationResponse,
 		UsageReportWithinSessionDeletionResponse,
@@ -76,6 +88,10 @@ func (i *IE) HasMONIT() bool {
 
 // HasTERMR reports whether an IE has TERMR bit.
 func (i *IE) HasTERMR() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case UsageReportWithinSessionModificationResponse,
 		UsageReportWithinSessionDeletionResponse,
@@ -93,6 +109,10 @@ func (i *IE) HasTERMR() bool {
 
 // HasEMRRE reports whether an IE has EMRRE bit.
 func (i *IE) HasEMRRE() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case UsageReportWithinSessionModificationResponse,
 		UsageReportWithinSessionDeletionResponse,
@@ -115,6 +135,10 @@ func (i *IE) HasEMRRE() bool {
 
 // HasTEBUR reports whether an IE has TEBUR bit.
 func (i *IE) HasTEBUR() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case UsageReportWithinSessionModificationResponse,
 		UsageReportWithinSessionDeletionResponse,

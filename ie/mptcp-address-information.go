@@ -29,6 +29,10 @@ func NewMPTCPAddressInformation(ptype uint8, port uint16, v4, v6 net.IP) *IE {
 
 // MPTCPAddressInformation returns MPTCPAddressInformation in structured format if the type of IE matches.
 func (i *IE) MPTCPAddressInformation() (*MPTCPAddressInformationFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case MPTCPAddressInformation:
 		fields, err := ParseMPTCPAddressInformationFields(i.Payload)
@@ -95,21 +99,37 @@ func NewMPTCPAddressInformationFields(ptype uint8, port uint16, v4, v6 net.IP) *
 
 // HasIPv6 reports whether IPv6 flag is set.
 func (f *MPTCPAddressInformationFields) HasIPv6() bool {
+	if f == nil {
+		return false
+	}
+
 	return has2ndBit(f.Flags)
 }
 
 // SetIPv6Flag sets IPv6 flag in MPTCPAddressInformation.
 func (f *MPTCPAddressInformationFields) SetIPv6Flag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x02
 }
 
 // HasIPv4 reports whether IPv4 flag is set.
 func (f *MPTCPAddressInformationFields) HasIPv4() bool {
+	if f == nil {
+		return false
+	}
+
 	return has1stBit(f.Flags)
 }
 
 // SetIPv4Flag sets IPv4 flag in MPTCPAddressInformation.
 func (f *MPTCPAddressInformationFields) SetIPv4Flag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x01
 }
 
@@ -124,6 +144,11 @@ func ParseMPTCPAddressInformationFields(b []byte) (*MPTCPAddressInformationField
 
 // UnmarshalBinary parses b into IE.
 func (f *MPTCPAddressInformationFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = MPTCPAddressInformationFields{}
+
 	l := len(b)
 	if l < 4 {
 		return io.ErrUnexpectedEOF
@@ -154,6 +179,10 @@ func (f *MPTCPAddressInformationFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of MPTCPAddressInformationFields.
 func (f *MPTCPAddressInformationFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -163,6 +192,16 @@ func (f *MPTCPAddressInformationFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *MPTCPAddressInformationFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 4 {
 		return io.ErrUnexpectedEOF
@@ -193,6 +232,10 @@ func (f *MPTCPAddressInformationFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *MPTCPAddressInformationFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 1 + 1 + 2
 	if f.HasIPv4() {
 		l += 4

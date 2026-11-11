@@ -13,6 +13,10 @@ func NewApplyAction(flagsOctets ...uint8) *IE {
 
 // ApplyAction returns ApplyAction in []byte if the type of IE matches.
 func (i *IE) ApplyAction() ([]byte, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case ApplyAction:
 		if len(i.Payload) < 1 {
@@ -49,6 +53,10 @@ func (i *IE) ApplyAction() ([]byte, error) {
 // ValidateApplyAction can be used to facilitate the detection of some inconsistencies in Apply Action flags.
 // Its use is optional because validation could also be done on upper layers, or completely skipped for testing purposes.
 func (i *IE) ValidateApplyAction() error {
+	if i == nil {
+		return ErrIENotFound
+	}
+
 	if i.Type != ApplyAction {
 		return &InvalidTypeError{Type: i.Type}
 	}
@@ -91,6 +99,10 @@ func (i *IE) ValidateApplyAction() error {
 
 // HasDROP reports whether an IE has DROP bit.
 func (i *IE) HasDROP() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case CreateFAR, UpdateFAR, ApplyAction:
 		v, err := i.ApplyAction()
@@ -111,6 +123,10 @@ func (i *IE) HasDROP() bool {
 
 // HasFORW reports whether an IE has FORW bit.
 func (i *IE) HasFORW() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.ApplyAction()
 	if err != nil {
 		return false
@@ -120,6 +136,10 @@ func (i *IE) HasFORW() bool {
 
 // HasBUFF reports whether an IE has BUFF bit.
 func (i *IE) HasBUFF() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case CreateFAR, UpdateFAR, ApplyAction:
 		v, err := i.ApplyAction()
@@ -140,6 +160,10 @@ func (i *IE) HasBUFF() bool {
 
 // HasNOCP reports whether an IE has NOCP bit.
 func (i *IE) HasNOCP() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.ApplyAction()
 	if err != nil {
 		return false
@@ -149,6 +173,10 @@ func (i *IE) HasNOCP() bool {
 
 // HasDUPL reports whether an IE has DUPL bit.
 func (i *IE) HasDUPL() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.ApplyAction()
 	if err != nil {
 		return false
@@ -159,6 +187,10 @@ func (i *IE) HasDUPL() bool {
 // HasIPMA reports wether an IE has IPMA bit.
 // This flag has been introduced in release 16.2
 func (i *IE) HasIPMA() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.ApplyAction()
 	if err != nil {
 		return false
@@ -169,6 +201,10 @@ func (i *IE) HasIPMA() bool {
 // HasIPMD reports wether an IE has IPMD bit.
 // This flag has been introduced in release 16.2
 func (i *IE) HasIPMD() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.ApplyAction()
 	if err != nil {
 		return false
@@ -179,6 +215,10 @@ func (i *IE) HasIPMD() bool {
 // HasDFRT reports wether an IE has DFRT bit.
 // This flag has been introduced in release 16.3
 func (i *IE) HasDFRT() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.ApplyAction()
 	if err != nil {
 		return false
@@ -189,6 +229,10 @@ func (i *IE) HasDFRT() bool {
 // HasEDRT reports wether an IE has EDRT bit.
 // This flag has been introduced in release 16.3
 func (i *IE) HasEDRT() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.ApplyAction()
 	if err != nil {
 		return false
@@ -202,6 +246,10 @@ func (i *IE) HasEDRT() bool {
 // HasBDPN reports wether an IE has BDPN bit.
 // This flag has been introduced in release 16.4
 func (i *IE) HasBDPN() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.ApplyAction()
 	if err != nil {
 		return false
@@ -215,6 +263,10 @@ func (i *IE) HasBDPN() bool {
 // HasDDPN reports wether an IE has DDPN bit.
 // This flag has been introduced in release 16.4
 func (i *IE) HasDDPN() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.ApplyAction()
 	if err != nil {
 		return false
@@ -228,6 +280,10 @@ func (i *IE) HasDDPN() bool {
 // HasFSSM reports wether an IE has FSSM bit.
 // This flag has been introduced in release 17.2
 func (i *IE) HasFSSM() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.ApplyAction()
 	if err != nil {
 		return false
@@ -241,6 +297,10 @@ func (i *IE) HasFSSM() bool {
 // HasMBSU reports wether an IE has MBSU bit.
 // This flag has been introduced in release 17.2
 func (i *IE) HasMBSU() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.ApplyAction()
 	if err != nil {
 		return false

@@ -11,9 +11,13 @@ func NewJoinIPMulticastInformationWithinUsageReport(ies ...*IE) *IE {
 
 // JoinIPMulticastInformationWithinUsageReport returns the IEs above JoinIPMulticastInformationWithinUsageReport if the type of IE matches.
 func (i *IE) JoinIPMulticastInformationWithinUsageReport() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case JoinIPMulticastInformationWithinUsageReport:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	case UsageReportWithinSessionReportRequest:
 		ies, err := i.UsageReport()
 		if err != nil {

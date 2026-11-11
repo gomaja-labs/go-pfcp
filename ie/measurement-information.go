@@ -11,6 +11,10 @@ func NewMeasurementInformation(flags uint8) *IE {
 
 // MeasurementInformation returns MeasurementInformation in uint8 if the type of IE matches.
 func (i *IE) MeasurementInformation() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case MeasurementInformation:
 		return i.ValueAsUint8()
@@ -43,6 +47,10 @@ func (i *IE) MeasurementInformation() (uint8, error) {
 
 // HasISTM reports whether an IE has ISTM bit.
 func (i *IE) HasISTM() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != MeasurementInformation {
 		return false
 	}
@@ -55,6 +63,10 @@ func (i *IE) HasISTM() bool {
 
 // HasRADI reports whether an IE has RADI bit.
 func (i *IE) HasRADI() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != MeasurementInformation {
 		return false
 	}
@@ -67,6 +79,10 @@ func (i *IE) HasRADI() bool {
 
 // HasINAM reports whether an IE has INAM bit.
 func (i *IE) HasINAM() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != MeasurementInformation {
 		return false
 	}
@@ -79,6 +95,10 @@ func (i *IE) HasINAM() bool {
 
 // HasMBQE reports whether an IE has MBQE bit.
 func (i *IE) HasMBQE() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != MeasurementInformation {
 		return false
 	}

@@ -17,12 +17,16 @@ func NewTimeOffsetThreshold(threshold time.Duration) *IE {
 
 // TimeOffsetThreshold returns TimeOffsetThreshold in time.Duration if the type of IE matches.
 func (i *IE) TimeOffsetThreshold() (time.Duration, error) {
-	if len(i.Payload) < 8 {
-		return 0, io.ErrUnexpectedEOF
+	if i == nil {
+		return 0, ErrIENotFound
 	}
 
 	switch i.Type {
 	case TimeOffsetThreshold:
+		if len(i.Payload) < 8 {
+			return 0, io.ErrUnexpectedEOF
+		}
+
 		return time.Duration(binary.BigEndian.Uint64(i.Payload[0:8])), nil
 	case ClockDriftControlInformation:
 		ies, err := i.ClockDriftControlInformation()

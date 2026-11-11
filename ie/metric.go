@@ -11,6 +11,10 @@ func NewMetric(metric uint8) *IE {
 
 // Metric returns Metric in uint8 if the type of IE matches.
 func (i *IE) Metric() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case Metric:
 		return i.ValueAsUint8()

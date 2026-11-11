@@ -11,6 +11,10 @@ func NewCreateBridgeInfoForTSC(bii uint8) *IE {
 
 // CreateBridgeInfoForTSC returns CreateBridgeInfoForTSC in uint8 if the type of IE matches.
 func (i *IE) CreateBridgeInfoForTSC() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case CreateBridgeInfoForTSC:
 		return i.ValueAsUint8()
@@ -21,6 +25,10 @@ func (i *IE) CreateBridgeInfoForTSC() (uint8, error) {
 
 // HasBII reports whether an IE has BII bit.
 func (i *IE) HasBII() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.CreateBridgeInfoForTSC()
 	if err != nil {
 		return false

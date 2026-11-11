@@ -11,6 +11,10 @@ func NewRequestedClockDriftInformation(rrcr, rrto uint8) *IE {
 
 // RequestedClockDriftInformation returns RequestedClockDriftInformation in uint8 if the type of IE matches.
 func (i *IE) RequestedClockDriftInformation() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case RequestedClockDriftInformation:
 		return i.ValueAsUint8()
@@ -33,12 +37,16 @@ func (i *IE) RequestedClockDriftInformation() (uint8, error) {
 
 // HasRRCR reports whether an IE has RRCR bit.
 func (i *IE) HasRRCR() bool {
-	if len(i.Payload) < 1 {
+	if i == nil {
 		return false
 	}
 
 	switch i.Type {
 	case RequestedClockDriftInformation:
+		if len(i.Payload) < 1 {
+			return false
+		}
+
 		return has2ndBit(i.Payload[0])
 	/*
 		case ClockDriftControlInformation:
@@ -61,12 +69,16 @@ func (i *IE) HasRRCR() bool {
 
 // HasRRTO reports whether an IE has RRTO bit.
 func (i *IE) HasRRTO() bool {
-	if len(i.Payload) < 1 {
+	if i == nil {
 		return false
 	}
 
 	switch i.Type {
 	case RequestedClockDriftInformation:
+		if len(i.Payload) < 1 {
+			return false
+		}
+
 		return has1stBit(i.Payload[0])
 	/*
 		case ClockDriftControlInformation:

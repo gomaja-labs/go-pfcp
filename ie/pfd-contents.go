@@ -24,6 +24,10 @@ func NewPFDContents(fd, url, dn, cp, dnp string, afd, aurl, adnp []string) *IE {
 //
 // This IE has a complex payload that costs much when parsing.
 func (i *IE) PFDContents() (*PFDContentsFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case PFDContents:
 		s, err := ParsePFDContentsFields(i.Payload)
@@ -150,81 +154,145 @@ func NewPFDContentsFields(fd, url, dn, cp, dnp string, afd, aurl, adnp []string)
 
 // HasADNP reports whether ADNP flag is set.
 func (f *PFDContentsFields) HasADNP() bool {
+	if f == nil {
+		return false
+	}
+
 	return has8thBit(f.Flags)
 }
 
 // SetADNPFlag sets ADNP flag in PFDContents.
 func (f *PFDContentsFields) SetADNPFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x80
 }
 
 // HasAURL reports whether AURL flag is set.
 func (f *PFDContentsFields) HasAURL() bool {
+	if f == nil {
+		return false
+	}
+
 	return has7thBit(f.Flags)
 }
 
 // SetAURLFlag sets AURL flag in PFDContents.
 func (f *PFDContentsFields) SetAURLFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x40
 }
 
 // HasAFD reports whether AFD flag is set.
 func (f *PFDContentsFields) HasAFD() bool {
+	if f == nil {
+		return false
+	}
+
 	return has6thBit(f.Flags)
 }
 
 // SetAFDFlag sets AFD flag in PFDContents.
 func (f *PFDContentsFields) SetAFDFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x20
 }
 
 // HasDNP reports whether DNP flag is set.
 func (f *PFDContentsFields) HasDNP() bool {
+	if f == nil {
+		return false
+	}
+
 	return has5thBit(f.Flags)
 }
 
 // SetDNPFlag sets DNP flag in PFDContents.
 func (f *PFDContentsFields) SetDNPFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x10
 }
 
 // HasCP reports whether CP flag is set.
 func (f *PFDContentsFields) HasCP() bool {
+	if f == nil {
+		return false
+	}
+
 	return has4thBit(f.Flags)
 }
 
 // SetCPFlag sets CP flag in PFDContents.
 func (f *PFDContentsFields) SetCPFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x08
 }
 
 // HasDN reports whether DN flag is set.
 func (f *PFDContentsFields) HasDN() bool {
+	if f == nil {
+		return false
+	}
+
 	return has3rdBit(f.Flags)
 }
 
 // SetDNFlag sets DN flag in PFDContents.
 func (f *PFDContentsFields) SetDNFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x04
 }
 
 // HasURL reports whether URL flag is set.
 func (f *PFDContentsFields) HasURL() bool {
+	if f == nil {
+		return false
+	}
+
 	return has2ndBit(f.Flags)
 }
 
 // SetURLFlag sets URL flag in PFDContents.
 func (f *PFDContentsFields) SetURLFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x02
 }
 
 // HasFD reports whether FD flag is set.
 func (f *PFDContentsFields) HasFD() bool {
+	if f == nil {
+		return false
+	}
+
 	return has1stBit(f.Flags)
 }
 
 // SetFDFlag sets FD flag in PFDContents.
 func (f *PFDContentsFields) SetFDFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x01
 }
 
@@ -238,140 +306,64 @@ func ParsePFDContentsFields(b []byte) (*PFDContentsFields, error) {
 }
 
 // UnmarshalBinary parses b into IE.
+// TS 29.244 V20.1.0 clause 8.2.39: each present value, including each
+// instance in an additional-values field, is preceded by a two-octet length.
 func (f *PFDContentsFields) UnmarshalBinary(b []byte) error {
-	l := len(b)
-	if l < 2 {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = PFDContentsFields{}
+
+	if len(b) < 2 {
 		return io.ErrUnexpectedEOF
 	}
-
-	f.Flags = b[0]
-	offset := 2 // 2nd octet is spare
-
-	if f.HasFD() {
-		if len(b[offset:]) < offset+2+int(f.FDLength) {
-			return io.ErrUnexpectedEOF
-		}
-		f.FDLength = binary.BigEndian.Uint16(b[offset : offset+2])
-		f.FlowDescription = string(b[offset+2 : offset+2+int(f.FDLength)])
-		offset += 2 + int(f.FDLength)
+	*f = PFDContentsFields{Flags: b[0]}
+	offset := 2
+	fields := []struct {
+		bit    uint8
+		length *uint16
+		value  *string
+		list   *[]string
+	}{
+		{1, &f.FDLength, &f.FlowDescription, nil},
+		{2, &f.URLLength, &f.URL, nil},
+		{4, &f.DNLength, &f.DomainName, nil},
+		{8, &f.CPLength, &f.CustomPFDContent, nil},
+		{16, &f.DNPLength, &f.DomainNameProtocol, nil},
+		{32, &f.AFDLength, nil, &f.AdditionalFlowDescription},
+		{64, &f.AURLLength, nil, &f.AdditionalURL},
+		{128, &f.ADNPLength, nil, &f.AdditionalDomainNameAndProtocol},
 	}
-
-	if f.HasURL() {
-		if len(b[offset:]) < offset+2+int(f.URLLength) {
-			return io.ErrUnexpectedEOF
+	for _, field := range fields {
+		if f.Flags&field.bit == 0 {
+			continue
 		}
-		f.URLLength = binary.BigEndian.Uint16(b[offset : offset+2])
-		f.URL = string(b[offset+2 : offset+2+int(f.URLLength)])
-		offset += 2 + int(f.URLLength)
-	}
-
-	if f.HasDN() {
-		if len(b[offset:]) < offset+2+int(f.DNLength) {
-			return io.ErrUnexpectedEOF
+		value, err := takeLength16(b, &offset)
+		if err != nil {
+			return err
 		}
-		f.DNLength = binary.BigEndian.Uint16(b[offset : offset+2])
-		f.DomainName = string(b[offset+2 : offset+2+int(f.DNLength)])
-		offset += 2 + int(f.DNLength)
-	}
-
-	if f.HasCP() {
-		if len(b[offset:]) < offset+2+int(f.CPLength) {
-			return io.ErrUnexpectedEOF
+		*field.length = uint16(len(value))
+		if field.value != nil {
+			*field.value = string(value)
+			continue
 		}
-		f.CPLength = binary.BigEndian.Uint16(b[offset : offset+2])
-		f.CustomPFDContent = string(b[offset+2 : offset+2+int(f.CPLength)])
-		offset += 2 + int(f.CPLength)
-	}
-
-	if f.HasDNP() {
-		if len(b[offset:]) < offset+2+int(f.DNPLength) {
-			return io.ErrUnexpectedEOF
-		}
-		f.DNPLength = binary.BigEndian.Uint16(b[offset : offset+2])
-		f.DomainNameProtocol = string(b[offset+2 : offset+2+int(f.DNPLength)])
-		offset += 2 + int(f.DNPLength)
-	}
-
-	if f.HasAFD() {
-		if len(b[offset:]) < 2+int(f.AFDLength) {
-			return io.ErrUnexpectedEOF
-		}
-		f.AFDLength = binary.BigEndian.Uint16(b[offset : offset+2])
-
-		p := b[offset+2 : offset+2+int(f.AFDLength)]
-		s := 0
-		for {
-			e := s + 2
-			if len(p) <= e {
-				break
+		for at := 0; at < len(value); {
+			instance, err := takeLength16(value, &at)
+			if err != nil {
+				return err
 			}
-
-			l := int(binary.BigEndian.Uint16(p[s:e]))
-			if len(p) < e+l {
-				break
-			}
-			f.AdditionalFlowDescription = append(f.AdditionalFlowDescription, string(p[e:e+l]))
-			s += 2 + l
-		}
-		offset += 2 + int(f.AFDLength)
-	}
-
-	if f.HasAURL() {
-		if len(b[offset:]) < 2+int(f.AURLLength) {
-			return io.ErrUnexpectedEOF
-		}
-		f.AURLLength = binary.BigEndian.Uint16(b[offset : offset+2])
-		offset += 2
-
-		p := b[offset : offset+int(f.AURLLength)]
-		s := 0
-		for {
-			e := s + 2
-			if len(p) <= e {
-				break
-			}
-
-			l := int(binary.BigEndian.Uint16(p[s:e]))
-			if len(p) < e+l {
-				break
-			}
-
-			f.AdditionalURL = append(f.AdditionalURL, string(p[e:e+l]))
-			s += 2 + l
-		}
-		offset += int(f.AURLLength)
-	}
-
-	if f.HasADNP() {
-		if len(b[offset:]) < 2+int(f.ADNPLength) {
-			return io.ErrUnexpectedEOF
-		}
-		f.ADNPLength = binary.BigEndian.Uint16(b[offset : offset+2])
-		offset += 2
-
-		p := b[offset : offset+int(f.ADNPLength)]
-		s := 0
-		for {
-			e := s + 2
-			if len(p) <= e {
-				break
-			}
-
-			l := int(binary.BigEndian.Uint16(p[s:e]))
-			if len(p) < e+l {
-				break
-			}
-
-			f.AdditionalDomainNameAndProtocol = append(f.AdditionalDomainNameAndProtocol, string(p[e:e+l]))
-			s += 2 + l
+			*field.list = append(*field.list, string(instance))
 		}
 	}
-
 	return nil
 }
 
 // Marshal returns the serialized bytes of PFDContentsFields.
 func (f *PFDContentsFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -381,6 +373,20 @@ func (f *PFDContentsFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *PFDContentsFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if !f.validLengths() {
+		return ErrInvalidLength
+	}
+
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -457,6 +463,10 @@ func (f *PFDContentsFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *PFDContentsFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 2 // Flag + Spare
 
 	if f.HasFD() {
@@ -492,4 +502,48 @@ func (f *PFDContentsFields) MarshalLen() int {
 	}
 
 	return l
+}
+
+// Length metadata must agree with the values before any write. This also
+// detects constructor input lengths that cannot fit in sixteen bits.
+func (f *PFDContentsFields) validLengths() bool {
+	for _, field := range []struct {
+		present bool
+		length  uint16
+		value   string
+	}{
+		{f.HasFD(), f.FDLength, f.FlowDescription},
+		{f.HasURL(), f.URLLength, f.URL},
+		{f.HasDN(), f.DNLength, f.DomainName},
+		{f.HasCP(), f.CPLength, f.CustomPFDContent},
+		{f.HasDNP(), f.DNPLength, f.DomainNameProtocol},
+	} {
+		if field.present && len(field.value) != int(field.length) {
+			return false
+		}
+	}
+	for _, field := range []struct {
+		present bool
+		length  uint16
+		values  []string
+	}{
+		{f.HasAFD(), f.AFDLength, f.AdditionalFlowDescription},
+		{f.HasAURL(), f.AURLLength, f.AdditionalURL},
+		{f.HasADNP(), f.ADNPLength, f.AdditionalDomainNameAndProtocol},
+	} {
+		if !field.present {
+			continue
+		}
+		length := 0
+		for _, value := range field.values {
+			if len(value) > 65535 {
+				return false
+			}
+			length += 2 + len(value)
+		}
+		if length != int(field.length) {
+			return false
+		}
+	}
+	return true
 }

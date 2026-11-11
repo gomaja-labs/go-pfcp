@@ -20,6 +20,10 @@ func NewPriority(priority uint8) *IE {
 
 // Priority returns Priority in uint8 if the type of IE matches.
 func (i *IE) Priority() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case Priority:
 		return i.ValueAsUint8()

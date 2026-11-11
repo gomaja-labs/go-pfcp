@@ -32,6 +32,10 @@ func NewFlowInformation(dir uint8, desc string) *IE {
 
 // FlowInformation returns FlowInformation in []byte if the type of IE matches.
 func (i *IE) FlowInformation() ([]byte, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case FlowInformation:
 		return i.Payload, nil
@@ -64,6 +68,10 @@ func (i *IE) FlowInformation() ([]byte, error) {
 
 // FlowDirection returns FlowDirection in uint8 if the type of IE matches.
 func (i *IE) FlowDirection() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case FlowInformation:
 		if len(i.Payload) < 1 {
@@ -88,10 +96,19 @@ func (i *IE) FlowDirection() (uint8, error) {
 
 // FlowDescription returns FlowDescription in string if the type of IE matches.
 func (i *IE) FlowDescription() (string, error) {
+	if i == nil {
+		return "", ErrIENotFound
+	}
+
 	switch i.Type {
 	case FlowInformation:
-		l := binary.BigEndian.Uint16(i.Payload[1:3])
-		if len(i.Payload) < int(l) {
+		// TS 29.244 V20.1.0 clause 8.2.60: the length excludes the
+		// direction octet and the two-octet length field.
+		if len(i.Payload) < 3 {
+			return "", io.ErrUnexpectedEOF
+		}
+		l := int(binary.BigEndian.Uint16(i.Payload[1:3]))
+		if len(i.Payload) < 3+l {
 			return "", io.ErrUnexpectedEOF
 		}
 

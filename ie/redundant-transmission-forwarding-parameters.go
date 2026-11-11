@@ -11,9 +11,13 @@ func NewRedundantTransmissionForwardingParameters(ies ...*IE) *IE {
 
 // RedundantTransmissionForwardingParameters returns the IEs above RedundantTransmissionForwardingParameters if the type of IE matches.
 func (i *IE) RedundantTransmissionForwardingParameters() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case RedundantTransmissionForwardingParameters:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	case CreateFAR:
 		ies, err := i.CreateFAR()
 		if err != nil {

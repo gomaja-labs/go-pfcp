@@ -19,6 +19,10 @@ func NewUserPlaneInactivityTimer(period time.Duration) *IE {
 
 // UserPlaneInactivityTimer returns UserPlaneInactivityTimer in time.Duration if the type of IE matches.
 func (i *IE) UserPlaneInactivityTimer() (time.Duration, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	if i.Type != UserPlaneInactivityTimer {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

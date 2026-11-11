@@ -11,9 +11,13 @@ func NewProvideRDSConfigurationInformation(ies ...*IE) *IE {
 
 // ProvideRDSConfigurationInformation returns the IEs above ProvideRDSConfigurationInformation if the type of IE matches.
 func (i *IE) ProvideRDSConfigurationInformation() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != ProvideRDSConfigurationInformation {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

@@ -1,0 +1,2 @@
+go test fuzz v1
+[]byte("\x00\xb4\x00\x1c\ago-pfcp\x03epc\v3gppnetwork\x03org")

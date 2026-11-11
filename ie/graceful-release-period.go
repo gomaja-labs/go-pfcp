@@ -53,6 +53,10 @@ func NewGracefulReleasePeriod(duration time.Duration) *IE {
 
 // GracefulReleasePeriod returns GracefulReleasePeriod in time.Duration if the type of IE matches.
 func (i *IE) GracefulReleasePeriod() (time.Duration, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	if i.Type != GracefulReleasePeriod {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

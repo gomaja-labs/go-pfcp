@@ -23,6 +23,10 @@ func NewVolumeQuota(flags uint8, tvol, uvol, dvol uint64) *IE {
 
 // VolumeQuota returns VolumeQuota in structured format if the type of IE matches.
 func (i *IE) VolumeQuota() (*VolumeQuotaFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case VolumeQuota:
 		f, err := ParseVolumeQuotaFields(i.Payload)
@@ -87,31 +91,55 @@ func NewVolumeQuotaFields(flags uint8, tvol, uvol, dvol uint64) *VolumeQuotaFiel
 
 // HasDLVOL reports whether DLVOL flag is set.
 func (f *VolumeQuotaFields) HasDLVOL() bool {
+	if f == nil {
+		return false
+	}
+
 	return has3rdBit(f.Flags)
 }
 
 // SetDLVOLFlag sets DLVOL flag in VolumeQuota.
 func (f *VolumeQuotaFields) SetDLVOLFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x04
 }
 
 // HasULVOL reports whether ULVOL flag is set.
 func (f *VolumeQuotaFields) HasULVOL() bool {
+	if f == nil {
+		return false
+	}
+
 	return has2ndBit(f.Flags)
 }
 
 // SetULVOLFlag sets ULVOL flag in VolumeQuota.
 func (f *VolumeQuotaFields) SetULVOLFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x02
 }
 
 // HasTOVOL reports whether TOVOL flag is set.
 func (f *VolumeQuotaFields) HasTOVOL() bool {
+	if f == nil {
+		return false
+	}
+
 	return has1stBit(f.Flags)
 }
 
 // SetTOVOLFlag sets TOVOL flag in VolumeQuota.
 func (f *VolumeQuotaFields) SetTOVOLFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x01
 }
 
@@ -126,6 +154,11 @@ func ParseVolumeQuotaFields(b []byte) (*VolumeQuotaFields, error) {
 
 // UnmarshalBinary parses b into IE.
 func (f *VolumeQuotaFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = VolumeQuotaFields{}
+
 	l := len(b)
 	if l < 2 {
 		return io.ErrUnexpectedEOF
@@ -162,6 +195,10 @@ func (f *VolumeQuotaFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of VolumeQuotaFields.
 func (f *VolumeQuotaFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -171,6 +208,16 @@ func (f *VolumeQuotaFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *VolumeQuotaFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -207,6 +254,10 @@ func (f *VolumeQuotaFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *VolumeQuotaFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 1
 	if f.HasTOVOL() {
 		l += 8

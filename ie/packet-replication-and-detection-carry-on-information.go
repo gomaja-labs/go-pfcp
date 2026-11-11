@@ -11,6 +11,10 @@ func NewPacketReplicationAndDetectionCarryOnInformation(flag uint8) *IE {
 
 // PacketReplicationAndDetectionCarryOnInformation returns PacketReplicationAndDetectionCarryOnInformation in uint8 if the type of IE matches.
 func (i *IE) PacketReplicationAndDetectionCarryOnInformation() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case PacketReplicationAndDetectionCarryOnInformation:
 		return i.ValueAsUint8()
@@ -32,6 +36,10 @@ func (i *IE) PacketReplicationAndDetectionCarryOnInformation() (uint8, error) {
 
 // HasPRIUEAI reports whether an IE has PRIUEAI bit.
 func (i *IE) HasPRIUEAI() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.PacketReplicationAndDetectionCarryOnInformation()
 	if err != nil {
 		return false
@@ -42,6 +50,10 @@ func (i *IE) HasPRIUEAI() bool {
 
 // HasPRINT19I reports whether an IE has PRINT19I bit.
 func (i *IE) HasPRINT19I() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.PacketReplicationAndDetectionCarryOnInformation()
 	if err != nil {
 		return false
@@ -52,6 +64,10 @@ func (i *IE) HasPRINT19I() bool {
 
 // HasPRIN6I reports whether an IE has PRIN6I bit.
 func (i *IE) HasPRIN6I() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.PacketReplicationAndDetectionCarryOnInformation()
 	if err != nil {
 		return false
@@ -62,6 +78,10 @@ func (i *IE) HasPRIN6I() bool {
 
 // HasDCARONI reports whether an IE has DCARONI bit.
 func (i *IE) HasDCARONI() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.PacketReplicationAndDetectionCarryOnInformation()
 	if err != nil {
 		return false

@@ -11,9 +11,13 @@ func NewUpdateSRR(ies ...*IE) *IE {
 
 // UpdateSRR returns the IEs above UpdateSRR if the type of IE matches.
 func (i *IE) UpdateSRR() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case UpdateSRR:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

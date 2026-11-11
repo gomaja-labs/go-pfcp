@@ -1,0 +1,3 @@
+go test fuzz v1
+uint16(153)
+[]byte("go-pfcp")

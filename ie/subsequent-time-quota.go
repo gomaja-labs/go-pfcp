@@ -6,6 +6,7 @@ package ie
 
 import (
 	"encoding/binary"
+	"io"
 	"time"
 )
 
@@ -18,8 +19,16 @@ func NewSubsequentTimeQuota(period time.Duration) *IE {
 
 // SubsequentTimeQuota returns SubsequentTimeQuota in time.Duration if the type of IE matches.
 func (i *IE) SubsequentTimeQuota() (time.Duration, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case SubsequentTimeQuota:
+		// TS 29.244 V20.1.0 clause 8.2.87: four-octet seconds.
+		if len(i.Payload) < 4 {
+			return 0, io.ErrUnexpectedEOF
+		}
 		return time.Duration(binary.BigEndian.Uint32(i.Payload[0:4])) * time.Second, nil
 	case CreateURR:
 		ies, err := i.CreateURR()

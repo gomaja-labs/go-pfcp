@@ -11,6 +11,10 @@ func NewRDSConfigurationInformation(rds uint8) *IE {
 
 // RDSConfigurationInformation returns RDSConfigurationInformation in uint8 if the type of IE matches.
 func (i *IE) RDSConfigurationInformation() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case RDSConfigurationInformation:
 		return i.ValueAsUint8()
@@ -32,6 +36,10 @@ func (i *IE) RDSConfigurationInformation() (uint8, error) {
 
 // HasRDS reports whether an IE has RDS bit.
 func (i *IE) HasRDS() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case RDSConfigurationInformation:
 		if len(i.Payload) < 1 {

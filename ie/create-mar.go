@@ -11,9 +11,13 @@ func NewCreateMAR(ies ...*IE) *IE {
 
 // CreateMAR returns the IEs above CreateMAR if the type of IE matches.
 func (i *IE) CreateMAR() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != CreateMAR {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

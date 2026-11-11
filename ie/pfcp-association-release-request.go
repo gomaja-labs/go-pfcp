@@ -11,6 +11,10 @@ func NewPFCPAssociationReleaseRequest(sarr, urss int) *IE {
 
 // PFCPAssociationReleaseRequest returns PFCPAssociationReleaseRequest in uint8 if the type of IE matches.
 func (i *IE) PFCPAssociationReleaseRequest() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	if i.Type != PFCPAssociationReleaseRequest {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
@@ -20,6 +24,10 @@ func (i *IE) PFCPAssociationReleaseRequest() (uint8, error) {
 
 // HasURSS reports whether an IE has URSS bit.
 func (i *IE) HasURSS() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.PFCPAssociationReleaseRequest()
 	if err != nil {
 		return false
@@ -30,6 +38,10 @@ func (i *IE) HasURSS() bool {
 
 // HasSARR reports whether an IE has SARR bit.
 func (i *IE) HasSARR() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.PFCPAssociationReleaseRequest()
 	if err != nil {
 		return false

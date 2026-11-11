@@ -11,9 +11,13 @@ func NewCreateSRR(ies ...*IE) *IE {
 
 // CreateSRR returns the IEs above CreateSRR if the type of IE matches.
 func (i *IE) CreateSRR() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case CreateSRR:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

@@ -11,6 +11,10 @@ func NewCumulativeRateRatioThreshold(threshold uint32) *IE {
 
 // CumulativeRateRatioThreshold returns CumulativeRateRatioThreshold in uint32 if the type of IE matches.
 func (i *IE) CumulativeRateRatioThreshold() (uint32, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case CumulativeRateRatioThreshold:
 		return i.ValueAsUint32()

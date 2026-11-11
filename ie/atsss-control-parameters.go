@@ -11,9 +11,13 @@ func NewATSSSControlParameters(ies ...*IE) *IE {
 
 // ATSSSControlParameters returns the IEs above ATSSSControlParameters if the type of IE matches.
 func (i *IE) ATSSSControlParameters() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != ATSSSControlParameters {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

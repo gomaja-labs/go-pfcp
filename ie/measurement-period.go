@@ -19,12 +19,16 @@ func NewMeasurementPeriod(period time.Duration) *IE {
 
 // MeasurementPeriod returns MeasurementPeriod in time.Duration if the type of IE matches.
 func (i *IE) MeasurementPeriod() (time.Duration, error) {
-	if len(i.Payload) < 4 {
-		return 0, io.ErrUnexpectedEOF
+	if i == nil {
+		return 0, ErrIENotFound
 	}
 
 	switch i.Type {
 	case MeasurementPeriod:
+		if len(i.Payload) < 4 {
+			return 0, io.ErrUnexpectedEOF
+		}
+
 		return time.Duration(binary.BigEndian.Uint32(i.Payload[0:4])) * time.Second, nil
 	case CreateURR:
 		ies, err := i.CreateURR()

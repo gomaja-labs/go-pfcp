@@ -11,9 +11,13 @@ func NewUpdateFAR(ies ...*IE) *IE {
 
 // UpdateFAR returns the IEs above UpdateFAR if the type of IE matches.
 func (i *IE) UpdateFAR() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != UpdateFAR {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

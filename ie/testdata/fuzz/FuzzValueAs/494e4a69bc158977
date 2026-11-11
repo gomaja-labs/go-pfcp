@@ -1,0 +1,3 @@
+go test fuzz v1
+uint16(119)
+[]byte("\xff\xff\xff\xff\xff\xff\xff\xff\x11\"3D")

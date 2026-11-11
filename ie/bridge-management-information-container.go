@@ -11,6 +11,10 @@ func NewBridgeManagementInformationContainer(info string) *IE {
 
 // BridgeManagementInformationContainer returns BridgeManagementInformationContainer in string if the type of IE matches.
 func (i *IE) BridgeManagementInformationContainer() (string, error) {
+	if i == nil {
+		return "", ErrIENotFound
+	}
+
 	switch i.Type {
 	case BridgeManagementInformationContainer:
 		return i.ValueAsString()

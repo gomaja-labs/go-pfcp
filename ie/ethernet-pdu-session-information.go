@@ -11,6 +11,10 @@ func NewEthernetPDUSessionInformation(info uint8) *IE {
 
 // EthernetPDUSessionInformation returns EthernetPDUSessionInformation in uint8 if the type of IE matches.
 func (i *IE) EthernetPDUSessionInformation() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case EthernetPDUSessionInformation:
 		return i.ValueAsUint8()
@@ -54,6 +58,10 @@ func (i *IE) EthernetPDUSessionInformation() (uint8, error) {
 
 // HasETHI reports whether an IE has ETHI bit.
 func (i *IE) HasETHI() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.EthernetPDUSessionInformation()
 	if err != nil {
 		return false

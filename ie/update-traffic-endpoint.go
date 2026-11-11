@@ -11,9 +11,13 @@ func NewUpdateTrafficEndpoint(ies ...*IE) *IE {
 
 // UpdateTrafficEndpoint returns the IEs above UpdateTrafficEndpoint if the type of IE matches.
 func (i *IE) UpdateTrafficEndpoint() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != UpdateTrafficEndpoint {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

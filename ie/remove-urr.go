@@ -11,9 +11,13 @@ func NewRemoveURR(urr *IE) *IE {
 
 // RemoveURR returns the IEs above RemoveURR if the type of IE matches.
 func (i *IE) RemoveURR() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != RemoveURR {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

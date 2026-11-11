@@ -25,6 +25,10 @@ func NewTraceInformation(mcc, mnc, id string, events []byte, depth uint8, interf
 
 // TraceInformation returns TraceInformation in structured format if the type of IE matches.
 func (i *IE) TraceInformation() (*TraceInformationFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case TraceInformation:
 		fields, err := ParseTraceInformationFields(i.Payload)
@@ -86,6 +90,11 @@ func ParseTraceInformationFields(b []byte) (*TraceInformationFields, error) {
 
 // UnmarshalBinary parses b into IE.
 func (f *TraceInformationFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = TraceInformationFields{}
+
 	l := len(b)
 	if l < 6 {
 		return io.ErrUnexpectedEOF
@@ -96,10 +105,11 @@ func (f *TraceInformationFields) UnmarshalBinary(b []byte) error {
 	if err != nil {
 		return err
 	}
+	// TS 29.244 V20.1.0 clause 8.2.108.
 	f.TraceID = string(b[3:6])
 	offset := 6
 
-	if l < offset {
+	if l <= offset {
 		return io.ErrUnexpectedEOF
 	}
 	f.TriggeringEventsLength = b[offset]
@@ -108,16 +118,16 @@ func (f *TraceInformationFields) UnmarshalBinary(b []byte) error {
 	if l < offset+int(f.TriggeringEventsLength) {
 		return io.ErrUnexpectedEOF
 	}
-	copy(f.TriggeringEvents, b[offset:offset+int(f.TriggeringEventsLength)])
+	f.TriggeringEvents = append(f.TriggeringEvents[:0], b[offset:offset+int(f.TriggeringEventsLength)]...)
 	offset += int(f.TriggeringEventsLength)
 
-	if l < offset {
+	if l <= offset {
 		return io.ErrUnexpectedEOF
 	}
 	f.SessionTraceDepth = b[offset]
 	offset++
 
-	if l < offset {
+	if l <= offset {
 		return io.ErrUnexpectedEOF
 	}
 	f.ListOfInterfacesLength = b[offset]
@@ -126,10 +136,10 @@ func (f *TraceInformationFields) UnmarshalBinary(b []byte) error {
 	if l < offset+int(f.ListOfInterfacesLength) {
 		return io.ErrUnexpectedEOF
 	}
-	copy(f.ListOfInterfaces, b[offset:offset+int(f.ListOfInterfacesLength)])
+	f.ListOfInterfaces = append(f.ListOfInterfaces[:0], b[offset:offset+int(f.ListOfInterfacesLength)]...)
 	offset += int(f.ListOfInterfacesLength)
 
-	if l < offset {
+	if l <= offset {
 		return io.ErrUnexpectedEOF
 	}
 	f.IPAddressOfTraceCollectionEntityLength = b[offset]
@@ -138,13 +148,17 @@ func (f *TraceInformationFields) UnmarshalBinary(b []byte) error {
 	if l < offset+int(f.IPAddressOfTraceCollectionEntityLength) {
 		return io.ErrUnexpectedEOF
 	}
-	copy(f.IPAddressOfTraceCollectionEntity, b[offset:offset+int(f.IPAddressOfTraceCollectionEntityLength)])
+	f.IPAddressOfTraceCollectionEntity = append(f.IPAddressOfTraceCollectionEntity[:0], b[offset:offset+int(f.IPAddressOfTraceCollectionEntityLength)]...)
 
 	return nil
 }
 
 // Marshal returns the serialized bytes of TraceInformationFields.
 func (f *TraceInformationFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -153,7 +167,21 @@ func (f *TraceInformationFields) Marshal() ([]byte, error) {
 }
 
 // MarshalTo puts the byte sequence in the byte array given as b.
+// TS 29.244 V20.1.0 clause 8.2.108: variable fields use one-octet lengths.
 func (f *TraceInformationFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if len(f.TraceID) != 3 || len(f.TriggeringEvents) != int(f.TriggeringEventsLength) || len(f.ListOfInterfaces) != int(f.ListOfInterfacesLength) || len(f.IPAddressOfTraceCollectionEntity) != int(f.IPAddressOfTraceCollectionEntityLength) {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 6 {
 		return io.ErrUnexpectedEOF
@@ -167,7 +195,7 @@ func (f *TraceInformationFields) MarshalTo(b []byte) error {
 	copy(b[3:6], f.TraceID)
 	offset := 6
 
-	if l < offset {
+	if l <= offset {
 		return io.ErrUnexpectedEOF
 	}
 	b[offset] = f.TriggeringEventsLength
@@ -179,13 +207,13 @@ func (f *TraceInformationFields) MarshalTo(b []byte) error {
 	copy(b[offset:offset+int(f.TriggeringEventsLength)], f.TriggeringEvents)
 	offset += int(f.TriggeringEventsLength)
 
-	if l < offset {
+	if l <= offset {
 		return io.ErrUnexpectedEOF
 	}
 	b[offset] = f.SessionTraceDepth
 	offset++
 
-	if l < offset {
+	if l <= offset {
 		return io.ErrUnexpectedEOF
 	}
 	b[offset] = f.ListOfInterfacesLength
@@ -197,7 +225,7 @@ func (f *TraceInformationFields) MarshalTo(b []byte) error {
 	copy(b[offset:offset+int(f.ListOfInterfacesLength)], f.ListOfInterfaces)
 	offset += int(f.ListOfInterfacesLength)
 
-	if l < offset {
+	if l <= offset {
 		return io.ErrUnexpectedEOF
 	}
 	b[offset] = f.IPAddressOfTraceCollectionEntityLength
@@ -213,6 +241,10 @@ func (f *TraceInformationFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *TraceInformationFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 3 + 3 + 1 + 1 + 1 + 1
 	l += int(f.TriggeringEventsLength)
 	l += int(f.ListOfInterfacesLength)

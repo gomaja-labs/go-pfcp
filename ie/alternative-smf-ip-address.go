@@ -23,6 +23,10 @@ func NewAlternativeSMFIPAddress(v4, v6 net.IP) *IE {
 
 // AlternativeSMFIPAddress returns AlternativeSMFIPAddress in structured format if the type of IE matches.
 func (i *IE) AlternativeSMFIPAddress() (*AlternativeSMFIPAddressFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != AlternativeSMFIPAddress {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
@@ -62,21 +66,37 @@ func NewAlternativeSMFIPAddressFields(v4, v6 net.IP) *AlternativeSMFIPAddressFie
 
 // HasIPv4 reports whether IPv4 flag is set.
 func (f *AlternativeSMFIPAddressFields) HasIPv4() bool {
+	if f == nil {
+		return false
+	}
+
 	return has2ndBit(f.Flags)
 }
 
 // SetIPv4Flag sets IPv4 flag in AlternativeSMFIPAddress.
 func (f *AlternativeSMFIPAddressFields) SetIPv4Flag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x02
 }
 
 // HasIPv6 reports whether IPv6 flag is set.
 func (f *AlternativeSMFIPAddressFields) HasIPv6() bool {
+	if f == nil {
+		return false
+	}
+
 	return has1stBit(f.Flags)
 }
 
 // SetIPv6Flag sets IPv6 flag in AlternativeSMFIPAddress.
 func (f *AlternativeSMFIPAddressFields) SetIPv6Flag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x01
 }
 
@@ -91,6 +111,11 @@ func ParseAlternativeSMFIPAddressFields(b []byte) (*AlternativeSMFIPAddressField
 
 // UnmarshalBinary parses b into IE.
 func (f *AlternativeSMFIPAddressFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = AlternativeSMFIPAddressFields{}
+
 	l := len(b)
 	if l < 2 {
 		return io.ErrUnexpectedEOF
@@ -119,6 +144,10 @@ func (f *AlternativeSMFIPAddressFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of AlternativeSMFIPAddressFields.
 func (f *AlternativeSMFIPAddressFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -128,6 +157,16 @@ func (f *AlternativeSMFIPAddressFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *AlternativeSMFIPAddressFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -155,6 +194,10 @@ func (f *AlternativeSMFIPAddressFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *AlternativeSMFIPAddressFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 1
 	if f.IPv4Address != nil {
 		l += 4

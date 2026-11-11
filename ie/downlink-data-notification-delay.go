@@ -18,12 +18,16 @@ func NewDownlinkDataNotificationDelay(delay time.Duration) *IE {
 
 // DownlinkDataNotificationDelay returns DownlinkDataNotificationDelay in time.Duration if the type of IE matches.
 func (i *IE) DownlinkDataNotificationDelay() (time.Duration, error) {
-	if len(i.Payload) < 1 {
-		return 0, io.ErrUnexpectedEOF
+	if i == nil {
+		return 0, ErrIENotFound
 	}
 
 	switch i.Type {
 	case DownlinkDataNotificationDelay:
+		if len(i.Payload) < 1 {
+			return 0, io.ErrUnexpectedEOF
+		}
+
 		return time.Duration(int64(i.Payload[0]) * 50000000), nil
 	case CreateBAR:
 		ies, err := i.CreateBAR()

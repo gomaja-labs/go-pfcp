@@ -21,11 +21,15 @@ func NewUpdateBARWithinSessionReportResponse(ies ...*IE) *IE {
 
 // UpdateBAR returns the IEs above UpdateBAR if the type of IE matches.
 func (i *IE) UpdateBAR() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case UpdateBARWithinSessionModificationRequest,
 		UpdateBARWithinSessionReportResponse:
 
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

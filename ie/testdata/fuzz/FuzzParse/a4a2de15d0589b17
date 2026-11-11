@@ -1,0 +1,2 @@
+go test fuzz v1
+[]byte("\x00\x8d\x00/\x0f\b!C\x152Tv\x98\xf0\b!C\x152Tv\x98\xf0\b!C\x152Tv\x98\xf0\x12go-pfcp@github.com")

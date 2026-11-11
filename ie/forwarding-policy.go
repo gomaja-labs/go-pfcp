@@ -19,6 +19,10 @@ func NewForwardingPolicy(id string) *IE {
 
 // ForwardingPolicy returns ForwardingPolicy in []byte if the type of IE matches.
 func (i *IE) ForwardingPolicy() ([]byte, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case ForwardingPolicy:
 		return i.Payload, nil
@@ -73,6 +77,10 @@ func (i *IE) ForwardingPolicy() ([]byte, error) {
 
 // ForwardingPolicyIdentifier returns ForwardingPolicyIdentifier in string if the type of IE matches.
 func (i *IE) ForwardingPolicyIdentifier() (string, error) {
+	if i == nil {
+		return "", ErrIENotFound
+	}
+
 	v, err := i.ForwardingPolicy()
 	if err != nil {
 		return "", err

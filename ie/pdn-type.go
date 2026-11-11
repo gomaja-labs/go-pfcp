@@ -21,6 +21,10 @@ func NewPDNType(typ uint8) *IE {
 
 // PDNType returns PDNType in uint8 if the type of IE matches.
 func (i *IE) PDNType() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	if i.Type != PDNType {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

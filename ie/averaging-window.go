@@ -11,6 +11,10 @@ func NewAveragingWindow(window uint32) *IE {
 
 // AveragingWindow returns AveragingWindow in uint32 if the type of IE matches.
 func (i *IE) AveragingWindow() (uint32, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case AveragingWindow:
 		return i.ValueAsUint32()

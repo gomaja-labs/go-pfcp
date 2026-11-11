@@ -11,9 +11,13 @@ func NewTransportDelayReporting(ies ...*IE) *IE {
 
 // TransportDelayReporting returns the IEs above TransportDelayReporting if the type of IE matches.
 func (i *IE) TransportDelayReporting() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case TransportDelayReporting:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	case CreatePDR:
 		ies, err := i.CreatePDR()
 		if err != nil {

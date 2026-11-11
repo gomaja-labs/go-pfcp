@@ -11,6 +11,10 @@ func NewQoSReportTrigger(ire, thr, per int) *IE {
 
 // QoSReportTrigger returns QoSReportTrigger in uint8 if the type of IE matches.
 func (i *IE) QoSReportTrigger() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case QoSReportTrigger:
 		return i.ValueAsUint8()
@@ -44,6 +48,10 @@ func (i *IE) QoSReportTrigger() (uint8, error) {
 
 // HasIRE reports whether an IE has IRE bit.
 func (i *IE) HasIRE() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.QoSReportTrigger()
 	if err != nil {
 		return false
@@ -54,6 +62,10 @@ func (i *IE) HasIRE() bool {
 
 // HasTHR reports whether an IE has THR bit.
 func (i *IE) HasTHR() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.QoSReportTrigger()
 	if err != nil {
 		return false
@@ -64,6 +76,10 @@ func (i *IE) HasTHR() bool {
 
 // HasPER reports whether an IE has PER bit.
 func (i *IE) HasPER() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.QoSReportTrigger()
 	if err != nil {
 		return false

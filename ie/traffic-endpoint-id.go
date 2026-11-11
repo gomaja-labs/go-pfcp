@@ -11,6 +11,10 @@ func NewTrafficEndpointID(id uint8) *IE {
 
 // TrafficEndpointID returns TrafficEndpointID in uint8 if the type of IE matches.
 func (i *IE) TrafficEndpointID() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case TrafficEndpointID:
 		return i.ValueAsUint8()

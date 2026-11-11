@@ -11,9 +11,13 @@ func NewCreateTrafficEndpoint(ies ...*IE) *IE {
 
 // CreateTrafficEndpoint returns the IEs above CreateTrafficEndpoint if the type of IE matches.
 func (i *IE) CreateTrafficEndpoint() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != CreateTrafficEndpoint {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

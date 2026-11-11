@@ -11,6 +11,10 @@ func NewReportType(upir, erir, usar, dldr int) *IE {
 
 // ReportType returns ReportType in uint8 if the type of IE matches.
 func (i *IE) ReportType() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	if i.Type != ReportType {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
@@ -20,6 +24,10 @@ func (i *IE) ReportType() (uint8, error) {
 
 // HasUPIR reports whether an IE has UPIR bit.
 func (i *IE) HasUPIR() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.ReportType()
 	if err != nil {
 		return false
@@ -30,6 +38,10 @@ func (i *IE) HasUPIR() bool {
 
 // HasERIR reports whether an IE has ERIR bit.
 func (i *IE) HasERIR() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.ReportType()
 	if err != nil {
 		return false
@@ -40,6 +52,10 @@ func (i *IE) HasERIR() bool {
 
 // HasUSAR reports whether an IE has USAR bit.
 func (i *IE) HasUSAR() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.ReportType()
 	if err != nil {
 		return false
@@ -50,6 +66,10 @@ func (i *IE) HasUSAR() bool {
 
 // HasDLDR reports whether an IE has DLDR bit.
 func (i *IE) HasDLDR() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.ReportType()
 	if err != nil {
 		return false

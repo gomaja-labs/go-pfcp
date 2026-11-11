@@ -11,9 +11,13 @@ func NewGTPUPathQoSReport(ies ...*IE) *IE {
 
 // GTPUPathQoSReport returns the IEs above GTPUPathQoSReport if the type of IE matches.
 func (i *IE) GTPUPathQoSReport() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != GTPUPathQoSReport {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

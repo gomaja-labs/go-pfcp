@@ -11,6 +11,10 @@ func NewPFCPASRspFlags(flag uint8) *IE {
 
 // PFCPASRspFlags returns PFCPASRspFlags in uint8 if the type of IE matches.
 func (i *IE) PFCPASRspFlags() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	if i.Type != PFCPASRspFlags {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
@@ -20,6 +24,10 @@ func (i *IE) PFCPASRspFlags() (uint8, error) {
 
 // HasPSREI reports whether an IE has PSREI bit.
 func (i *IE) HasPSREI() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.PFCPASRspFlags()
 	if err != nil {
 		return false

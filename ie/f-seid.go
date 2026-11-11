@@ -24,6 +24,10 @@ func NewFSEID(seid uint64, v4, v6 net.IP) *IE {
 
 // FSEID returns FSEID in structured format if the type of IE matches.
 func (i *IE) FSEID() (*FSEIDFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != FSEID {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
@@ -65,21 +69,37 @@ func NewFSEIDFields(seid uint64, v4, v6 net.IP) *FSEIDFields {
 
 // HasIPv4 reports whether IPv4 flag is set.
 func (f *FSEIDFields) HasIPv4() bool {
+	if f == nil {
+		return false
+	}
+
 	return has2ndBit(f.Flags)
 }
 
 // SetIPv4Flag sets IPv4 flag in FSEID.
 func (f *FSEIDFields) SetIPv4Flag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x02
 }
 
 // HasIPv6 reports whether IPv6 flag is set.
 func (f *FSEIDFields) HasIPv6() bool {
+	if f == nil {
+		return false
+	}
+
 	return has1stBit(f.Flags)
 }
 
 // SetIPv6Flag sets IPv6 flag in FSEID.
 func (f *FSEIDFields) SetIPv6Flag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x01
 }
 
@@ -94,6 +114,11 @@ func ParseFSEIDFields(b []byte) (*FSEIDFields, error) {
 
 // UnmarshalBinary parses b into IE.
 func (f *FSEIDFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = FSEIDFields{}
+
 	l := len(b)
 	if l < 9 {
 		return io.ErrUnexpectedEOF
@@ -125,6 +150,10 @@ func (f *FSEIDFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of FSEIDFields.
 func (f *FSEIDFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -134,6 +163,16 @@ func (f *FSEIDFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *FSEIDFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 9 {
 		return io.ErrUnexpectedEOF
@@ -165,6 +204,10 @@ func (f *FSEIDFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *FSEIDFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 9
 
 	if f.IPv4Address != nil {

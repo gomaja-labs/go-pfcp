@@ -28,6 +28,10 @@ func NewUPFunctionFeatures(features ...uint8) *IE {
 
 // UPFunctionFeatures returns UPFunctionFeatures in []byte if the type of IE matches.
 func (i *IE) UPFunctionFeatures() ([]byte, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
@@ -37,6 +41,10 @@ func (i *IE) UPFunctionFeatures() ([]byte, error) {
 
 // HasBUCP reports whether an IE has BUCP bit.
 func (i *IE) HasBUCP() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return false
 	}
@@ -49,6 +57,10 @@ func (i *IE) HasBUCP() bool {
 
 // HasDDND reports whether an IE has DDND bit.
 func (i *IE) HasDDND() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return false
 	}
@@ -61,6 +73,10 @@ func (i *IE) HasDDND() bool {
 
 // HasDLBD reports whether an IE has DLBD bit.
 func (i *IE) HasDLBD() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return false
 	}
@@ -73,6 +89,10 @@ func (i *IE) HasDLBD() bool {
 
 // HasTRST reports whether an IE has TRST bit.
 func (i *IE) HasTRST() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return false
 	}
@@ -85,6 +105,10 @@ func (i *IE) HasTRST() bool {
 
 // HasFTUP reports whether an IE has FTUP bit.
 func (i *IE) HasFTUP() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return false
 	}
@@ -97,6 +121,10 @@ func (i *IE) HasFTUP() bool {
 
 // HasPFDM reports whether an IE has PFDM bit.
 func (i *IE) HasPFDM() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return false
 	}
@@ -109,6 +137,10 @@ func (i *IE) HasPFDM() bool {
 
 // HasHEEU reports whether an IE has HEEU bit.
 func (i *IE) HasHEEU() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return false
 	}
@@ -121,6 +153,10 @@ func (i *IE) HasHEEU() bool {
 
 // HasTREU reports whether an IE has TREU bit.
 func (i *IE) HasTREU() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return false
 	}
@@ -133,6 +169,10 @@ func (i *IE) HasTREU() bool {
 
 // HasEMPU reports whether an IE has EMPU bit.
 func (i *IE) HasEMPU() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return false
 	}
@@ -145,6 +185,10 @@ func (i *IE) HasEMPU() bool {
 
 // HasPDIU reports whether an IE has PDIU bit.
 func (i *IE) HasPDIU() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return false
 	}
@@ -157,6 +201,10 @@ func (i *IE) HasPDIU() bool {
 
 // HasUDBC reports whether an IE has UDBC bit.
 func (i *IE) HasUDBC() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return false
 	}
@@ -169,6 +217,10 @@ func (i *IE) HasUDBC() bool {
 
 // HasQUOAC reports whether an IE has QUOAC bit.
 func (i *IE) HasQUOAC() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return false
 	}
@@ -181,6 +233,10 @@ func (i *IE) HasQUOAC() bool {
 
 // HasTRACE reports whether an IE has TRACE bit.
 func (i *IE) HasTRACE() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return false
 	}
@@ -193,6 +249,10 @@ func (i *IE) HasTRACE() bool {
 
 // HasFRRT reports whether an IE has FRRT bit.
 func (i *IE) HasFRRT() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return false
 	}
@@ -205,6 +265,10 @@ func (i *IE) HasFRRT() bool {
 
 // HasPFDE reports whether an IE has PFDE bit.
 func (i *IE) HasPFDE() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return false
 	}
@@ -217,6 +281,10 @@ func (i *IE) HasPFDE() bool {
 
 // HasEPFAR reports whether an IE has EPFAR bit.
 func (i *IE) HasEPFAR() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case UPFunctionFeatures:
 		if len(i.Payload) < 2 {
@@ -237,6 +305,10 @@ func (i *IE) HasEPFAR() bool {
 
 // HasDPDRA reports whether an IE has DPDRA  bit.
 func (i *IE) HasDPDRA() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return false
 	}
@@ -249,6 +321,10 @@ func (i *IE) HasDPDRA() bool {
 
 // HasADPDP reports whether an IE has ADPDP  bit.
 func (i *IE) HasADPDP() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return false
 	}
@@ -261,6 +337,10 @@ func (i *IE) HasADPDP() bool {
 
 // HasUEIP reports whether an IE has UEIP  bit.
 func (i *IE) HasUEIP() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return false
 	}
@@ -273,6 +353,10 @@ func (i *IE) HasUEIP() bool {
 
 // HasSSET reports whether an IE has SSET  bit.
 func (i *IE) HasSSET() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case UPFunctionFeatures:
 		if len(i.Payload) < 3 {
@@ -293,6 +377,10 @@ func (i *IE) HasSSET() bool {
 
 // HasMNOP reports whether an IE has MNOP  bit.
 func (i *IE) HasMNOP() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case UPFunctionFeatures:
 		if len(i.Payload) < 3 {
@@ -313,6 +401,10 @@ func (i *IE) HasMNOP() bool {
 
 // HasMTE reports whether an IE has MTE  bit.
 func (i *IE) HasMTE() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return false
 	}
@@ -325,6 +417,10 @@ func (i *IE) HasMTE() bool {
 
 // HasBUNDL reports whether an IE has BUNDL  bit.
 func (i *IE) HasBUNDL() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case UPFunctionFeatures:
 		if len(i.Payload) < 3 {
@@ -345,6 +441,10 @@ func (i *IE) HasBUNDL() bool {
 
 // HasGCOM reports whether an IE has GCOM  bit.
 func (i *IE) HasGCOM() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return false
 	}
@@ -357,6 +457,10 @@ func (i *IE) HasGCOM() bool {
 
 // HasMPAS reports whether an IE has MPAS bit.
 func (i *IE) HasMPAS() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case UPFunctionFeatures:
 		if len(i.Payload) < 4 {
@@ -377,6 +481,10 @@ func (i *IE) HasMPAS() bool {
 
 // HasRTTL reports whether an IE has RTTL bit.
 func (i *IE) HasRTTL() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return false
 	}
@@ -389,6 +497,10 @@ func (i *IE) HasRTTL() bool {
 
 // HasVTIME reports whether an IE has VTIME bit.
 func (i *IE) HasVTIME() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UPFunctionFeatures {
 		return false
 	}

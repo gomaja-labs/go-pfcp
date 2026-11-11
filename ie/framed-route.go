@@ -11,6 +11,10 @@ func NewFramedRoute(name string) *IE {
 
 // FramedRoute returns FramedRoute in string if the type of IE matches.
 func (i *IE) FramedRoute() (string, error) {
+	if i == nil {
+		return "", ErrIENotFound
+	}
+
 	switch i.Type {
 	case FramedRoute:
 		return i.ValueAsString()

@@ -11,6 +11,10 @@ func NewPDRID(id uint16) *IE {
 
 // PDRID returns PDRID in uint16 if the type of IE matches.
 func (i *IE) PDRID() (uint16, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case PDRID:
 		return i.ValueAsUint16()

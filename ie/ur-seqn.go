@@ -11,6 +11,10 @@ func NewURSEQN(seq uint32) *IE {
 
 // URSEQN returns URSEQN in uint32 if the type of IE matches.
 func (i *IE) URSEQN() (uint32, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case URSEQN:
 		return i.ValueAsUint32()

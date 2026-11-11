@@ -11,6 +11,10 @@ func NewPortManagementInformationContainer(info string) *IE {
 
 // PortManagementInformationContainer returns PortManagementInformationContainer in string if the type of IE matches.
 func (i *IE) PortManagementInformationContainer() (string, error) {
+	if i == nil {
+		return "", ErrIENotFound
+	}
+
 	switch i.Type {
 	case PortManagementInformationContainer:
 		return i.ValueAsString()

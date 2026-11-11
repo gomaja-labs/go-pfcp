@@ -11,9 +11,13 @@ func NewUpdateForwardingParameters(ies ...*IE) *IE {
 
 // UpdateForwardingParameters returns the IEs above UpdateForwardingParameters if the type of IE matches.
 func (i *IE) UpdateForwardingParameters() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case UpdateForwardingParameters:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	case UpdateFAR:
 		ies, err := i.UpdateFAR()
 		if err != nil {

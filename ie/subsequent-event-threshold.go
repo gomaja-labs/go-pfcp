@@ -11,6 +11,10 @@ func NewSubsequentEventThreshold(quota uint32) *IE {
 
 // SubsequentEventThreshold returns SubsequentEventThreshold in uint32 if the type of IE matches.
 func (i *IE) SubsequentEventThreshold() (uint32, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case SubsequentEventThreshold:
 		return i.ValueAsUint32()

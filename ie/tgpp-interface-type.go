@@ -38,12 +38,16 @@ func NewTGPPInterfaceType(intf uint8) *IE {
 
 // TGPPInterfaceType returns TGPPInterfaceType in uint8 if the type of IE matches.
 func (i *IE) TGPPInterfaceType() (uint8, error) {
-	if len(i.Payload) < 1 {
-		return 0, io.ErrUnexpectedEOF
+	if i == nil {
+		return 0, ErrIENotFound
 	}
 
 	switch i.Type {
 	case TGPPInterfaceType:
+		if len(i.Payload) < 1 {
+			return 0, io.ErrUnexpectedEOF
+		}
+
 		return i.Payload[0] & 0x3f, nil
 	case ForwardingParameters:
 		ies, err := i.ForwardingParameters()

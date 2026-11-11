@@ -23,6 +23,10 @@ func NewVolumeMeasurement(flags uint8, tvol, uvol, dvol, tpkt, upkt, dpkt uint64
 
 // VolumeMeasurement returns VolumeMeasurement in structured format if the type of IE matches.
 func (i *IE) VolumeMeasurement() (*VolumeMeasurementFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case VolumeMeasurement:
 		fields, err := ParseVolumeMeasurementFields(i.Payload)
@@ -93,61 +97,109 @@ func NewVolumeMeasurementFields(flags uint8, tvol, uvol, dvol, tpkt, upkt, dpkt 
 
 // HasDLNOP reports whether DLNOP flag is set.
 func (f *VolumeMeasurementFields) HasDLNOP() bool {
+	if f == nil {
+		return false
+	}
+
 	return has6thBit(f.Flags)
 }
 
 // SetDLNOPFlag sets DLNOP flag in VolumeMeasurement.
 func (f *VolumeMeasurementFields) SetDLNOPFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x20
 }
 
 // HasULNOP reports whether ULNOP flag is set.
 func (f *VolumeMeasurementFields) HasULNOP() bool {
+	if f == nil {
+		return false
+	}
+
 	return has5thBit(f.Flags)
 }
 
 // SetULNOPFlag sets ULNOP flag in VolumeMeasurement.
 func (f *VolumeMeasurementFields) SetULNOPFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x10
 }
 
 // HasTONOP reports whether TONOP flag is set.
 func (f *VolumeMeasurementFields) HasTONOP() bool {
+	if f == nil {
+		return false
+	}
+
 	return has4thBit(f.Flags)
 }
 
 // SetTONOPFlag sets TONOP flag in VolumeMeasurement.
 func (f *VolumeMeasurementFields) SetTONOPFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x08
 }
 
 // HasDLVOL reports whether DLVOL flag is set.
 func (f *VolumeMeasurementFields) HasDLVOL() bool {
+	if f == nil {
+		return false
+	}
+
 	return has3rdBit(f.Flags)
 }
 
 // SetDLVOLFlag sets DLVOL flag in VolumeMeasurement.
 func (f *VolumeMeasurementFields) SetDLVOLFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x04
 }
 
 // HasULVOL reports whether ULVOL flag is set.
 func (f *VolumeMeasurementFields) HasULVOL() bool {
+	if f == nil {
+		return false
+	}
+
 	return has2ndBit(f.Flags)
 }
 
 // SetULVOLFlag sets ULVOL flag in VolumeMeasurement.
 func (f *VolumeMeasurementFields) SetULVOLFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x02
 }
 
 // HasTOVOL reports whether TOVOL flag is set.
 func (f *VolumeMeasurementFields) HasTOVOL() bool {
+	if f == nil {
+		return false
+	}
+
 	return has1stBit(f.Flags)
 }
 
 // SetTOVOLFlag sets TOVOL flag in VolumeMeasurement.
 func (f *VolumeMeasurementFields) SetTOVOLFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x01
 }
 
@@ -162,6 +214,11 @@ func ParseVolumeMeasurementFields(b []byte) (*VolumeMeasurementFields, error) {
 
 // UnmarshalBinary parses b into IE.
 func (f *VolumeMeasurementFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = VolumeMeasurementFields{}
+
 	l := len(b)
 	if l < 2 {
 		return io.ErrUnexpectedEOF
@@ -222,6 +279,10 @@ func (f *VolumeMeasurementFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of VolumeMeasurementFields.
 func (f *VolumeMeasurementFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -231,6 +292,16 @@ func (f *VolumeMeasurementFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *VolumeMeasurementFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -291,6 +362,10 @@ func (f *VolumeMeasurementFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *VolumeMeasurementFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 1
 	if f.HasTOVOL() {
 		l += 8

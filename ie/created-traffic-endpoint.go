@@ -11,11 +11,15 @@ func NewCreatedTrafficEndpoint(ies ...*IE) *IE {
 
 // CreatedTrafficEndpoint returns the IEs above CreatedTrafficEndpoint if the type of IE matches.
 func (i *IE) CreatedTrafficEndpoint() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != CreatedTrafficEndpoint {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }
 
 // LocalFTEID returns FTEID that is found first in a grouped IE in structured format
@@ -23,6 +27,10 @@ func (i *IE) CreatedTrafficEndpoint() ([]*IE, error) {
 //
 // This can only be used on the grouped IEs that may have multiple Local F-TEID IEs.
 func (i *IE) LocalFTEID() (*FTEIDFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case CreatedTrafficEndpoint:
 		ies, err := i.CreatedTrafficEndpoint()
@@ -45,6 +53,10 @@ func (i *IE) LocalFTEID() (*FTEIDFields, error) {
 //
 // This can only be used on the grouped IEs that may have multiple Local F-TEID IEs.
 func (i *IE) LocalFTEIDN(n int) (*FTEIDFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if n < 1 {
 		return nil, ErrIENotFound
 	}

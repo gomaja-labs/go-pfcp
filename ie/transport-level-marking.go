@@ -11,6 +11,10 @@ func NewTransportLevelMarking(tos uint16) *IE {
 
 // TransportLevelMarking returns TransportLevelMarking in uint16 if the type of IE matches.
 func (i *IE) TransportLevelMarking() (uint16, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case TransportLevelMarking:
 		return i.ValueAsUint16()
