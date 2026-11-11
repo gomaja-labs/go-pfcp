@@ -19,6 +19,12 @@ import (
 )
 
 func main() {
+	if err := run(); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func run() error {
 	var (
 		listen = flag.String("s", "127.0.0.2:8805", "addr/port to listen on")
 	)
@@ -26,12 +32,12 @@ func main() {
 
 	laddr, err := net.ResolveUDPAddr("udp", *listen)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	conn, err := net.ListenUDP("udp", laddr)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	defer func() { _ = conn.Close() }()
@@ -42,7 +48,7 @@ func main() {
 		log.Printf("waiting for messages to come on: %s", laddr)
 		n, addr, err := conn.ReadFrom(buf)
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		msg, err := message.Parse(buf[:n])
@@ -73,11 +79,11 @@ func main() {
 		seq := hbreq.Sequence()
 		hbres, err := message.NewHeartbeatResponse(seq, ie.NewRecoveryTimeStamp(started)).Marshal()
 		if err != nil {
-			log.Fatal(err)
+			return err
 		}
 
 		if _, err := conn.WriteTo(hbres, addr); err != nil {
-			log.Fatal(err)
+			return err
 		}
 		log.Printf("sent Heartbeat Response to: %s", addr)
 	}
