@@ -62,7 +62,9 @@ type PacketRateStatusFields struct {
 	hasWireTimestamp bool
 }
 
-// NewPacketRateStatusFields creates a new NewPacketRateStatusFields.
+// NewPacketRateStatusFields stores the supplied arguments without dropping absent fields.
+// Marshal validates their flags and uses the era and fraction policy documented
+// by NewPacketRateStatus (TS 29.244 V20.1.0 clause 8.2.139; RFC 5905 section 6).
 func NewPacketRateStatusFields(flags uint8, ul, aul, dl, adl uint16, vtime time.Time) *PacketRateStatusFields {
 	f := &PacketRateStatusFields{
 		Flags:                                 flags,
