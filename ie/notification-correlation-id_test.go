@@ -16,3 +16,5 @@ func TestNotificationCorrelationIDCurrent(t *testing.T) {
 	assertAddedInvalid(t, ie.NewNotificationCorrelationID((bytes.Repeat([]byte{65}, 65536))))
 
 }
+
+var _ = registerConstructorFixture(ie.NewNotificationCorrelationID, []byte{1})

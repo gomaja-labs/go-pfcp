@@ -25,3 +25,5 @@ func TestCalledNumberInvalidUTF8Decode(t *testing.T) {
 		t.Fatalf("invalid UTF8 did not return typed error: %v", err)
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewCalledNumber, "example")

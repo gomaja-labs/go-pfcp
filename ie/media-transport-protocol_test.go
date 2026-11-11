@@ -24,3 +24,5 @@ func TestMediaTransportProtocolCurrent(t *testing.T) {
 		assertAddedInvalid(t, ie.NewMediaTransportProtocol(ie.MediaTransportProtocolValue(v)))
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewMediaTransportProtocol, ie.MediaTransportProtocolValue(1))

@@ -24,3 +24,5 @@ func TestL2TPSessionIndicationsCurrent(t *testing.T) {
 		assertAddedInvalid(t, ie.NewL2TPSessionIndications(ie.L2TPSessionIndicationFlags(v)))
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewL2TPSessionIndications, ie.L2TPSessionIndicationFlags(1))

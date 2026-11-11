@@ -24,3 +24,5 @@ func TestQERIndicationsCurrent(t *testing.T) {
 		assertAddedInvalid(t, ie.NewQERIndications(ie.QERIndicationFlags(v)))
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewQERIndications, ie.QERIndicationFlags(1))

@@ -38,3 +38,5 @@ func TestLocalIngressTunnelInvalidFields(t *testing.T) {
 		}
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewLocalIngressTunnel, ie.LocalIngressTunnelFields{Flags: ie.LocalIngressCH | ie.LocalIngressV4})

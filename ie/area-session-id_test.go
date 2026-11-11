@@ -16,3 +16,5 @@ func TestAreaSessionIDCurrent(t *testing.T) {
 	}
 
 }
+
+var _ = registerConstructorFixture(ie.NewAreaSessionID, uint16(1))

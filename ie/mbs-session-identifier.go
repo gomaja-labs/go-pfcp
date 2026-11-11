@@ -1,6 +1,7 @@
 package ie
 
 import (
+	"fmt"
 	"net/netip"
 )
 
@@ -15,6 +16,7 @@ const (
 
 // MBSSessionIdentifierFields is the structured value of MBS Session Identifier.
 // TS 29.244 V20.1.0 clause 8.2.206.
+// All value fields follow TMGI, SSMI and NIDI flags; no field is inferred.
 type MBSSessionIdentifierFields struct {
 	Flags                           MBSSessionIdentifierFlags
 	TMGI                            [6]byte
@@ -77,11 +79,11 @@ func (f *MBSSessionIdentifierFields) UnmarshalBinary(b []byte) error {
 		}
 	}
 	if r.err != nil {
-		return r.err
+		return fmt.Errorf("%w: %w", ErrMalformed, r.err)
 	}
 
 	if !f.valid() {
-		return ErrInvalidValue
+		return fmt.Errorf("%w: %w", ErrMalformed, ErrInvalidValue)
 	}
 	return nil
 }

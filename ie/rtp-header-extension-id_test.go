@@ -30,3 +30,5 @@ func TestRTPHeaderExtensionIDCurrent(t *testing.T) {
 		assertAddedInvalid(t, ie.NewRTPHeaderExtensionID(uint8(v)))
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewRTPHeaderExtensionID, uint8(1))

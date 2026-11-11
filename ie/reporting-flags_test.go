@@ -24,3 +24,5 @@ func TestReportingFlagsCurrent(t *testing.T) {
 		assertAddedInvalid(t, ie.NewReportingFlags(ie.ReportingFlagBits(v)))
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewReportingFlags, ie.ReportingFlagBits(1))

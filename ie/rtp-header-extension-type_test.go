@@ -24,3 +24,5 @@ func TestRTPHeaderExtensionTypeCurrent(t *testing.T) {
 		assertAddedInvalid(t, ie.NewRTPHeaderExtensionType(ie.RTPHeaderExtensionTypeValue(v)))
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewRTPHeaderExtensionType, ie.RTPHeaderExtensionTypeValue(1))

@@ -31,3 +31,5 @@ func TestN6JitterMeasurementInvalidFields(t *testing.T) {
 		}
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewN6JitterMeasurement, ie.N6JitterMeasurementFields{})

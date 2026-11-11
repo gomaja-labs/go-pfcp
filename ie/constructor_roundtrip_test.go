@@ -132,8 +132,31 @@ func constructorArgument(typ reflect.Type, name string) reflect.Value {
 	return v
 }
 
+// Constructor fixtures are registered beside the tests that own each API.
+// Registration happens during package initialization, before tests run.
+var constructorFixtures = map[uintptr][]any{}
+
+func registerConstructorFixture(fn any, args ...any) bool {
+	key := reflect.ValueOf(fn).Pointer()
+	if _, exists := constructorFixtures[key]; exists {
+		panic("duplicate constructor fixture")
+	}
+	constructorFixtures[key] = args
+	return true
+}
+
 func callConstructor(entry constructorEntry) []reflect.Value {
 	fn := reflect.ValueOf(entry.fn)
+	if fixture, ok := constructorFixtures[fn.Pointer()]; ok {
+		args := make([]reflect.Value, len(fixture))
+		for k, arg := range fixture {
+			args[k] = reflect.ValueOf(arg)
+		}
+		if fn.Type().IsVariadic() {
+			return fn.CallSlice(args)
+		}
+		return fn.Call(args)
+	}
 	args := make([]reflect.Value, fn.Type().NumIn())
 	for k := range args {
 		args[k] = constructorArgument(fn.Type().In(k), entry.params[k])

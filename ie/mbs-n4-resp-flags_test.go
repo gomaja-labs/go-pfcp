@@ -24,3 +24,5 @@ func TestMBSN4RespFlagsCurrent(t *testing.T) {
 		assertAddedInvalid(t, ie.NewMBSN4RespFlags(ie.MBSN4ResponseFlags(v)))
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewMBSN4RespFlags, ie.MBSN4ResponseFlags(1))

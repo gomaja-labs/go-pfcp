@@ -34,3 +34,5 @@ func TestCPIPAddressInvalidFields(t *testing.T) {
 		}
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewCPIPAddress, ie.CPIPAddressFields{Flags: 2, IPv4Address: netip.MustParseAddr("192.0.2.1")})

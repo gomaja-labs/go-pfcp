@@ -24,3 +24,5 @@ func TestRATTypeCurrent(t *testing.T) {
 		assertAddedInvalid(t, ie.NewRATType(ie.RATTypeValue(v)))
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewRATType, ie.RATTypeValue(1))

@@ -1,6 +1,7 @@
 package ie
 
 import (
+	"fmt"
 	"net/netip"
 )
 
@@ -25,6 +26,7 @@ const (
 
 // MPQUICAddressInformationFields is the structured value of MPQUIC Address Information.
 // TS 29.244 V20.1.0 clause 8.2.226.
+// Proxy type and port are mandatory; address fields follow V4 and V6 flags.
 type MPQUICAddressInformationFields struct {
 	Flags                    MPQUICAddressFlags
 	ProxyType                MPQUICProxyType
@@ -80,11 +82,11 @@ func (f *MPQUICAddressInformationFields) UnmarshalBinary(b []byte) error {
 		f.IPv6Address = r.ip(16)
 	}
 	if r.err != nil {
-		return r.err
+		return fmt.Errorf("%w: %w", ErrMalformed, r.err)
 	}
 
 	if !f.valid() {
-		return ErrInvalidValue
+		return fmt.Errorf("%w: %w", ErrMalformed, ErrInvalidValue)
 	}
 	return nil
 }

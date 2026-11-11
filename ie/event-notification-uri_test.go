@@ -22,3 +22,5 @@ func TestEventNotificationURILengthBoundary(t *testing.T) {
 	assertAddedVector(t, ie.NewEventNotificationURI(b), b, "EventNotificationURI", false)
 	assertAddedInvalid(t, ie.NewEventNotificationURI(append(b, 65)))
 }
+
+var _ = registerConstructorFixture(ie.NewEventNotificationURI, []byte("https://example.com/event"))

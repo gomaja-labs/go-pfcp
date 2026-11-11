@@ -36,3 +36,5 @@ func TestMulticastTransportInformationInvalidFields(t *testing.T) {
 		}
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewMulticastTransportInformation, ie.MulticastTransportInformationFields{MulticastAddress: netip.MustParseAddr("232.0.2.1"), SourceAddress: netip.MustParseAddr("192.0.2.1")})

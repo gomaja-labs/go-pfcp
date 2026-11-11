@@ -27,3 +27,5 @@ func TestDLPeriodicityCurrent(t *testing.T) {
 		assertAddedInvalid(t, ie.NewDLPeriodicity(v))
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewDLPeriodicity, time.Millisecond)

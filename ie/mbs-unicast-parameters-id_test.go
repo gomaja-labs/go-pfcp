@@ -16,3 +16,5 @@ func TestMBSUnicastParametersIDCurrent(t *testing.T) {
 	}
 
 }
+
+var _ = registerConstructorFixture(ie.NewMBSUnicastParametersID, uint16(1))

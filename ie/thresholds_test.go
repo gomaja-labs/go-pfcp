@@ -44,3 +44,5 @@ func TestThresholdsInvalidFields(t *testing.T) {
 		}
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewThresholds, ie.ThresholdsFields{Flags: 1, RTT: time.Millisecond})

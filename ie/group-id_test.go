@@ -16,3 +16,5 @@ func TestGroupIDCurrent(t *testing.T) {
 	assertAddedInvalid(t, ie.NewGroupID((bytes.Repeat([]byte{65}, 65536))))
 
 }
+
+var _ = registerConstructorFixture(ie.NewGroupID, []byte{1})

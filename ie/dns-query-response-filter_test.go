@@ -43,3 +43,5 @@ func TestDNSQueryResponseFilterLengthBoundary(t *testing.T) {
 	b = append([]byte(" "), b...)
 	assertAddedInvalid(t, ie.NewDNSQueryResponseFilter(ie.DNSQueryResponseFilterFields{DomainNamePattern: b}))
 }
+
+var _ = registerConstructorFixture(ie.NewDNSQueryResponseFilter, ie.DNSQueryResponseFilterFields{DomainNamePattern: []byte(`{"regex":"example"}`)})
