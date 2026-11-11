@@ -24,3 +24,5 @@ func TestPFCPSDRspFlagsCurrent(t *testing.T) {
 		assertAddedInvalid(t, ie.NewPFCPSDRspFlags(ie.PFCPSDResponseFlags(v)))
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewPFCPSDRspFlags, ie.PFCPSDResponseFlags(1))

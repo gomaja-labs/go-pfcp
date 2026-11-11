@@ -16,3 +16,5 @@ func TestPredefinedRulesNameCurrent(t *testing.T) {
 	assertAddedInvalid(t, ie.NewPredefinedRulesName((bytes.Repeat([]byte{65}, 65536))))
 
 }
+
+var _ = registerConstructorFixture(ie.NewPredefinedRulesName, []byte{1})

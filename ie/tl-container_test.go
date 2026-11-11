@@ -16,3 +16,5 @@ func TestTLContainerCurrent(t *testing.T) {
 	assertAddedInvalid(t, ie.NewTLContainer((bytes.Repeat([]byte{65}, 65536))))
 
 }
+
+var _ = registerConstructorFixture(ie.NewTLContainer, []byte{1})

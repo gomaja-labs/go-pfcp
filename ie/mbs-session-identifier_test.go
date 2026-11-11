@@ -39,3 +39,5 @@ func TestMBSSessionIdentifierInvalidFields(t *testing.T) {
 		}
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewMBSSessionIdentifier, ie.MBSSessionIdentifierFields{})

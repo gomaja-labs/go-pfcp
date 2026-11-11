@@ -28,3 +28,5 @@ func TestTrafficParameterThresholdInvalidFields(t *testing.T) {
 		}
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewTrafficParameterThreshold, ie.TrafficParameterThresholdFields{})

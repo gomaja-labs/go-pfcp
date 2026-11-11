@@ -16,3 +16,5 @@ func TestMaximumReceiveUnitCurrent(t *testing.T) {
 	}
 
 }
+
+var _ = registerConstructorFixture(ie.NewMaximumReceiveUnit, uint16(1))

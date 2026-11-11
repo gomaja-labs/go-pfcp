@@ -30,3 +30,5 @@ func TestSteeringModeIndicatorCurrent(t *testing.T) {
 		assertAddedInvalid(t, ie.NewSteeringModeIndicator(ie.SteeringModeFlags(v)))
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewSteeringModeIndicator, ie.SteeringModeFlags(1))

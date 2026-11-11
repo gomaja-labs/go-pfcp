@@ -27,3 +27,5 @@ func TestHPLMNSNSSAIInvalidFields(t *testing.T) {
 		}
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewHPLMNSNSSAI, ie.HPLMNSNSSAIFields{})

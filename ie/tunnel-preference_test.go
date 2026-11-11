@@ -16,3 +16,5 @@ func TestTunnelPreferenceCurrent(t *testing.T) {
 	}
 	assertAddedInvalid(t, ie.NewTunnelPreference(16777216))
 }
+
+var _ = registerConstructorFixture(ie.NewTunnelPreference, uint32(1))

@@ -20,3 +20,5 @@ func TestNBNSServerAddressCurrent(t *testing.T) {
 		assertAddedInvalid(t, ie.NewNBNSServerAddress(a))
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewNBNSServerAddress, netip.MustParseAddr("192.0.2.1"))

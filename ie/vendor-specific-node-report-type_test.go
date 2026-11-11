@@ -34,3 +34,5 @@ func TestVendorSpecificNodeReportTypeLengthBoundary(t *testing.T) {
 	v.ReportTypes = append(v.ReportTypes, 1)
 	assertAddedInvalid(t, ie.NewVendorSpecificNodeReportType(v))
 }
+
+var _ = registerConstructorFixture(ie.NewVendorSpecificNodeReportType, ie.VendorSpecificNodeReportTypeFields{EnterpriseID: 1, ReportTypes: []byte{1}})

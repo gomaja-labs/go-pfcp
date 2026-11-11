@@ -29,3 +29,5 @@ func TestReportingSuggestionInfoInvalidFields(t *testing.T) {
 		}
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewReportingSuggestionInfo, ie.ReportingSuggestionInfoFields{})

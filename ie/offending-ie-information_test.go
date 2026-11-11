@@ -216,3 +216,5 @@ func TestOffendingIEInformationLengthBoundary(t *testing.T) {
 	v.Value = append(v.Value, 1)
 	assertAddedInvalid(t, ie.NewOffendingIEInformation(v))
 }
+
+var _ = registerConstructorFixture(ie.NewOffendingIEInformation, ie.OffendingIEInformationFields{})

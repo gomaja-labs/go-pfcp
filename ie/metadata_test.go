@@ -22,3 +22,5 @@ func TestMetadataLengthBoundary(t *testing.T) {
 	assertAddedVector(t, ie.NewMetadata(b), b, "Metadata", false)
 	assertAddedInvalid(t, ie.NewMetadata(append(b, []byte("AAAA")...)))
 }
+
+var _ = registerConstructorFixture(ie.NewMetadata, []byte("YQ=="))

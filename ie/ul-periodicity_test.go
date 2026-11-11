@@ -27,3 +27,5 @@ func TestULPeriodicityCurrent(t *testing.T) {
 		assertAddedInvalid(t, ie.NewULPeriodicity(v))
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewULPeriodicity, time.Millisecond)

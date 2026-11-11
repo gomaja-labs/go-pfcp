@@ -38,3 +38,5 @@ func TestMPQUICAddressInformationInvalidFields(t *testing.T) {
 		}
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewMPQUICAddressInformation, ie.MPQUICAddressInformationFields{ProxyType: ie.MPQUICProxyUDP})

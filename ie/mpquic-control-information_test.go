@@ -30,3 +30,5 @@ func TestMPQUICControlInformationCurrent(t *testing.T) {
 		assertAddedInvalid(t, ie.NewMPQUICControlInformation(ie.MPQUICControlFlags(v)))
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewMPQUICControlInformation, ie.MPQUICControlFlags(1))

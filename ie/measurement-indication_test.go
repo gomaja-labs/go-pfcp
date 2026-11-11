@@ -24,3 +24,5 @@ func TestMeasurementIndicationCurrent(t *testing.T) {
 		assertAddedInvalid(t, ie.NewMeasurementIndication(ie.MeasurementIndicationFlags(v)))
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewMeasurementIndication, ie.MeasurementIndicationFlags(1))

@@ -24,3 +24,5 @@ func TestTrafficParameterMeasurementIndicationCurrent(t *testing.T) {
 		assertAddedInvalid(t, ie.NewTrafficParameterMeasurementIndication(ie.TrafficParameterMeasurementFlags(v)))
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewTrafficParameterMeasurementIndication, ie.TrafficParameterMeasurementFlags(1))

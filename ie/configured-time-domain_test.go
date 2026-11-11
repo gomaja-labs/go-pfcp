@@ -24,3 +24,5 @@ func TestConfiguredTimeDomainCurrent(t *testing.T) {
 		assertAddedInvalid(t, ie.NewConfiguredTimeDomain(ie.ConfiguredTimeDomainFlags(v)))
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewConfiguredTimeDomain, ie.ConfiguredTimeDomainFlags(1))

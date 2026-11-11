@@ -24,3 +24,5 @@ func TestTransportModeCurrent(t *testing.T) {
 		assertAddedInvalid(t, ie.NewTransportMode(ie.TransportModeValue(v)))
 	}
 }
+
+var _ = registerConstructorFixture(ie.NewTransportMode, ie.TransportModeValue(1))
