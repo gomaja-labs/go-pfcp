@@ -30,6 +30,7 @@ func allMessages() []message.Message {
 		message.NewSessionDeletionRequest(42, 1, nil), message.NewSessionDeletionResponse(42, 1, nil),
 		message.NewSessionReportRequest(42, 1, nil), message.NewSessionReportResponse(42, 1, nil),
 		message.NewGeneric(200, 42, 1, nil),
+		message.NewSessionSetModificationRequest(1), message.NewSessionSetModificationResponse(1),
 	}
 }
 
@@ -333,7 +334,7 @@ func TestMessageReuseAndFieldEdits(t *testing.T) {
 	if err := m.UnmarshalBinary(wireHeader(0x20, 1, nil)); err != nil {
 		t.Fatal(err)
 	}
-	if len(m.IEs) != 0 || m.RecoveryTimeStamp != nil {
+	if len(m.OtherIEs) != 0 || m.RecoveryTimeStamp != nil {
 		t.Fatal("reuse retained old IEs")
 	}
 }
@@ -423,7 +424,6 @@ func TestNilAndZeroMessageEncoding(t *testing.T) {
 		t.Fatal(err)
 	}
 	h.SetFO(true)
-	h.SetLength()
 	h.ClearMP()
 	h.SetSequenceNumber(0)
 	if h.HasFO() || h.HasMP() || h.HasSEID() || h.Sequence() != 0 || h.MessageType() != 0 || h.Version() != 0 || h.MP() != 0 || h.MarshalLen() != 0 || h.String() != "<nil>" {

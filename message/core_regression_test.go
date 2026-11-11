@@ -130,7 +130,7 @@ func TestMessageShortBuffers(t *testing.T) {
 }
 
 func TestHeaderComputedLength(t *testing.T) {
-	h := &message.Header{Flags: 0x21, Type: 200, Length: 1, Payload: []byte{1, 2, 3}}
+	h := &message.Header{Flags: 0x21, Type: 200, Payload: []byte{1, 2, 3}}
 	b, err := h.Marshal()
 	if err != nil {
 		t.Fatal(err)

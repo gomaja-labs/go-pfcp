@@ -10,19 +10,18 @@ import (
 	"github.com/gomaja-labs/go-pfcp/ie"
 )
 
-// Generic is a Generic formed PFCP Header and its IEs above.
+// Generic retains the header and IEs of a message without a generated schema.
 type Generic struct {
 	*Header
-	IEs []*ie.IE
+	OtherIEs []*ie.IE
 }
 
 // NewGeneric creates a new Generic.
 func NewGeneric(msgType uint8, seid uint64, seq uint32, ies ...*ie.IE) *Generic {
 	m := &Generic{
-		Header: NewHeader(msgType, seid, seq, nil),
-		IEs:    ies,
+		Header:   NewHeader(msgType, seid, seq, nil),
+		OtherIEs: ies,
 	}
-	m.SetLength()
 
 	return m
 }
@@ -60,7 +59,7 @@ func (m *Generic) UnmarshalBinary(b []byte) error {
 	}
 	*m = Generic{Header: h}
 
-	m.IEs, err = ie.ParseMultiIEs(m.Header.Payload)
+	m.OtherIEs, err = ie.ParseMultiIEs(m.Header.Payload)
 	if err != nil {
 		return err
 	}
@@ -73,13 +72,6 @@ func (m *Generic) MarshalLen() int {
 		return 0
 	}
 	return messageLen(m.Header, m.messageIEs())
-}
-
-// SetLength sets the length in Length field.
-func (m *Generic) SetLength() {
-	if m != nil && m.Header != nil {
-		m.Header.Length = uint16(m.MarshalLen() - 4)
-	}
 }
 
 // MessageTypeName returns the name of protocol.
@@ -98,13 +90,12 @@ func (m *Generic) SEID() uint64 {
 	return m.Header.seid()
 }
 
-// AddIE add IEs to Generic type of PFCP message and update Length field.
+// AddIE appends IEs to the message.
 func (m *Generic) AddIE(ies ...*ie.IE) {
 	if m == nil {
 		return
 	}
-	m.IEs = append(m.IEs, ies...)
-	m.SetLength()
+	m.OtherIEs = append(m.OtherIEs, ies...)
 }
 
 // IsRequest reports whether the message is a request.
@@ -116,7 +107,7 @@ func (m *Generic) messageIEs() []*ie.IE {
 	if m == nil {
 		return nil
 	}
-	ies := make([]*ie.IE, 0, len(m.IEs))
-	ies = append(ies, m.IEs...)
+	ies := make([]*ie.IE, 0, len(m.OtherIEs))
+	ies = append(ies, m.OtherIEs...)
 	return ies
 }

@@ -123,7 +123,6 @@ func marshalMessageTo(h *Header, ies []*ie.IE, b []byte) error {
 	if err := frame.MarshalTo(b); err != nil {
 		return err
 	}
-	h.Payload, h.Length = payload, frame.Length
 	return nil
 }
 
@@ -142,7 +141,8 @@ func parseMessageHeader(b []byte, expected uint8) (*Header, error) {
 }
 
 // assignIE retains additional occurrences without changing the public field
-// layout. The first occurrence occupies the named field, the rest remain in IEs.
+// layout. The first occurrence occupies the named field, the rest remain in OtherIEs.
+// TS 29.244 V20.1.0 clause 7.6.10.
 func assignIE(dst **ie.IE, value *ie.IE, extras *[]*ie.IE) {
 	if *dst == nil {
 		*dst = value
