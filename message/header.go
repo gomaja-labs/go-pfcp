@@ -33,13 +33,12 @@ func (e *UnsupportedVersionError) Error() string {
 	return fmt.Sprintf("unsupported PFCP version %d", e.Header.Version())
 }
 
-// Header represents a PFCP header. Length is the received or last computed wire
-// length; encoding always recomputes it. MessagePriority is a value from 0 to 15,
+// Header represents a PFCP header. The wire length is always derived from the
+// encoded content. MessagePriority is a value from 0 to 15,
 // meaningful only when S and MP are set. Payload is the framed message body.
 type Header struct {
 	Flags           uint8 // Version, FO, MP, S; spare bits are ignored on receive.
 	Type            uint8
-	Length          uint16
 	SEID            uint64
 	SequenceNumber  uint32 // Values above 0xffffff are rejected when encoding.
 	MessagePriority uint8  // Priority value, not a shifted wire octet.
@@ -55,12 +54,10 @@ func NewHeader(mtype uint8, seid uint64, seq uint32, payload []byte) *Header {
 		h.Flags = 0x20
 		h.SEID = 0
 	}
-	h.SetLength()
 	return h
 }
 
-// isNodeType includes Session Set Modification (16 and 17), whose typed
-// messages are not yet implemented. TS 29.244 V20.1.0 Table 7.3-1.
+// Node/session framing follows TS 29.244 V20.1.0 Table 7.3-1.
 func isNodeType(t uint8) bool       { return t >= 1 && t <= 17 }
 func knownSessionType(t uint8) bool { return t >= 50 && t <= 57 }
 
@@ -133,9 +130,8 @@ func (h *Header) MarshalTo(b []byte) error {
 	if len(b) < n {
 		return io.ErrShortBuffer
 	}
-	h.Length = uint16(n - 4)
 	b[0], b[1] = h.Flags&^0x18, h.Type
-	binary.BigEndian.PutUint16(b[2:4], h.Length)
+	binary.BigEndian.PutUint16(b[2:4], uint16(n-4))
 	offset := 4
 	if h.HasSEID() {
 		binary.BigEndian.PutUint64(b[offset:offset+8], h.SEID)
@@ -184,7 +180,7 @@ func frameSize(b []byte) (int, error) {
 
 // UnmarshalBinary decodes exactly one frame. Unsupported versions remain
 // readable here so an application can inspect their common header. Payload
-// borrows b until the next encode; keep b unchanged while using decoded data. Spare bits
+// borrows b; keep b unchanged while using decoded data. Spare bits
 // are ignored. A failed decode leaves the receiver unchanged.
 func (h *Header) UnmarshalBinary(b []byte) error {
 	if h == nil {
@@ -197,7 +193,7 @@ func (h *Header) UnmarshalBinary(b []byte) error {
 	if n != len(b) {
 		return ErrInvalidLength
 	}
-	v := Header{Flags: b[0] &^ 0x18, Type: b[1], Length: uint16(n - 4)}
+	v := Header{Flags: b[0] &^ 0x18, Type: b[1]}
 	offset := 4
 	if v.HasSEID() {
 		v.SEID = binary.BigEndian.Uint64(b[offset : offset+8])
@@ -222,13 +218,6 @@ func (h *Header) MarshalLen() int {
 		n += 8
 	}
 	return n
-}
-
-// SetLength updates the informational Length field. Encoding rejects overflow.
-func (h *Header) SetLength() {
-	if h != nil {
-		h.Length = uint16(h.MarshalLen() - 4)
-	}
 }
 
 // Version returns the three-bit version, or zero for nil.
@@ -318,5 +307,5 @@ func (h *Header) String() string {
 	if h == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("{Version: %d, FO: %t, MP: %t, S: %t, Type: %d, Length: %d, SEID: %d, Sequence: %d, Priority: %d}", h.Version(), h.HasFO(), h.HasMP(), h.HasSEID(), h.Type, h.Length, h.SEID, h.SequenceNumber, h.MP())
+	return fmt.Sprintf("{Version: %d, FO: %t, MP: %t, S: %t, Type: %d, Length: %d, SEID: %d, Sequence: %d, Priority: %d}", h.Version(), h.HasFO(), h.HasMP(), h.HasSEID(), h.Type, h.MarshalLen()-4, h.SEID, h.SequenceNumber, h.MP())
 }

@@ -15,6 +15,12 @@ import (
 
 func seedMessages(f *testing.F) {
 	f.Helper()
+	for typ := byte(1); typ <= 17; typ++ {
+		f.Add(wireHeader(0x20, typ, nil))
+	}
+	for typ := byte(50); typ <= 57; typ++ {
+		f.Add(wireHeader(0x21, typ, nil))
+	}
 	for _, flags := range []byte{0x20, 0x21, 0x23, 0x25, 0x27} {
 		f.Add(wireHeader(flags, 200, nil))
 	}

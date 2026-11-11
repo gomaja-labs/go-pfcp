@@ -51,6 +51,8 @@ jobs:
           go-version: stable
       - name: go mod tidy
         run: go mod tidy -diff
+      - name: generated code
+        run: go generate ./... && git diff --exit-code
       - name: 32-bit build
         run: GOARCH=386 go vet ./...
       - uses: dominikh/staticcheck-action@v1.4.1
