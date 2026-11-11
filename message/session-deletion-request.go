@@ -15,14 +15,10 @@ type SessionDeletionRequest struct {
 }
 
 // NewSessionDeletionRequest creates a new SessionDeletionRequest.
-func NewSessionDeletionRequest(mp, fo uint8, seid uint64, seq uint32, pri uint8, ies ...*ie.IE) *SessionDeletionRequest {
+func NewSessionDeletionRequest(seid uint64, seq uint32, ies ...*ie.IE) *SessionDeletionRequest {
 	m := &SessionDeletionRequest{
-		Header: NewHeader(
-			1, fo, mp, 1,
-			MsgTypeSessionDeletionRequest, seid, seq, pri,
-			nil,
-		),
-		IEs: ies,
+		Header: NewHeader(MsgTypeSessionDeletionRequest, seid, seq, nil),
+		IEs:    ies,
 	}
 	m.SetLength()
 
@@ -31,34 +27,15 @@ func NewSessionDeletionRequest(mp, fo uint8, seid uint64, seq uint32, pri uint8,
 
 // Marshal returns the byte sequence generated from a SessionDeletionRequest.
 func (m *SessionDeletionRequest) Marshal() ([]byte, error) {
-	b := make([]byte, m.MarshalLen())
-	if err := m.MarshalTo(b); err != nil {
-		return nil, err
-	}
-
-	return b, nil
+	return marshalMessage(m)
 }
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (m *SessionDeletionRequest) MarshalTo(b []byte) error {
-	if m.Header.Payload != nil {
-		m.Header.Payload = nil
+	if m == nil {
+		return ErrNilMessage
 	}
-	m.Header.Payload = make([]byte, m.MarshalLen()-m.Header.MarshalLen())
-
-	offset := 0
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		if err := ie.MarshalTo(m.Header.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += ie.MarshalLen()
-	}
-
-	m.Header.SetLength()
-	return m.Header.MarshalTo(b)
+	return marshalMessageTo(m.Header, m.messageIEs(), b)
 }
 
 // ParseSessionDeletionRequest decodes a given byte sequence as a SessionDeletionRequest.
@@ -72,14 +49,14 @@ func ParseSessionDeletionRequest(b []byte) (*SessionDeletionRequest, error) {
 
 // UnmarshalBinary decodes a given byte sequence as a SessionDeletionRequest.
 func (m *SessionDeletionRequest) UnmarshalBinary(b []byte) error {
-	var err error
-	m.Header, err = ParseHeader(b)
+	if m == nil {
+		return ErrNilMessage
+	}
+	h, err := parseMessageHeader(b, MsgTypeSessionDeletionRequest)
 	if err != nil {
 		return err
 	}
-	if len(m.Header.Payload) < 2 {
-		return nil
-	}
+	*m = SessionDeletionRequest{Header: h}
 
 	ies, err := ie.ParseMultiIEs(m.Header.Payload)
 	if err != nil {
@@ -93,21 +70,17 @@ func (m *SessionDeletionRequest) UnmarshalBinary(b []byte) error {
 
 // MarshalLen returns the serial length of Data.
 func (m *SessionDeletionRequest) MarshalLen() int {
-	l := m.Header.MarshalLen() - len(m.Header.Payload)
-
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		l += ie.MarshalLen()
+	if m == nil {
+		return 0
 	}
-
-	return l
+	return messageLen(m.Header, m.messageIEs())
 }
 
 // SetLength sets the length in Length field.
 func (m *SessionDeletionRequest) SetLength() {
-	m.Header.Length = uint16(m.MarshalLen() - 4)
+	if m != nil && m.Header != nil {
+		m.Header.Length = uint16(m.MarshalLen() - 4)
+	}
 }
 
 // MessageTypeName returns the name of protocol.
@@ -117,10 +90,22 @@ func (m *SessionDeletionRequest) MessageTypeName() string {
 
 // SEID returns the SEID in uint64.
 func (m *SessionDeletionRequest) SEID() uint64 {
+	if m == nil {
+		return 0
+	}
 	return m.Header.seid()
 }
 
 // IsRequest reports whether the message is a request.
 func (m *SessionDeletionRequest) IsRequest() bool {
 	return true
+}
+
+func (m *SessionDeletionRequest) messageIEs() []*ie.IE {
+	if m == nil {
+		return nil
+	}
+	ies := make([]*ie.IE, 0, len(m.IEs))
+	ies = append(ies, m.IEs...)
+	return ies
 }

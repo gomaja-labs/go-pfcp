@@ -19,7 +19,7 @@ func TestSessionDeletionResponse(t *testing.T) {
 		{
 			Description: "Single IE",
 			Structured: message.NewSessionDeletionResponse(
-				mp, fo, seid, seq, pri,
+				seid, seq,
 				ie.NewCause(ie.CauseRequestAccepted),
 				ie.NewOffendingIE(ie.Cause),
 				ie.NewLoadControlInformation(ie.NewSequenceNumber(0xffffffff), ie.NewMetric(0x01)),
@@ -97,7 +97,7 @@ func TestSessionDeletionResponse(t *testing.T) {
 		}, {
 			Description: "Multiple IEs",
 			Structured: message.NewSessionDeletionResponse(
-				mp, fo, seid, seq, pri,
+				seid, seq,
 				ie.NewCause(ie.CauseRequestAccepted),
 				ie.NewOffendingIE(ie.Cause),
 				ie.NewLoadControlInformation(ie.NewSequenceNumber(0xffffffff), ie.NewMetric(0x01)),

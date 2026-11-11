@@ -19,11 +19,7 @@ type AssociationReleaseResponse struct {
 // NewAssociationReleaseResponse creates a new AssociationReleaseResponse.
 func NewAssociationReleaseResponse(seq uint32, id, cause *ie.IE, ies ...*ie.IE) *AssociationReleaseResponse {
 	m := &AssociationReleaseResponse{
-		Header: NewHeader(
-			1, 0, 0, 0,
-			MsgTypeAssociationReleaseResponse, 0, seq, 0,
-			nil,
-		),
+		Header: NewHeader(MsgTypeAssociationReleaseResponse, 0, seq, nil),
 		NodeID: id,
 		Cause:  cause,
 		IEs:    ies,
@@ -35,47 +31,15 @@ func NewAssociationReleaseResponse(seq uint32, id, cause *ie.IE, ies ...*ie.IE) 
 
 // Marshal returns the byte sequence generated from a AssociationReleaseResponse.
 func (m *AssociationReleaseResponse) Marshal() ([]byte, error) {
-	b := make([]byte, m.MarshalLen())
-	if err := m.MarshalTo(b); err != nil {
-		return nil, err
-	}
-
-	return b, nil
+	return marshalMessage(m)
 }
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (m *AssociationReleaseResponse) MarshalTo(b []byte) error {
-	if m.Header.Payload != nil {
-		m.Header.Payload = nil
+	if m == nil {
+		return ErrNilMessage
 	}
-	m.Header.Payload = make([]byte, m.MarshalLen()-m.Header.MarshalLen())
-
-	offset := 0
-	if i := m.NodeID; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.Cause; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		if err := ie.MarshalTo(m.Header.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += ie.MarshalLen()
-	}
-
-	m.Header.SetLength()
-	return m.Header.MarshalTo(b)
+	return marshalMessageTo(m.Header, m.messageIEs(), b)
 }
 
 // ParseAssociationReleaseResponse decodes a given byte sequence as a AssociationReleaseResponse.
@@ -89,58 +53,38 @@ func ParseAssociationReleaseResponse(b []byte) (*AssociationReleaseResponse, err
 
 // UnmarshalBinary decodes a given byte sequence as a AssociationReleaseResponse.
 func (m *AssociationReleaseResponse) UnmarshalBinary(b []byte) error {
-	var err error
-	m.Header, err = ParseHeader(b)
+	if m == nil {
+		return ErrNilMessage
+	}
+	h, err := parseMessageHeader(b, MsgTypeAssociationReleaseResponse)
 	if err != nil {
 		return err
 	}
-	if len(m.Header.Payload) < 2 {
-		return nil
-	}
+	*m = AssociationReleaseResponse{Header: h}
 
 	ies, err := ie.ParseMultiIEs(m.Header.Payload)
 	if err != nil {
 		return err
 	}
 
-	for _, i := range ies {
-		switch i.Type {
-		case ie.NodeID:
-			m.NodeID = i
-		case ie.Cause:
-			m.Cause = i
-		default:
-			m.IEs = append(m.IEs, i)
-		}
-	}
+	m.addIEs(ies)
 
 	return nil
 }
 
 // MarshalLen returns the serial length of Data.
 func (m *AssociationReleaseResponse) MarshalLen() int {
-	l := m.Header.MarshalLen() - len(m.Header.Payload)
-
-	if i := m.NodeID; i != nil {
-		l += i.MarshalLen()
+	if m == nil {
+		return 0
 	}
-	if i := m.Cause; i != nil {
-		l += i.MarshalLen()
-	}
-
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		l += ie.MarshalLen()
-	}
-
-	return l
+	return messageLen(m.Header, m.messageIEs())
 }
 
 // SetLength sets the length in Length field.
 func (m *AssociationReleaseResponse) SetLength() {
-	m.Header.Length = uint16(m.MarshalLen() - 4)
+	if m != nil && m.Header != nil {
+		m.Header.Length = uint16(m.MarshalLen() - 4)
+	}
 }
 
 // MessageTypeName returns the name of protocol.
@@ -150,10 +94,40 @@ func (m *AssociationReleaseResponse) MessageTypeName() string {
 
 // SEID returns the SEID in uint64.
 func (m *AssociationReleaseResponse) SEID() uint64 {
+	if m == nil {
+		return 0
+	}
 	return m.Header.seid()
 }
 
 // IsRequest reports whether the message is a request.
 func (m *AssociationReleaseResponse) IsRequest() bool {
 	return false
+}
+
+func (m *AssociationReleaseResponse) messageIEs() []*ie.IE {
+	if m == nil {
+		return nil
+	}
+	ies := make([]*ie.IE, 0, 2+len(m.IEs))
+	ies = append(ies, m.NodeID)
+	ies = append(ies, m.Cause)
+	ies = append(ies, m.IEs...)
+	return ies
+}
+
+func (m *AssociationReleaseResponse) addIEs(ies []*ie.IE) {
+	for _, i := range ies {
+		if i == nil {
+			continue
+		}
+		switch i.Type {
+		case ie.NodeID:
+			assignIE(&m.NodeID, i, &m.IEs)
+		case ie.Cause:
+			assignIE(&m.Cause, i, &m.IEs)
+		default:
+			m.IEs = append(m.IEs, i)
+		}
+	}
 }

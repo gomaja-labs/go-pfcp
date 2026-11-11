@@ -16,7 +16,7 @@ func TestSessionDeletionRequest(t *testing.T) {
 	cases := []testutil.TestCase{
 		{
 			Description: "Normal",
-			Structured:  message.NewSessionDeletionRequest(mp, fo, seid, seq, pri),
+			Structured:  message.NewSessionDeletionRequest(seid, seq),
 			Serialized: []byte{
 				0x21, 0x36, 0x00, 0x0c, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88, 0x11, 0x22, 0x33, 0x00,
 			},

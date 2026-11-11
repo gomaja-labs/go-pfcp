@@ -29,8 +29,8 @@ func TestGeneric(t *testing.T) {
 			},
 		}, {
 			Description: "No-SEID",
-			Structured: message.NewGenericWithoutSEID(
-				message.MsgTypeHeartbeatRequest,
+			Structured: message.NewGeneric(
+				message.MsgTypeHeartbeatRequest, 0,
 				testutil.TestBearerInfo.Seq,
 				ie.NewApplicationID("go-pfcp"),
 			),

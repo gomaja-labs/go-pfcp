@@ -29,45 +29,12 @@ type SessionEstablishmentResponse struct {
 }
 
 // NewSessionEstablishmentResponse creates a new SessionEstablishmentResponse.
-func NewSessionEstablishmentResponse(mp, fo uint8, seid uint64, seq uint32, pri uint8, ies ...*ie.IE) *SessionEstablishmentResponse {
+func NewSessionEstablishmentResponse(seid uint64, seq uint32, ies ...*ie.IE) *SessionEstablishmentResponse {
 	m := &SessionEstablishmentResponse{
-		Header: NewHeader(
-			1, fo, mp, 1,
-			MsgTypeSessionEstablishmentResponse, seid, seq, pri,
-			nil,
-		),
+		Header: NewHeader(MsgTypeSessionEstablishmentResponse, seid, seq, nil),
 	}
 
-	for _, i := range ies {
-		switch i.Type {
-		case ie.NodeID:
-			m.NodeID = i
-		case ie.Cause:
-			m.Cause = i
-		case ie.OffendingIE:
-			m.OffendingIE = i
-		case ie.FSEID:
-			m.UPFSEID = i
-		case ie.CreatedPDR:
-			m.CreatedPDR = append(m.CreatedPDR, i)
-		case ie.LoadControlInformation:
-			m.LoadControlInformation = i
-		case ie.OverloadControlInformation:
-			m.OverloadControlInformation = i
-		case ie.FQCSID:
-			m.FQCSID = i
-		case ie.FailedRuleID:
-			m.FailedRuleID = i
-		case ie.CreatedTrafficEndpoint:
-			m.CreatedTrafficEndpoint = append(m.CreatedTrafficEndpoint, i)
-		case ie.CreatedBridgeInfoForTSC:
-			m.CreatedBridgeInfoForTSC = i
-		case ie.ATSSSControlParameters:
-			m.ATSSSControlParameters = i
-		default:
-			m.IEs = append(m.IEs, i)
-		}
-	}
+	m.addIEs(ies)
 
 	m.SetLength()
 	return m
@@ -75,107 +42,15 @@ func NewSessionEstablishmentResponse(mp, fo uint8, seid uint64, seq uint32, pri 
 
 // Marshal returns the byte sequence generated from a SessionEstablishmentResponse.
 func (m *SessionEstablishmentResponse) Marshal() ([]byte, error) {
-	b := make([]byte, m.MarshalLen())
-	if err := m.MarshalTo(b); err != nil {
-		return nil, err
-	}
-
-	return b, nil
+	return marshalMessage(m)
 }
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (m *SessionEstablishmentResponse) MarshalTo(b []byte) error {
-	if m.Header.Payload != nil {
-		m.Header.Payload = nil
+	if m == nil {
+		return ErrNilMessage
 	}
-	m.Header.Payload = make([]byte, m.MarshalLen()-m.Header.MarshalLen())
-
-	offset := 0
-	if i := m.NodeID; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.Cause; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.OffendingIE; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.UPFSEID; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.CreatedPDR {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.LoadControlInformation; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.OverloadControlInformation; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.FQCSID; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.FailedRuleID; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.CreatedTrafficEndpoint {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.CreatedBridgeInfoForTSC; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.ATSSSControlParameters; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		if err := ie.MarshalTo(m.Header.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += ie.MarshalLen()
-	}
-
-	m.Header.SetLength()
-	return m.Header.MarshalTo(b)
+	return marshalMessageTo(m.Header, m.messageIEs(), b)
 }
 
 // ParseSessionEstablishmentResponse decodes a given byte sequence as a SessionEstablishmentResponse.
@@ -189,108 +64,38 @@ func ParseSessionEstablishmentResponse(b []byte) (*SessionEstablishmentResponse,
 
 // UnmarshalBinary decodes a given byte sequence as a SessionEstablishmentResponse.
 func (m *SessionEstablishmentResponse) UnmarshalBinary(b []byte) error {
-	var err error
-	m.Header, err = ParseHeader(b)
+	if m == nil {
+		return ErrNilMessage
+	}
+	h, err := parseMessageHeader(b, MsgTypeSessionEstablishmentResponse)
 	if err != nil {
 		return err
 	}
-	if len(m.Header.Payload) < 2 {
-		return nil
-	}
+	*m = SessionEstablishmentResponse{Header: h}
 
 	ies, err := ie.ParseMultiIEs(m.Header.Payload)
 	if err != nil {
 		return err
 	}
 
-	for _, i := range ies {
-		switch i.Type {
-		case ie.NodeID:
-			m.NodeID = i
-		case ie.Cause:
-			m.Cause = i
-		case ie.OffendingIE:
-			m.OffendingIE = i
-		case ie.FSEID:
-			m.UPFSEID = i
-		case ie.CreatedPDR:
-			m.CreatedPDR = append(m.CreatedPDR, i)
-		case ie.LoadControlInformation:
-			m.LoadControlInformation = i
-		case ie.OverloadControlInformation:
-			m.OverloadControlInformation = i
-		case ie.FQCSID:
-			m.FQCSID = i
-		case ie.FailedRuleID:
-			m.FailedRuleID = i
-		case ie.CreatedTrafficEndpoint:
-			m.CreatedTrafficEndpoint = append(m.CreatedTrafficEndpoint, i)
-		case ie.CreatedBridgeInfoForTSC:
-			m.CreatedBridgeInfoForTSC = i
-		case ie.ATSSSControlParameters:
-			m.ATSSSControlParameters = i
-		default:
-			m.IEs = append(m.IEs, i)
-		}
-	}
+	m.addIEs(ies)
 
 	return nil
 }
 
 // MarshalLen returns the serial length of Data.
 func (m *SessionEstablishmentResponse) MarshalLen() int {
-	l := m.Header.MarshalLen() - len(m.Header.Payload)
-
-	if i := m.NodeID; i != nil {
-		l += i.MarshalLen()
+	if m == nil {
+		return 0
 	}
-	if i := m.Cause; i != nil {
-		l += i.MarshalLen()
-	}
-	if i := m.OffendingIE; i != nil {
-		l += i.MarshalLen()
-	}
-	if i := m.UPFSEID; i != nil {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.CreatedPDR {
-		l += i.MarshalLen()
-	}
-	if i := m.LoadControlInformation; i != nil {
-		l += i.MarshalLen()
-	}
-	if i := m.OverloadControlInformation; i != nil {
-		l += i.MarshalLen()
-	}
-	if i := m.FQCSID; i != nil {
-		l += i.MarshalLen()
-	}
-	if i := m.FailedRuleID; i != nil {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.CreatedTrafficEndpoint {
-		l += i.MarshalLen()
-	}
-	if i := m.CreatedBridgeInfoForTSC; i != nil {
-		l += i.MarshalLen()
-	}
-	if i := m.ATSSSControlParameters; i != nil {
-		l += i.MarshalLen()
-	}
-
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		l += ie.MarshalLen()
-	}
-
-	return l
+	return messageLen(m.Header, m.messageIEs())
 }
 
 // SetLength sets the length in Length field.
 func (m *SessionEstablishmentResponse) SetLength() {
-	m.Header.Length = uint16(m.MarshalLen() - 4)
+	if m != nil && m.Header != nil {
+		m.Header.Length = uint16(m.MarshalLen() - 4)
+	}
 }
 
 // MessageTypeName returns the name of protocol.
@@ -300,10 +105,70 @@ func (m *SessionEstablishmentResponse) MessageTypeName() string {
 
 // SEID returns the SEID in uint64.
 func (m *SessionEstablishmentResponse) SEID() uint64 {
+	if m == nil {
+		return 0
+	}
 	return m.Header.seid()
 }
 
 // IsRequest reports whether the message is a request.
 func (m *SessionEstablishmentResponse) IsRequest() bool {
 	return false
+}
+
+func (m *SessionEstablishmentResponse) messageIEs() []*ie.IE {
+	if m == nil {
+		return nil
+	}
+	ies := make([]*ie.IE, 0, 10+len(m.CreatedPDR)+len(m.CreatedTrafficEndpoint)+len(m.IEs))
+	ies = append(ies, m.NodeID)
+	ies = append(ies, m.Cause)
+	ies = append(ies, m.OffendingIE)
+	ies = append(ies, m.UPFSEID)
+	ies = append(ies, m.CreatedPDR...)
+	ies = append(ies, m.LoadControlInformation)
+	ies = append(ies, m.OverloadControlInformation)
+	ies = append(ies, m.FQCSID)
+	ies = append(ies, m.FailedRuleID)
+	ies = append(ies, m.CreatedTrafficEndpoint...)
+	ies = append(ies, m.CreatedBridgeInfoForTSC)
+	ies = append(ies, m.ATSSSControlParameters)
+	ies = append(ies, m.IEs...)
+	return ies
+}
+
+func (m *SessionEstablishmentResponse) addIEs(ies []*ie.IE) {
+	for _, i := range ies {
+		if i == nil {
+			continue
+		}
+		switch i.Type {
+		case ie.NodeID:
+			assignIE(&m.NodeID, i, &m.IEs)
+		case ie.Cause:
+			assignIE(&m.Cause, i, &m.IEs)
+		case ie.OffendingIE:
+			assignIE(&m.OffendingIE, i, &m.IEs)
+		case ie.FSEID:
+			assignIE(&m.UPFSEID, i, &m.IEs)
+		case ie.CreatedPDR:
+			m.CreatedPDR = append(m.CreatedPDR, i)
+		case ie.LoadControlInformation:
+			assignIE(&m.LoadControlInformation, i, &m.IEs)
+		case ie.OverloadControlInformation:
+			assignIE(&m.OverloadControlInformation, i, &m.IEs)
+		case ie.FQCSID:
+			assignIE(&m.FQCSID, i, &m.IEs)
+		case ie.FailedRuleID:
+			assignIE(&m.FailedRuleID, i, &m.IEs)
+		case ie.CreatedTrafficEndpoint:
+			m.CreatedTrafficEndpoint = append(m.CreatedTrafficEndpoint, i)
+		case ie.CreatedBridgeInfoForTSC:
+			assignIE(&m.CreatedBridgeInfoForTSC, i, &m.IEs)
+		case ie.ATSSSControlParameters:
+			assignIE(&m.ATSSSControlParameters, i, &m.IEs)
+		default:
+			m.IEs = append(m.IEs, i)
+		}
+	}
 }

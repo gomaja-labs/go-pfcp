@@ -20,7 +20,7 @@ func TestSessionReportRequest(t *testing.T) {
 		{
 			Description: "Single IE",
 			Structured: message.NewSessionReportRequest(
-				mp, fo, seid, seq, pri,
+				seid, seq,
 				ie.NewReportType(1, 1, 1, 1),
 				ie.NewDownlinkDataReport(
 					ie.NewPDRID(0xffff),
@@ -198,7 +198,7 @@ func TestSessionReportRequest(t *testing.T) {
 		}, {
 			Description: "Multiple IEs",
 			Structured: message.NewSessionReportRequest(
-				mp, fo, seid, seq, pri,
+				seid, seq,
 				ie.NewReportType(1, 1, 1, 1),
 				ie.NewDownlinkDataReport(
 					ie.NewPDRID(0xffff),

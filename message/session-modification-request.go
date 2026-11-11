@@ -53,97 +53,12 @@ type SessionModificationRequest struct {
 }
 
 // NewSessionModificationRequest creates a new SessionModificationRequest.
-func NewSessionModificationRequest(mp, fo uint8, seid uint64, seq uint32, pri uint8, ies ...*ie.IE) *SessionModificationRequest {
+func NewSessionModificationRequest(seid uint64, seq uint32, ies ...*ie.IE) *SessionModificationRequest {
 	m := &SessionModificationRequest{
-		Header: NewHeader(
-			1, fo, mp, 1,
-			MsgTypeSessionModificationRequest, seid, seq, pri,
-			nil,
-		),
+		Header: NewHeader(MsgTypeSessionModificationRequest, seid, seq, nil),
 	}
 
-	for _, i := range ies {
-		switch i.Type {
-		case ie.FSEID:
-			m.CPFSEID = i
-		case ie.RemovePDR:
-			m.RemovePDR = append(m.RemovePDR, i)
-		case ie.RemoveFAR:
-			m.RemoveFAR = append(m.RemoveFAR, i)
-		case ie.RemoveURR:
-			m.RemoveURR = append(m.RemoveURR, i)
-		case ie.RemoveQER:
-			m.RemoveQER = append(m.RemoveQER, i)
-		case ie.RemoveBAR:
-			m.RemoveBAR = i
-		case ie.RemoveTrafficEndpoint:
-			m.RemoveTrafficEndpoint = append(m.RemoveTrafficEndpoint, i)
-		case ie.CreatePDR:
-			m.CreatePDR = append(m.CreatePDR, i)
-		case ie.CreateFAR:
-			m.CreateFAR = append(m.CreateFAR, i)
-		case ie.CreateURR:
-			m.CreateURR = append(m.CreateURR, i)
-		case ie.CreateQER:
-			m.CreateQER = append(m.CreateQER, i)
-		case ie.CreateBAR:
-			m.CreateBAR = i
-		case ie.CreateTrafficEndpoint:
-			m.CreateTrafficEndpoint = append(m.CreateTrafficEndpoint, i)
-		case ie.UpdatePDR:
-			m.UpdatePDR = append(m.UpdatePDR, i)
-		case ie.UpdateFAR:
-			m.UpdateFAR = append(m.UpdateFAR, i)
-		case ie.UpdateURR:
-			m.UpdateURR = append(m.UpdateURR, i)
-		case ie.UpdateQER:
-			m.UpdateQER = append(m.UpdateQER, i)
-		case ie.UpdateBARWithinSessionModificationRequest:
-			m.UpdateBAR = i
-		case ie.UpdateTrafficEndpoint:
-			m.UpdateTrafficEndpoint = append(m.UpdateTrafficEndpoint, i)
-		case ie.PFCPSMReqFlags:
-			m.PFCPSMReqFlags = i
-		case ie.QueryURR:
-			m.QueryURR = append(m.QueryURR, i)
-		case ie.FQCSID:
-			m.FQCSID = i
-		case ie.UserPlaneInactivityTimer:
-			m.UserPlaneInactivityTimer = i
-		case ie.QueryURRReference:
-			m.QueryURRReference = i
-		case ie.TraceInformation:
-			m.TraceInformation = i
-		case ie.RemoveMAR:
-			m.RemoveMAR = append(m.RemoveMAR, i)
-		case ie.UpdateMAR:
-			m.UpdateMAR = append(m.UpdateMAR, i)
-		case ie.CreateMAR:
-			m.CreateMAR = append(m.CreateMAR, i)
-		case ie.NodeID:
-			m.NodeID = i
-		case ie.TSCManagementInformationWithinSessionModificationRequest:
-			m.TSCManagementInformation = i
-		case ie.RemoveSRR:
-			m.RemoveSRR = append(m.RemoveSRR, i)
-		case ie.CreateSRR:
-			m.CreateSRR = append(m.CreateSRR, i)
-		case ie.UpdateSRR:
-			m.UpdateSRR = append(m.UpdateSRR, i)
-		case ie.ProvideATSSSControlInformation:
-			m.ProvideATSSSControlInformation = i
-		case ie.EthernetContextInformation:
-			m.EthernetContextInformation = i
-		case ie.AccessAvailabilityInformation:
-			m.AccessAvailabilityInformation = append(m.AccessAvailabilityInformation, i)
-		case ie.QueryPacketRateStatusWithinSessionModificationRequest:
-			m.QueryPacketRateStatus = append(m.QueryPacketRateStatus, i)
-		case ie.SNSSAI:
-			m.SNSSAI = i
-		default:
-			m.IEs = append(m.IEs, i)
-		}
-	}
+	m.addIEs(ies)
 
 	m.SetLength()
 	return m
@@ -151,263 +66,15 @@ func NewSessionModificationRequest(mp, fo uint8, seid uint64, seq uint32, pri ui
 
 // Marshal returns the byte sequence generated from a SessionModificationRequest.
 func (m *SessionModificationRequest) Marshal() ([]byte, error) {
-	b := make([]byte, m.MarshalLen())
-	if err := m.MarshalTo(b); err != nil {
-		return nil, err
-	}
-
-	return b, nil
+	return marshalMessage(m)
 }
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (m *SessionModificationRequest) MarshalTo(b []byte) error {
-	if m.Header.Payload != nil {
-		m.Header.Payload = nil
+	if m == nil {
+		return ErrNilMessage
 	}
-	m.Header.Payload = make([]byte, m.MarshalLen()-m.Header.MarshalLen())
-
-	offset := 0
-	if i := m.CPFSEID; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.RemovePDR {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.RemoveFAR {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.RemoveURR {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.RemoveQER {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.RemoveBAR; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.RemoveTrafficEndpoint {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.CreatePDR {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.CreateFAR {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.CreateURR {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.CreateQER {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.CreateBAR; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.CreateTrafficEndpoint {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.UpdatePDR {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.UpdateFAR {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.UpdateURR {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.UpdateQER {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.UpdateBAR; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.UpdateTrafficEndpoint {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.PFCPSMReqFlags; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.QueryURR {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.FQCSID; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.UserPlaneInactivityTimer; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.QueryURRReference; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.TraceInformation; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.RemoveMAR {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.UpdateMAR {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.CreateMAR {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.NodeID; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.TSCManagementInformation; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.RemoveSRR {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.CreateSRR {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.UpdateSRR {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.ProvideATSSSControlInformation; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.EthernetContextInformation; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.AccessAvailabilityInformation {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	for _, i := range m.QueryPacketRateStatus {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.SNSSAI; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		if err := ie.MarshalTo(m.Header.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += ie.MarshalLen()
-	}
-
-	m.Header.SetLength()
-	return m.Header.MarshalTo(b)
+	return marshalMessageTo(m.Header, m.messageIEs(), b)
 }
 
 // ParseSessionModificationRequest decodes a given byte sequence as a SessionModificationRequest.
@@ -421,24 +88,113 @@ func ParseSessionModificationRequest(b []byte) (*SessionModificationRequest, err
 
 // UnmarshalBinary decodes a given byte sequence as a SessionModificationRequest.
 func (m *SessionModificationRequest) UnmarshalBinary(b []byte) error {
-	var err error
-	m.Header, err = ParseHeader(b)
+	if m == nil {
+		return ErrNilMessage
+	}
+	h, err := parseMessageHeader(b, MsgTypeSessionModificationRequest)
 	if err != nil {
 		return err
 	}
-	if len(m.Header.Payload) < 2 {
-		return nil
-	}
+	*m = SessionModificationRequest{Header: h}
 
 	ies, err := ie.ParseMultiIEs(m.Header.Payload)
 	if err != nil {
 		return err
 	}
 
+	m.addIEs(ies)
+
+	return nil
+}
+
+// MarshalLen returns the serial length of Data.
+func (m *SessionModificationRequest) MarshalLen() int {
+	if m == nil {
+		return 0
+	}
+	return messageLen(m.Header, m.messageIEs())
+}
+
+// SetLength sets the length in Length field.
+func (m *SessionModificationRequest) SetLength() {
+	if m != nil && m.Header != nil {
+		m.Header.Length = uint16(m.MarshalLen() - 4)
+	}
+}
+
+// MessageTypeName returns the name of protocol.
+func (m *SessionModificationRequest) MessageTypeName() string {
+	return "Session Modification Request"
+}
+
+// SEID returns the SEID in uint64.
+func (m *SessionModificationRequest) SEID() uint64 {
+	if m == nil {
+		return 0
+	}
+	return m.Header.seid()
+}
+
+// IsRequest reports whether the message is a request.
+func (m *SessionModificationRequest) IsRequest() bool {
+	return true
+}
+
+func (m *SessionModificationRequest) messageIEs() []*ie.IE {
+	if m == nil {
+		return nil
+	}
+	ies := make([]*ie.IE, 0, 14+len(m.RemovePDR)+len(m.RemoveFAR)+len(m.RemoveURR)+len(m.RemoveQER)+len(m.RemoveTrafficEndpoint)+len(m.CreatePDR)+len(m.CreateFAR)+len(m.CreateURR)+len(m.CreateQER)+len(m.CreateTrafficEndpoint)+len(m.UpdatePDR)+len(m.UpdateFAR)+len(m.UpdateURR)+len(m.UpdateQER)+len(m.UpdateTrafficEndpoint)+len(m.QueryURR)+len(m.RemoveMAR)+len(m.UpdateMAR)+len(m.CreateMAR)+len(m.RemoveSRR)+len(m.CreateSRR)+len(m.UpdateSRR)+len(m.AccessAvailabilityInformation)+len(m.QueryPacketRateStatus)+len(m.IEs))
+	ies = append(ies, m.CPFSEID)
+	ies = append(ies, m.RemovePDR...)
+	ies = append(ies, m.RemoveFAR...)
+	ies = append(ies, m.RemoveURR...)
+	ies = append(ies, m.RemoveQER...)
+	ies = append(ies, m.RemoveBAR)
+	ies = append(ies, m.RemoveTrafficEndpoint...)
+	ies = append(ies, m.CreatePDR...)
+	ies = append(ies, m.CreateFAR...)
+	ies = append(ies, m.CreateURR...)
+	ies = append(ies, m.CreateQER...)
+	ies = append(ies, m.CreateBAR)
+	ies = append(ies, m.CreateTrafficEndpoint...)
+	ies = append(ies, m.UpdatePDR...)
+	ies = append(ies, m.UpdateFAR...)
+	ies = append(ies, m.UpdateURR...)
+	ies = append(ies, m.UpdateQER...)
+	ies = append(ies, m.UpdateBAR)
+	ies = append(ies, m.UpdateTrafficEndpoint...)
+	ies = append(ies, m.PFCPSMReqFlags)
+	ies = append(ies, m.QueryURR...)
+	ies = append(ies, m.FQCSID)
+	ies = append(ies, m.UserPlaneInactivityTimer)
+	ies = append(ies, m.QueryURRReference)
+	ies = append(ies, m.TraceInformation)
+	ies = append(ies, m.RemoveMAR...)
+	ies = append(ies, m.UpdateMAR...)
+	ies = append(ies, m.CreateMAR...)
+	ies = append(ies, m.NodeID)
+	ies = append(ies, m.TSCManagementInformation)
+	ies = append(ies, m.RemoveSRR...)
+	ies = append(ies, m.CreateSRR...)
+	ies = append(ies, m.UpdateSRR...)
+	ies = append(ies, m.ProvideATSSSControlInformation)
+	ies = append(ies, m.EthernetContextInformation)
+	ies = append(ies, m.AccessAvailabilityInformation...)
+	ies = append(ies, m.QueryPacketRateStatus...)
+	ies = append(ies, m.SNSSAI)
+	ies = append(ies, m.IEs...)
+	return ies
+}
+
+func (m *SessionModificationRequest) addIEs(ies []*ie.IE) {
 	for _, i := range ies {
+		if i == nil {
+			continue
+		}
 		switch i.Type {
 		case ie.FSEID:
-			m.CPFSEID = i
+			assignIE(&m.CPFSEID, i, &m.IEs)
 		case ie.RemovePDR:
 			m.RemovePDR = append(m.RemovePDR, i)
 		case ie.RemoveFAR:
@@ -448,7 +204,7 @@ func (m *SessionModificationRequest) UnmarshalBinary(b []byte) error {
 		case ie.RemoveQER:
 			m.RemoveQER = append(m.RemoveQER, i)
 		case ie.RemoveBAR:
-			m.RemoveBAR = i
+			assignIE(&m.RemoveBAR, i, &m.IEs)
 		case ie.RemoveTrafficEndpoint:
 			m.RemoveTrafficEndpoint = append(m.RemoveTrafficEndpoint, i)
 		case ie.CreatePDR:
@@ -460,7 +216,7 @@ func (m *SessionModificationRequest) UnmarshalBinary(b []byte) error {
 		case ie.CreateQER:
 			m.CreateQER = append(m.CreateQER, i)
 		case ie.CreateBAR:
-			m.CreateBAR = i
+			assignIE(&m.CreateBAR, i, &m.IEs)
 		case ie.CreateTrafficEndpoint:
 			m.CreateTrafficEndpoint = append(m.CreateTrafficEndpoint, i)
 		case ie.UpdatePDR:
@@ -472,21 +228,21 @@ func (m *SessionModificationRequest) UnmarshalBinary(b []byte) error {
 		case ie.UpdateQER:
 			m.UpdateQER = append(m.UpdateQER, i)
 		case ie.UpdateBARWithinSessionModificationRequest:
-			m.UpdateBAR = i
+			assignIE(&m.UpdateBAR, i, &m.IEs)
 		case ie.UpdateTrafficEndpoint:
 			m.UpdateTrafficEndpoint = append(m.UpdateTrafficEndpoint, i)
 		case ie.PFCPSMReqFlags:
-			m.PFCPSMReqFlags = i
+			assignIE(&m.PFCPSMReqFlags, i, &m.IEs)
 		case ie.QueryURR:
 			m.QueryURR = append(m.QueryURR, i)
 		case ie.FQCSID:
-			m.FQCSID = i
+			assignIE(&m.FQCSID, i, &m.IEs)
 		case ie.UserPlaneInactivityTimer:
-			m.UserPlaneInactivityTimer = i
+			assignIE(&m.UserPlaneInactivityTimer, i, &m.IEs)
 		case ie.QueryURRReference:
-			m.QueryURRReference = i
+			assignIE(&m.QueryURRReference, i, &m.IEs)
 		case ie.TraceInformation:
-			m.TraceInformation = i
+			assignIE(&m.TraceInformation, i, &m.IEs)
 		case ie.RemoveMAR:
 			m.RemoveMAR = append(m.RemoveMAR, i)
 		case ie.UpdateMAR:
@@ -494,9 +250,9 @@ func (m *SessionModificationRequest) UnmarshalBinary(b []byte) error {
 		case ie.CreateMAR:
 			m.CreateMAR = append(m.CreateMAR, i)
 		case ie.NodeID:
-			m.NodeID = i
+			assignIE(&m.NodeID, i, &m.IEs)
 		case ie.TSCManagementInformationWithinSessionModificationRequest:
-			m.TSCManagementInformation = i
+			assignIE(&m.TSCManagementInformation, i, &m.IEs)
 		case ie.RemoveSRR:
 			m.RemoveSRR = append(m.RemoveSRR, i)
 		case ie.CreateSRR:
@@ -504,168 +260,17 @@ func (m *SessionModificationRequest) UnmarshalBinary(b []byte) error {
 		case ie.UpdateSRR:
 			m.UpdateSRR = append(m.UpdateSRR, i)
 		case ie.ProvideATSSSControlInformation:
-			m.ProvideATSSSControlInformation = i
+			assignIE(&m.ProvideATSSSControlInformation, i, &m.IEs)
 		case ie.EthernetContextInformation:
-			m.EthernetContextInformation = i
+			assignIE(&m.EthernetContextInformation, i, &m.IEs)
 		case ie.AccessAvailabilityInformation:
 			m.AccessAvailabilityInformation = append(m.AccessAvailabilityInformation, i)
 		case ie.QueryPacketRateStatusWithinSessionModificationRequest:
 			m.QueryPacketRateStatus = append(m.QueryPacketRateStatus, i)
 		case ie.SNSSAI:
-			m.SNSSAI = i
+			assignIE(&m.SNSSAI, i, &m.IEs)
 		default:
 			m.IEs = append(m.IEs, i)
 		}
 	}
-
-	return nil
-}
-
-// MarshalLen returns the serial length of Data.
-func (m *SessionModificationRequest) MarshalLen() int {
-	l := m.Header.MarshalLen() - len(m.Header.Payload)
-
-	if i := m.CPFSEID; i != nil {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.RemovePDR {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.RemoveFAR {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.RemoveURR {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.RemoveQER {
-		l += i.MarshalLen()
-	}
-	if i := m.RemoveBAR; i != nil {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.RemoveTrafficEndpoint {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.CreatePDR {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.CreateFAR {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.CreateURR {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.CreateQER {
-		l += i.MarshalLen()
-	}
-	if i := m.CreateBAR; i != nil {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.CreateTrafficEndpoint {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.UpdatePDR {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.UpdateFAR {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.UpdateURR {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.UpdateQER {
-		l += i.MarshalLen()
-	}
-	if i := m.UpdateBAR; i != nil {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.UpdateTrafficEndpoint {
-		l += i.MarshalLen()
-	}
-	if i := m.PFCPSMReqFlags; i != nil {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.QueryURR {
-		l += i.MarshalLen()
-	}
-	if i := m.FQCSID; i != nil {
-		l += i.MarshalLen()
-	}
-	if i := m.UserPlaneInactivityTimer; i != nil {
-		l += i.MarshalLen()
-	}
-	if i := m.QueryURRReference; i != nil {
-		l += i.MarshalLen()
-	}
-	if i := m.TraceInformation; i != nil {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.RemoveMAR {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.UpdateMAR {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.CreateMAR {
-		l += i.MarshalLen()
-	}
-	if i := m.NodeID; i != nil {
-		l += i.MarshalLen()
-	}
-	if i := m.TSCManagementInformation; i != nil {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.RemoveSRR {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.CreateSRR {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.UpdateSRR {
-		l += i.MarshalLen()
-	}
-	if i := m.ProvideATSSSControlInformation; i != nil {
-		l += i.MarshalLen()
-	}
-	if i := m.EthernetContextInformation; i != nil {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.AccessAvailabilityInformation {
-		l += i.MarshalLen()
-	}
-	for _, i := range m.QueryPacketRateStatus {
-		l += i.MarshalLen()
-	}
-	if i := m.SNSSAI; i != nil {
-		l += i.MarshalLen()
-	}
-
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		l += ie.MarshalLen()
-	}
-
-	return l
-}
-
-// SetLength sets the length in Length field.
-func (m *SessionModificationRequest) SetLength() {
-	m.Header.Length = uint16(m.MarshalLen() - 4)
-}
-
-// MessageTypeName returns the name of protocol.
-func (m *SessionModificationRequest) MessageTypeName() string {
-	return "Session Modification Request"
-}
-
-// SEID returns the SEID in uint64.
-func (m *SessionModificationRequest) SEID() uint64 {
-	return m.Header.seid()
-}
-
-// IsRequest reports whether the message is a request.
-func (m *SessionModificationRequest) IsRequest() bool {
-	return true
 }

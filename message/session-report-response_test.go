@@ -20,7 +20,7 @@ func TestSessionReportResponse(t *testing.T) {
 		{
 			Description: "Normal",
 			Structured: message.NewSessionReportResponse(
-				mp, fo, seid, seq, pri,
+				seid, seq,
 				ie.NewCause(ie.CauseRequestAccepted),
 				ie.NewOffendingIE(ie.Cause),
 				ie.NewUpdateBARWithinSessionReportResponse(

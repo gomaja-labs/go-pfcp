@@ -4,12 +4,6 @@
 
 package message
 
-import (
-	"io"
-
-	"github.com/gomaja-labs/go-pfcp/internal/logger"
-)
-
 // MessageType definitions.
 const (
 	MsgTypeHeartbeatRequest            uint8 = 1
@@ -56,10 +50,10 @@ type Message interface {
 	IsRequest() bool
 }
 
-// Parse parses the given bytes as Message.
-func Parse(b []byte) (Message, error) {
-	if len(b) < 2 {
-		return nil, io.ErrUnexpectedEOF
+// parseMessage decodes a framed message whose datagram boundaries were checked.
+func parseMessage(b []byte) (Message, error) {
+	if _, err := parseMessageHeader(b, 0); err != nil {
+		return nil, err
 	}
 
 	var m Message
@@ -111,7 +105,6 @@ func Parse(b []byte) (Message, error) {
 	case MsgTypeSessionReportResponse:
 		m = &SessionReportResponse{}
 	default:
-		logger.Logf("Parse() got an unknown type of message(Type=%d), parsing with *Generic.", b[1])
 		m = &Generic{}
 	}
 
@@ -119,4 +112,17 @@ func Parse(b []byte) (Message, error) {
 		return nil, err
 	}
 	return m, nil
+}
+
+// Parse decodes exactly one standalone PFCP message. FO=1 is rejected with
+// ErrBundledMessage; trailing bytes with FO=0 are an invalid length. Use
+// ParseDatagram for UDP payloads that may contain bundles.
+func Parse(b []byte) (Message, error) {
+	if _, err := frameSize(b); err != nil {
+		return nil, err
+	}
+	if b[0]&4 != 0 {
+		return nil, ErrBundledMessage
+	}
+	return parseMessage(b)
 }

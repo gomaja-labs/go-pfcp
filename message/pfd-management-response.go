@@ -21,11 +21,7 @@ type PFDManagementResponse struct {
 // NewPFDManagementResponse creates a new PFDManagementResponse.
 func NewPFDManagementResponse(seq uint32, cause, offending *ie.IE, ies ...*ie.IE) *PFDManagementResponse {
 	m := &PFDManagementResponse{
-		Header: NewHeader(
-			1, 0, 0, 0,
-			MsgTypePFDManagementResponse, 0, seq, 0,
-			nil,
-		),
+		Header:      NewHeader(MsgTypePFDManagementResponse, 0, seq, nil),
 		Cause:       cause,
 		OffendingIE: offending,
 		IEs:         ies,
@@ -37,47 +33,15 @@ func NewPFDManagementResponse(seq uint32, cause, offending *ie.IE, ies ...*ie.IE
 
 // Marshal returns the byte sequence generated from a PFDManagementResponse.
 func (m *PFDManagementResponse) Marshal() ([]byte, error) {
-	b := make([]byte, m.MarshalLen())
-	if err := m.MarshalTo(b); err != nil {
-		return nil, err
-	}
-
-	return b, nil
+	return marshalMessage(m)
 }
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (m *PFDManagementResponse) MarshalTo(b []byte) error {
-	if m.Header.Payload != nil {
-		m.Header.Payload = nil
+	if m == nil {
+		return ErrNilMessage
 	}
-	m.Header.Payload = make([]byte, m.MarshalLen()-m.Header.MarshalLen())
-
-	offset := 0
-	if i := m.Cause; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-	if i := m.OffendingIE; i != nil {
-		if err := i.MarshalTo(m.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += i.MarshalLen()
-	}
-
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		if err := ie.MarshalTo(m.Header.Payload[offset:]); err != nil {
-			return err
-		}
-		offset += ie.MarshalLen()
-	}
-
-	m.Header.SetLength()
-	return m.Header.MarshalTo(b)
+	return marshalMessageTo(m.Header, m.messageIEs(), b)
 }
 
 // ParsePFDManagementResponse decodes a given byte sequence as a PFDManagementResponse.
@@ -91,70 +55,38 @@ func ParsePFDManagementResponse(b []byte) (*PFDManagementResponse, error) {
 
 // UnmarshalBinary decodes a given byte sequence as a PFDManagementResponse.
 func (m *PFDManagementResponse) UnmarshalBinary(b []byte) error {
-	var err error
-	m.Header, err = ParseHeader(b)
+	if m == nil {
+		return ErrNilMessage
+	}
+	h, err := parseMessageHeader(b, MsgTypePFDManagementResponse)
 	if err != nil {
 		return err
 	}
-	if len(m.Header.Payload) < 2 {
-		return nil
-	}
+	*m = PFDManagementResponse{Header: h}
 
 	ies, err := ie.ParseMultiIEs(m.Header.Payload)
 	if err != nil {
 		return err
 	}
 
-	for _, i := range ies {
-		switch i.Type {
-		case ie.Cause:
-			m.Cause = i
-		case ie.OffendingIE:
-			m.OffendingIE = i
-		default:
-			m.IEs = append(m.IEs, i)
-		}
-	}
+	m.addIEs(ies)
 
 	return nil
 }
 
 // MarshalLen returns the serial length of Data.
 func (m *PFDManagementResponse) MarshalLen() int {
-	l := m.Header.MarshalLen() - len(m.Header.Payload)
-
-	if i := m.Cause; i != nil {
-		l += i.MarshalLen()
+	if m == nil {
+		return 0
 	}
-	if i := m.OffendingIE; i != nil {
-		l += i.MarshalLen()
-	}
-
-	for _, ie := range m.IEs {
-		if ie == nil {
-			continue
-		}
-		l += ie.MarshalLen()
-	}
-
-	return l
+	return messageLen(m.Header, m.messageIEs())
 }
 
 // SetLength sets the length in Length field.
 func (m *PFDManagementResponse) SetLength() {
-	l := m.Header.MarshalLen() - len(m.Header.Payload) - 4
-
-	if i := m.Cause; i != nil {
-		l += i.MarshalLen()
+	if m != nil && m.Header != nil {
+		m.Header.Length = uint16(m.MarshalLen() - 4)
 	}
-	if i := m.OffendingIE; i != nil {
-		l += i.MarshalLen()
-	}
-
-	for _, ie := range m.IEs {
-		l += ie.MarshalLen()
-	}
-	m.Header.Length = uint16(l)
 }
 
 // MessageTypeName returns the name of protocol.
@@ -164,10 +96,40 @@ func (m *PFDManagementResponse) MessageTypeName() string {
 
 // SEID returns the SEID in uint64.
 func (m *PFDManagementResponse) SEID() uint64 {
+	if m == nil {
+		return 0
+	}
 	return m.Header.seid()
 }
 
 // IsRequest reports whether the message is a request.
 func (m *PFDManagementResponse) IsRequest() bool {
 	return false
+}
+
+func (m *PFDManagementResponse) messageIEs() []*ie.IE {
+	if m == nil {
+		return nil
+	}
+	ies := make([]*ie.IE, 0, 2+len(m.IEs))
+	ies = append(ies, m.Cause)
+	ies = append(ies, m.OffendingIE)
+	ies = append(ies, m.IEs...)
+	return ies
+}
+
+func (m *PFDManagementResponse) addIEs(ies []*ie.IE) {
+	for _, i := range ies {
+		if i == nil {
+			continue
+		}
+		switch i.Type {
+		case ie.Cause:
+			assignIE(&m.Cause, i, &m.IEs)
+		case ie.OffendingIE:
+			assignIE(&m.OffendingIE, i, &m.IEs)
+		default:
+			m.IEs = append(m.IEs, i)
+		}
+	}
 }

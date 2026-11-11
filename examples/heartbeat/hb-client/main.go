@@ -34,7 +34,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	var seq uint32 = 1
+	defer func() { _ = conn.Close() }()
+
+	var seq uint32 = 0x112233
 	hbreq, err := message.NewHeartbeatRequest(
 		seq,
 		ie.NewRecoveryTimeStamp(time.Now()),
@@ -53,7 +55,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	buf := make([]byte, 1500)
+	buf := make([]byte, 65535)
 	waiting := true
 	for waiting {
 		n, addr, err := conn.ReadFrom(buf)
@@ -63,7 +65,7 @@ func main() {
 
 		msg, err := message.Parse(buf[:n])
 		if err != nil {
-			log.Printf("ignored undecodable message: %x, error: %s", buf[:n], err)
+			log.Printf("ignored undecodable message: %s", err)
 			continue
 		}
 
@@ -73,6 +75,10 @@ func main() {
 			continue
 		}
 
+		if hbres.Sequence() != seq || hbres.RecoveryTimeStamp == nil {
+			log.Printf("ignored Heartbeat Response with an unmatched sequence or missing timestamp")
+			continue
+		}
 		waiting = false
 		ts, err := hbres.RecoveryTimeStamp.RecoveryTimeStamp()
 		if err != nil {
