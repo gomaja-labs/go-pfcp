@@ -12,9 +12,11 @@ func TestTimestampEraWindow(t *testing.T) {
 	constructors := []func(time.Time) *ie.IE{ie.NewRecoveryTimeStamp, ie.NewStartTime, ie.NewEndTime, ie.NewTimeOfFirstPacket, ie.NewTimeOfLastPacket, ie.NewMonitoringTime, ie.NewActivationTime, ie.NewDeactivationTime, ie.NewEventTimeStamp}
 	for _, ctor := range constructors {
 		for _, unix := range []int64{-1, 1 << 32} {
-			if ctor(time.Unix(unix, 0)) != nil {
-				t.Error("out-of-window timestamp wrapped")
+			i := ctor(time.Unix(unix, 0))
+			if i == nil {
+				t.Fatal("constructor returned nil")
 			}
+			requireInvalidValue(t, time.Unix(unix, 0).UTC().String(), i.Type, i)
 		}
 		for _, unix := range []int64{0, 2085978495, 2085978496, 4294967295} {
 			i := ctor(time.Unix(unix, 999))

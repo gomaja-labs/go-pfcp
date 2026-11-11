@@ -87,6 +87,10 @@ func TestNilIEAPIs(t *testing.T) {
 	v := reflect.ValueOf(i)
 	for m := 0; m < v.NumMethod(); m++ {
 		name := v.Type().Method(m).Name
+		if name == "Equal" {
+			// A nil IE equals another nil IE; TestIEEqual covers it.
+			continue
+		}
 		t.Run(name, func(t *testing.T) {
 			method := v.Method(m)
 			args := make([]reflect.Value, method.Type().NumIn())
@@ -190,5 +194,31 @@ func TestFieldsReceiverReuse(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestIEEqual(t *testing.T) {
+	var none *ie.IE
+	decoded, err := ie.Parse([]byte{0, 1, 0, 6, 0, 56, 0, 2, 0, 1})
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, c := range []struct {
+		name string
+		a, b *ie.IE
+		want bool
+	}{
+		{"nil nil", none, none, true},
+		{"nil value", none, ie.NewPDRID(1), false},
+		{"same value", ie.NewPDRID(1), ie.NewPDRID(1), true},
+		{"different value", ie.NewPDRID(1), ie.NewPDRID(2), false},
+		{"different type", ie.NewPDRID(1), ie.New(ie.Precedence, []byte{0, 1}), false},
+		{"decoded and constructed group", decoded, ie.NewCreatePDR(ie.NewPDRID(1)), true},
+		{"same invalid value", ie.NewNodeID("", "", ""), ie.NewNodeID("", "", ""), true},
+		{"invalid and valid", ie.NewNodeID("", "", ""), ie.NewNodeID("192.0.2.1", "", ""), false},
+	} {
+		if got := c.a.Equal(c.b); got != c.want {
+			t.Errorf("%s: Equal = %v, want %v", c.name, got, c.want)
+		}
 	}
 }
