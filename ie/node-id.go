@@ -5,6 +5,7 @@
 package ie
 
 import (
+	"fmt"
 	"io"
 	"net"
 
@@ -27,21 +28,25 @@ func NewNodeID(ipv4, ipv6, fqdn string) *IE {
 
 	switch {
 	case ipv4 != "":
-		p = make([]byte, 5)
-		p[0] = NodeIDIPv4Address
-		copy(p[1:], net.ParseIP(ipv4).To4())
+		v4 := net.ParseIP(ipv4).To4()
+		if v4 == nil {
+			return newInvalidIE(NodeID, fmt.Errorf("%w: %q is not an IPv4 address", ErrInvalidValue, ipv4))
+		}
+		p = append([]byte{NodeIDIPv4Address}, v4...)
 	case ipv6 != "":
-		p = make([]byte, 17)
-		p[0] = NodeIDIPv6Address
-		copy(p[1:], net.ParseIP(ipv6).To16())
+		v6 := net.ParseIP(ipv6)
+		if v6 == nil {
+			return newInvalidIE(NodeID, fmt.Errorf("%w: %q is not an IPv6 address", ErrInvalidValue, ipv6))
+		}
+		p = append([]byte{NodeIDIPv6Address}, v6.To16()...)
 	case fqdn != "":
 		encoded := utils.EncodeFQDN(fqdn)
 		if encoded == nil {
-			return nil
+			return newInvalidIE(NodeID, invalidFQDN(fqdn))
 		}
 		p = append([]byte{NodeIDFQDN}, encoded...)
-	default: // all params are empty
-		return nil
+	default:
+		return newInvalidIE(NodeID, fmt.Errorf("%w: no Node ID value given", ErrInvalidValue))
 	}
 
 	return New(NodeID, p)
@@ -50,7 +55,7 @@ func NewNodeID(ipv4, ipv6, fqdn string) *IE {
 // NewNodeIDHeuristic creates a new NodeID IE.
 func NewNodeIDHeuristic(nodeID string) *IE {
 	if nodeID == "" {
-		return nil
+		return newInvalidIE(NodeID, fmt.Errorf("%w: no Node ID value given", ErrInvalidValue))
 	}
 
 	var p []byte
@@ -68,7 +73,7 @@ func NewNodeIDHeuristic(nodeID string) *IE {
 	} else { // FQDN
 		encoded := utils.EncodeFQDN(nodeID)
 		if encoded == nil {
-			return nil
+			return newInvalidIE(NodeID, invalidFQDN(nodeID))
 		}
 		p = append([]byte{NodeIDFQDN}, encoded...)
 	}

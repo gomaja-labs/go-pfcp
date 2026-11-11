@@ -5,6 +5,7 @@
 package ie
 
 import (
+	"bytes"
 	"encoding/binary"
 	"fmt"
 	"io"
@@ -23,6 +24,35 @@ type IE struct {
 	EnterpriseID uint16
 	Payload      []byte
 	ChildIEs     []*IE
+
+	// err is set by a constructor whose arguments cannot be encoded. Marshal
+	// and MarshalTo report it as an *EncodeError, so an invalid argument is
+	// neither sent nor silently dropped from a message or grouped IE.
+	err error
+}
+
+// newInvalidIE returns an IE of type t that cannot be encoded because of err.
+func newInvalidIE(t IEType, err error) *IE {
+	return &IE{Type: t, err: err}
+}
+
+// Equal reports whether i and o encode to the same octets. Two IEs that
+// cannot be encoded are equal when their errors read the same. A nil IE is
+// equal only to another nil IE. Equal makes IEs comparable with go-cmp
+// despite the unexported constructor error.
+func (i *IE) Equal(o *IE) bool {
+	if i == nil || o == nil {
+		return i == o
+	}
+	if i.err != nil || o.err != nil {
+		return i.err != nil && o.err != nil && i.Type == o.Type && i.err.Error() == o.err.Error()
+	}
+	a, errA := i.Marshal()
+	b, errB := o.Marshal()
+	if errA != nil || errB != nil {
+		return false
+	}
+	return bytes.Equal(a, b)
 }
 
 // New creates a new IE.
@@ -367,6 +397,9 @@ func (i *IE) MarshalTo(b []byte) error {
 	if i == nil {
 		return ErrIENotFound
 	}
+	if i.err != nil {
+		return &EncodeError{Type: i.Type, Err: i.err}
+	}
 	length := i.MarshalLen()
 	if length-4 > 65535 || len(b) < length {
 		return ErrInvalidLength
@@ -455,9 +488,15 @@ func newStringIE(t IEType, v string) *IE {
 func newFQDNIE(t IEType, v string) *IE {
 	encoded := utils.EncodeFQDN(v)
 	if encoded == nil {
-		return nil
+		return newInvalidIE(t, invalidFQDN(v))
 	}
 	return New(t, encoded)
+}
+
+// invalidFQDN describes a name EncodeFQDN rejects (RFC 1035 clause 3.1:
+// labels of 1 to 63 octets, 255 octets in total).
+func invalidFQDN(v string) error {
+	return fmt.Errorf("%w: %q is not a domain name (RFC 1035 clause 3.1)", ErrInvalidValue, v)
 }
 
 func newGroupedIE(itype IEType, eid uint16, ies ...*IE) *IE {
@@ -473,12 +512,14 @@ func newGroupedIE(itype IEType, eid uint16, ies ...*IE) *IE {
 // new3GPPTimestampIE applies the era policy used by valueAs3GPPTimestamp.
 // TS 29.244 V20.1.0 clause 8.2.65 and RFC 5905 section 6 specify seconds
 // since 1900 modulo 2^32. With no era carried on the wire, this package chooses
-// the Unix window [1970-01-01, 2106-02-07T06:28:15Z]. Times outside that window
-// return nil. Fractional seconds are discarded.
+// the Unix window [1970-01-01, 2106-02-07T06:28:15Z]. A time outside that
+// window gives an IE whose Marshal reports ErrInvalidValue. Fractional seconds
+// are discarded.
 func new3GPPTimestampIE(typ IEType, ts time.Time) *IE {
 	seconds := ts.Unix()
 	if seconds < 0 || seconds > 1<<32-1 {
-		return nil
+		return newInvalidIE(typ, fmt.Errorf("%w: %s is outside 1970-01-01T00:00:00Z to 2106-02-07T06:28:15Z",
+			ErrInvalidValue, ts.UTC().Format(time.RFC3339)))
 	}
 	return newUint32ValIE(typ, uint32(seconds+2208988800))
 }
