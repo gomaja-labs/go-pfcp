@@ -85,7 +85,7 @@ func TestSessionReportRequest(t *testing.T) {
 					ie.NewQERID(0xffffffff),
 					ie.NewPacketRateStatus(0x07, 0x1111, 0x2222, 0x3333, 0x4444, time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
 				),
-				ie.NewPortManagementInformationForTSCWithinSessionReportRequest(
+				ie.NewTSCManagementInformationWithinSessionReportRequest(
 					ie.NewPortManagementInformationContainer("go-pfcp"),
 				),
 				ie.NewSessionReport(
@@ -263,7 +263,7 @@ func TestSessionReportRequest(t *testing.T) {
 					ie.NewQERID(0xffffffff),
 					ie.NewPacketRateStatus(0x07, 0x1111, 0x2222, 0x3333, 0x4444, time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
 				),
-				ie.NewPortManagementInformationForTSCWithinSessionReportRequest(
+				ie.NewTSCManagementInformationWithinSessionReportRequest(
 					ie.NewPortManagementInformationContainer("go-pfcp"),
 				),
 				ie.NewSessionReport(

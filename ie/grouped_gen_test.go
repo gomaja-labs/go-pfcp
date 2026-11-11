@@ -4,6 +4,7 @@ package ie
 
 import (
 	"github.com/gomaja-labs/go-pfcp/internal/spec"
+	"strconv"
 	"testing"
 )
 
@@ -38,8 +39,8 @@ func TestTypeNamesCatalogue(t *testing.T) {
 			continue
 		}
 		want := e.GoName
-		if e.ExistingGoName != nil {
-			want = *e.ExistingGoName
+		if e.Kind == "reserved" || e.Kind == "spare" || e.Kind == "can-be-used" {
+			want = "IEType(" + strconv.Itoa(e.Type) + ")"
 		}
 		if IEType(e.Type).String() != want {
 			t.Fatal(e.Type, want)

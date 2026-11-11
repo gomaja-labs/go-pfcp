@@ -2506,7 +2506,7 @@
     {
       "type": 194,
       "name": "Create Bridge/Router Info",
-      "go_name": "CreateBridgeInfoForTSC",
+      "go_name": "CreateBridgeRouterInfo",
       "kind": "extendable",
       "defined_in": [
         "Clause 8.2.140"
@@ -2518,7 +2518,7 @@
     {
       "type": 195,
       "name": "Created Bridge/Router Info",
-      "go_name": "CreatedBridgeInfoForTSC",
+      "go_name": "CreatedBridgeRouterInfo",
       "kind": "grouped",
       "defined_in": [
         "Table 7.5.3.6-1"
@@ -2533,7 +2533,7 @@
     {
       "type": 196,
       "name": "Port Number",
-      "go_name": "DSTTPortNumber",
+      "go_name": "PortNumber",
       "kind": "fixed",
       "defined_in": [
         "Clause 8.2.141"
@@ -2557,7 +2557,7 @@
     {
       "type": 198,
       "name": "5GS User Plane Node ID",
-      "go_name": "TSNBridgeID",
+      "go_name": "FiveGSUserPlaneNodeID",
       "kind": "extendable",
       "defined_in": [
         "Clause 8.2.143"
@@ -2668,7 +2668,7 @@
     {
       "type": 206,
       "name": "Time Domain Number",
-      "go_name": "TSNTimeDomainNumber",
+      "go_name": "TimeDomainNumber",
       "kind": "extendable",
       "defined_in": [
         "Clause 8.2.146"
@@ -2979,7 +2979,7 @@
     {
       "type": 229,
       "name": "Link-Specific Multipath IP Address",
-      "go_name": "UELinkSpecificIPAddress",
+      "go_name": "LinkSpecificMultipathIPAddress",
       "kind": "extendable",
       "defined_in": [
         "Clause 8.2.158"
@@ -3451,7 +3451,7 @@
     {
       "type": 265,
       "name": "Multipath Applicable Indication",
-      "go_name": "MPTCPApplicableIndication",
+      "go_name": "MultipathApplicableIndication",
       "kind": "extendable",
       "defined_in": [
         "Clause 8.2.181"
@@ -3463,7 +3463,7 @@
     {
       "type": 266,
       "name": "User Plane Node Management Information Container",
-      "go_name": "BridgeManagementInformationContainer",
+      "go_name": "UserPlaneNodeManagementInformationContainer",
       "kind": "variable",
       "defined_in": [
         "Clause 8.2.182"
@@ -7702,7 +7702,7 @@
             "N4mb": false
           },
           "child_table": null,
-          "go_field": "CreateBridgeInfoForTSC",
+          "go_field": "CreateBridgeRouterInfo",
           "shared_type_group": null
         },
         {
@@ -8234,7 +8234,7 @@
             "N4mb": false
           },
           "child_table": "Table 7.5.3.6-1",
-          "go_field": "CreatedBridgeInfoForTSC",
+          "go_field": "CreatedBridgeRouterInfo",
           "shared_type_group": null
         },
         {
@@ -10138,7 +10138,7 @@
             "N4mb": false
           },
           "child_table": "Table 7.5.8.5-1",
-          "go_field": "PortManagementInformationForTSC",
+          "go_field": "TSCManagementInformation",
           "shared_type_group": null
         },
         {
@@ -18167,7 +18167,7 @@
     {
       "type": 195,
       "name": "Created Bridge/Router Info",
-      "go_name": "CreatedBridgeInfoForTSC",
+      "go_name": "CreatedBridgeRouterInfo",
       "context": "Created Bridge/Router Info IE within PFCP Session Establishment Response",
       "table": "Table 7.5.3.6-1",
       "ies": [

@@ -45,7 +45,7 @@ func TestAssociationSetupResponse(t *testing.T) {
 				),
 				ie.NewClockDriftControlInformation(
 					ie.NewRequestedClockDriftInformation(1, 1),
-					ie.NewTSNTimeDomainNumber(255),
+					ie.NewTimeDomainNumber(255),
 					ie.NewTimeOffsetThreshold(10*time.Second),
 					ie.NewCumulativeRateRatioThreshold(0xffffffff),
 				),
@@ -138,13 +138,13 @@ func TestAssociationSetupResponse(t *testing.T) {
 				),
 				ie.NewClockDriftControlInformation(
 					ie.NewRequestedClockDriftInformation(1, 1),
-					ie.NewTSNTimeDomainNumber(255),
+					ie.NewTimeDomainNumber(255),
 					ie.NewTimeOffsetThreshold(10*time.Second),
 					ie.NewCumulativeRateRatioThreshold(0xffffffff),
 				),
 				ie.NewClockDriftControlInformation(
 					ie.NewRequestedClockDriftInformation(1, 1),
-					ie.NewTSNTimeDomainNumber(1),
+					ie.NewTimeDomainNumber(1),
 					ie.NewTimeOffsetThreshold(10*time.Second),
 					ie.NewCumulativeRateRatioThreshold(0xffffffff),
 				),

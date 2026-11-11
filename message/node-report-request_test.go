@@ -28,7 +28,7 @@ func TestNodeReportRequest(t *testing.T) {
 					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example"),
 				),
 				ie.NewClockDriftReport(
-					ie.NewTSNTimeDomainNumber(255),
+					ie.NewTimeDomainNumber(255),
 					ie.NewTimeOffsetThreshold(10*time.Second),
 					ie.NewCumulativeRateRatioThreshold(0xffffffff),
 					ie.NewEventTimeStamp(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
@@ -96,13 +96,13 @@ func TestNodeReportRequest(t *testing.T) {
 					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example"),
 				),
 				ie.NewClockDriftReport(
-					ie.NewTSNTimeDomainNumber(255),
+					ie.NewTimeDomainNumber(255),
 					ie.NewTimeOffsetThreshold(10*time.Second),
 					ie.NewCumulativeRateRatioThreshold(0xffffffff),
 					ie.NewEventTimeStamp(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
 				),
 				ie.NewClockDriftReport(
-					ie.NewTSNTimeDomainNumber(1),
+					ie.NewTimeDomainNumber(1),
 					ie.NewTimeOffsetThreshold(10*time.Second),
 					ie.NewCumulativeRateRatioThreshold(0xffffffff),
 					ie.NewEventTimeStamp(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),

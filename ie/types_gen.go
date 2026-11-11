@@ -351,9 +351,6 @@ const (
 	// TimeQuotaMechanism identifies Time Quota Mechanism (extendable).
 	// TS 29.244 V20.1.0 Clause 8.2.81.
 	TimeQuotaMechanism IEType = 115
-	// UserPlaneIPResourceInformation identifies Reserved (reserved).
-	// TS 29.244 V20.1.0 Table 8.1.2-1.
-	UserPlaneIPResourceInformation IEType = 116
 	// UserPlaneInactivityTimer identifies User Plane Inactivity Timer (extendable).
 	// TS 29.244 V20.1.0 Clause 8.2.83.
 	UserPlaneInactivityTimer IEType = 117
@@ -585,21 +582,21 @@ const (
 	// PacketRateStatus identifies Packet Rate Status (extendable).
 	// TS 29.244 V20.1.0 Clause 8.2.139.
 	PacketRateStatus IEType = 193
-	// CreateBridgeInfoForTSC identifies Create Bridge/Router Info (extendable).
+	// CreateBridgeRouterInfo identifies Create Bridge/Router Info (extendable).
 	// TS 29.244 V20.1.0 Clause 8.2.140.
-	CreateBridgeInfoForTSC IEType = 194
-	// CreatedBridgeInfoForTSC identifies Created Bridge/Router Info (grouped).
+	CreateBridgeRouterInfo IEType = 194
+	// CreatedBridgeRouterInfo identifies Created Bridge/Router Info (grouped).
 	// TS 29.244 V20.1.0 Table 7.5.3.6-1.
-	CreatedBridgeInfoForTSC IEType = 195
-	// DSTTPortNumber identifies Port Number (fixed).
+	CreatedBridgeRouterInfo IEType = 195
+	// PortNumber identifies Port Number (fixed).
 	// TS 29.244 V20.1.0 Clause 8.2.141.
-	DSTTPortNumber IEType = 196
+	PortNumber IEType = 196
 	// NWTTPortNumber identifies NW-TT Port Number (fixed).
 	// TS 29.244 V20.1.0 Clause 8.2.142.
 	NWTTPortNumber IEType = 197
-	// TSNBridgeID identifies 5GS User Plane Node ID (extendable).
+	// FiveGSUserPlaneNodeID identifies 5GS User Plane Node ID (extendable).
 	// TS 29.244 V20.1.0 Clause 8.2.143.
-	TSNBridgeID IEType = 198
+	FiveGSUserPlaneNodeID IEType = 198
 	// TSCManagementInformationWithinSessionModificationRequest identifies TSC Management Information IE within PFCP Session Modification Request (grouped).
 	// TS 29.244 V20.1.0 Table 7.5.4.18-1.
 	TSCManagementInformationWithinSessionModificationRequest IEType = 199
@@ -621,9 +618,9 @@ const (
 	// ClockDriftReport identifies Clock Drift Report (grouped).
 	// TS 29.244 V20.1.0 Table 7.4.5.1.4-1.
 	ClockDriftReport IEType = 205
-	// TSNTimeDomainNumber identifies Time Domain Number (extendable).
+	// TimeDomainNumber identifies Time Domain Number (extendable).
 	// TS 29.244 V20.1.0 Clause 8.2.146.
-	TSNTimeDomainNumber IEType = 206
+	TimeDomainNumber IEType = 206
 	// TimeOffsetThreshold identifies Time Offset Threshold (extendable).
 	// TS 29.244 V20.1.0 Clause 8.2.147.
 	TimeOffsetThreshold IEType = 207
@@ -690,9 +687,9 @@ const (
 	// MPTCPAddressInformation identifies MPTCP Address Information (extendable).
 	// TS 29.244 V20.1.0 Clause 8.2.157.
 	MPTCPAddressInformation IEType = 228
-	// UELinkSpecificIPAddress identifies Link-Specific Multipath IP Address (extendable).
+	// LinkSpecificMultipathIPAddress identifies Link-Specific Multipath IP Address (extendable).
 	// TS 29.244 V20.1.0 Clause 8.2.158.
-	UELinkSpecificIPAddress IEType = 229
+	LinkSpecificMultipathIPAddress IEType = 229
 	// PMFAddressInformation identifies PMF Address Information (extendable).
 	// TS 29.244 V20.1.0 Clause 8.2.159.
 	PMFAddressInformation IEType = 230
@@ -798,12 +795,12 @@ const (
 	// PacketRateStatusReportWithinSessionModificationResponse identifies Packet Rate Status Report IE within PFCP Session Modification Response (grouped).
 	// TS 29.244 V20.1.0 Table 7.5.5.4-1.
 	PacketRateStatusReportWithinSessionModificationResponse IEType = 264
-	// MPTCPApplicableIndication identifies Multipath Applicable Indication (extendable).
+	// MultipathApplicableIndication identifies Multipath Applicable Indication (extendable).
 	// TS 29.244 V20.1.0 Clause 8.2.181.
-	MPTCPApplicableIndication IEType = 265
-	// BridgeManagementInformationContainer identifies User Plane Node Management Information Container (variable).
+	MultipathApplicableIndication IEType = 265
+	// UserPlaneNodeManagementInformationContainer identifies User Plane Node Management Information Container (variable).
 	// TS 29.244 V20.1.0 Clause 8.2.182.
-	BridgeManagementInformationContainer IEType = 266
+	UserPlaneNodeManagementInformationContainer IEType = 266
 	// UEIPAddressUsageInformation identifies UE IP Address Usage Information (grouped).
 	// TS 29.244 V20.1.0 Table 7.4.4.3.1-1.
 	UEIPAddressUsageInformation IEType = 267
@@ -822,9 +819,6 @@ const (
 	// PartialFailureInformation identifies Partial Failure Information (grouped).
 	// TS 29.244 V20.1.0 Table 7.5.3.1-2.
 	PartialFailureInformation IEType = 272
-	// Spare273 identifies Spare (spare).
-	// TS 29.244 V20.1.0 Table 8.1.2-1.
-	Spare273 IEType = 273
 	// OffendingIEInformation identifies Offending IE Information (variable).
 	// TS 29.244 V20.1.0 Clause 8.2.185.
 	OffendingIEInformation IEType = 274
@@ -1146,9 +1140,6 @@ const (
 	// HeaderHandlingReportingIndication identifies Header Handling Reporting Indication (extendable).
 	// TS 29.244 V20.1.0 Clause 8.2.266.
 	HeaderHandlingReportingIndication IEType = 380
-	// CanBeUsed381 identifies Can be used (can-be-used).
-	// TS 29.244 V20.1.0 Table 8.1.2-1.
-	CanBeUsed381 IEType = 381
 	// SMFChangeReason identifies SMF Change Reason (extendable).
 	// TS 29.244 V20.1.0 Clause 8.2.267.
 	SMFChangeReason IEType = 382
@@ -1465,8 +1456,6 @@ func (t IEType) String() string {
 		return "FailedRuleID"
 	case TimeQuotaMechanism:
 		return "TimeQuotaMechanism"
-	case UserPlaneIPResourceInformation:
-		return "UserPlaneIPResourceInformation"
 	case UserPlaneInactivityTimer:
 		return "UserPlaneInactivityTimer"
 	case AggregatedURRs:
@@ -1621,16 +1610,16 @@ func (t IEType) String() string {
 		return "SourceIPAddress"
 	case PacketRateStatus:
 		return "PacketRateStatus"
-	case CreateBridgeInfoForTSC:
-		return "CreateBridgeInfoForTSC"
-	case CreatedBridgeInfoForTSC:
-		return "CreatedBridgeInfoForTSC"
-	case DSTTPortNumber:
-		return "DSTTPortNumber"
+	case CreateBridgeRouterInfo:
+		return "CreateBridgeRouterInfo"
+	case CreatedBridgeRouterInfo:
+		return "CreatedBridgeRouterInfo"
+	case PortNumber:
+		return "PortNumber"
 	case NWTTPortNumber:
 		return "NWTTPortNumber"
-	case TSNBridgeID:
-		return "TSNBridgeID"
+	case FiveGSUserPlaneNodeID:
+		return "FiveGSUserPlaneNodeID"
 	case TSCManagementInformationWithinSessionModificationRequest:
 		return "TSCManagementInformationWithinSessionModificationRequest"
 	case TSCManagementInformationWithinSessionModificationResponse:
@@ -1645,8 +1634,8 @@ func (t IEType) String() string {
 		return "RequestedClockDriftInformation"
 	case ClockDriftReport:
 		return "ClockDriftReport"
-	case TSNTimeDomainNumber:
-		return "TSNTimeDomainNumber"
+	case TimeDomainNumber:
+		return "TimeDomainNumber"
 	case TimeOffsetThreshold:
 		return "TimeOffsetThreshold"
 	case CumulativeRateRatioThreshold:
@@ -1691,8 +1680,8 @@ func (t IEType) String() string {
 		return "PMFParameters"
 	case MPTCPAddressInformation:
 		return "MPTCPAddressInformation"
-	case UELinkSpecificIPAddress:
-		return "UELinkSpecificIPAddress"
+	case LinkSpecificMultipathIPAddress:
+		return "LinkSpecificMultipathIPAddress"
 	case PMFAddressInformation:
 		return "PMFAddressInformation"
 	case ATSSSLLInformation:
@@ -1763,10 +1752,10 @@ func (t IEType) String() string {
 		return "QueryPacketRateStatusWithinSessionModificationRequest"
 	case PacketRateStatusReportWithinSessionModificationResponse:
 		return "PacketRateStatusReportWithinSessionModificationResponse"
-	case MPTCPApplicableIndication:
-		return "MPTCPApplicableIndication"
-	case BridgeManagementInformationContainer:
-		return "BridgeManagementInformationContainer"
+	case MultipathApplicableIndication:
+		return "MultipathApplicableIndication"
+	case UserPlaneNodeManagementInformationContainer:
+		return "UserPlaneNodeManagementInformationContainer"
 	case UEIPAddressUsageInformation:
 		return "UEIPAddressUsageInformation"
 	case NumberOfUEIPAddresses:
@@ -1779,8 +1768,6 @@ func (t IEType) String() string {
 		return "TransportDelayReporting"
 	case PartialFailureInformation:
 		return "PartialFailureInformation"
-	case Spare273:
-		return "Spare273"
 	case OffendingIEInformation:
 		return "OffendingIEInformation"
 	case RATType:
@@ -1995,8 +1982,6 @@ func (t IEType) String() string {
 		return "MeasurementEndpointPortNumber"
 	case HeaderHandlingReportingIndication:
 		return "HeaderHandlingReportingIndication"
-	case CanBeUsed381:
-		return "CanBeUsed381"
 	case SMFChangeReason:
 		return "SMFChangeReason"
 	case ExtendedTransportLevelMarking:

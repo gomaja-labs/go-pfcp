@@ -40,8 +40,8 @@ type SessionEstablishmentRequest struct {
 	CreateMAR []*ie.IE
 	// PFCPSEReqFlags: PFCPSEReq-Flags [C]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
 	PFCPSEReqFlags *ie.IE
-	// CreateBridgeInfoForTSC: Create Bridge/Router Info [C]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
-	CreateBridgeInfoForTSC *ie.IE
+	// CreateBridgeRouterInfo: Create Bridge/Router Info [C]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	CreateBridgeRouterInfo *ie.IE
 	// CreateSRR: Create SRR [O]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
 	CreateSRR []*ie.IE
 	// ProvideATSSSControlInformation: Provide ATSSS Control Information [C]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
@@ -175,7 +175,7 @@ func (m *SessionEstablishmentRequest) messageIEs() []*ie.IE {
 	ies = append(ies, m.APNDNN)
 	ies = append(ies, m.CreateMAR...)
 	ies = append(ies, m.PFCPSEReqFlags)
-	ies = append(ies, m.CreateBridgeInfoForTSC)
+	ies = append(ies, m.CreateBridgeRouterInfo)
 	ies = append(ies, m.CreateSRR...)
 	ies = append(ies, m.ProvideATSSSControlInformation)
 	ies = append(ies, m.RecoveryTimeStamp)
@@ -235,8 +235,8 @@ func (m *SessionEstablishmentRequest) addIEs(ies []*ie.IE) {
 			m.CreateMAR = append(m.CreateMAR, i)
 		case ie.PFCPSEReqFlags:
 			assignIE(&m.PFCPSEReqFlags, i, &m.OtherIEs)
-		case ie.CreateBridgeInfoForTSC:
-			assignIE(&m.CreateBridgeInfoForTSC, i, &m.OtherIEs)
+		case ie.CreateBridgeRouterInfo:
+			assignIE(&m.CreateBridgeRouterInfo, i, &m.OtherIEs)
 		case ie.CreateSRR:
 			m.CreateSRR = append(m.CreateSRR, i)
 		case ie.ProvideATSSSControlInformation:

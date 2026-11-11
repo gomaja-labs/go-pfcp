@@ -69,15 +69,15 @@ func TestSessionModificationResponse(t *testing.T) {
 					ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 					ie.NewUEIPAddress(0x02, "127.0.0.1", "", 0, 0),
 				),
-				ie.NewCreatedBridgeInfoForTSC(
-					ie.NewDSTTPortNumber(0xffffffff),
+				ie.NewCreatedBridgeRouterInfo(
+					ie.NewPortNumber(0xffffffff),
 					ie.NewNWTTPortNumber(0xffffffff),
-					ie.NewTSNBridgeID(mac1),
+					ie.NewFiveGSUserPlaneNodeID(mac1),
 				),
 				ie.NewATSSSControlParameters(
 					ie.NewMPTCPParameters(
 						ie.NewMPTCPAddressInformation(ie.MPTCPProxyTransportConverter, 8080, net.ParseIP("127.0.0.1"), net.ParseIP("2001::1")),
-						ie.NewUELinkSpecificIPAddress(net.ParseIP("127.0.0.1"), net.ParseIP("2001::1"), net.ParseIP("127.0.0.1"), net.ParseIP("2001::1")),
+						ie.NewLinkSpecificMultipathIPAddress(net.ParseIP("127.0.0.1"), net.ParseIP("2001::1"), net.ParseIP("127.0.0.1"), net.ParseIP("2001::1")),
 					),
 					ie.NewATSSSLLParameters(
 						ie.NewATSSSLLInformation(1),
@@ -227,15 +227,15 @@ func TestSessionModificationResponse(t *testing.T) {
 					ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 					ie.NewUEIPAddress(0x02, "127.0.0.1", "", 0, 0),
 				),
-				ie.NewCreatedBridgeInfoForTSC(
-					ie.NewDSTTPortNumber(0xffffffff),
+				ie.NewCreatedBridgeRouterInfo(
+					ie.NewPortNumber(0xffffffff),
 					ie.NewNWTTPortNumber(0xffffffff),
-					ie.NewTSNBridgeID(tsnBridgeMac),
+					ie.NewFiveGSUserPlaneNodeID(tsnBridgeMac),
 				),
 				ie.NewATSSSControlParameters(
 					ie.NewMPTCPParameters(
 						ie.NewMPTCPAddressInformation(ie.MPTCPProxyTransportConverter, 8080, net.ParseIP("127.0.0.1"), net.ParseIP("2001::1")),
-						ie.NewUELinkSpecificIPAddress(net.ParseIP("127.0.0.1"), net.ParseIP("2001::1"), net.ParseIP("127.0.0.1"), net.ParseIP("2001::1")),
+						ie.NewLinkSpecificMultipathIPAddress(net.ParseIP("127.0.0.1"), net.ParseIP("2001::1"), net.ParseIP("127.0.0.1"), net.ParseIP("2001::1")),
 					),
 					ie.NewATSSSLLParameters(
 						ie.NewATSSSLLInformation(1),

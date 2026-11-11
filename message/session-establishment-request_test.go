@@ -194,7 +194,7 @@ func TestSessionEstablishmentRequest(t *testing.T) {
 					),
 				),
 				ie.NewPFCPSEReqFlags(0x01),
-				ie.NewCreateBridgeInfoForTSC(1),
+				ie.NewCreateBridgeRouterInfo(1),
 				ie.NewCreateSRR(
 					ie.NewSRRID(255),
 					ie.NewAccessAvailabilityControlInformation(
@@ -661,7 +661,7 @@ func TestSessionEstablishmentRequest(t *testing.T) {
 					),
 				),
 				ie.NewPFCPSEReqFlags(0x01),
-				ie.NewCreateBridgeInfoForTSC(1),
+				ie.NewCreateBridgeRouterInfo(1),
 				ie.NewCreateSRR(
 					ie.NewSRRID(255),
 					ie.NewAccessAvailabilityControlInformation(

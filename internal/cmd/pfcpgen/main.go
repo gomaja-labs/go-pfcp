@@ -30,10 +30,11 @@ type messageData struct {
 	Fields                        []field
 }
 
+// TS 29.244 V20.1.0 Table 8.1.2-1: unassigned entries have no IE API.
+func assigned(e spec.IEType) bool {
+	return e.Type >= 1 && e.Type <= 408 && e.Kind != "reserved" && e.Kind != "spare" && e.Kind != "can-be-used"
+}
 func constant(e spec.IEType) string {
-	if e.ExistingGoName != nil {
-		return *e.ExistingGoName
-	}
 	return e.GoName
 }
 func fields(m spec.Container, types map[int]spec.IEType) []field {
@@ -87,7 +88,7 @@ func generate(c *spec.Catalogue) (map[string][]byte, error) {
 	var b bytes.Buffer
 	b.WriteString(banner + "\npackage ie\n\nimport \"strconv\"\n\n// IE types from TS 29.244 V20.1.0 Table 8.1.2-1.\nconst (\n")
 	for _, e := range c.IETypes {
-		if e.Type < 1 || e.Type > 408 {
+		if !assigned(e) {
 			continue
 		}
 		types[e.Type] = e
@@ -100,7 +101,7 @@ func generate(c *spec.Catalogue) (map[string][]byte, error) {
 	}
 	b.WriteString(")\n\n// String returns the Go name of an IE type, or IEType(decimal) for an unknown value.\nfunc (t IEType) String() string {switch t {\n")
 	for _, e := range c.IETypes {
-		if e.Type >= 1 && e.Type <= 408 {
+		if assigned(e) {
 			fmt.Fprintf(&b, "case %s: return %q\n", constant(e), constant(e))
 		}
 	}
@@ -125,6 +126,7 @@ package ie
 
 import (
  "testing"
+ "strconv"
  "github.com/gomaja-labs/go-pfcp/internal/spec"
 )
 
@@ -137,7 +139,7 @@ func TestGroupedTypesCatalogue(t *testing.T) {
 
 func TestTypeNamesCatalogue(t *testing.T) {
  c,err:=spec.Load();if err!=nil {t.Fatal(err)}
- for _,e:=range c.IETypes {if e.Type<1 || e.Type>408 {continue};want:=e.GoName;if e.ExistingGoName!=nil {want=*e.ExistingGoName};if IEType(e.Type).String()!=want {t.Fatal(e.Type,want)}}
+ for _,e:=range c.IETypes {if e.Type<1 || e.Type>408 {continue};want:=e.GoName;if e.Kind=="reserved" || e.Kind=="spare" || e.Kind=="can-be-used" {want="IEType("+strconv.Itoa(e.Type)+")"};if IEType(e.Type).String()!=want {t.Fatal(e.Type,want)}}
  if IEType(0).String()!="IEType(0)" || IEType(65535).String()!="IEType(65535)" {t.Fatal("unknown IE type name")}
 }
 `)

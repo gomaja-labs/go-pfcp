@@ -30,8 +30,8 @@ type SessionReportRequest struct {
 	SMFChangeReason *ie.IE
 	// PacketRateStatusReport: Packet Rate Status Report [C]. TS 29.244 V20.1.0 Table 7.5.8.1-1.
 	PacketRateStatusReport *ie.IE
-	// PortManagementInformationForTSC: TSC Management Information [C]. TS 29.244 V20.1.0 Table 7.5.8.1-1.
-	PortManagementInformationForTSC []*ie.IE
+	// TSCManagementInformation: TSC Management Information [C]. TS 29.244 V20.1.0 Table 7.5.8.1-1.
+	TSCManagementInformation []*ie.IE
 	// SessionReport: Session Report [C]. TS 29.244 V20.1.0 Table 7.5.8.1-1.
 	SessionReport []*ie.IE
 	// Cause: Cause [O]. TS 29.244 V20.1.0 Table 7.5.8.1-1.
@@ -128,7 +128,7 @@ func (m *SessionReportRequest) messageIEs() []*ie.IE {
 	ies = append(ies, m.OldCPFSEID)
 	ies = append(ies, m.SMFChangeReason)
 	ies = append(ies, m.PacketRateStatusReport)
-	ies = append(ies, m.PortManagementInformationForTSC...)
+	ies = append(ies, m.TSCManagementInformation...)
 	ies = append(ies, m.SessionReport...)
 	ies = append(ies, m.Cause)
 	return append(ies, m.OtherIEs...)
@@ -163,7 +163,7 @@ func (m *SessionReportRequest) addIEs(ies []*ie.IE) {
 		case ie.PacketRateStatusReport:
 			assignIE(&m.PacketRateStatusReport, i, &m.OtherIEs)
 		case ie.TSCManagementInformationWithinSessionReportRequest:
-			m.PortManagementInformationForTSC = append(m.PortManagementInformationForTSC, i)
+			m.TSCManagementInformation = append(m.TSCManagementInformation, i)
 		case ie.SessionReport:
 			m.SessionReport = append(m.SessionReport, i)
 		case ie.Cause:

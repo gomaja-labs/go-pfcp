@@ -61,7 +61,7 @@ func (i *IE) IsGrouped() bool {
 		UserPlanePathRecoveryReport,
 		JoinIPMulticastInformationWithinUsageReport,
 		LeaveIPMulticastInformationWithinUsageReport,
-		CreatedBridgeInfoForTSC,
+		CreatedBridgeRouterInfo,
 		TSCManagementInformationWithinSessionModificationRequest,
 		TSCManagementInformationWithinSessionModificationResponse,
 		TSCManagementInformationWithinSessionReportRequest,

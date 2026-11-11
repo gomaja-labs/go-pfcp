@@ -168,7 +168,7 @@ func isGroupedType(t IEType) bool {
 	case LeaveIPMulticastInformationWithinUsageReport:
 		return true
 	// Table 7.5.3.6-1.
-	case CreatedBridgeInfoForTSC:
+	case CreatedBridgeRouterInfo:
 		return true
 	// Table 7.5.4.18-1.
 	case TSCManagementInformationWithinSessionModificationRequest:

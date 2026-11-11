@@ -28,8 +28,8 @@ type SessionEstablishmentResponse struct {
 	FailedRuleID *ie.IE
 	// CreatedTrafficEndpoint: Created Traffic Endpoint [C]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
 	CreatedTrafficEndpoint []*ie.IE
-	// CreatedBridgeInfoForTSC: Created Bridge/Router Info [C]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
-	CreatedBridgeInfoForTSC *ie.IE
+	// CreatedBridgeRouterInfo: Created Bridge/Router Info [C]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
+	CreatedBridgeRouterInfo *ie.IE
 	// ATSSSControlParameters: ATSSS Control Parameters [C]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
 	ATSSSControlParameters *ie.IE
 	// RDSConfigurationInformation: RDS configuration information [O]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
@@ -137,7 +137,7 @@ func (m *SessionEstablishmentResponse) messageIEs() []*ie.IE {
 	ies = append(ies, m.FQCSID)
 	ies = append(ies, m.FailedRuleID)
 	ies = append(ies, m.CreatedTrafficEndpoint...)
-	ies = append(ies, m.CreatedBridgeInfoForTSC)
+	ies = append(ies, m.CreatedBridgeRouterInfo)
 	ies = append(ies, m.ATSSSControlParameters)
 	ies = append(ies, m.RDSConfigurationInformation)
 	ies = append(ies, m.PartialFailureInformation...)
@@ -175,8 +175,8 @@ func (m *SessionEstablishmentResponse) addIEs(ies []*ie.IE) {
 			assignIE(&m.FailedRuleID, i, &m.OtherIEs)
 		case ie.CreatedTrafficEndpoint:
 			m.CreatedTrafficEndpoint = append(m.CreatedTrafficEndpoint, i)
-		case ie.CreatedBridgeInfoForTSC:
-			assignIE(&m.CreatedBridgeInfoForTSC, i, &m.OtherIEs)
+		case ie.CreatedBridgeRouterInfo:
+			assignIE(&m.CreatedBridgeRouterInfo, i, &m.OtherIEs)
 		case ie.ATSSSControlParameters:
 			assignIE(&m.ATSSSControlParameters, i, &m.OtherIEs)
 		case ie.RDSConfigurationInformation:

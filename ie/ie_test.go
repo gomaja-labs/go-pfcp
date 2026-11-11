@@ -72,7 +72,7 @@ func ieVectors() []ieVector {
 					ie.NewSourceIPAddress(net.ParseIP("127.0.0.1"), nil, 24),
 				),
 				ie.NewUEIPAddressPoolIdentity("go-pfcp"),
-				ie.NewMPTCPApplicableIndication(0x01),
+				ie.NewMultipathApplicableIndication(0x01),
 				ie.NewTransportDelayReporting(
 					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example"),
 					ie.NewTransportLevelMarking(0x1111),
@@ -1845,17 +1845,6 @@ func ieVectors() []ieVector {
 			ie.NewTimeQuotaMechanism(ie.BTITCTP, 10*time.Second),
 			[]byte{0x00, 0x73, 0x00, 0x05, 0x00, 0x00, 0x00, 0x00, 0x0a},
 		}, {
-			"UserPlaneIPResourceInformation/IPv4/TEIDRange/NI/SI", // TODO: add other types
-			ie.NewUserPlaneIPResourceInformation(0x71, 15, "127.0.0.1", "", "some.instance.example", ie.SrcInterfaceAccess),
-			[]byte{
-				0x00, 0x74, 0x00, 0x1c,
-				0x71,
-				0x0f,
-				0x7f, 0x00, 0x00, 0x01,
-				0x73, 0x6f, 0x6d, 0x65, 0x2e, 0x69, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x2e, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65,
-				0x00,
-			},
-		}, {
 			"UserPlaneInactivityTimer",
 			ie.NewUserPlaneInactivityTimer(10 * time.Second),
 			[]byte{0x00, 0x75, 0x00, 0x04, 0x00, 0x00, 0x00, 0x0a},
@@ -2693,15 +2682,15 @@ func ieVectors() []ieVector {
 				0x00, 0x00, 0x00, 0x00, 0xdf, 0xd5, 0x2c, 0x00,
 			},
 		}, {
-			"CreateBridgeInfoForTSC",
-			ie.NewCreateBridgeInfoForTSC(1),
+			"CreateBridgeRouterInfo",
+			ie.NewCreateBridgeRouterInfo(1),
 			[]byte{0x00, 0xc2, 0x00, 0x01, 0x01},
 		}, {
-			"CreatedBridgeInfoForTSC",
-			ie.NewCreatedBridgeInfoForTSC(
-				ie.NewDSTTPortNumber(0xffffffff),
+			"CreatedBridgeRouterInfo",
+			ie.NewCreatedBridgeRouterInfo(
+				ie.NewPortNumber(0xffffffff),
 				ie.NewNWTTPortNumber(0xffffffff),
-				ie.NewTSNBridgeID(mac1),
+				ie.NewFiveGSUserPlaneNodeID(mac1),
 			),
 			[]byte{
 				0x00, 0xc3, 0x00, 0x1b,
@@ -2710,20 +2699,20 @@ func ieVectors() []ieVector {
 				0x00, 0xc6, 0x00, 0x07, 0x01, 0x12, 0x34, 0x56, 0x78, 0x90, 0x01,
 			},
 		}, {
-			"DSTTPortNumber",
-			ie.NewDSTTPortNumber(0xffffffff),
+			"PortNumber",
+			ie.NewPortNumber(0xffffffff),
 			[]byte{0x00, 0xc4, 0x00, 0x04, 0xff, 0xff, 0xff, 0xff},
 		}, {
 			"NWTTPortNumber",
 			ie.NewNWTTPortNumber(0xffffffff),
 			[]byte{0x00, 0xc5, 0x00, 0x04, 0xff, 0xff, 0xff, 0xff},
 		}, {
-			"TSNBridgeID/MAC",
-			ie.NewTSNBridgeID(mac1),
+			"FiveGSUserPlaneNodeID/MAC",
+			ie.NewFiveGSUserPlaneNodeID(mac1),
 			[]byte{0x00, 0xc6, 0x00, 0x07, 0x01, 0x12, 0x34, 0x56, 0x78, 0x90, 0x01},
 		}, {
-			"TSNBridgeID/None",
-			ie.NewTSNBridgeID(nil),
+			"FiveGSUserPlaneNodeID/None",
+			ie.NewFiveGSUserPlaneNodeID(nil),
 			[]byte{0x00, 0xc6, 0x00, 0x01, 0x00},
 		}, {
 			"TSCManagementInformationWithinSessionModificationRequest",
@@ -2760,7 +2749,7 @@ func ieVectors() []ieVector {
 			"ClockDriftControlInformation",
 			ie.NewClockDriftControlInformation(
 				ie.NewRequestedClockDriftInformation(1, 1),
-				ie.NewTSNTimeDomainNumber(255),
+				ie.NewTimeDomainNumber(255),
 				ie.NewTimeOffsetThreshold(10*time.Second),
 				ie.NewCumulativeRateRatioThreshold(0xffffffff),
 			),
@@ -2778,7 +2767,7 @@ func ieVectors() []ieVector {
 		}, {
 			"ClockDriftReport",
 			ie.NewClockDriftReport(
-				ie.NewTSNTimeDomainNumber(255),
+				ie.NewTimeDomainNumber(255),
 				ie.NewTimeOffsetThreshold(10*time.Second),
 				ie.NewCumulativeRateRatioThreshold(0xffffffff),
 				ie.NewEventTimeStamp(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
@@ -2791,8 +2780,8 @@ func ieVectors() []ieVector {
 				0x00, 0x9c, 0x00, 0x04, 0xdf, 0xd5, 0x2c, 0x00,
 			},
 		}, {
-			"TSNTimeDomainNumber",
-			ie.NewTSNTimeDomainNumber(255),
+			"TimeDomainNumber",
+			ie.NewTimeDomainNumber(255),
 			[]byte{0x00, 0xce, 0x00, 0x01, 0xff},
 		}, {
 			"TimeOffsetThreshold",
@@ -2962,7 +2951,7 @@ func ieVectors() []ieVector {
 			ie.NewATSSSControlParameters(
 				ie.NewMPTCPParameters(
 					ie.NewMPTCPAddressInformation(ie.MPTCPProxyTransportConverter, 8080, net.ParseIP("127.0.0.1"), net.ParseIP("2001::1")),
-					ie.NewUELinkSpecificIPAddress(net.ParseIP("127.0.0.1"), net.ParseIP("2001::1"), net.ParseIP("127.0.0.1"), net.ParseIP("2001::1")),
+					ie.NewLinkSpecificMultipathIPAddress(net.ParseIP("127.0.0.1"), net.ParseIP("2001::1"), net.ParseIP("127.0.0.1"), net.ParseIP("2001::1")),
 				),
 				ie.NewATSSSLLParameters(
 					ie.NewATSSSLLInformation(1),
@@ -3014,7 +3003,7 @@ func ieVectors() []ieVector {
 			"MPTCPParameters",
 			ie.NewMPTCPParameters(
 				ie.NewMPTCPAddressInformation(ie.MPTCPProxyTransportConverter, 8080, net.ParseIP("127.0.0.1"), net.ParseIP("2001::1")),
-				ie.NewUELinkSpecificIPAddress(net.ParseIP("127.0.0.1"), net.ParseIP("2001::1"), net.ParseIP("127.0.0.1"), net.ParseIP("2001::1")),
+				ie.NewLinkSpecificMultipathIPAddress(net.ParseIP("127.0.0.1"), net.ParseIP("2001::1"), net.ParseIP("127.0.0.1"), net.ParseIP("2001::1")),
 			),
 			[]byte{
 				0x00, 0xe1, 0x00, 0x49,
@@ -3088,8 +3077,8 @@ func ieVectors() []ieVector {
 				0x7f, 0x00, 0x00, 0x01,
 			},
 		}, {
-			"UELinkSpecificIPAddress/All",
-			ie.NewUELinkSpecificIPAddress(net.ParseIP("127.0.0.1"), net.ParseIP("2001::1"), net.ParseIP("127.0.0.1"), net.ParseIP("2001::1")),
+			"LinkSpecificMultipathIPAddress/All",
+			ie.NewLinkSpecificMultipathIPAddress(net.ParseIP("127.0.0.1"), net.ParseIP("2001::1"), net.ParseIP("127.0.0.1"), net.ParseIP("2001::1")),
 			[]byte{
 				0x00, 0xe5, 0x00, 0x29,
 				0x0f,
@@ -3099,8 +3088,8 @@ func ieVectors() []ieVector {
 				0x20, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01,
 			},
 		}, {
-			"UELinkSpecificIPAddress/IPv4/Both",
-			ie.NewUELinkSpecificIPAddress(net.ParseIP("127.0.0.1"), nil, net.ParseIP("127.0.0.1"), net.ParseIP("2001::1")),
+			"LinkSpecificMultipathIPAddress/IPv4/Both",
+			ie.NewLinkSpecificMultipathIPAddress(net.ParseIP("127.0.0.1"), nil, net.ParseIP("127.0.0.1"), net.ParseIP("2001::1")),
 			[]byte{
 				0x00, 0xe5, 0x00, 0x19,
 				0x0d,
@@ -3109,8 +3098,8 @@ func ieVectors() []ieVector {
 				0x20, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01,
 			},
 		}, {
-			"UELinkSpecificIPAddress/Both/NV4",
-			ie.NewUELinkSpecificIPAddress(net.ParseIP("127.0.0.1"), net.ParseIP("2001::1"), net.ParseIP("127.0.0.1"), nil),
+			"LinkSpecificMultipathIPAddress/Both/NV4",
+			ie.NewLinkSpecificMultipathIPAddress(net.ParseIP("127.0.0.1"), net.ParseIP("2001::1"), net.ParseIP("127.0.0.1"), nil),
 			[]byte{
 				0x00, 0xe5, 0x00, 0x19,
 				0x07,
@@ -3119,8 +3108,8 @@ func ieVectors() []ieVector {
 				0x7f, 0x00, 0x00, 0x01,
 			},
 		}, {
-			"UELinkSpecificIPAddress/IPv4/IPv4",
-			ie.NewUELinkSpecificIPAddress(net.ParseIP("127.0.0.1"), nil, net.ParseIP("127.0.0.1"), nil),
+			"LinkSpecificMultipathIPAddress/IPv4/IPv4",
+			ie.NewLinkSpecificMultipathIPAddress(net.ParseIP("127.0.0.1"), nil, net.ParseIP("127.0.0.1"), nil),
 			[]byte{
 				0x00, 0xe5, 0x00, 0x09,
 				0x05,
@@ -3128,8 +3117,8 @@ func ieVectors() []ieVector {
 				0x7f, 0x00, 0x00, 0x01,
 			},
 		}, {
-			"UELinkSpecificIPAddress/Both/None",
-			ie.NewUELinkSpecificIPAddress(net.ParseIP("127.0.0.1"), net.ParseIP("2001::1"), nil, nil),
+			"LinkSpecificMultipathIPAddress/Both/None",
+			ie.NewLinkSpecificMultipathIPAddress(net.ParseIP("127.0.0.1"), net.ParseIP("2001::1"), nil, nil),
 			[]byte{
 				0x00, 0xe5, 0x00, 0x15,
 				0x03,
@@ -3137,8 +3126,8 @@ func ieVectors() []ieVector {
 				0x20, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01,
 			},
 		}, {
-			"UELinkSpecificIPAddress/IPv4/None",
-			ie.NewUELinkSpecificIPAddress(net.ParseIP("127.0.0.1"), nil, nil, nil),
+			"LinkSpecificMultipathIPAddress/IPv4/None",
+			ie.NewLinkSpecificMultipathIPAddress(net.ParseIP("127.0.0.1"), nil, nil, nil),
 			[]byte{
 				0x00, 0xe5, 0x00, 0x05,
 				0x01,
@@ -3514,12 +3503,12 @@ func ieVectors() []ieVector {
 				0x00, 0x00, 0x00, 0x00, 0xdf, 0xd5, 0x2c, 0x00,
 			},
 		}, {
-			"MPTCPApplicableIndication",
-			ie.NewMPTCPApplicableIndication(0x01),
+			"MultipathApplicableIndication",
+			ie.NewMultipathApplicableIndication(0x01),
 			[]byte{0x01, 0x09, 0x00, 0x01, 0x01},
 		}, {
-			"BridgeManagementInformationContainer",
-			ie.NewBridgeManagementInformationContainer("go-pfcp"),
+			"UserPlaneNodeManagementInformationContainer",
+			ie.NewUserPlaneNodeManagementInformationContainer("go-pfcp"),
 			[]byte{0x01, 0x0a, 0x00, 0x07, 0x67, 0x6f, 0x2d, 0x70, 0x66, 0x63, 0x70},
 		}, {
 			"UEIPAddressUsageInformation",

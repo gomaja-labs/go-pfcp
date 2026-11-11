@@ -29,7 +29,7 @@ func TestAssociationUpdateRequest(t *testing.T) {
 				ie.NewAlternativeSMFIPAddress(net.ParseIP("127.0.0.1"), net.ParseIP("2001::1")),
 				ie.NewClockDriftControlInformation(
 					ie.NewRequestedClockDriftInformation(1, 1),
-					ie.NewTSNTimeDomainNumber(255),
+					ie.NewTimeDomainNumber(255),
 					ie.NewTimeOffsetThreshold(10*time.Second),
 					ie.NewCumulativeRateRatioThreshold(0xffffffff),
 				),
@@ -109,13 +109,13 @@ func TestAssociationUpdateRequest(t *testing.T) {
 				ie.NewAlternativeSMFIPAddress(net.ParseIP("127.0.0.2"), net.ParseIP("2001::2")),
 				ie.NewClockDriftControlInformation(
 					ie.NewRequestedClockDriftInformation(1, 1),
-					ie.NewTSNTimeDomainNumber(255),
+					ie.NewTimeDomainNumber(255),
 					ie.NewTimeOffsetThreshold(10*time.Second),
 					ie.NewCumulativeRateRatioThreshold(0xffffffff),
 				),
 				ie.NewClockDriftControlInformation(
 					ie.NewRequestedClockDriftInformation(1, 1),
-					ie.NewTSNTimeDomainNumber(1),
+					ie.NewTimeDomainNumber(1),
 					ie.NewTimeOffsetThreshold(10*time.Second),
 					ie.NewCumulativeRateRatioThreshold(0xffffffff),
 				),
