@@ -1,55 +1,43 @@
+# golangci-lint configuration (v2 schema).
+#
+# The standard linters check correctness and unused code. errorlint requires
+# errors.Is/As for error comparisons, unconvert finds conversions between
+# identical types, misspell catches typos in comments and strings. Test files
+# are linted too. golangci-lint must be built with a Go version at least as
+# new as the module's go directive.
+
 version: "2"
-run:
-  issues-exit-code: 1
-  tests: false
+
 linters:
-  default: none
+  default: standard
   enable:
-    - asciicheck
-    - bodyclose
-    - dogsled
-    - errcheck
     - errorlint
-    - goconst
-    - gocritic
-    - gomodguard
-    - goprintffuncname
-    - gosec
-    - govet
-    - ineffassign
     - misspell
-    - nakedret
-    - prealloc
-    - rowserrcheck
     - unconvert
-    - unparam
-    - unused
   settings:
-    gosec:
-      excludes:
-        - G115
-  exclusions:
-    generated: lax
-    presets:
-      - comments
-      - common-false-positives
-      - legacy
-      - std-error-handling
-    paths:
-      - third_party$
-      - builtin$
-      - examples$
+    staticcheck:
+      # golangci-lint's default staticcheck list, minus QF1008 ("could remove
+      # embedded field from selector"). The message types embed *Header and
+      # name it explicitly (m.Header.Payload) on purpose: in a codec the
+      # selector says the field belongs to the PFCP header rather than to the
+      # message body, and a promoted selector would silently change meaning if
+      # a message type ever grew a field of the same name.
+      checks:
+        - all
+        - -ST1000
+        - -ST1003
+        - -ST1016
+        - -ST1020
+        - -ST1021
+        - -ST1022
+        - -QF1008
+
 issues:
-  max-issues-per-linter: 4095
-  max-same-issues: 1023
-  new: true
+  # Report every finding: a capped count hides issues.
+  max-issues-per-linter: 0
+  max-same-issues: 0
+
 formatters:
   enable:
     - gofmt
     - goimports
-  exclusions:
-    generated: lax
-    paths:
-      - third_party$
-      - builtin$
-      - examples$
