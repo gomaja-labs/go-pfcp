@@ -127,6 +127,7 @@ package ie
 import (
  "testing"
  "strconv"
+
  "github.com/gomaja-labs/go-pfcp/internal/spec"
 )
 

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"io"
+	"net"
 	"reflect"
 	"sync"
 	"testing"
@@ -242,8 +243,12 @@ func TestGroupedFieldsCatalogue(t *testing.T) {
 			}
 			// Every short buffer is an error, with no panic.
 			for n := 0; n < len(b); n++ {
-				if err := f.MarshalTo(make([]byte, n)); !errors.Is(err, ie.ErrInvalidLength) {
+				short := bytes.Repeat([]byte{0xee}, n)
+				if err := f.MarshalTo(short); !errors.Is(err, ie.ErrInvalidLength) {
 					t.Fatal("short buffer", n, err)
+				}
+				if !bytes.Equal(short, bytes.Repeat([]byte{0xee}, n)) {
+					t.Fatal("short buffer modified", n)
 				}
 			}
 			extra := bytes.Repeat([]byte{0xee}, len(b)+5)
@@ -278,7 +283,7 @@ func TestGroupedFieldsErrors(t *testing.T) {
 				t.Fatal("wrong type", err)
 			}
 			// Null-length groups and empty fields encode an empty value.
-			for _, parent := range []*ie.IE{tc.newIE(nil), ie.New(tc.typ, nil)} {
+			for _, parent := range []*ie.IE{tc.newIE(nil), ie.New(tc.typ, nil), {Type: tc.typ, ChildIEs: []*ie.IE{nil}}} {
 				f, err := tc.access(parent)
 				if err != nil || f.MarshalLen() != 0 {
 					t.Fatal("null group", err)
@@ -376,8 +381,8 @@ func TestCreatedTrafficEndpointLocalFTEID(t *testing.T) {
 	if _, err := empty.LocalFTEID(); !errors.Is(err, ie.ErrIENotFound) {
 		t.Fatal(err)
 	}
-	first := ie.NewFTEID(4, 0, nil, nil, 0)
-	second := ie.NewFTEID(4, 0, nil, nil, 0)
+	first := ie.NewFTEID(1, 1, net.ParseIP("192.0.2.1"), nil, 0)
+	second := ie.NewFTEID(1, 2, net.ParseIP("192.0.2.2"), nil, 0)
 	f := &ie.CreatedTrafficEndpointFields{FTEID: []*ie.IE{nil, first, nil, second}}
 	for _, n := range []int{-1, 0, 3} {
 		if _, err := f.LocalFTEIDN(n); !errors.Is(err, ie.ErrIENotFound) {
@@ -385,7 +390,7 @@ func TestCreatedTrafficEndpointLocalFTEID(t *testing.T) {
 		}
 	}
 	for _, n := range []int{1, 2} {
-		if _, err := f.LocalFTEIDN(n); err != nil {
+		if value, err := f.LocalFTEIDN(n); err != nil || value.TEID != uint32(n) {
 			t.Fatal(n, err)
 		}
 	}

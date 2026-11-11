@@ -39,7 +39,7 @@ func ieVectors() []ieVector {
 					ie.NewSourceInterface(ie.SrcInterfaceAccess),
 					ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 					ie.NewNetworkInstance("some.instance.example"),
-					ie.NewRedundantTransmissionParametersInPDI(
+					ie.NewRedundantTransmissionParameters(
 						ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 						ie.NewNetworkInstance("some.instance.example"),
 					),
@@ -151,7 +151,7 @@ func ieVectors() []ieVector {
 				ie.NewSourceInterface(ie.SrcInterfaceAccess),
 				ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 				ie.NewNetworkInstance("some.instance.example"),
-				ie.NewRedundantTransmissionParametersInPDI(
+				ie.NewRedundantTransmissionParameters(
 					ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 					ie.NewNetworkInstance("some.instance.example"),
 				),
@@ -214,7 +214,7 @@ func ieVectors() []ieVector {
 				ie.NewSourceInterface(ie.SrcInterfaceAccess),
 				ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 				ie.NewNetworkInstance("some.instance.example"),
-				ie.NewRedundantTransmissionParametersInPDI(
+				ie.NewRedundantTransmissionParameters(
 					ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 					ie.NewNetworkInstance("some.instance.example"),
 				),
@@ -289,7 +289,7 @@ func ieVectors() []ieVector {
 					ie.NewForwardingPolicy("go-pfcp"),
 				),
 				ie.NewBARID(0xff),
-				ie.NewRedundantTransmissionParametersInFAR(
+				ie.NewRedundantTransmissionParameters(
 					ie.NewOuterHeaderCreation(0x0100, 0x11223344, "127.0.0.1", "", 0, 0, 0),
 					ie.NewNetworkInstance("some.instance.example"),
 				),
@@ -520,7 +520,7 @@ func ieVectors() []ieVector {
 					ie.NewSourceInterface(ie.SrcInterfaceAccess),
 					ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 					ie.NewNetworkInstance("some.instance.example"),
-					ie.NewRedundantTransmissionParametersInPDI(
+					ie.NewRedundantTransmissionParameters(
 						ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 						ie.NewNetworkInstance("some.instance.example"),
 					),
@@ -644,7 +644,7 @@ func ieVectors() []ieVector {
 					ie.NewForwardingPolicy("go-pfcp"),
 				),
 				ie.NewBARID(0xff),
-				ie.NewRedundantTransmissionParametersInFAR(
+				ie.NewRedundantTransmissionParameters(
 					ie.NewOuterHeaderCreation(0x0100, 0x11223344, "127.0.0.1", "", 0, 0, 0),
 					ie.NewNetworkInstance("some.instance.example"),
 				),
@@ -1905,7 +1905,7 @@ func ieVectors() []ieVector {
 				ie.NewTrafficEndpointID(0x01),
 				ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 				ie.NewNetworkInstance("some.instance.example"),
-				ie.NewRedundantTransmissionParametersInPDI(
+				ie.NewRedundantTransmissionParameters(
 					ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 					ie.NewNetworkInstance("some.instance.example"),
 				),
@@ -1952,7 +1952,7 @@ func ieVectors() []ieVector {
 				ie.NewTrafficEndpointID(0x01),
 				ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 				ie.NewNetworkInstance("some.instance.example"),
-				ie.NewRedundantTransmissionParametersInPDI(
+				ie.NewRedundantTransmissionParameters(
 					ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 					ie.NewNetworkInstance("some.instance.example"),
 				),
@@ -3414,7 +3414,7 @@ func ieVectors() []ieVector {
 			},
 		}, {
 			"RedundantTransmissionParameters/PDI",
-			ie.NewRedundantTransmissionParametersInPDI(
+			ie.NewRedundantTransmissionParameters(
 				ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
 				ie.NewNetworkInstance("some.instance.example"),
 			),
@@ -3425,7 +3425,7 @@ func ieVectors() []ieVector {
 			},
 		}, {
 			"RedundantTransmissionParameters/FAR",
-			ie.NewRedundantTransmissionParametersInFAR(
+			ie.NewRedundantTransmissionParameters(
 				ie.NewOuterHeaderCreation(0x0100, 0x11223344, "127.0.0.1", "", 0, 0, 0),
 				ie.NewNetworkInstance("some.instance.example"),
 			),
