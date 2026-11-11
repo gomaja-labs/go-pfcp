@@ -207,7 +207,7 @@ func TestFailedSRRIDWidth(t *testing.T) {
 	if len(i.Payload) != 2 {
 		t.Fatalf("SRR ID payload length %d; want 2", len(i.Payload))
 	}
-	for _, p := range [][]byte{{6, 0x12}, {6, 0x12, 0x34, 0x56, 0x78}} {
+	for _, p := range [][]byte{{6, 0x12}, {0xe6, 0x12}, {6, 0x12, 0x34, 0x56, 0x78}} {
 		v, e := ie.New(ie.FailedRuleID, p).FailedRuleID()
 		if e != nil || v != 0x12 {
 			t.Fatalf("SRR ID=%d error=%v", v, e)
@@ -215,5 +215,38 @@ func TestFailedSRRIDWidth(t *testing.T) {
 	}
 	if _, e := ie.New(ie.FailedRuleID, []byte{6}).FailedRuleID(); !errors.Is(e, io.ErrUnexpectedEOF) {
 		t.Fatalf("truncated SRR ID error=%v", e)
+	}
+}
+
+func TestFixedMultiplierComponents(t *testing.T) {
+	for _, name := range []string{"ValueDigits", "Exponent"} {
+		t.Run(name, func(t *testing.T) {
+			invoke := func(i *ie.IE) (uint64, error) {
+				v := reflect.ValueOf(i).MethodByName(name).Call(nil)
+				var e error
+				if !v[1].IsNil() {
+					e = v[1].Interface().(error)
+				}
+				return v[0].Uint(), e
+			}
+			if v, e := invoke(ie.NewMultiplier(1, 1)); e != nil || v != 1 {
+				t.Fatalf("value=%d error=%v", v, e)
+			}
+			if _, e := invoke(nil); !errors.Is(e, ie.ErrIENotFound) {
+				t.Fatalf("nil error=%v", e)
+			}
+			var wrong *ie.InvalidTypeError
+			if _, e := invoke(ie.New(0xffff, nil)); !errors.As(e, &wrong) {
+				t.Fatalf("wrong type error=%v", e)
+			}
+			for n := 0; n < 12; n++ {
+				if _, e := invoke(ie.New(ie.Multiplier, make([]byte, n))); e == nil {
+					t.Fatalf("accepted length %d", n)
+				}
+			}
+			if _, e := invoke(ie.New(ie.Multiplier, make([]byte, 13))); !errors.Is(e, ie.ErrInvalidLength) {
+				t.Fatalf("extension error=%v", e)
+			}
+		})
 	}
 }
