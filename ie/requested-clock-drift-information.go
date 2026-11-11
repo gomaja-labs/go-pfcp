@@ -36,20 +36,6 @@ func (i *IE) HasRRCR() bool {
 		}
 
 		return has2ndBit(i.Payload[0])
-	/*
-		case ClockDriftControlInformation:
-			ies, err := i.ClockDriftControlInformation()
-			if err != nil {
-				return false
-			}
-
-			for _, x := range ies {
-				if x.Type == RequestedClockDriftInformation {
-					return x.HasRRCR()
-				}
-			}
-			return false
-	*/
 	default:
 		return false
 	}
@@ -68,20 +54,6 @@ func (i *IE) HasRRTO() bool {
 		}
 
 		return has1stBit(i.Payload[0])
-	/*
-		case ClockDriftControlInformation:
-			ies, err := i.ClockDriftControlInformation()
-			if err != nil {
-				return false
-			}
-
-			for _, x := range ies {
-				if x.Type == RequestedClockDriftInformation {
-					return x.HasRRTO()
-				}
-			}
-			return false
-	*/
 	default:
 		return false
 	}
