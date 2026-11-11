@@ -5,6 +5,7 @@
 package ie_test
 
 import (
+	"errors"
 	"io"
 	"net"
 	"testing"
@@ -3660,7 +3661,7 @@ func TestIEAddRemove(t *testing.T) {
 func TestMalformedIEs(t *testing.T) {
 	serialized := []byte{0x00, 0x00, 0x00, 0x02, 0x00}
 	got, err := ie.Parse(serialized)
-	if err != io.ErrUnexpectedEOF {
+	if !errors.Is(err, io.ErrUnexpectedEOF) {
 		t.Fatal("Expected EOF error when parsing too short IE, but got", err, got)
 	}
 }
