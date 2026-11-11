@@ -10,6 +10,9 @@ import (
 )
 
 // NewTSNBridgeID creates a new TSNBridgeID IE.
+// TS 29.244 V20.1.0 clause 8.2.143 instead defines type 198 as the
+// 5GS User Plane Node ID with an eight-octet value. This constructor's
+// MAC-based API does not represent that current definition.
 func NewTSNBridgeID(mac net.HardwareAddr) *IE {
 	if mac == nil {
 		return New(TSNBridgeID, []byte{0x00})
