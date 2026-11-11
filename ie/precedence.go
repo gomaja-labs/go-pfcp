@@ -11,6 +11,10 @@ func NewPrecedence(id uint32) *IE {
 
 // Precedence returns Precedence in uint32 if the type of IE matches.
 func (i *IE) Precedence() (uint32, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case Precedence:
 		return i.ValueAsUint32()

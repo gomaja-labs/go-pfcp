@@ -11,9 +11,13 @@ func NewQoSMonitoringPerQoSFlowControlInformation(ies ...*IE) *IE {
 
 // QoSMonitoringPerQoSFlowControlInformation returns the IEs above QoSMonitoringPerQoSFlowControlInformation if the type of IE matches.
 func (i *IE) QoSMonitoringPerQoSFlowControlInformation() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case QoSMonitoringPerQoSFlowControlInformation:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	case CreateSRR:
 		ies, err := i.CreateSRR()
 		if err != nil {

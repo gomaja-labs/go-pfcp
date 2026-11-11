@@ -11,6 +11,10 @@ func NewSequenceNumber(seq uint32) *IE {
 
 // SequenceNumber returns SequenceNumber in uint32 if the type of IE matches.
 func (i *IE) SequenceNumber() (uint32, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case SequenceNumber:
 		return i.ValueAsUint32()

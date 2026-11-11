@@ -11,6 +11,10 @@ func NewEventThreshold(quota uint32) *IE {
 
 // EventThreshold returns EventThreshold in uint32 if the type of IE matches.
 func (i *IE) EventThreshold() (uint32, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case EventThreshold:
 		return i.ValueAsUint32()

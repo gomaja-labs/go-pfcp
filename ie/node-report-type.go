@@ -11,6 +11,10 @@ func NewNodeReportType(flags uint8) *IE {
 
 // NodeReportType returns NodeReportType in uint8 if the type of IE matches.
 func (i *IE) NodeReportType() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	if i.Type != NodeReportType {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
@@ -20,6 +24,10 @@ func (i *IE) NodeReportType() (uint8, error) {
 
 // HasUPFR reports whether an IE has UPFR bit.
 func (i *IE) HasUPFR() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != NodeReportType {
 		return false
 	}

@@ -20,6 +20,10 @@ func NewSourceInterface(intf uint8) *IE {
 
 // SourceInterface returns SourceInterface in uint8 if the type of IE matches.
 func (i *IE) SourceInterface() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case SourceInterface:
 		return i.ValueAsUint8()

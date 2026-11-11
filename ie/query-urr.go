@@ -11,9 +11,13 @@ func NewQueryURR(urrID *IE) *IE {
 
 // QueryURR returns the IEs above QueryURR if the type of IE matches.
 func (i *IE) QueryURR() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != QueryURR {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

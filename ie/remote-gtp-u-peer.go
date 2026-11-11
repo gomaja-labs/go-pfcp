@@ -23,6 +23,10 @@ func NewRemoteGTPUPeer(flags uint8, v4, v6 string, di uint8, ni string) *IE {
 
 // RemoteGTPUPeer returns RemoteGTPUPeer in *RemoteGTPUPeerFields if the type of IE matches.
 func (i *IE) RemoteGTPUPeer() (*RemoteGTPUPeerFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case RemoteGTPUPeer:
 		fields, err := ParseRemoteGTPUPeerFields(i.Payload)
@@ -82,6 +86,10 @@ func (i *IE) RemoteGTPUPeer() (*RemoteGTPUPeerFields, error) {
 
 // HasNI reports whether an IE has NI bit.
 func (i *IE) HasNI() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != RemoteGTPUPeer {
 		return false
 	}
@@ -94,6 +102,10 @@ func (i *IE) HasNI() bool {
 
 // HasDI reports whether an IE has DI bit.
 func (i *IE) HasDI() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != RemoteGTPUPeer {
 		return false
 	}
@@ -151,8 +163,13 @@ func ParseRemoteGTPUPeerFields(b []byte) (*RemoteGTPUPeerFields, error) {
 
 // UnmarshalBinary parses b into IE.
 func (f *RemoteGTPUPeerFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = RemoteGTPUPeerFields{}
+
 	l := len(b)
-	if l < 2 {
+	if l < 1 {
 		return io.ErrUnexpectedEOF
 	}
 
@@ -185,6 +202,11 @@ func (f *RemoteGTPUPeerFields) UnmarshalBinary(b []byte) error {
 		if l < offset+int(f.DILength) {
 			return io.ErrUnexpectedEOF
 		}
+		// TS 29.244 V20.1.0 clauses 8.2.70 and 8.2.24: the first
+		// Destination Interface octet is mandatory; extension octets may follow.
+		if f.DILength == 0 {
+			return ErrInvalidLength
+		}
 		f.DestinationInterface = b[offset]
 		offset += int(f.DILength)
 	}
@@ -207,6 +229,10 @@ func (f *RemoteGTPUPeerFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of RemoteGTPUPeerFields.
 func (f *RemoteGTPUPeerFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -216,8 +242,25 @@ func (f *RemoteGTPUPeerFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *RemoteGTPUPeerFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if has3rdBit(f.Flags) && f.DILength == 0 {
+		return ErrInvalidLength
+	}
+	if has4thBit(f.Flags) && len(f.NetworkInstance) != int(f.NILength) {
+		return ErrInvalidLength
+	}
+
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
-	if l < 2 {
+	if l < 1 {
 		return io.ErrUnexpectedEOF
 	}
 
@@ -225,12 +268,18 @@ func (f *RemoteGTPUPeerFields) MarshalTo(b []byte) error {
 	offset := 1
 
 	if has2ndBit(f.Flags) {
-		copy(b[offset:offset+4], f.IPv4Address)
+		if f.IPv4Address.To4() == nil {
+			return ErrMalformed
+		}
+		copy(b[offset:offset+4], f.IPv4Address.To4())
 		offset += 4
 	}
 
 	if has1stBit(f.Flags) {
-		copy(b[offset:offset+16], f.IPv6Address)
+		if f.IPv6Address.To16() == nil {
+			return ErrMalformed
+		}
+		copy(b[offset:offset+16], f.IPv6Address.To16())
 		offset += 16
 	}
 
@@ -252,11 +301,15 @@ func (f *RemoteGTPUPeerFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *RemoteGTPUPeerFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 1
-	if has2ndBit(f.Flags) && !has5thBit(f.Flags) {
+	if has2ndBit(f.Flags) {
 		l += 4
 	}
-	if has1stBit(f.Flags) && !has5thBit(f.Flags) {
+	if has1stBit(f.Flags) {
 		l += 16
 	}
 	if has3rdBit(f.Flags) {

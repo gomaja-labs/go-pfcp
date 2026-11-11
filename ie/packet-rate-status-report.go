@@ -16,9 +16,13 @@ func NewPacketRateStatusReportWithinSessionModificationResponse(ies ...*IE) *IE 
 
 // PacketRateStatusReport returns the IEs above PacketRateStatusReport if the type of IE matches.
 func (i *IE) PacketRateStatusReport() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case PacketRateStatusReport, PacketRateStatusReportWithinSessionModificationResponse:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

@@ -11,6 +11,10 @@ func NewDSTTPortNumber(port uint32) *IE {
 
 // DSTTPortNumber returns DSTTPortNumber in uint32 if the type of IE matches.
 func (i *IE) DSTTPortNumber() (uint32, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case DSTTPortNumber:
 		return i.ValueAsUint32()

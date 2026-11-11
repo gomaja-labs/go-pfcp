@@ -11,9 +11,13 @@ func NewUserPlanePathFailureReport(peer *IE) *IE {
 
 // UserPlanePathFailureReport returns the IEs above UserPlanePathFailureReport if the type of IE matches.
 func (i *IE) UserPlanePathFailureReport() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != UserPlanePathFailureReport {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

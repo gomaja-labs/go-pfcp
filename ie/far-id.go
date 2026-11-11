@@ -11,6 +11,10 @@ func NewFARID(id uint32) *IE {
 
 // FARID returns FARID in uint32 if the type of IE matches.
 func (i *IE) FARID() (uint32, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case FARID:
 		return i.ValueAsUint32()

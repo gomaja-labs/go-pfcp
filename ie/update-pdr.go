@@ -11,9 +11,13 @@ func NewUpdatePDR(ies ...*IE) *IE {
 
 // UpdatePDR returns the IEs above UpdatePDR if the type of IE matches.
 func (i *IE) UpdatePDR() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != UpdatePDR {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

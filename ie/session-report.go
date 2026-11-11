@@ -11,9 +11,13 @@ func NewSessionReport(ies ...*IE) *IE {
 
 // SessionReport returns the IEs above SessionReport if the type of IE matches.
 func (i *IE) SessionReport() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case SessionReport:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

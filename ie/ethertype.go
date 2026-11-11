@@ -11,6 +11,10 @@ func NewEthertype(typ uint16) *IE {
 
 // Ethertype returns Ethertype in uint16 if the type of IE matches.
 func (i *IE) Ethertype() (uint16, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case Ethertype:
 		return i.ValueAsUint16()

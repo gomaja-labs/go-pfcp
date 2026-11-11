@@ -25,6 +25,10 @@ func NewFTEID(flags uint8, teid uint32, v4, v6 net.IP, chid uint8) *IE {
 
 // FTEID returns FTEID in structured format if the type of IE matches.
 func (i *IE) FTEID() (*FTEIDFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case FTEID:
 		fields, err := ParseFTEIDFields(i.Payload)
@@ -140,41 +144,73 @@ func NewFTEIDFields(flags uint8, teid uint32, v4, v6 net.IP, chid uint8) *FTEIDF
 
 // HasChID reports whether CHID flag is set.
 func (f *FTEIDFields) HasChID() bool {
+	if f == nil {
+		return false
+	}
+
 	return has4thBit(f.Flags)
 }
 
 // SetChIDFlag sets CHID flag in FTEID.
 func (f *FTEIDFields) SetChIDFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x08
 }
 
 // HasCh reports whether CH flag is set.
 func (f *FTEIDFields) HasCh() bool {
+	if f == nil {
+		return false
+	}
+
 	return has3rdBit(f.Flags)
 }
 
 // SetChFlag sets CH flag in FTEID.
 func (f *FTEIDFields) SetChFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x04
 }
 
 // HasIPv6 reports whether IPv6 flag is set.
 func (f *FTEIDFields) HasIPv6() bool {
+	if f == nil {
+		return false
+	}
+
 	return has2ndBit(f.Flags)
 }
 
 // SetIPv6Flag sets IPv6 flag in FTEID.
 func (f *FTEIDFields) SetIPv6Flag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x02
 }
 
 // HasIPv4 reports whether IPv4 flag is set.
 func (f *FTEIDFields) HasIPv4() bool {
+	if f == nil {
+		return false
+	}
+
 	return has1stBit(f.Flags)
 }
 
 // SetIPv4Flag sets IPv4 flag in FTEID.
 func (f *FTEIDFields) SetIPv4Flag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x01
 }
 
@@ -189,6 +225,11 @@ func ParseFTEIDFields(b []byte) (*FTEIDFields, error) {
 
 // UnmarshalBinary parses b into IE.
 func (f *FTEIDFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = FTEIDFields{}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -232,6 +273,10 @@ func (f *FTEIDFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of FTEIDFields.
 func (f *FTEIDFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -241,6 +286,16 @@ func (f *FTEIDFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *FTEIDFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -284,6 +339,10 @@ func (f *FTEIDFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *FTEIDFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 1
 	if f.HasCh() {
 		if f.HasChID() {

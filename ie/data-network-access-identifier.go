@@ -11,6 +11,10 @@ func NewDataNetworkAccessIdentifier(id string) *IE {
 
 // DataNetworkAccessIdentifier returns DataNetworkAccessIdentifier in string if the type of IE matches.
 func (i *IE) DataNetworkAccessIdentifier() (string, error) {
+	if i == nil {
+		return "", ErrIENotFound
+	}
+
 	switch i.Type {
 	case DataNetworkAccessIdentifier:
 		return i.ValueAsString()

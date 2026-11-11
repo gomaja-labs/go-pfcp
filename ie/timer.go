@@ -53,12 +53,16 @@ func NewTimer(duration time.Duration) *IE {
 
 // Timer returns Timer in time.Duration if the type of IE matches.
 func (i *IE) Timer() (time.Duration, error) {
-	if len(i.Payload) < 1 {
-		return 0, io.ErrUnexpectedEOF
+	if i == nil {
+		return 0, ErrIENotFound
 	}
 
 	switch i.Type {
 	case Timer:
+		if len(i.Payload) < 1 {
+			return 0, io.ErrUnexpectedEOF
+		}
+
 		var d time.Duration
 		switch (i.Payload[0] & 0xe0) >> 5 {
 		case 0x07:

@@ -11,9 +11,13 @@ func NewMPTCPParameters(ies ...*IE) *IE {
 
 // MPTCPParameters returns the IEs above MPTCPParameters if the type of IE matches.
 func (i *IE) MPTCPParameters() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != MPTCPParameters {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

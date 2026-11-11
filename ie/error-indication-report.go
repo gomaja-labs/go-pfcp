@@ -11,9 +11,13 @@ func NewErrorIndicationReport(fteid *IE) *IE {
 
 // ErrorIndicationReport returns the IEs above ErrorIndicationReport if the type of IE matches.
 func (i *IE) ErrorIndicationReport() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != ErrorIndicationReport {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

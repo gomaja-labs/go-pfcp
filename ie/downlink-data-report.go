@@ -11,9 +11,13 @@ func NewDownlinkDataReport(ies ...*IE) *IE {
 
 // DownlinkDataReport returns the IEs above DownlinkDataReport if the type of IE matches.
 func (i *IE) DownlinkDataReport() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != DownlinkDataReport {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

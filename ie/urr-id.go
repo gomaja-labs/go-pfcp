@@ -11,6 +11,10 @@ func NewURRID(id uint32) *IE {
 
 // URRID returns URRID in uint32 if the type of IE matches.
 func (i *IE) URRID() (uint32, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case URRID:
 		return i.ValueAsUint32()
@@ -168,6 +172,10 @@ func (i *IE) URRID() (uint32, error) {
 
 // IsAllocatedByCPFunction reports whether URRID is allocated by CP Function.
 func (i *IE) IsAllocatedByCPFunction() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != URRID {
 		return false
 	}
@@ -180,6 +188,10 @@ func (i *IE) IsAllocatedByCPFunction() bool {
 
 // IsAllocatedByUPFunction reports whether URRID is allocated by UP Function.
 func (i *IE) IsAllocatedByUPFunction() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != URRID {
 		return false
 	}

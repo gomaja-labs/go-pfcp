@@ -18,6 +18,10 @@ func NewIPVersion(v4, v6 bool) *IE {
 
 // IPVersion returns IPVersion in uint8 if the type of IE matches.
 func (i *IE) IPVersion() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case IPVersion:
 		return i.ValueAsUint8()

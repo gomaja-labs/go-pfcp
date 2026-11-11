@@ -11,6 +11,10 @@ func NewDeactivatePredefinedRules(name string) *IE {
 
 // DeactivatePredefinedRules returns DeactivatePredefinedRules in string if the type of IE matches.
 func (i *IE) DeactivatePredefinedRules() (string, error) {
+	if i == nil {
+		return "", ErrIENotFound
+	}
+
 	switch i.Type {
 	case DeactivatePredefinedRules:
 		return i.ValueAsString()

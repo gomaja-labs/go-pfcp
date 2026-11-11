@@ -11,9 +11,13 @@ func NewAggregatedURRs(ies ...*IE) *IE {
 
 // AggregatedURRs returns the IEs above AggregatedURRs if the type of IE matches.
 func (i *IE) AggregatedURRs() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case AggregatedURRs:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	case CreateURR:
 		ies, err := i.CreateURR()
 		if err != nil {

@@ -11,6 +11,10 @@ func NewQueryURRReference(id uint32) *IE {
 
 // QueryURRReference returns QueryURRReference in uint32 if the type of IE matches.
 func (i *IE) QueryURRReference() (uint32, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case QueryURRReference:
 		return i.ValueAsUint32()

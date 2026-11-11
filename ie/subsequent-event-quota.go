@@ -11,6 +11,10 @@ func NewSubsequentEventQuota(quota uint32) *IE {
 
 // SubsequentEventQuota returns SubsequentEventQuota in uint32 if the type of IE matches.
 func (i *IE) SubsequentEventQuota() (uint32, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case SubsequentEventQuota:
 		return i.ValueAsUint32()

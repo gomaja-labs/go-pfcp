@@ -23,8 +23,15 @@ func NewTSNBridgeID(mac net.HardwareAddr) *IE {
 
 // HasMAC reports whether an IE has MAC bit.
 func (i *IE) HasMAC() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case TSNBridgeID:
+		if len(i.Payload) == 0 {
+			return false
+		}
 		return has1stBit(i.Payload[0])
 	default:
 		return false
@@ -33,12 +40,16 @@ func (i *IE) HasMAC() bool {
 
 // TSNBridgeID returns TSNBridgeID in net.HardwareAddr if the type of IE matches.
 func (i *IE) TSNBridgeID() (net.HardwareAddr, error) {
-	if len(i.Payload) < 1 {
-		return nil, io.ErrUnexpectedEOF
+	if i == nil {
+		return nil, ErrIENotFound
 	}
 
 	switch i.Type {
 	case TSNBridgeID:
+		if len(i.Payload) < 1 {
+			return nil, io.ErrUnexpectedEOF
+		}
+
 		if !has1stBit(i.Payload[0]) {
 			return nil, nil
 		}

@@ -17,6 +17,10 @@ func NewTimeOffsetMeasurement(measurement time.Duration) *IE {
 
 // TimeOffsetMeasurement returns TimeOffsetMeasurement in time.Duration if the type of IE matches.
 func (i *IE) TimeOffsetMeasurement() (time.Duration, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	if len(i.Payload) < 8 {
 		return 0, io.ErrUnexpectedEOF
 	}

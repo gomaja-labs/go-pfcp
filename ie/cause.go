@@ -32,6 +32,10 @@ func NewCause(cause uint8) *IE {
 
 // Cause returns Cause in uint8 if the type of IE matches.
 func (i *IE) Cause() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	if i.Type != Cause {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

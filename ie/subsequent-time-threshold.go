@@ -17,12 +17,16 @@ func NewSubsequentTimeThreshold(t time.Duration) *IE {
 
 // SubsequentTimeThreshold returns SubsequentTimeThreshold in time.Duration if the type of IE matches.
 func (i *IE) SubsequentTimeThreshold() (time.Duration, error) {
-	if len(i.Payload) < 4 {
-		return 0, io.ErrUnexpectedEOF
+	if i == nil {
+		return 0, ErrIENotFound
 	}
 
 	switch i.Type {
 	case SubsequentTimeThreshold:
+		if len(i.Payload) < 4 {
+			return 0, io.ErrUnexpectedEOF
+		}
+
 		t := binary.BigEndian.Uint32(i.Payload[0:4])
 		return time.Duration(t) * time.Second, nil
 	case CreateURR:

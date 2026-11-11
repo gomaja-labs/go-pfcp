@@ -11,6 +11,10 @@ func NewBARID(id uint8) *IE {
 
 // BARID returns BARID in uint8 if the type of IE matches.
 func (i *IE) BARID() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case BARID:
 		return i.ValueAsUint8()

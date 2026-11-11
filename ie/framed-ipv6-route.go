@@ -11,6 +11,10 @@ func NewFramedIPv6Route(name string) *IE {
 
 // FramedIPv6Route returns FramedIPv6Route in string if the type of IE matches.
 func (i *IE) FramedIPv6Route() (string, error) {
+	if i == nil {
+		return "", ErrIENotFound
+	}
+
 	switch i.Type {
 	case FramedIPv6Route:
 		return i.ValueAsString()

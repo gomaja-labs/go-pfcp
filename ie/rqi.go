@@ -11,6 +11,10 @@ func NewRQI(rqi uint8) *IE {
 
 // RQI returns RQI in uint8 if the type of IE matches.
 func (i *IE) RQI() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case RQI:
 		return i.ValueAsUint8()
@@ -43,6 +47,10 @@ func (i *IE) RQI() (uint8, error) {
 
 // HasRQI reports whether an IE has RQI bit.
 func (i *IE) HasRQI() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.RQI()
 	if err != nil {
 		return false

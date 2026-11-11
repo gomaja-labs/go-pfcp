@@ -23,6 +23,10 @@ func NewMACAddressesDetected(ctag, stag *IE, macs ...net.HardwareAddr) *IE {
 
 // MACAddressesDetected returns MACAddressesDetected in structured format if the type of IE matches.
 func (i *IE) MACAddressesDetected() (*MACAddressesDetectedFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case MACAddressesDetected:
 		fields, err := ParseMACAddressesDetectedFields(i.Payload)
@@ -83,7 +87,13 @@ type MACAddressesDetectedFields struct {
 
 // NewMACAddressesDetectedFields creates a new NewMACAddressesDetectedFields.
 func NewMACAddressesDetectedFields(ctag, stag *IE, macs ...net.HardwareAddr) *MACAddressesDetectedFields {
-	ct, st := ctag.Payload, stag.Payload
+	var ct, st []byte
+	if ctag != nil {
+		ct = ctag.Payload
+	}
+	if stag != nil {
+		st = stag.Payload
+	}
 	return &MACAddressesDetectedFields{
 		NumberOfMACAddresses: uint8(len(macs)),
 		MACAddresses:         macs,
@@ -104,48 +114,53 @@ func ParseMACAddressesDetectedFields(b []byte) (*MACAddressesDetectedFields, err
 }
 
 // UnmarshalBinary parses b into IE.
+// TS 29.244 V20.1.0 clause 8.2.103: exactly count MAC addresses,
+// followed by independently length-prefixed C-TAG and S-TAG values.
 func (f *MACAddressesDetectedFields) UnmarshalBinary(b []byte) error {
-	l := len(b)
-	if l < 1 {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = MACAddressesDetectedFields{}
+
+	if len(b) < 1 {
 		return io.ErrUnexpectedEOF
 	}
-
-	f.NumberOfMACAddresses = b[0]
+	*f = MACAddressesDetectedFields{NumberOfMACAddresses: b[0]}
+	f.MACAddresses = make([]net.HardwareAddr, 0, int(b[0]))
 	offset := 1
-
-	for i := 0; i <= int(f.NumberOfMACAddresses); i++ {
-		if l < offset+6 {
-			return io.ErrUnexpectedEOF
+	for n := 0; n < int(f.NumberOfMACAddresses); n++ {
+		mac, err := takePayload(b, &offset, 6)
+		if err != nil {
+			return err
 		}
-		f.MACAddresses = append(f.MACAddresses, b[offset:offset+6])
-		offset += 6
+		f.MACAddresses = append(f.MACAddresses, net.HardwareAddr(mac))
 	}
-
-	if l < offset {
-		return io.ErrUnexpectedEOF
+	for _, field := range []struct {
+		length *uint8
+		value  *[]byte
+	}{{&f.CTAGLength, &f.CTAG}, {&f.STAGLength, &f.STAG}} {
+		length, err := takePayload(b, &offset, 1)
+		if err != nil {
+			return err
+		}
+		*field.length = length[0]
+		value, err := takePayload(b, &offset, int(length[0]))
+		if err != nil {
+			return err
+		}
+		if len(value) > 0 {
+			*field.value = value
+		}
 	}
-	f.CTAGLength = b[offset]
-
-	if l < offset+int(f.CTAGLength) {
-		return io.ErrUnexpectedEOF
-	}
-	copy(f.CTAG, b[offset:offset+int(f.CTAGLength)])
-
-	if l < offset {
-		return io.ErrUnexpectedEOF
-	}
-	f.STAGLength = b[offset]
-
-	if l < offset+int(f.STAGLength) {
-		return io.ErrUnexpectedEOF
-	}
-	copy(f.STAG, b[offset:offset+int(f.STAGLength)])
-
 	return nil
 }
 
 // Marshal returns the serialized bytes of MACAddressesDetectedFields.
 func (f *MACAddressesDetectedFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -155,6 +170,25 @@ func (f *MACAddressesDetectedFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *MACAddressesDetectedFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if int(f.NumberOfMACAddresses) != len(f.MACAddresses) || int(f.CTAGLength) != len(f.CTAG) || int(f.STAGLength) != len(f.STAG) {
+		return ErrInvalidLength
+	}
+	for _, mac := range f.MACAddresses {
+		if len(mac) != 6 {
+			return ErrInvalidLength
+		}
+	}
+
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -182,6 +216,10 @@ func (f *MACAddressesDetectedFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *MACAddressesDetectedFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 3
 	l += int(f.NumberOfMACAddresses) * 6
 	l += int(f.CTAGLength)

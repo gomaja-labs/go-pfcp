@@ -11,9 +11,13 @@ func NewClockDriftControlInformation(ies ...*IE) *IE {
 
 // ClockDriftControlInformation returns the IEs above ClockDriftControlInformation if the type of IE matches.
 func (i *IE) ClockDriftControlInformation() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != ClockDriftControlInformation {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

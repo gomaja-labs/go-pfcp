@@ -23,6 +23,10 @@ func NewOuterHeaderCreation(desc uint16, teid uint32, v4, v6 string, port uint16
 
 // OuterHeaderCreation returns OuterHeaderCreation in *OuterHeaderCreationFields if the type of IE matches.
 func (i *IE) OuterHeaderCreation() (*OuterHeaderCreationFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case OuterHeaderCreation:
 		f, err := ParseOuterHeaderCreationFields(i.Payload)
@@ -92,6 +96,10 @@ func (i *IE) OuterHeaderCreation() (*OuterHeaderCreationFields, error) {
 
 // HasTEID reports whether an IE has TEID bit.
 func (i *IE) HasTEID() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != OuterHeaderCreation {
 		return false
 	}
@@ -108,6 +116,10 @@ func (i *IE) HasTEID() bool {
 
 // HasPortNumber reports wether an IE has Port Number bit.
 func (i *IE) HasPortNumber() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != OuterHeaderCreation {
 		return false
 	}
@@ -124,6 +136,10 @@ func (i *IE) HasPortNumber() bool {
 
 // HasIPv4 reports whether an IE has IPv4 bit.
 func (i *IE) HasIPv4() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case OuterHeaderCreation:
 		if len(i.Payload) < 1 {
@@ -172,6 +188,10 @@ func (i *IE) HasIPv4() bool {
 
 // HasIPv6 reports whether an IE has IPv6 bit.
 func (i *IE) HasIPv6() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case OuterHeaderCreation:
 		if len(i.Payload) < 1 {
@@ -220,6 +240,10 @@ func (i *IE) HasIPv6() bool {
 
 // HasCTag reports whether an IE has CTAG bit.
 func (i *IE) HasCTag() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != OuterHeaderCreation {
 		return false
 	}
@@ -236,6 +260,10 @@ func (i *IE) HasCTag() bool {
 
 // HasSTag reports whether an IE has STAG bit.
 func (i *IE) HasSTag() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != OuterHeaderCreation {
 		return false
 	}
@@ -252,6 +280,10 @@ func (i *IE) HasSTag() bool {
 
 // IsN19 reports whether an IE has N19 bit.
 func (i *IE) IsN19() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != OuterHeaderCreation {
 		return false
 	}
@@ -268,6 +300,10 @@ func (i *IE) IsN19() bool {
 
 // IsN6 reports whether an IE has N6 bit.
 func (i *IE) IsN6() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != OuterHeaderCreation {
 		return false
 	}
@@ -284,6 +320,10 @@ func (i *IE) IsN6() bool {
 
 // IsLLSSMCTEID reports wether an IE has Low Layer SSM and C-TEID bit.
 func (i *IE) IsLLSSMCTEID() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != OuterHeaderCreation {
 		return false
 	}
@@ -353,6 +393,11 @@ func ParseOuterHeaderCreationFields(b []byte) (*OuterHeaderCreationFields, error
 
 // UnmarshalBinary parses b into IE.
 func (f *OuterHeaderCreationFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = OuterHeaderCreationFields{}
+
 	l := len(b)
 	if l < 2 {
 		return io.ErrUnexpectedEOF
@@ -361,6 +406,7 @@ func (f *OuterHeaderCreationFields) UnmarshalBinary(b []byte) error {
 	f.OuterHeaderCreationDescription = binary.BigEndian.Uint16(b[0:2])
 	offset := 2
 
+	// TS 29.244 V20.1.0 Table 8.2.56-1: tags use bits 5/7 and 5/8.
 	oct5 := b[0]
 	if has1stBit(oct5) || has2ndBit(oct5) {
 		if l < offset+4 {
@@ -394,19 +440,19 @@ func (f *OuterHeaderCreationFields) UnmarshalBinary(b []byte) error {
 		offset += 2
 	}
 
-	if has7thBit(uint8(f.OuterHeaderCreationDescription & 0xff)) {
+	if has7thBit(oct5) {
 		if l < offset+3 {
 			return io.ErrUnexpectedEOF
 		}
-		f.CTag = binary.BigEndian.Uint32(b[offset : offset+3])
+		f.CTag = uint32(b[offset])<<16 | uint32(b[offset+1])<<8 | uint32(b[offset+2])
 		offset += 3
 	}
 
-	if has8thBit(uint8(f.OuterHeaderCreationDescription & 0xff)) {
+	if has8thBit(oct5) {
 		if l < offset+3 {
 			return io.ErrUnexpectedEOF
 		}
-		f.STag = binary.BigEndian.Uint32(b[offset : offset+3])
+		f.STag = uint32(b[offset])<<16 | uint32(b[offset+1])<<8 | uint32(b[offset+2])
 	}
 
 	return nil
@@ -414,6 +460,10 @@ func (f *OuterHeaderCreationFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of OuterHeaderCreationFields.
 func (f *OuterHeaderCreationFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -423,6 +473,16 @@ func (f *OuterHeaderCreationFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *OuterHeaderCreationFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 2 {
 		return io.ErrUnexpectedEOF
@@ -439,17 +499,24 @@ func (f *OuterHeaderCreationFields) MarshalTo(b []byte) error {
 	}
 
 	if has1stBit(oct5) || has3rdBit(oct5) || has5thBit(oct5) {
-		copy(b[offset:offset+4], f.IPv4Address)
+		if f.IPv4Address.To4() == nil {
+			return ErrMalformed
+		}
+		copy(b[offset:offset+4], f.IPv4Address.To4())
 		offset += 4
 	}
 
 	if has2ndBit(oct5) || has4thBit(oct5) || has6thBit(oct5) {
-		copy(b[offset:offset+16], f.IPv6Address)
+		if f.IPv6Address.To16() == nil {
+			return ErrMalformed
+		}
+		copy(b[offset:offset+16], f.IPv6Address.To16())
 		offset += 16
 	}
 
 	if has3rdBit(oct5) || has4thBit(oct5) {
 		binary.BigEndian.PutUint16(b[offset:offset+2], f.PortNumber)
+		offset += 2
 	}
 
 	if has7thBit(oct5) {
@@ -470,6 +537,10 @@ func (f *OuterHeaderCreationFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *OuterHeaderCreationFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 2
 
 	if f.HasTEID() {
@@ -496,6 +567,10 @@ func (f *OuterHeaderCreationFields) MarshalLen() int {
 
 // HasTEID reports wether TEID field is set.
 func (f *OuterHeaderCreationFields) HasTEID() bool {
+	if f == nil {
+		return false
+	}
+
 	// The TEID field shall be present
 	// if the Outer Header Creation Description requests
 	// the creation of aGTP-U header. Otherwise it shall not be present.
@@ -505,6 +580,10 @@ func (f *OuterHeaderCreationFields) HasTEID() bool {
 
 // HasIPv4 reports wether IPv4 Address field is set.
 func (f *OuterHeaderCreationFields) HasIPv4() bool {
+	if f == nil {
+		return false
+	}
+
 	// The IPv4 Address field shall be present
 	// if the Outer Header Creation Description requests
 	// the creation of an IPv4 header. Otherwise it shall not be present.
@@ -514,6 +593,10 @@ func (f *OuterHeaderCreationFields) HasIPv4() bool {
 
 // HasIPv6 reports wether IPv6 Address field is set.
 func (f *OuterHeaderCreationFields) HasIPv6() bool {
+	if f == nil {
+		return false
+	}
+
 	// The IPv6 Address field shall be present
 	// if the Outer Header Creation Description requests
 	// the creation of an IPv6 header. Otherwise it shall not be present.
@@ -523,6 +606,10 @@ func (f *OuterHeaderCreationFields) HasIPv6() bool {
 
 // HasPortNumber reports wether Port Number field is set.
 func (f *OuterHeaderCreationFields) HasPortNumber() bool {
+	if f == nil {
+		return false
+	}
+
 	// The Port Number field shall be present
 	// if the Outer Header Creation Description requests
 	// the creation of a UDP/IP header. Otherwise it shall not be present.
@@ -532,6 +619,10 @@ func (f *OuterHeaderCreationFields) HasPortNumber() bool {
 
 // HasCTag reports wether C-TAG field is set.
 func (f *OuterHeaderCreationFields) HasCTag() bool {
+	if f == nil {
+		return false
+	}
+
 	// The C-TAG field shall be present
 	// if the Outer Header Creation Description requests
 	// the setting of the C-Tag in Ethernet packet. Otherwise it shall not be present.
@@ -541,6 +632,10 @@ func (f *OuterHeaderCreationFields) HasCTag() bool {
 
 // HasSTag reports wether S-TAG field is set.
 func (f *OuterHeaderCreationFields) HasSTag() bool {
+	if f == nil {
+		return false
+	}
+
 	// The S-TAG field shall be present
 	// if the Outer Header Creation Description requests
 	// the setting of the S-Tag in Ethernet packet. Otherwise it shall not be present.
@@ -550,12 +645,20 @@ func (f *OuterHeaderCreationFields) HasSTag() bool {
 
 // IsN19 reports wether Outer Header Creation Description has N19 Indication.
 func (f *OuterHeaderCreationFields) IsN19() bool {
+	if f == nil {
+		return false
+	}
+
 	desc := uint8(f.OuterHeaderCreationDescription & 0x00FF)
 	return has1stBit(desc)
 }
 
 // IsN6 reports wether Outer Header Creation Description has N9 Indication
 func (f *OuterHeaderCreationFields) IsN6() bool {
+	if f == nil {
+		return false
+	}
+
 	desc := uint8(f.OuterHeaderCreationDescription & 0x00FF)
 	return has2ndBit(desc)
 }
@@ -563,6 +666,10 @@ func (f *OuterHeaderCreationFields) IsN6() bool {
 // IsLLSSMCTEID reports wether Outer Header Creation Description has Low Layer SSM and C-TEID
 // This bit has been introduced in release 17.2
 func (f *OuterHeaderCreationFields) IsLLSSMCTEID() bool {
+	if f == nil {
+		return false
+	}
+
 	desc := uint8(f.OuterHeaderCreationDescription & 0x00FF)
 	return has3rdBit(desc)
 }

@@ -11,9 +11,13 @@ func NewEthernetTrafficInformation(ies ...*IE) *IE {
 
 // EthernetTrafficInformation returns the IEs above EthernetTrafficInformation if the type of IE matches.
 func (i *IE) EthernetTrafficInformation() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case EthernetTrafficInformation:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	case UsageReportWithinSessionModificationResponse,
 		UsageReportWithinSessionDeletionResponse,
 		UsageReportWithinSessionReportRequest:

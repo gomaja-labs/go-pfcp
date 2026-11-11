@@ -11,9 +11,13 @@ func NewPFDContext(contents ...*IE) *IE {
 
 // PFDContext returns the IEs above PFDContext if the type of IE matches.
 func (i *IE) PFDContext() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case PFDContext:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	case ApplicationIDsPFDs:
 		ies, err := i.ApplicationIDsPFDs()
 		if err != nil {

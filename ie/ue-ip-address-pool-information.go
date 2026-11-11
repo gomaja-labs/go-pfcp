@@ -11,9 +11,13 @@ func NewUEIPAddressPoolInformation(ies ...*IE) *IE {
 
 // UEIPAddressPoolInformation returns the IEs above UEIPAddressPoolInformation if the type of IE matches.
 func (i *IE) UEIPAddressPoolInformation() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != UEIPAddressPoolInformation {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

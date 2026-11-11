@@ -11,6 +11,10 @@ func NewMeasurementMethod(event, volum, durat int) *IE {
 
 // MeasurementMethod returns MeasurementMethod in uint8 if the type of IE matches.
 func (i *IE) MeasurementMethod() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case MeasurementMethod:
 		return i.ValueAsUint8()
@@ -54,6 +58,10 @@ func (i *IE) MeasurementMethod() (uint8, error) {
 
 // HasEVENT reports whether an IE has EVENT bit.
 func (i *IE) HasEVENT() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.MeasurementMethod()
 	if err != nil {
 		return false
@@ -64,6 +72,10 @@ func (i *IE) HasEVENT() bool {
 
 // HasVOLUM reports whether an IE has VOLUM bit.
 func (i *IE) HasVOLUM() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.MeasurementMethod()
 	if err != nil {
 		return false
@@ -74,6 +86,10 @@ func (i *IE) HasVOLUM() bool {
 
 // HasDURAT reports whether an IE has DURAT bit.
 func (i *IE) HasDURAT() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.MeasurementMethod()
 	if err != nil {
 		return false

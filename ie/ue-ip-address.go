@@ -22,6 +22,10 @@ func NewUEIPAddress(flags uint8, v4, v6 string, v6d, v6pl uint8) *IE {
 
 // UEIPAddress returns UEIPAddress in *UEIPAddressFields if the type of IE matches.
 func (i *IE) UEIPAddress() (*UEIPAddressFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case UEIPAddress:
 		fields, err := ParseUEIPAddressFields(i.Payload)
@@ -116,6 +120,10 @@ func (i *IE) UEIPAddress() (*UEIPAddressFields, error) {
 // This bit has been introduced in release 16.2
 // with the removal of the bit CH at the same position.
 func (i *IE) HasCHV4() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UEIPAddress {
 		return false
 	}
@@ -129,6 +137,10 @@ func (i *IE) HasCHV4() bool {
 // HasCHV6 reports whether an IE has CHV6 bit.
 // This bit has been introduced in release 16.2
 func (i *IE) HasCHV6() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UEIPAddress {
 		return false
 	}
@@ -142,6 +154,10 @@ func (i *IE) HasCHV6() bool {
 // HasIP6PL reports whether an IE has IP6PL bit.
 // This bit has been introduced in release 16.2
 func (i *IE) HasIP6PL() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UEIPAddress {
 		return false
 	}
@@ -154,6 +170,10 @@ func (i *IE) HasIP6PL() bool {
 
 // HasIPv6D reports whether an IE has IPv6D bit.
 func (i *IE) HasIPv6D() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UEIPAddress {
 		return false
 	}
@@ -166,6 +186,10 @@ func (i *IE) HasIPv6D() bool {
 
 // HasSD reports whether an IE has SD bit.
 func (i *IE) HasSD() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UEIPAddress {
 		return false
 	}
@@ -219,6 +243,11 @@ func ParseUEIPAddressFields(b []byte) (*UEIPAddressFields, error) {
 
 // UnmarshalBinary parses b into IE.
 func (f *UEIPAddressFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = UEIPAddressFields{}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -262,6 +291,10 @@ func (f *UEIPAddressFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of UEIPAddressFields.
 func (f *UEIPAddressFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -271,6 +304,16 @@ func (f *UEIPAddressFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *UEIPAddressFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -280,12 +323,18 @@ func (f *UEIPAddressFields) MarshalTo(b []byte) error {
 	offset := 1
 
 	if has2ndBit(f.Flags) && !has5thBit(f.Flags) {
-		copy(b[offset:offset+4], f.IPv4Address)
+		if f.IPv4Address.To4() == nil {
+			return ErrMalformed
+		}
+		copy(b[offset:offset+4], f.IPv4Address.To4())
 		offset += 4
 	}
 
 	if has1stBit(f.Flags) && !has6thBit(f.Flags) {
-		copy(b[offset:offset+16], f.IPv6Address)
+		if f.IPv6Address.To16() == nil {
+			return ErrMalformed
+		}
+		copy(b[offset:offset+16], f.IPv6Address.To16())
 		offset += 16
 	}
 
@@ -303,6 +352,10 @@ func (f *UEIPAddressFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *UEIPAddressFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 1
 	if has2ndBit(f.Flags) && !has5thBit(f.Flags) {
 		l += 4

@@ -11,9 +11,13 @@ func NewApplicationDetectionInformation(ies ...*IE) *IE {
 
 // ApplicationDetectionInformation returns the IEs above ApplicationDetectionInformation if the type of IE matches.
 func (i *IE) ApplicationDetectionInformation() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case ApplicationDetectionInformation:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	case UsageReportWithinSessionModificationResponse,
 		UsageReportWithinSessionDeletionResponse,
 		UsageReportWithinSessionReportRequest:

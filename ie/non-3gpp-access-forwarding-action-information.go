@@ -11,9 +11,13 @@ func NewNonTGPPAccessForwardingActionInformation(ies ...*IE) *IE {
 
 // NonTGPPAccessForwardingActionInformation returns the IEs above NonTGPPAccessForwardingActionInformation if the type of IE matches.
 func (i *IE) NonTGPPAccessForwardingActionInformation() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case NonTGPPAccessForwardingActionInformation:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	case CreateMAR:
 		ies, err := i.CreateMAR()
 		if err != nil {

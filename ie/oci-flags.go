@@ -11,6 +11,10 @@ func NewOCIFlags(flags uint8) *IE {
 
 // OCIFlags returns OCIFlags in uint8 if the type of IE matches.
 func (i *IE) OCIFlags() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case OCIFlags:
 		return i.ValueAsUint8()

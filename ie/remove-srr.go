@@ -11,9 +11,13 @@ func NewRemoveSRR(srr *IE) *IE {
 
 // RemoveSRR returns the IEs above RemoveSRR if the type of IE matches.
 func (i *IE) RemoveSRR() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != RemoveSRR {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

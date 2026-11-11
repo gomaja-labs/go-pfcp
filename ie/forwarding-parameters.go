@@ -11,9 +11,13 @@ func NewForwardingParameters(ies ...*IE) *IE {
 
 // ForwardingParameters returns the IEs above ForwardingParameters if the type of IE matches.
 func (i *IE) ForwardingParameters() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case ForwardingParameters:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	case CreateFAR:
 		ies, err := i.CreateFAR()
 		if err != nil {

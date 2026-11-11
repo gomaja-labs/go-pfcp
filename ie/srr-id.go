@@ -11,6 +11,10 @@ func NewSRRID(id uint8) *IE {
 
 // SRRID returns SRRID in uint8 if the type of IE matches.
 func (i *IE) SRRID() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case SRRID:
 		return i.ValueAsUint8()

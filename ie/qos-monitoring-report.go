@@ -11,9 +11,13 @@ func NewQoSMonitoringReport(ies ...*IE) *IE {
 
 // QoSMonitoringReport returns the IEs above QoSMonitoringReport if the type of IE matches.
 func (i *IE) QoSMonitoringReport() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case QoSMonitoringReport:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	case SessionReport:
 		ies, err := i.SessionReport()
 		if err != nil {

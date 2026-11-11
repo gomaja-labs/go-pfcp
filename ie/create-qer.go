@@ -11,9 +11,13 @@ func NewCreateQER(ies ...*IE) *IE {
 
 // CreateQER returns the IEs above CreateQER if the type of IE matches.
 func (i *IE) CreateQER() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != CreateQER {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

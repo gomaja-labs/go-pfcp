@@ -6,10 +6,10 @@ package ie
 
 import (
 	"encoding/binary"
+	"fmt"
 	"io"
 	"time"
 
-	"github.com/gomaja-labs/go-pfcp/internal/logger"
 	"github.com/gomaja-labs/go-pfcp/internal/utils"
 )
 
@@ -298,7 +298,6 @@ const (
 // IE represents an Information Element of PFCP messages.
 type IE struct {
 	Type         IEType
-	Length       uint16
 	EnterpriseID uint16
 	Payload      []byte
 	ChildIEs     []*IE
@@ -310,7 +309,6 @@ func New(itype IEType, data []byte) *IE {
 		Type:    itype,
 		Payload: data,
 	}
-	i.SetLength()
 
 	return i
 }
@@ -322,7 +320,6 @@ func NewVendorSpecificIE(itype IEType, eid uint16, data []byte) *IE {
 		EnterpriseID: eid,
 		Payload:      data,
 	}
-	i.SetLength()
 
 	return i
 }
@@ -369,6 +366,10 @@ func NewFQDNIE(itype IEType, v string) *IE {
 
 // ValueAsUint8 returns the value of IE as uint8.
 func (i *IE) ValueAsUint8() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	if i.IsGrouped() {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
@@ -381,6 +382,10 @@ func (i *IE) ValueAsUint8() (uint8, error) {
 
 // ValueAsUint16 returns the value of IE as uint16.
 func (i *IE) ValueAsUint16() (uint16, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	if i.IsGrouped() {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
@@ -393,6 +398,10 @@ func (i *IE) ValueAsUint16() (uint16, error) {
 
 // ValueAsUint32 returns the value of IE as uint32.
 func (i *IE) ValueAsUint32() (uint32, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	if i.IsGrouped() {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
@@ -405,6 +414,10 @@ func (i *IE) ValueAsUint32() (uint32, error) {
 
 // ValueAsUint64 returns the value of IE as uint64.
 func (i *IE) ValueAsUint64() (uint64, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	if i.IsGrouped() {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
@@ -417,6 +430,10 @@ func (i *IE) ValueAsUint64() (uint64, error) {
 
 // ValueAsString returns the value of IE as string.
 func (i *IE) ValueAsString() (string, error) {
+	if i == nil {
+		return "", ErrIENotFound
+	}
+
 	if i.IsGrouped() {
 		return "", &InvalidTypeError{Type: i.Type}
 	}
@@ -426,11 +443,15 @@ func (i *IE) ValueAsString() (string, error) {
 
 // ValueAsFQDN returns the value of IE as string, decoded as FQDN.
 func (i *IE) ValueAsFQDN() (string, error) {
+	if i == nil {
+		return "", ErrIENotFound
+	}
+
 	if i.IsGrouped() {
 		return "", &InvalidTypeError{Type: i.Type}
 	}
 
-	return utils.DecodeFQDN(i.Payload), nil
+	return decodeFQDNValue(i.Payload)
 }
 
 // ValueAsGrouped returns the value of IE as grouped IE.
@@ -438,30 +459,48 @@ func (i *IE) ValueAsFQDN() (string, error) {
 // This method returns the ChildIEs field if it is already parsed.
 // Otherwise, it parses the Payload field and returns the result.
 //
-// It is recommended to access the ChildIEs field directly if you know the payload is
-// already parsed and not modified. If you need to parse the payload anyway, use the
-// `<IE-Name>()` method instead, which disregards the ChildIEs field.
-//
-// For vendor-specific IE, this method tries to parse as grouped IE. If it fails, it
-// returns error.
+// Any IE, including a vendor-specific IE, can be explicitly interpreted as a group.
+// The type-specific grouped helpers use this same source of truth.
 func (i *IE) ValueAsGrouped() ([]*IE, error) {
-	if !(i.IsGrouped() || i.IsVendorSpecific()) {
-		return nil, &InvalidTypeError{Type: i.Type}
+	if i == nil {
+		return nil, ErrIENotFound
 	}
-
-	if len(i.ChildIEs) < 1 {
-		return ParseMultiIEs(i.Payload)
+	if i.ChildIEs != nil {
+		for n, child := range i.ChildIEs {
+			if child != nil {
+				continue
+			}
+			// Direct struct construction can introduce nil children. Encoding
+			// skips them; helpers must use the same list without mutating it.
+			children := make([]*IE, 0, len(i.ChildIEs)-1)
+			children = append(children, i.ChildIEs[:n]...)
+			for _, next := range i.ChildIEs[n+1:] {
+				if next != nil {
+					children = append(children, next)
+				}
+			}
+			return children, nil
+		}
+		return i.ChildIEs, nil
 	}
-	return i.ChildIEs, nil
+	return ParseMultiIEs(i.Payload)
 }
 
-// valueAs3GPPTimestamp returns the value of IE as time.Time, in the format of
+// valueAs3GPPTimestamp uses era 1 for wire seconds below 2208988800, and
+// era 0 otherwise. This selects the Unix window [1970-01-01, 2106-02-07T06:28:15Z].
+// The wire carries no era, so earlier/later dates cannot be distinguished.
+// RFC 5905 section 6; TS 29.244 V20.1.0 clause 8.2.65.
+// It returns the value of IE as time.Time, in the format of
 // timestamp IEs defined in 3GPP TS 29.244 as follows:
 //
 // "a UTC time. Octets 5 to 8 shall be encoded in the same format as the first four octets
 // of the 64-bit timestamp format as defined in clause 6 of IETF RFC 5905 [12].
 // NOTE: The encoding is defined as the time in seconds relative to 00:00:00 on 1 January 1900."
 func (i *IE) valueAs3GPPTimestamp() (time.Time, error) {
+	if i == nil {
+		return time.Time{}, ErrIENotFound
+	}
+
 	if i.IsGrouped() {
 		return time.Time{}, &InvalidTypeError{Type: i.Type}
 	}
@@ -511,119 +550,122 @@ func ParseMultiIEs(b []byte) ([]*IE, error) {
 }
 
 // UnmarshalBinary parses b into IE.
+// TS 29.244 V20.1.0 clause 8.1.1: Length excludes the four-octet header,
+// but includes the Enterprise ID of a vendor-specific IE.
 func (i *IE) UnmarshalBinary(b []byte) error {
-	l := len(b)
-	if l < 4 {
+	if i == nil {
+		return ErrIENotFound
+	}
+	if len(b) < 4 {
 		return io.ErrUnexpectedEOF
 	}
-
-	i.Type = IEType(binary.BigEndian.Uint16(b[0:2]))
-	i.Length = binary.BigEndian.Uint16(b[2:4])
-
+	typ := IEType(binary.BigEndian.Uint16(b[:2]))
+	length := int(binary.BigEndian.Uint16(b[2:4]))
+	vendor := typ&0x8000 != 0
+	if vendor && length < 2 {
+		return ErrInvalidLength
+	}
+	end := 4 + length
+	if len(b) < end {
+		return io.ErrUnexpectedEOF
+	}
+	v := IE{Type: typ}
 	offset := 4
-	end := int(i.Length)
-	if i.IsVendorSpecific() {
-		if l < 6 {
-			return io.ErrUnexpectedEOF
-		}
-		if end < 2 {
-			return ErrInvalidLength
-		}
-
-		i.EnterpriseID = binary.BigEndian.Uint16(b[4:6])
-		offset += 2
-		end -= 2
+	if vendor {
+		v.EnterpriseID = binary.BigEndian.Uint16(b[4:6])
+		offset = 6
 	}
-
-	if l <= offset {
-		return nil
-	}
-
-	if l < offset+end {
-		return io.ErrUnexpectedEOF
-	}
-	i.Payload = b[offset : offset+end]
-
-	if i.IsGrouped() {
-		var err error
-		i.ChildIEs, err = ParseMultiIEs(i.Payload)
+	payload := b[offset:end:end]
+	if v.IsGrouped() {
+		children, err := ParseMultiIEs(payload)
 		if err != nil {
-			return err
+			return fmt.Errorf("grouped IE %d: %w", typ, err)
 		}
+		v.ChildIEs = children
+		if v.ChildIEs == nil {
+			v.ChildIEs = make([]*IE, 0)
+		}
+	} else {
+		v.Payload = payload
 	}
-
+	*i = v
 	return nil
 }
 
 // Marshal returns the byte sequence generated from an IE instance.
 func (i *IE) Marshal() ([]byte, error) {
-	b := make([]byte, i.MarshalLen())
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+	length := i.MarshalLen()
+	if length-4 > 65535 {
+		return nil, ErrInvalidLength
+	}
+	b := make([]byte, length)
 	if err := i.MarshalTo(b); err != nil {
 		return nil, err
 	}
 	return b, nil
 }
 
-// MarshalTo puts the byte sequence in the byte array given as b.
+// MarshalTo writes an IE to b. It returns ErrInvalidLength for a value exceeding
+// the 16-bit Length field or for a buffer shorter than MarshalLen().
 func (i *IE) MarshalTo(b []byte) error {
-	l := len(b)
-	if l < 4 {
+	if i == nil {
+		return ErrIENotFound
+	}
+	length := i.MarshalLen()
+	if length-4 > 65535 || len(b) < length {
 		return ErrInvalidLength
 	}
-
 	binary.BigEndian.PutUint16(b[:2], uint16(i.Type))
-	binary.BigEndian.PutUint16(b[2:4], i.Length)
-
+	binary.BigEndian.PutUint16(b[2:4], uint16(length-4))
 	offset := 4
-	if i.IsVendorSpecific() && l >= 6 {
+	if i.IsVendorSpecific() {
 		binary.BigEndian.PutUint16(b[4:6], i.EnterpriseID)
-		offset += 2
+		offset = 6
 	}
-
-	if i.IsGrouped() {
-		for _, ie := range i.ChildIEs {
-			if err := ie.MarshalTo(b[offset:]); err != nil {
-				return err
+	if i.ChildIEs != nil {
+		for _, child := range i.ChildIEs {
+			if child == nil {
+				continue
 			}
-			offset += ie.MarshalLen()
+			if err := child.MarshalTo(b[offset:]); err != nil {
+				return fmt.Errorf("child of IE %d: %w", i.Type, err)
+			}
+			offset += child.MarshalLen()
 		}
-		return nil
+	} else {
+		copy(b[offset:length], i.Payload)
 	}
-
-	copy(b[offset:i.MarshalLen()], i.Payload)
 	return nil
 }
 
-// MarshalLen returns field length in integer.
+// MarshalLen returns the encoded length, including the IE header, or zero for nil.
 func (i *IE) MarshalLen() int {
-	l := 4
-	if i.IsVendorSpecific() {
-		l += 2
+	if i == nil {
+		return 0
 	}
-
-	if i.IsGrouped() {
-		for _, ie := range i.ChildIEs {
-			l += ie.MarshalLen()
+	length := 4
+	if i.IsVendorSpecific() {
+		length += 2
+	}
+	if i.ChildIEs != nil {
+		for _, child := range i.ChildIEs {
+			length += child.MarshalLen()
 		}
-		return l
+	} else {
+		length += len(i.Payload)
 	}
-
-	return l + len(i.Payload)
-}
-
-// SetLength sets the length in Length field.
-func (i *IE) SetLength() {
-	l := 0
-
-	if i.IsVendorSpecific() {
-		l += 2
-	}
-
-	i.Length = uint16(l + len(i.Payload))
+	return length
 }
 
 // IsVendorSpecific reports whether an IE is vendor-specific or defined by 3gpp.
 func (i *IE) IsVendorSpecific() bool {
+	if i == nil {
+		return false
+	}
+
 	// Spef: TS 29.244 8.1.1 Information Element Format
 	// If the Bit 8 of Octet 1 is not set, this indicates that the IE is defined by 3GPP
 	// and the EnterpriseID is absent. If Bit 8 of Octet 1 is set, this indicates that the
@@ -658,28 +700,40 @@ func newStringIE(t IEType, v string) *IE {
 }
 
 func newFQDNIE(t IEType, v string) *IE {
-	return New(t, utils.EncodeFQDN(v))
+	encoded := utils.EncodeFQDN(v)
+	if encoded == nil {
+		return nil
+	}
+	return New(t, encoded)
 }
 
 func newGroupedIE(itype IEType, eid uint16, ies ...*IE) *IE {
-	i := NewVendorSpecificIE(itype, eid, make([]byte, 0))
-
-	for _, ie := range ies {
-		if ie == nil {
-			continue
+	i := &IE{Type: itype, EnterpriseID: eid, ChildIEs: make([]*IE, 0, len(ies))}
+	for _, child := range ies {
+		if child != nil {
+			i.ChildIEs = append(i.ChildIEs, child)
 		}
-
-		i.ChildIEs = append(i.ChildIEs, ie)
-
-		serialized, err := ie.Marshal()
-		if err != nil {
-			logger.Logf("newGroupedIE() failed to marshal an IE(Type=%d): %v", ie.Type, err)
-			return nil
-		}
-		i.Payload = append(i.Payload, serialized...)
 	}
-
-	i.SetLength()
-
 	return i
+}
+
+// new3GPPTimestampIE applies the era policy used by valueAs3GPPTimestamp.
+// TS 29.244 V20.1.0 clause 8.2.65 and RFC 5905 section 6 specify seconds
+// since 1900 modulo 2^32. With no era carried on the wire, this package chooses
+// the Unix window [1970-01-01, 2106-02-07T06:28:15Z]. Times outside that window
+// return nil. Fractional seconds are discarded.
+func new3GPPTimestampIE(typ IEType, ts time.Time) *IE {
+	seconds := ts.Unix()
+	if seconds < 0 || seconds > 1<<32-1 {
+		return nil
+	}
+	return newUint32ValIE(typ, uint32(seconds+2208988800))
+}
+
+func decodeFQDNValue(payload []byte) (string, error) {
+	name := utils.DecodeFQDN(payload)
+	if name == "" && !(len(payload) == 1 && payload[0] == 0) {
+		return "", ErrMalformed
+	}
+	return name, nil
 }

@@ -24,6 +24,10 @@ func NewSDFFilter(fd, ttc, spi, fl string, fid uint32) *IE {
 //
 // This IE has a complex payload that costs much when parsing.
 func (i *IE) SDFFilter() (*SDFFilterFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case SDFFilter:
 		fields, err := ParseSDFFilterFields(i.Payload)
@@ -115,51 +119,91 @@ func NewSDFFilterFields(fd, ttc, spi, fl string, fid uint32) *SDFFilterFields {
 
 // HasBID reports whether BID flag is set.
 func (f *SDFFilterFields) HasBID() bool {
+	if f == nil {
+		return false
+	}
+
 	return has5thBit(f.Flags)
 }
 
 // SetBIDFlag sets BID flag in SDFFilter.
 func (f *SDFFilterFields) SetBIDFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x10
 }
 
 // HasFL reports whether FL flag is set.
 func (f *SDFFilterFields) HasFL() bool {
+	if f == nil {
+		return false
+	}
+
 	return has4thBit(f.Flags)
 }
 
 // SetFLFlag sets FL flag in SDFFilter.
 func (f *SDFFilterFields) SetFLFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x08
 }
 
 // HasSPI reports whether SPI flag is set.
 func (f *SDFFilterFields) HasSPI() bool {
+	if f == nil {
+		return false
+	}
+
 	return has3rdBit(f.Flags)
 }
 
 // SetSPIFlag sets SPI flag in SDFFilter.
 func (f *SDFFilterFields) SetSPIFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x04
 }
 
 // HasTTC reports whether TTC flag is set.
 func (f *SDFFilterFields) HasTTC() bool {
+	if f == nil {
+		return false
+	}
+
 	return has2ndBit(f.Flags)
 }
 
 // SetTTCFlag sets TTC flag in SDFFilter.
 func (f *SDFFilterFields) SetTTCFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x02
 }
 
 // HasFD reports whether FD flag is set.
 func (f *SDFFilterFields) HasFD() bool {
+	if f == nil {
+		return false
+	}
+
 	return has1stBit(f.Flags)
 }
 
 // SetFDFlag sets FD flag in SDFFilter.
 func (f *SDFFilterFields) SetFDFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x01
 }
 
@@ -174,21 +218,27 @@ func ParseSDFFilterFields(b []byte) (*SDFFilterFields, error) {
 
 // UnmarshalBinary parses b into IE.
 func (f *SDFFilterFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = SDFFilterFields{}
+
 	l := len(b)
-	if l < 3 {
+	if l < 2 {
 		return io.ErrUnexpectedEOF
 	}
 
 	f.Flags = b[0]
 	offset := 2 // 2nd octet is spare
 
+	// TS 29.244 V20.1.0 clause 8.2.5.
 	if f.HasFD() {
-		if len(b[offset:]) < 3 {
-			return io.ErrUnexpectedEOF
+		value, err := takeLength16(b, &offset)
+		if err != nil {
+			return err
 		}
-		f.FDLength = binary.BigEndian.Uint16(b[offset : offset+2])
-		f.FlowDescription = string(b[offset+2 : offset+2+int(f.FDLength)])
-		offset += 2 + int(f.FDLength)
+		f.FDLength = uint16(len(value))
+		f.FlowDescription = string(value)
 	}
 
 	if f.HasTTC() {
@@ -227,6 +277,10 @@ func (f *SDFFilterFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of SDFFilterFields.
 func (f *SDFFilterFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -236,6 +290,19 @@ func (f *SDFFilterFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *SDFFilterFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if f.HasFD() && len(f.FlowDescription) != int(f.FDLength) || f.HasTTC() && len(f.ToSTrafficClass) != 2 || f.HasSPI() && len(f.SecurityParameterIndex) != 4 || f.HasFL() && len(f.FlowLabel) != 3 {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -274,6 +341,10 @@ func (f *SDFFilterFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *SDFFilterFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 2 // Flag + Spare
 
 	if f.HasFD() {

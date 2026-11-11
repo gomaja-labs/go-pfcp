@@ -19,6 +19,10 @@ func NewNetworkInstanceFQDN(fqdn string) *IE {
 
 // NetworkInstance returns NetworkInstance in string if the type of IE matches.
 func (i *IE) NetworkInstance() (string, error) {
+	if i == nil {
+		return "", ErrIENotFound
+	}
+
 	switch i.Type {
 	case NetworkInstance:
 		return i.ValueAsString()
@@ -28,7 +32,7 @@ func (i *IE) NetworkInstance() (string, error) {
 			return "", err
 		}
 		for _, x := range ies {
-			switch i.Type {
+			switch x.Type {
 			case NetworkInstance, RedundantTransmissionParameters:
 				return x.NetworkInstance()
 			}
@@ -108,27 +112,33 @@ func (i *IE) NetworkInstance() (string, error) {
 // NetworkInstanceFQDN returns NetworkInstance in string if the type of IE matches.
 // This is for the case that NetworkInstance is encoded as a FQDN.
 func (i *IE) NetworkInstanceFQDN() (string, error) {
+	if i == nil {
+		return "", ErrIENotFound
+	}
+
 	// for checking the type
-	_, err := i.NetworkInstance()
+	value, err := i.NetworkInstance()
 	if err != nil {
 		return "", err
 	}
 
-	return utils.DecodeFQDN(i.Payload), nil
+	return decodeFQDNValue([]byte(value))
 }
 
 // NetworkInstanceHeuristic assumes that the payload is encoded in Name Syntax
 // and returns the decoded string if it looks meaningful. Otherwise returns a
 // string just converted from []byte.
 func (i *IE) NetworkInstanceHeuristic() (string, error) {
-	v, err := i.NetworkInstanceFQDN()
+	if i == nil {
+		return "", ErrIENotFound
+	}
+
+	value, err := i.NetworkInstance()
 	if err != nil {
 		return "", err
 	}
-
-	if v != "" { // can be more strict...
-		return v, nil
+	if name := utils.DecodeFQDN([]byte(value)); name != "" {
+		return name, nil
 	}
-
-	return i.NetworkInstance()
+	return value, nil
 }

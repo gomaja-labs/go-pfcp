@@ -9,7 +9,9 @@ import (
 	"net"
 )
 
-// NewUserPlaneIPResourceInformation creates a new UserPlaneIPResourceInformation IE.
+// NewUserPlaneIPResourceInformation creates a UserPlaneIPResourceInformation IE.
+// Type 116 is reserved in TS 29.244 V20.1.0 Table 8.1.2-1; this API retains
+// the previously assigned format while the type catalogue is reviewed.
 func NewUserPlaneIPResourceInformation(flags uint8, tRange uint8, v4, v6, ni string, si uint8) *IE {
 	fields := NewUserPlaneIPResourceInformationFields(flags, tRange, v4, v6, ni, si)
 	b, err := fields.Marshal()
@@ -23,6 +25,10 @@ func NewUserPlaneIPResourceInformation(flags uint8, tRange uint8, v4, v6, ni str
 // UserPlaneIPResourceInformation returns UserPlaneIPResourceInformation in
 // *UserPlaneIPResourceInformationFields if the type of IE matches.
 func (i *IE) UserPlaneIPResourceInformation() (*UserPlaneIPResourceInformationFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != UserPlaneIPResourceInformation {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
@@ -36,7 +42,11 @@ func (i *IE) UserPlaneIPResourceInformation() (*UserPlaneIPResourceInformationFi
 
 // TEIDRI returns the number of bits that are used to partition the TEID range.
 func (i *IE) TEIDRI() int {
-	if i.Type != UserPlaneIPResourceInformation {
+	if i == nil {
+		return 0
+	}
+
+	if i.Type != UserPlaneIPResourceInformation || len(i.Payload) == 0 {
 		return 0
 	}
 
@@ -45,6 +55,10 @@ func (i *IE) TEIDRI() int {
 
 // HasASSONI reports whether an IE has ASSONI bit.
 func (i *IE) HasASSONI() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UserPlaneIPResourceInformation {
 		return false
 	}
@@ -57,6 +71,10 @@ func (i *IE) HasASSONI() bool {
 
 // HasASSOSI reports whether an IE has ASSOSI bit.
 func (i *IE) HasASSOSI() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != UserPlaneIPResourceInformation {
 		return false
 	}
@@ -115,8 +133,13 @@ func ParseUserPlaneIPResourceInformationFields(b []byte) (*UserPlaneIPResourceIn
 
 // UnmarshalBinary parses b into UserPlaneIPResourceInformationFields.
 func (f *UserPlaneIPResourceInformationFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = UserPlaneIPResourceInformationFields{}
+
 	l := len(b)
-	if l < 2 {
+	if l < 1 {
 		return io.ErrUnexpectedEOF
 	}
 
@@ -150,11 +173,14 @@ func (f *UserPlaneIPResourceInformationFields) UnmarshalBinary(b []byte) error {
 	if has6thBit(f.Flags) {
 		n := l
 		if has7thBit(f.Flags) {
-			f.SourceInterface = b[n] & 0x0f
+			if n <= offset {
+				return io.ErrUnexpectedEOF
+			}
+			f.SourceInterface = b[n-1] & 0x0f
 			n--
 		}
 
-		if l < offset+n {
+		if n < offset {
 			return io.ErrUnexpectedEOF
 		}
 		f.NetworkInstance = string(b[offset:n])
@@ -162,6 +188,9 @@ func (f *UserPlaneIPResourceInformationFields) UnmarshalBinary(b []byte) error {
 	}
 
 	if has7thBit(f.Flags) {
+		if l <= offset {
+			return io.ErrUnexpectedEOF
+		}
 		f.SourceInterface = b[offset] & 0x0f
 	}
 
@@ -170,6 +199,10 @@ func (f *UserPlaneIPResourceInformationFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of UserPlaneIPResourceInformationFields.
 func (f *UserPlaneIPResourceInformationFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -179,8 +212,18 @@ func (f *UserPlaneIPResourceInformationFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *UserPlaneIPResourceInformationFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
-	if l < 2 {
+	if l < 1 {
 		return io.ErrUnexpectedEOF
 	}
 
@@ -193,12 +236,18 @@ func (f *UserPlaneIPResourceInformationFields) MarshalTo(b []byte) error {
 	}
 
 	if has1stBit(f.Flags) {
-		copy(b[offset:offset+4], f.IPv4Address)
+		if f.IPv4Address.To4() == nil {
+			return ErrMalformed
+		}
+		copy(b[offset:offset+4], f.IPv4Address.To4())
 		offset += 4
 	}
 
 	if has2ndBit(f.Flags) {
-		copy(b[offset:offset+16], f.IPv6Address)
+		if f.IPv6Address.To16() == nil {
+			return ErrMalformed
+		}
+		copy(b[offset:offset+16], f.IPv6Address.To16())
 		offset += 16
 	}
 	if has6thBit(f.Flags) {
@@ -216,6 +265,10 @@ func (f *UserPlaneIPResourceInformationFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *UserPlaneIPResourceInformationFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 1
 	if (f.Flags>>2)&0x07 != 0 {
 		l++

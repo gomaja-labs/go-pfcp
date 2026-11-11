@@ -9,13 +9,18 @@ import (
 )
 
 // NewRecoveryTimeStamp creates a new RecoveryTimeStamp IE.
+// It returns nil outside the supported Unix-seconds window [0, 2^32-1];
+// fractional seconds are discarded. See RFC 5905 section 6 and the package era policy.
 func NewRecoveryTimeStamp(ts time.Time) *IE {
-	u64sec := uint64(ts.Sub(time.Date(1900, time.January, 1, 0, 0, 0, 0, time.UTC))) / 1000000000
-	return newUint32ValIE(RecoveryTimeStamp, uint32(u64sec))
+	return new3GPPTimestampIE(RecoveryTimeStamp, ts)
 }
 
 // RecoveryTimeStamp returns RecoveryTimeStamp in time.Time if the type of IE matches.
 func (i *IE) RecoveryTimeStamp() (time.Time, error) {
+	if i == nil {
+		return time.Time{}, ErrIENotFound
+	}
+
 	if i.Type != RecoveryTimeStamp {
 		return time.Time{}, &InvalidTypeError{Type: i.Type}
 	}

@@ -11,9 +11,13 @@ func NewOverloadControlInformation(ies ...*IE) *IE {
 
 // OverloadControlInformation returns the IEs above OverloadControlInformation if the type of IE matches.
 func (i *IE) OverloadControlInformation() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != OverloadControlInformation {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

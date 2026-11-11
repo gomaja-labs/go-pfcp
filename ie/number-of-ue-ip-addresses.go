@@ -23,6 +23,10 @@ func NewNumberOfUEIPAddresses(flags uint8, v4, v6 uint32) *IE {
 
 // NumberOfUEIPAddresses returns NumberOfUEIPAddresses in structured format if the type of IE matches.
 func (i *IE) NumberOfUEIPAddresses() (*NumberOfUEIPAddressesFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case NumberOfUEIPAddresses:
 		fields, err := ParseNumberOfUEIPAddressesFields(i.Payload)
@@ -65,21 +69,37 @@ func NewNumberOfUEIPAddressesFields(flags uint8, v4, v6 uint32) *NumberOfUEIPAdd
 
 // HasNumIPv6 reports whether IPv6 flag is set.
 func (f *NumberOfUEIPAddressesFields) HasNumIPv6() bool {
+	if f == nil {
+		return false
+	}
+
 	return has2ndBit(f.Flags)
 }
 
 // SetIPv6Flag sets IPv6 flag in NumberOfUEIPAddresses.
 func (f *NumberOfUEIPAddressesFields) SetIPv6Flag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x02
 }
 
 // HasNumIPv4 reports whether IPv4 flag is set.
 func (f *NumberOfUEIPAddressesFields) HasNumIPv4() bool {
+	if f == nil {
+		return false
+	}
+
 	return has1stBit(f.Flags)
 }
 
 // SetIPv4Flag sets IPv4 flag in NumberOfUEIPAddresses.
 func (f *NumberOfUEIPAddressesFields) SetIPv4Flag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x01
 }
 
@@ -94,6 +114,11 @@ func ParseNumberOfUEIPAddressesFields(b []byte) (*NumberOfUEIPAddressesFields, e
 
 // UnmarshalBinary parses b into IE.
 func (f *NumberOfUEIPAddressesFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = NumberOfUEIPAddressesFields{}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -122,6 +147,10 @@ func (f *NumberOfUEIPAddressesFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of NumberOfUEIPAddressesFields.
 func (f *NumberOfUEIPAddressesFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -131,6 +160,16 @@ func (f *NumberOfUEIPAddressesFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *NumberOfUEIPAddressesFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -159,6 +198,10 @@ func (f *NumberOfUEIPAddressesFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *NumberOfUEIPAddressesFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 1
 
 	if f.HasNumIPv4() {

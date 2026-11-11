@@ -11,6 +11,10 @@ func NewATSSSLLInformation(lli uint8) *IE {
 
 // ATSSSLLInformation returns ATSSSLLInformation in uint8 if the type of IE matches.
 func (i *IE) ATSSSLLInformation() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case ATSSSLLInformation:
 		return i.ValueAsUint8()

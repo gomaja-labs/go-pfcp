@@ -12,9 +12,13 @@ func NewUpdateURR(ies ...*IE) *IE {
 
 // UpdateURR returns the IEs above UpdateURR if the type of IE matches.
 func (i *IE) UpdateURR() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != UpdateURR {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

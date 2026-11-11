@@ -11,6 +11,10 @@ func NewPMFControlInformation(pmfi uint8) *IE {
 
 // PMFControlInformation returns PMFControlInformation in uint8 if the type of IE matches.
 func (i *IE) PMFControlInformation() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case PMFControlInformation:
 		return i.ValueAsUint8()
@@ -32,6 +36,10 @@ func (i *IE) PMFControlInformation() (uint8, error) {
 
 // HasPMFI reports whether an IE has PMFI bit.
 func (i *IE) HasPMFI() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.PMFControlInformation()
 	if err != nil {
 		return false

@@ -20,6 +20,10 @@ func NewMultiplier(val uint64, exp uint32) *IE {
 
 // Multiplier returns Multiplier in []byte if the type of IE matches.
 func (i *IE) Multiplier() ([]byte, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case Multiplier:
 		return i.Payload, nil
@@ -41,6 +45,10 @@ func (i *IE) Multiplier() ([]byte, error) {
 
 // ValueDigits returns ValueDigits in uint64 if the type of IE matches.
 func (i *IE) ValueDigits() (uint64, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case Multiplier:
 		return i.ValueAsUint64()
@@ -62,12 +70,16 @@ func (i *IE) ValueDigits() (uint64, error) {
 
 // Exponent returns Exponent in uint32 if the type of IE matches.
 func (i *IE) Exponent() (uint32, error) {
-	if len(i.Payload) < 12 {
-		return 0, io.ErrUnexpectedEOF
+	if i == nil {
+		return 0, ErrIENotFound
 	}
 
 	switch i.Type {
 	case Multiplier:
+		if len(i.Payload) < 12 {
+			return 0, io.ErrUnexpectedEOF
+		}
+
 		return binary.BigEndian.Uint32(i.Payload[8:12]), nil
 	case AggregatedURRs:
 		ies, err := i.AggregatedURRs()

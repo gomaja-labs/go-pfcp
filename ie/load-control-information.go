@@ -11,9 +11,13 @@ func NewLoadControlInformation(ies ...*IE) *IE {
 
 // LoadControlInformation returns the IEs above LoadControlInformation if the type of IE matches.
 func (i *IE) LoadControlInformation() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != LoadControlInformation {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

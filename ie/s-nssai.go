@@ -20,12 +20,16 @@ func NewSNSSAI(sst uint8, sd uint32) *IE {
 
 // SNSSAI returns SNSSAI in []byte if the type of IE matches.
 func (i *IE) SNSSAI() ([]byte, error) {
-	if len(i.Payload) < 4 {
-		return nil, io.ErrUnexpectedEOF
+	if i == nil {
+		return nil, ErrIENotFound
 	}
 
 	switch i.Type {
 	case SNSSAI:
+		if len(i.Payload) < 4 {
+			return nil, io.ErrUnexpectedEOF
+		}
+
 		return i.Payload[0:4], nil
 	case UEIPAddressPoolInformation:
 		ies, err := i.UEIPAddressPoolInformation()
@@ -45,6 +49,10 @@ func (i *IE) SNSSAI() ([]byte, error) {
 
 // SST returns SST in uint8 if the type of IE matches.
 func (i *IE) SST() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	v, err := i.SNSSAI()
 	if err != nil {
 		return 0, err
@@ -55,6 +63,10 @@ func (i *IE) SST() (uint8, error) {
 
 // SD returns SD in uint32 if the type of IE matches.
 func (i *IE) SD() (uint32, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	v, err := i.SNSSAI()
 	if err != nil {
 		return 0, err

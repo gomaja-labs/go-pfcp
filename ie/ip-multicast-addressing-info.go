@@ -11,9 +11,13 @@ func NewIPMulticastAddressingInfo(ies ...*IE) *IE {
 
 // IPMulticastAddressingInfo returns the IEs above IPMulticastAddressingInfo if the type of IE matches.
 func (i *IE) IPMulticastAddressingInfo() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case IPMulticastAddressingInfo:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	case CreatePDR:
 		ies, err := i.CreatePDR()
 		if err != nil {

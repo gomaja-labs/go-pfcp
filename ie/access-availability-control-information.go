@@ -11,9 +11,13 @@ func NewAccessAvailabilityControlInformation(info *IE) *IE {
 
 // AccessAvailabilityControlInformation returns the IEs above AccessAvailabilityControlInformation if the type of IE matches.
 func (i *IE) AccessAvailabilityControlInformation() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case AccessAvailabilityControlInformation:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	case CreateSRR:
 		ies, err := i.CreateSRR()
 		if err != nil {

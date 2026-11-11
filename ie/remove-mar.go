@@ -11,9 +11,13 @@ func NewRemoveMAR(marID *IE) *IE {
 
 // RemoveMAR returns the IEs above RemoveMAR if the type of IE matches.
 func (i *IE) RemoveMAR() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != RemoveMAR {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

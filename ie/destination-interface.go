@@ -21,6 +21,10 @@ func NewDestinationInterface(intf uint8) *IE {
 
 // DestinationInterface returns DestinationInterface in uint8 if the type of IE matches.
 func (i *IE) DestinationInterface() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case DestinationInterface:
 		return i.ValueAsUint8()

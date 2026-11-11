@@ -17,6 +17,10 @@ func NewSteeringFunctionality(sfunc uint8) *IE {
 
 // SteeringFunctionality returns SteeringFunctionality in uint8 if the type of IE matches.
 func (i *IE) SteeringFunctionality() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case SteeringFunctionality:
 		return i.ValueAsUint8()

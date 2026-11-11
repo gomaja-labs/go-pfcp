@@ -19,6 +19,10 @@ func NewSteeringMode(mode uint8) *IE {
 
 // SteeringMode returns SteeringMode in uint8 if the type of IE matches.
 func (i *IE) SteeringMode() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case SteeringMode:
 		return i.ValueAsUint8()

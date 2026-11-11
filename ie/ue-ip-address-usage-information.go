@@ -11,9 +11,13 @@ func NewUEIPAddressUsageInformation(ies ...*IE) *IE {
 
 // UEIPAddressUsageInformation returns the IEs above UEIPAddressUsageInformation if the type of IE matches.
 func (i *IE) UEIPAddressUsageInformation() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case UEIPAddressUsageInformation:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

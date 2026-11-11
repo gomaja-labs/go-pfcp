@@ -11,6 +11,10 @@ func NewInactivityDetectionTime(threshold uint32) *IE {
 
 // InactivityDetectionTime returns InactivityDetectionTime in uint32 if the type of IE matches.
 func (i *IE) InactivityDetectionTime() (uint32, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case InactivityDetectionTime:
 		return i.ValueAsUint32()

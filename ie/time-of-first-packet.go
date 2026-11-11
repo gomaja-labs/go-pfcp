@@ -9,13 +9,18 @@ import (
 )
 
 // NewTimeOfFirstPacket creates a new TimeOfFirstPacket IE.
+// It returns nil outside the supported Unix-seconds window [0, 2^32-1];
+// fractional seconds are discarded. See RFC 5905 section 6 and the package era policy.
 func NewTimeOfFirstPacket(ts time.Time) *IE {
-	u64sec := uint64(ts.Sub(time.Date(1900, time.January, 1, 0, 0, 0, 0, time.UTC))) / 1000000000
-	return newUint32ValIE(TimeOfFirstPacket, uint32(u64sec))
+	return new3GPPTimestampIE(TimeOfFirstPacket, ts)
 }
 
 // TimeOfFirstPacket returns TimeOfFirstPacket in time.Time if the type of IE matches.
 func (i *IE) TimeOfFirstPacket() (time.Time, error) {
+	if i == nil {
+		return time.Time{}, ErrIENotFound
+	}
+
 	switch i.Type {
 	case TimeOfFirstPacket:
 		return i.valueAs3GPPTimestamp()

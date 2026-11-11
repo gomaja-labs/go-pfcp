@@ -11,9 +11,13 @@ func NewAccessAvailabilityReport(info *IE) *IE {
 
 // AccessAvailabilityReport returns the IEs above AccessAvailabilityReport if the type of IE matches.
 func (i *IE) AccessAvailabilityReport() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != AccessAvailabilityReport {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

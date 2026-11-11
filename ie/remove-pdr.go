@@ -11,9 +11,13 @@ func NewRemovePDR(pdr *IE) *IE {
 
 // RemovePDR returns the IEs above RemovePDR if the type of IE matches.
 func (i *IE) RemovePDR() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != RemovePDR {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

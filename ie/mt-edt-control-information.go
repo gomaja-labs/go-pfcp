@@ -11,6 +11,10 @@ func NewMTEDTControlInformation(rdsi uint8) *IE {
 
 // MTEDTControlInformation returns MTEDTControlInformation in uint8 if the type of IE matches.
 func (i *IE) MTEDTControlInformation() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case MTEDTControlInformation:
 		return i.ValueAsUint8()
@@ -32,6 +36,10 @@ func (i *IE) MTEDTControlInformation() (uint8, error) {
 
 // HasRDSI reports whether an IE has RDSI bit.
 func (i *IE) HasRDSI() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.MTEDTControlInformation()
 	if err != nil {
 		return false

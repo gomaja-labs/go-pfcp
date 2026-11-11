@@ -21,9 +21,13 @@ func NewRedundantTransmissionParametersInFAR(ohc, ni *IE) *IE {
 
 // RedundantTransmissionParameters returns the IEs above RedundantTransmissionParameters if the type of IE matches.
 func (i *IE) RedundantTransmissionParameters() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case RedundantTransmissionParameters:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	case CreatePDR:
 		ies, err := i.CreatePDR()
 		if err != nil {

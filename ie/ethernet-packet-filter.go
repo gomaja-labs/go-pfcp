@@ -11,9 +11,13 @@ func NewEthernetPacketFilter(ies ...*IE) *IE {
 
 // EthernetPacketFilter returns the IEs above EthernetPacketFilter if the type of IE matches.
 func (i *IE) EthernetPacketFilter() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case EthernetPacketFilter:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	case CreatePDR:
 		ies, err := i.CreatePDR()
 		if err != nil {

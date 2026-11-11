@@ -20,12 +20,16 @@ func NewGBR(ul, dl uint64) *IE {
 
 // GBR returns GBR in []byte if the type of IE matches.
 func (i *IE) GBR() ([]byte, error) {
-	if len(i.Payload) < 10 {
-		return nil, io.ErrUnexpectedEOF
+	if i == nil {
+		return nil, ErrIENotFound
 	}
 
 	switch i.Type {
 	case GBR:
+		if len(i.Payload) < 10 {
+			return nil, io.ErrUnexpectedEOF
+		}
+
 		return i.Payload, nil
 	case CreateQER:
 		ies, err := i.CreateQER()
@@ -56,6 +60,10 @@ func (i *IE) GBR() ([]byte, error) {
 
 // GBRUL returns GBRUL in uint64 if the type of IE matches.
 func (i *IE) GBRUL() (uint64, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	v, err := i.GBR()
 	if err != nil {
 		return 0, err
@@ -65,6 +73,10 @@ func (i *IE) GBRUL() (uint64, error) {
 
 // GBRDL returns GBRDL in uint64 if the type of IE matches.
 func (i *IE) GBRDL() (uint64, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	v, err := i.GBR()
 	if err != nil {
 		return 0, err

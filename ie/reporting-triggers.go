@@ -15,12 +15,16 @@ func NewReportingTriggers(triggersOctets ...uint8) *IE {
 
 // ReportingTriggers returns ReportingTriggers in []byte if the type of IE matches.
 func (i *IE) ReportingTriggers() ([]byte, error) {
-	if len(i.Payload) < 2 {
-		return nil, io.ErrUnexpectedEOF
+	if i == nil {
+		return nil, ErrIENotFound
 	}
 
 	switch i.Type {
 	case ReportingTriggers:
+		if len(i.Payload) < 2 {
+			return nil, io.ErrUnexpectedEOF
+		}
+
 		return i.Payload, nil
 	case CreateURR:
 		ies, err := i.CreateURR()
@@ -51,6 +55,10 @@ func (i *IE) ReportingTriggers() ([]byte, error) {
 
 // HasLIUSA reports whether an IE has LIUSA bit.
 func (i *IE) HasLIUSA() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case CreateURR, UpdateURR, ReportingTriggers:
 		v, err := i.ReportingTriggers()
@@ -74,6 +82,10 @@ func (i *IE) HasLIUSA() bool {
 
 // HasDROTH reports whether an IE has DROTH bit.
 func (i *IE) HasDROTH() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case CreateURR, UpdateURR, ReportingTriggers:
 		v, err := i.ReportingTriggers()
@@ -97,6 +109,10 @@ func (i *IE) HasDROTH() bool {
 
 // HasSTOPT reports whether an IE has STOPT bit.
 func (i *IE) HasSTOPT() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case CreateURR, UpdateURR, ReportingTriggers:
 		v, err := i.ReportingTriggers()
@@ -120,6 +136,10 @@ func (i *IE) HasSTOPT() bool {
 
 // HasSTART reports whether an IE has START bit.
 func (i *IE) HasSTART() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case CreateURR, UpdateURR, ReportingTriggers:
 		v, err := i.ReportingTriggers()
@@ -143,6 +163,10 @@ func (i *IE) HasSTART() bool {
 
 // HasQUHTI reports whether an IE has QUHTI bit.
 func (i *IE) HasQUHTI() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case CreateURR, UpdateURR, ReportingTriggers:
 		v, err := i.ReportingTriggers()
@@ -166,6 +190,10 @@ func (i *IE) HasQUHTI() bool {
 
 // HasTIMTH reports whether an IE has TIMTH bit.
 func (i *IE) HasTIMTH() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case CreateURR, UpdateURR, ReportingTriggers:
 		v, err := i.ReportingTriggers()
@@ -189,6 +217,10 @@ func (i *IE) HasTIMTH() bool {
 
 // HasVOLTH reports whether an IE has VOLTH bit.
 func (i *IE) HasVOLTH() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case CreateURR, UpdateURR, ReportingTriggers:
 		v, err := i.ReportingTriggers()
@@ -212,6 +244,10 @@ func (i *IE) HasVOLTH() bool {
 
 // HasPERIO reports whether an IE has PERIO bit.
 func (i *IE) HasPERIO() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case CreateURR, UpdateURR, ReportingTriggers:
 		v, err := i.ReportingTriggers()
@@ -242,6 +278,10 @@ func (i *IE) HasPERIO() bool {
 
 // HasQUVTI reports whether an IE has QUVTI bit.
 func (i *IE) HasQUVTI() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case CreateURR, UpdateURR, ReportingTriggers:
 		v, err := i.ReportingTriggers()
@@ -270,6 +310,10 @@ func (i *IE) HasQUVTI() bool {
 
 // HasIPMJL reports whether an IE has IPMJL bit.
 func (i *IE) HasIPMJL() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case CreateURR, UpdateURR, ReportingTriggers:
 		v, err := i.ReportingTriggers()
@@ -298,6 +342,10 @@ func (i *IE) HasIPMJL() bool {
 
 // HasEVEQU reports whether an IE has EVEQU bit.
 func (i *IE) HasEVEQU() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case CreateURR, UpdateURR, ReportingTriggers:
 		v, err := i.ReportingTriggers()
@@ -326,6 +374,10 @@ func (i *IE) HasEVEQU() bool {
 
 // HasEVETH reports whether an IE has EVETH bit.
 func (i *IE) HasEVETH() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case CreateURR, UpdateURR, ReportingTriggers:
 		v, err := i.ReportingTriggers()
@@ -349,6 +401,10 @@ func (i *IE) HasEVETH() bool {
 
 // HasMACAR reports whether an IE has MACAR bit.
 func (i *IE) HasMACAR() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case CreateURR, UpdateURR, ReportingTriggers:
 		v, err := i.ReportingTriggers()
@@ -372,6 +428,10 @@ func (i *IE) HasMACAR() bool {
 
 // HasENVCL reports whether an IE has ENVCL bit.
 func (i *IE) HasENVCL() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case CreateURR, UpdateURR, ReportingTriggers:
 		v, err := i.ReportingTriggers()
@@ -395,6 +455,10 @@ func (i *IE) HasENVCL() bool {
 
 // HasTIMQU reports whether an IE has TIMQU bit.
 func (i *IE) HasTIMQU() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case CreateURR, UpdateURR, ReportingTriggers:
 		v, err := i.ReportingTriggers()
@@ -418,6 +482,10 @@ func (i *IE) HasTIMQU() bool {
 
 // HasVOLQU reports whether an IE has VOLQU bit.
 func (i *IE) HasVOLQU() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case CreateURR, UpdateURR, ReportingTriggers:
 		v, err := i.ReportingTriggers()
@@ -441,6 +509,10 @@ func (i *IE) HasVOLQU() bool {
 
 // HasUPINT reports whether an IE has UPINT bit.
 func (i *IE) HasUPINT() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case CreateURR, UpdateURR, ReportingTriggers:
 		v, err := i.ReportingTriggers()
@@ -474,6 +546,10 @@ func (i *IE) HasUPINT() bool {
 
 // HasREEMR reports whether an IE has REEMR bit.
 func (i *IE) HasREEMR() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case CreateURR, UpdateURR, ReportingTriggers:
 		v, err := i.ReportingTriggers()

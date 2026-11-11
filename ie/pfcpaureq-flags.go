@@ -11,6 +11,10 @@ func NewPFCPAUReqFlags(flag uint8) *IE {
 
 // PFCPAUReqFlags returns PFCPAUReqFlags in uint8 if the type of IE matches.
 func (i *IE) PFCPAUReqFlags() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	if i.Type != PFCPAUReqFlags {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
@@ -20,6 +24,10 @@ func (i *IE) PFCPAUReqFlags() (uint8, error) {
 
 // HasPARPS reports whether an IE has PARPS bit.
 func (i *IE) HasPARPS() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.PFCPAUReqFlags()
 	if err != nil {
 		return false

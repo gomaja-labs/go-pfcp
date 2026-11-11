@@ -23,6 +23,10 @@ func NewUELinkSpecificIPAddress(v4, v6, nv4, nv6 net.IP) *IE {
 
 // UELinkSpecificIPAddress returns UELinkSpecificIPAddress in structured format if the type of IE matches.
 func (i *IE) UELinkSpecificIPAddress() (*UELinkSpecificIPAddressFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case UELinkSpecificIPAddress:
 		fields, err := ParseUELinkSpecificIPAddressFields(i.Payload)
@@ -94,41 +98,73 @@ func NewUELinkSpecificIPAddressFields(v4, v6, nv4, nv6 net.IP) *UELinkSpecificIP
 
 // HasNV6 reports whether NV6 flag is set.
 func (f *UELinkSpecificIPAddressFields) HasNV6() bool {
+	if f == nil {
+		return false
+	}
+
 	return has4thBit(f.Flags)
 }
 
 // SetNV6Flag sets NV6 flag in UELinkSpecificIPAddress.
 func (f *UELinkSpecificIPAddressFields) SetNV6Flag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x08
 }
 
 // HasNV4 reports whether NV4 flag is set.
 func (f *UELinkSpecificIPAddressFields) HasNV4() bool {
+	if f == nil {
+		return false
+	}
+
 	return has3rdBit(f.Flags)
 }
 
 // SetNV4Flag sets NV4 flag in UELinkSpecificIPAddress.
 func (f *UELinkSpecificIPAddressFields) SetNV4Flag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x04
 }
 
 // HasIPv6 reports whether IPv6 flag is set.
 func (f *UELinkSpecificIPAddressFields) HasIPv6() bool {
+	if f == nil {
+		return false
+	}
+
 	return has2ndBit(f.Flags)
 }
 
 // SetIPv6Flag sets IPv6 flag in UELinkSpecificIPAddress.
 func (f *UELinkSpecificIPAddressFields) SetIPv6Flag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x02
 }
 
 // HasIPv4 reports whether IPv4 flag is set.
 func (f *UELinkSpecificIPAddressFields) HasIPv4() bool {
+	if f == nil {
+		return false
+	}
+
 	return has1stBit(f.Flags)
 }
 
 // SetIPv4Flag sets IPv4 flag in UELinkSpecificIPAddress.
 func (f *UELinkSpecificIPAddressFields) SetIPv4Flag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x01
 }
 
@@ -143,6 +179,11 @@ func ParseUELinkSpecificIPAddressFields(b []byte) (*UELinkSpecificIPAddressField
 
 // UnmarshalBinary parses b into IE.
 func (f *UELinkSpecificIPAddressFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = UELinkSpecificIPAddressFields{}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -187,6 +228,10 @@ func (f *UELinkSpecificIPAddressFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of UELinkSpecificIPAddressFields.
 func (f *UELinkSpecificIPAddressFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -196,6 +241,16 @@ func (f *UELinkSpecificIPAddressFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *UELinkSpecificIPAddressFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -240,6 +295,10 @@ func (f *UELinkSpecificIPAddressFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *UELinkSpecificIPAddressFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 1
 	if f.HasIPv4() {
 		l += 4

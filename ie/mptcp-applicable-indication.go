@@ -11,6 +11,10 @@ func NewMPTCPApplicableIndication(flag uint8) *IE {
 
 // MPTCPApplicableIndication returns MPTCPApplicableIndication in uint8 if the type of IE matches.
 func (i *IE) MPTCPApplicableIndication() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case MPTCPApplicableIndication:
 		return i.ValueAsUint8()
@@ -32,6 +36,10 @@ func (i *IE) MPTCPApplicableIndication() (uint8, error) {
 
 // HasMAI reports whether an IE has MAI bit.
 func (i *IE) HasMAI() bool {
+	if i == nil {
+		return false
+	}
+
 	switch i.Type {
 	case MPTCPApplicableIndication:
 		if len(i.Payload) < 1 {

@@ -11,6 +11,10 @@ func NewReportingFrequency(sesrl, perio, evett int) *IE {
 
 // ReportingFrequency returns ReportingFrequency in uint8 if the type of IE matches.
 func (i *IE) ReportingFrequency() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case ReportingFrequency:
 		return i.ValueAsUint8()
@@ -33,6 +37,10 @@ func (i *IE) ReportingFrequency() (uint8, error) {
 
 // HasSESRL reports whether an IE has SESRL bit.
 func (i *IE) HasSESRL() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.ReportingFrequency()
 	if err != nil {
 		return false
@@ -43,6 +51,10 @@ func (i *IE) HasSESRL() bool {
 
 // HasEVETT reports whether an IE has EVETT bit.
 func (i *IE) HasEVETT() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.ReportingFrequency()
 	if err != nil {
 		return false

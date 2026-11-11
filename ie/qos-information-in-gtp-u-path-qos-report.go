@@ -11,9 +11,13 @@ func NewQoSInformationInGTPUPathQoSReport(ies ...*IE) *IE {
 
 // QoSInformationInGTPUPathQoSReport returns the IEs above QoSInformationInGTPUPathQoSReport if the type of IE matches.
 func (i *IE) QoSInformationInGTPUPathQoSReport() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case QoSInformationInGTPUPathQoSReport:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	case GTPUPathQoSReport:
 		ies, err := i.GTPUPathQoSReport()
 		if err != nil {

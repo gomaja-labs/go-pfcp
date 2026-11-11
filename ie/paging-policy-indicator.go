@@ -13,12 +13,16 @@ func NewPagingPolicyIndicator(indicator uint8) *IE {
 
 // PagingPolicyIndicator returns PagingPolicyIndicator in uint8 if the type of IE matches.
 func (i *IE) PagingPolicyIndicator() (uint8, error) {
-	if len(i.Payload) < 1 {
-		return 0, io.ErrUnexpectedEOF
+	if i == nil {
+		return 0, ErrIENotFound
 	}
 
 	switch i.Type {
 	case PagingPolicyIndicator:
+		if len(i.Payload) < 1 {
+			return 0, io.ErrUnexpectedEOF
+		}
+
 		return i.Payload[0] & 0x07, nil
 	case CreateQER:
 		ies, err := i.CreateQER()

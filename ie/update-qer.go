@@ -11,9 +11,13 @@ func NewUpdateQER(ies ...*IE) *IE {
 
 // UpdateQER returns the IEs above UpdateQER if the type of IE matches.
 func (i *IE) UpdateQER() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != UpdateQER {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

@@ -11,9 +11,13 @@ func NewCreatedPDR(ies ...*IE) *IE {
 
 // CreatedPDR returns the IEs above CreatedPDR if the type of IE matches.
 func (i *IE) CreatedPDR() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != CreatedPDR {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

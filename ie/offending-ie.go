@@ -11,6 +11,10 @@ func NewOffendingIE(itype IEType) *IE {
 
 // OffendingIE returns OffendingIE in IEType if the type of IE matches.
 func (i *IE) OffendingIE() (IEType, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	if i.Type != OffendingIE {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

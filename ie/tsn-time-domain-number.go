@@ -11,6 +11,10 @@ func NewTSNTimeDomainNumber(num uint8) *IE {
 
 // TSNTimeDomainNumber returns TSNTimeDomainNumber in uint8 if the type of IE matches.
 func (i *IE) TSNTimeDomainNumber() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case TSNTimeDomainNumber:
 		return i.ValueAsUint8()

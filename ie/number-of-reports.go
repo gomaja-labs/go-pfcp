@@ -11,6 +11,10 @@ func NewNumberOfReports(num uint16) *IE {
 
 // NumberOfReports returns NumberOfReports in uint16 if the type of IE matches.
 func (i *IE) NumberOfReports() (uint16, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case NumberOfReports:
 		return i.ValueAsUint16()

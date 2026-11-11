@@ -11,6 +11,10 @@ func NewAggregatedURRID(id uint32) *IE {
 
 // AggregatedURRID returns AggregatedURRID in uint32 if the type of IE matches.
 func (i *IE) AggregatedURRID() (uint32, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case AggregatedURRID:
 		return i.ValueAsUint32()

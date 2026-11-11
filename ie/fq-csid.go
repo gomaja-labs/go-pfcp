@@ -53,6 +53,10 @@ func NewFQCSID(nodeAddr string, csIDs ...uint16) *IE {
 
 // FQCSID returns FQCSID in []byte if the type of IE matches.
 func (i *IE) FQCSID() ([]byte, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != FQCSID {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
@@ -65,6 +69,10 @@ func (i *IE) FQCSID() ([]byte, error) {
 
 // NodeIDType returns NodeIDType in uint8 if the type of IE matches.
 func (i *IE) NodeIDType() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	if len(i.Payload) == 0 {
 		return 0, io.ErrUnexpectedEOF
 	}
@@ -79,6 +87,10 @@ func (i *IE) NodeIDType() (uint8, error) {
 
 // NodeAddress returns NodeAddress in []byte if the type of IE matches.
 func (i *IE) NodeAddress() ([]byte, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if len(i.Payload) == 0 {
 		return nil, io.ErrUnexpectedEOF
 	}
@@ -87,12 +99,12 @@ func (i *IE) NodeAddress() ([]byte, error) {
 	case FQCSID:
 		switch (i.Payload[0] >> 4) & 0x0f {
 		case nodeIDIPv4, nodeIDOther:
-			if len(i.Payload) < 6 {
+			if len(i.Payload) < 5 {
 				return nil, io.ErrUnexpectedEOF
 			}
 			return i.Payload[1:5], nil
 		case nodeIDIPv6:
-			if len(i.Payload) < 18 {
+			if len(i.Payload) < 17 {
 				return nil, io.ErrUnexpectedEOF
 			}
 			return i.Payload[1:17], nil
@@ -106,6 +118,10 @@ func (i *IE) NodeAddress() ([]byte, error) {
 
 // CSIDs returns CSIDs in []uint16 if the type of IE matches.
 func (i *IE) CSIDs() ([]uint16, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if len(i.Payload) == 0 {
 		return nil, io.ErrUnexpectedEOF
 	}
@@ -122,11 +138,18 @@ func (i *IE) CSIDs() ([]uint16, error) {
 			return nil, ErrMalformed
 		}
 
-		var csids []uint16
-		for offset+2 > len(i.Payload) {
-			csids = append(csids, binary.BigEndian.Uint16(i.Payload[offset:offset+2]))
+		// TS 29.244 V20.1.0 clause 8.2.43: count is the low nibble;
+		// the following Node Type and extension octets are not CSIDs.
+		count := int(i.Payload[0] & 0x0f)
+		if len(i.Payload) < offset+2*count {
+			return nil, io.ErrUnexpectedEOF
+		}
+		csids := make([]uint16, count)
+		for n := range csids {
+			csids[n] = binary.BigEndian.Uint16(i.Payload[offset : offset+2])
 			offset += 2
 		}
+
 		return csids, nil
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}

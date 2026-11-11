@@ -23,6 +23,10 @@ func NewAccessAvailabilityInformation(status, atype uint8) *IE {
 
 // AccessAvailabilityInformation returns AccessAvailabilityInformation in uint8 if the type of IE matches.
 func (i *IE) AccessAvailabilityInformation() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case AccessAvailabilityInformation:
 		return i.ValueAsUint8()
@@ -45,6 +49,10 @@ func (i *IE) AccessAvailabilityInformation() (uint8, error) {
 
 // AvailabilityStatus returns AvailabilityStatus in uint8 if the type of IE matches.
 func (i *IE) AvailabilityStatus() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	v, err := i.AccessAvailabilityInformation()
 	if err != nil {
 		return 0, err
@@ -55,6 +63,10 @@ func (i *IE) AvailabilityStatus() (uint8, error) {
 
 // AccessType returns AccessType in uint8 if the type of IE matches.
 func (i *IE) AccessType() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	v, err := i.AccessAvailabilityInformation()
 	if err != nil {
 		return 0, err

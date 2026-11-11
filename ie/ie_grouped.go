@@ -1,195 +1,170 @@
 package ie
 
-import "sync"
-
-// We're using map to avoid iterating over a list.
-// The value `true` is not actually used.
-// TODO: consider using a slice with utils in slices package introduced in Go 1.21.
-var (
-	mu                  sync.RWMutex
-	defaultGroupedIEMap = map[IEType]bool{
-		CreatePDR:                            true,
-		PDI:                                  true,
-		CreateFAR:                            true,
-		ForwardingParameters:                 true,
-		DuplicatingParameters:                true,
-		CreateURR:                            true,
-		CreateQER:                            true,
-		CreatedPDR:                           true,
-		UpdatePDR:                            true,
-		UpdateFAR:                            true,
-		UpdateForwardingParameters:           true,
-		UpdateBARWithinSessionReportResponse: true,
-		UpdateURR:                            true,
-		UpdateQER:                            true,
-		RemovePDR:                            true,
-		RemoveFAR:                            true,
-		RemoveURR:                            true,
-		RemoveQER:                            true,
-		LoadControlInformation:               true,
-		OverloadControlInformation:           true,
-		ApplicationIDsPFDs:                   true,
-		PFDContext:                           true,
-		ApplicationDetectionInformation:      true,
-		QueryURR:                             true,
-		UsageReportWithinSessionModificationResponse: true,
-		UsageReportWithinSessionDeletionResponse:     true,
-		UsageReportWithinSessionReportRequest:        true,
-		DownlinkDataReport:                           true,
-		CreateBAR:                                    true,
-		UpdateBARWithinSessionModificationRequest:    true,
-		RemoveBAR:                                                 true,
-		ErrorIndicationReport:                                     true,
-		UserPlanePathFailureReport:                                true,
-		UpdateDuplicatingParameters:                               true,
-		AggregatedURRs:                                            true,
-		CreateTrafficEndpoint:                                     true,
-		CreatedTrafficEndpoint:                                    true,
-		UpdateTrafficEndpoint:                                     true,
-		RemoveTrafficEndpoint:                                     true,
-		EthernetPacketFilter:                                      true,
-		EthernetTrafficInformation:                                true,
-		AdditionalMonitoringTime:                                  true,
-		CreateMAR:                                                 true,
-		TGPPAccessForwardingActionInformation:                     true,
-		NonTGPPAccessForwardingActionInformation:                  true,
-		RemoveMAR:                                                 true,
-		UpdateMAR:                                                 true,
-		UpdateTGPPAccessForwardingActionInformation:               true,
-		UpdateNonTGPPAccessForwardingActionInformation:            true,
-		PFCPSessionRetentionInformation:                           true,
-		UserPlanePathRecoveryReport:                               true,
-		IPMulticastAddressingInfo:                                 true,
-		JoinIPMulticastInformationWithinUsageReport:               true,
-		LeaveIPMulticastInformationWithinUsageReport:              true,
-		CreatedBridgeInfoForTSC:                                   true,
-		TSCManagementInformationWithinSessionModificationRequest:  true,
-		TSCManagementInformationWithinSessionModificationResponse: true,
-		TSCManagementInformationWithinSessionReportRequest:        true,
-		ClockDriftControlInformation:                              true,
-		ClockDriftReport:                                          true,
-		RemoveSRR:                                                 true,
-		CreateSRR:                                                 true,
-		UpdateSRR:                                                 true,
-		SessionReport:                                             true,
-		AccessAvailabilityControlInformation:                      true,
-		AccessAvailabilityReport:                                  true,
-		ProvideATSSSControlInformation:                            true,
-		ATSSSControlParameters:                                    true,
-		MPTCPParameters:                                           true,
-		ATSSSLLParameters:                                         true,
-		PMFParameters:                                             true,
-		UEIPAddressPoolInformation:                                true,
-		GTPUPathQoSControlInformation:                             true,
-		GTPUPathQoSReport:                                         true,
-		QoSInformationInGTPUPathQoSReport:                         true,
-		QoSMonitoringPerQoSFlowControlInformation:                 true,
-		QoSMonitoringReport:                                       true,
-		PacketRateStatusReport:                                    true,
-		EthernetContextInformation:                                true,
-		RedundantTransmissionParameters:                           true,
-		UpdatedPDR:                                                true,
-		ProvideRDSConfigurationInformation:                        true,
-		QueryPacketRateStatusWithinSessionModificationRequest:     true,
-		PacketRateStatusReportWithinSessionModificationResponse:   true,
-		UEIPAddressUsageInformation:                               true,
-		RedundantTransmissionForwardingParameters:                 true,
-		TransportDelayReporting:                                   true,
-	}
-	isGroupedFun = func(t IEType) bool {
-		mu.RLock()
-		defer mu.RUnlock()
-		_, ok := defaultGroupedIEMap[t]
-		return ok
-	}
-)
-
-// SetIsGroupedFun sets a function to check if an IE is grouped type or not.
-func SetIsGroupedFun(fun func(t IEType) bool) {
-	mu.Lock()
-	defer mu.Unlock()
-	isGroupedFun = fun
-}
-
-// AddGroupedIEType adds IE type(s) to the defaultGroupedIEMap.
-// This is useful when you want to add new IE types to the defaultGroupedIEMap,
-// e.g., to handle vendor-specific IEs as grouped type.
-func AddGroupedIEType(ts ...IEType) {
-	mu.Lock()
-	defer mu.Unlock()
-	for _, t := range ts {
-		defaultGroupedIEMap[t] = true
-	}
-}
-
-// IsGrouped reports whether an IE is grouped type or not.
-//
-// By default, this package determines if an IE is grouped type or not by checking
-// if the IE type is in the defaultGroupedIEMap.
-// You can change this entire behavior by calling SetIsGroupedFun(), or you can add
-// new IE types to the defaultGroupedIEMap by calling AddGroupedIEType().
+// IsGrouped reports whether the type is a grouped IE defined by
+// TS 29.244 V20.1.0 Table 8.1.2-1 (types 1 through 271).
+// Vendor-specific IEs require explicit interpretation with ValueAsGrouped.
 func (i *IE) IsGrouped() bool {
-	return isGroupedFun(i.Type)
+	if i == nil {
+		return false
+	}
+	switch i.Type {
+	case IPMulticastAddressingInfo, CreatePDR,
+		PDI,
+		CreateFAR,
+		ForwardingParameters,
+		DuplicatingParameters,
+		CreateURR,
+		CreateQER,
+		CreatedPDR,
+		UpdatePDR,
+		UpdateFAR,
+		UpdateForwardingParameters,
+		UpdateBARWithinSessionReportResponse,
+		UpdateURR,
+		UpdateQER,
+		RemovePDR,
+		RemoveFAR,
+		RemoveURR,
+		RemoveQER,
+		LoadControlInformation,
+		OverloadControlInformation,
+		ApplicationIDsPFDs,
+		PFDContext,
+		ApplicationDetectionInformation,
+		QueryURR,
+		UsageReportWithinSessionModificationResponse,
+		UsageReportWithinSessionDeletionResponse,
+		UsageReportWithinSessionReportRequest,
+		DownlinkDataReport,
+		CreateBAR,
+		UpdateBARWithinSessionModificationRequest,
+		RemoveBAR,
+		ErrorIndicationReport,
+		UserPlanePathFailureReport,
+		UpdateDuplicatingParameters,
+		AggregatedURRs,
+		CreateTrafficEndpoint,
+		CreatedTrafficEndpoint,
+		UpdateTrafficEndpoint,
+		RemoveTrafficEndpoint,
+		EthernetPacketFilter,
+		EthernetTrafficInformation,
+		AdditionalMonitoringTime,
+		CreateMAR,
+		TGPPAccessForwardingActionInformation,
+		NonTGPPAccessForwardingActionInformation,
+		RemoveMAR,
+		UpdateMAR,
+		UpdateTGPPAccessForwardingActionInformation,
+		UpdateNonTGPPAccessForwardingActionInformation,
+		PFCPSessionRetentionInformation,
+		UserPlanePathRecoveryReport,
+		JoinIPMulticastInformationWithinUsageReport,
+		LeaveIPMulticastInformationWithinUsageReport,
+		CreatedBridgeInfoForTSC,
+		PortManagementInformationForTSCWithinSessionModificationRequest,
+		PortManagementInformationForTSCWithinSessionModificationResponse,
+		PortManagementInformationForTSCWithinSessionReportRequest,
+		ClockDriftControlInformation,
+		ClockDriftReport,
+		RemoveSRR,
+		CreateSRR,
+		UpdateSRR,
+		SessionReport,
+		AccessAvailabilityControlInformation,
+		AccessAvailabilityReport,
+		ProvideATSSSControlInformation,
+		ATSSSControlParameters,
+		MPTCPParameters,
+		ATSSSLLParameters,
+		PMFParameters,
+		UEIPAddressPoolInformation,
+		GTPUPathQoSControlInformation,
+		GTPUPathQoSReport,
+		QoSInformationInGTPUPathQoSReport,
+		QoSMonitoringPerQoSFlowControlInformation,
+		QoSMonitoringReport,
+		PacketRateStatusReport,
+		EthernetContextInformation,
+		RedundantTransmissionParameters,
+		UpdatedPDR,
+		ProvideRDSConfigurationInformation,
+		QueryPacketRateStatusWithinSessionModificationRequest,
+		PacketRateStatusReportWithinSessionModificationResponse,
+		UEIPAddressUsageInformation,
+		RedundantTransmissionForwardingParameters,
+		TransportDelayReporting:
+		return true
+	default:
+		return false
+	}
 }
 
-// Add adds variable number of IEs to a IE if the IE is grouped type and update length.
-// Otherwise, this does nothing (no errors).
-func (i *IE) Add(ies ...*IE) {
+// Add appends non-nil children to a grouped IE. A raw payload is parsed first.
+// If that payload is malformed, it returns an error and leaves the IE unchanged.
+func (i *IE) Add(ies ...*IE) error {
+	if i == nil {
+		return ErrIENotFound
+	}
+
 	if !i.IsGrouped() {
-		return
+		return ErrInvalidType
 	}
-
-	i.Payload = nil
-	i.ChildIEs = append(i.ChildIEs, ies...)
-	for _, ie := range i.ChildIEs {
-		serialized, err := ie.Marshal()
-		if err != nil {
-			continue
+	children, err := i.ValueAsGrouped()
+	if err != nil {
+		return err
+	}
+	if children == nil {
+		children = make([]*IE, 0)
+	}
+	for _, child := range ies {
+		if child != nil {
+			children = append(children, child)
 		}
-		i.Payload = append(i.Payload, serialized...)
 	}
-	i.SetLength()
+	i.ChildIEs, i.Payload = children, nil
+	return nil
 }
 
-// Remove removes an IE looked up by type.
-func (i *IE) Remove(typ IEType) {
+// Remove removes all children of typ from a grouped IE. A raw payload is parsed
+// first; a malformed payload returns an error and leaves the IE unchanged.
+func (i *IE) Remove(typ IEType) error {
+	if i == nil {
+		return ErrIENotFound
+	}
+
 	if !i.IsGrouped() {
-		return
+		return ErrInvalidType
 	}
-
-	i.Payload = nil
-	newChildren := make([]*IE, len(i.ChildIEs))
-	idx := 0
-	for _, ie := range i.ChildIEs {
-		if ie.Type == typ {
-			newChildren = newChildren[:len(newChildren)-1]
-			continue
-		}
-		newChildren[idx] = ie
-		idx++
-
-		serialized, err := ie.Marshal()
-		if err != nil {
-			continue
-		}
-		i.Payload = append(i.Payload, serialized...)
+	children, err := i.ValueAsGrouped()
+	if err != nil {
+		return err
 	}
-	i.ChildIEs = newChildren
-	i.SetLength()
+	kept := make([]*IE, 0, len(children))
+	for _, child := range children {
+		if child != nil && child.Type != typ {
+			kept = append(kept, child)
+		}
+	}
+	i.ChildIEs, i.Payload = kept, nil
+	return nil
 }
 
-// FindByType returns IE looked up by type.
-//
-// The program may be slower when calling this method multiple times
-// because this ranges over a ChildIEs each time it is called.
+// FindByType returns the first child with the requested type.
 func (i *IE) FindByType(typ IEType) (*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
 	if !i.IsGrouped() {
 		return nil, ErrInvalidType
 	}
-
-	for _, ie := range i.ChildIEs {
-		if ie.Type == typ {
-			return ie, nil
+	children, err := i.ValueAsGrouped()
+	if err != nil {
+		return nil, err
+	}
+	for _, child := range children {
+		if child != nil && child.Type == typ {
+			return child, nil
 		}
 	}
 	return nil, ErrIENotFound

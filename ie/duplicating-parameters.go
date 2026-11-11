@@ -11,9 +11,13 @@ func NewDuplicatingParameters(ies ...*IE) *IE {
 
 // DuplicatingParameters returns the IEs above DuplicatingParameters if the type of IE matches.
 func (i *IE) DuplicatingParameters() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case DuplicatingParameters:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	case CreateFAR:
 		ies, err := i.CreateFAR()
 		if err != nil {

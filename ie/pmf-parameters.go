@@ -11,9 +11,13 @@ func NewPMFParameters(info *IE) *IE {
 
 // PMFParameters returns the IEs above PMFParameters if the type of IE matches.
 func (i *IE) PMFParameters() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case PMFParameters:
-		return ParseMultiIEs(i.Payload)
+		return i.ValueAsGrouped()
 	case ATSSSControlParameters:
 		ies, err := i.ATSSSControlParameters()
 		if err != nil {

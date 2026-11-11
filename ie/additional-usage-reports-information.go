@@ -19,6 +19,10 @@ func NewAdditionalUsageReportsInformation(num uint16) *IE {
 
 // AdditionalUsageReportsInformation returns AdditionalUsageReportsInformation in uint16 if the type of IE matches.
 func (i *IE) AdditionalUsageReportsInformation() (uint16, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	if i.Type != AdditionalUsageReportsInformation {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
@@ -32,6 +36,10 @@ func (i *IE) AdditionalUsageReportsInformation() (uint16, error) {
 
 // HasAURI reports whether an IE has AURI bit.
 func (i *IE) HasAURI() bool {
+	if i == nil {
+		return false
+	}
+
 	if i.Type != AdditionalUsageReportsInformation {
 		return false
 	}

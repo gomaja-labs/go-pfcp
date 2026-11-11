@@ -11,6 +11,10 @@ func NewProxying(ins, arp uint8) *IE {
 
 // Proxying returns Proxying in uint8 if the type of IE matches.
 func (i *IE) Proxying() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case Proxying:
 		return i.ValueAsUint8()
@@ -43,6 +47,10 @@ func (i *IE) Proxying() (uint8, error) {
 
 // HasINS reports whether an IE has INS bit.
 func (i *IE) HasINS() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.Proxying()
 	if err != nil {
 		return false
@@ -53,6 +61,10 @@ func (i *IE) HasINS() bool {
 
 // HasARP reports whether an IE has ARP bit.
 func (i *IE) HasARP() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.Proxying()
 	if err != nil {
 		return false

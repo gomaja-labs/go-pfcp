@@ -11,6 +11,10 @@ func NewEthernetFilterProperties(props uint8) *IE {
 
 // EthernetFilterProperties returns EthernetFilterProperties in uint8 if the type of IE matches.
 func (i *IE) EthernetFilterProperties() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case EthernetFilterProperties:
 		return i.ValueAsUint8()
@@ -43,6 +47,10 @@ func (i *IE) EthernetFilterProperties() (uint8, error) {
 
 // HasBIDE reports whether an IE has BIDE bit.
 func (i *IE) HasBIDE() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.EthernetFilterProperties()
 	if err != nil {
 		return false

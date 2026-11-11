@@ -40,6 +40,10 @@ func NewFailedRuleID(typ uint8, id uint32) *IE {
 
 // RuleIDType returns RuleIDType in uint8 if the type of IE matches.
 func (i *IE) RuleIDType() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	if i.Type != FailedRuleID {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
@@ -49,6 +53,10 @@ func (i *IE) RuleIDType() (uint8, error) {
 
 // FailedRuleID returns FailedRuleID in uint32 if the type of IE matches.
 func (i *IE) FailedRuleID() (uint32, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	if i.Type != FailedRuleID {
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

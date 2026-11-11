@@ -11,6 +11,10 @@ func NewCumulativeRateRatioMeasurement(measurement uint32) *IE {
 
 // CumulativeRateRatioMeasurement returns CumulativeRateRatioMeasurement in uint32 if the type of IE matches.
 func (i *IE) CumulativeRateRatioMeasurement() (uint32, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case CumulativeRateRatioMeasurement:
 		return i.ValueAsUint32()

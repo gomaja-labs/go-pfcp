@@ -11,6 +11,10 @@ func NewSuggestedBufferingPacketsCount(count uint8) *IE {
 
 // SuggestedBufferingPacketsCount returns SuggestedBufferingPacketsCount in uint8 if the type of IE matches.
 func (i *IE) SuggestedBufferingPacketsCount() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case SuggestedBufferingPacketsCount:
 		return i.ValueAsUint8()

@@ -19,12 +19,16 @@ func NewValidityTimer(period time.Duration) *IE {
 
 // ValidityTimer returns ValidityTimer in time.Duration if the type of IE matches.
 func (i *IE) ValidityTimer() (time.Duration, error) {
-	if len(i.Payload) < 2 {
-		return 0, io.ErrUnexpectedEOF
+	if i == nil {
+		return 0, ErrIENotFound
 	}
 
 	switch i.Type {
 	case ValidityTimer:
+		if len(i.Payload) < 2 {
+			return 0, io.ErrUnexpectedEOF
+		}
+
 		return time.Duration(binary.BigEndian.Uint16(i.Payload[0:2])) * time.Second, nil
 	case UEIPAddressUsageInformation:
 		ies, err := i.UEIPAddressUsageInformation()

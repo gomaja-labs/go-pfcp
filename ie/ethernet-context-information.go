@@ -11,9 +11,13 @@ func NewEthernetContextInformation(mac *IE) *IE {
 
 // EthernetContextInformation returns the IEs above EthernetContextInformation if the type of IE matches.
 func (i *IE) EthernetContextInformation() ([]*IE, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	if i.Type != EthernetContextInformation {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	return ParseMultiIEs(i.Payload)
+	return i.ValueAsGrouped()
 }

@@ -11,6 +11,10 @@ func NewGTPUPathInterfaceType(n3, n9 int) *IE {
 
 // GTPUPathInterfaceType returns GTPUPathInterfaceType in uint8 if the type of IE matches.
 func (i *IE) GTPUPathInterfaceType() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+
 	switch i.Type {
 	case GTPUPathInterfaceType:
 		return i.ValueAsUint8()
@@ -44,6 +48,10 @@ func (i *IE) GTPUPathInterfaceType() (uint8, error) {
 
 // HasN3 reports whether an IE has N3 bit.
 func (i *IE) HasN3() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.GTPUPathInterfaceType()
 	if err != nil {
 		return false
@@ -54,6 +62,10 @@ func (i *IE) HasN3() bool {
 
 // HasN9 reports whether an IE has N9 bit.
 func (i *IE) HasN9() bool {
+	if i == nil {
+		return false
+	}
+
 	v, err := i.GTPUPathInterfaceType()
 	if err != nil {
 		return false

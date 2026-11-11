@@ -23,6 +23,10 @@ func NewSubsequentVolumeQuota(flags uint8, tvol, uvol, dvol uint64) *IE {
 
 // SubsequentVolumeQuota returns SubsequentVolumeQuota in structured format if the type of IE matches.
 func (i *IE) SubsequentVolumeQuota() (*SubsequentVolumeQuotaFields, error) {
+	if i == nil {
+		return nil, ErrIENotFound
+	}
+
 	switch i.Type {
 	case SubsequentVolumeQuota:
 		fields, err := ParseSubsequentVolumeQuotaFields(i.Payload)
@@ -98,31 +102,55 @@ func NewSubsequentVolumeQuotaFields(flags uint8, tvol, uvol, dvol uint64) *Subse
 
 // HasDLVOL reports whether DLVOL flag is set.
 func (f *SubsequentVolumeQuotaFields) HasDLVOL() bool {
+	if f == nil {
+		return false
+	}
+
 	return has3rdBit(f.Flags)
 }
 
 // SetDLVOLFlag sets DLVOL flag in SubsequentVolumeQuota.
 func (f *SubsequentVolumeQuotaFields) SetDLVOLFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x04
 }
 
 // HasULVOL reports whether ULVOL flag is set.
 func (f *SubsequentVolumeQuotaFields) HasULVOL() bool {
+	if f == nil {
+		return false
+	}
+
 	return has2ndBit(f.Flags)
 }
 
 // SetULVOLFlag sets ULVOL flag in SubsequentVolumeQuota.
 func (f *SubsequentVolumeQuotaFields) SetULVOLFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x02
 }
 
 // HasTOVOL reports whether TOVOL flag is set.
 func (f *SubsequentVolumeQuotaFields) HasTOVOL() bool {
+	if f == nil {
+		return false
+	}
+
 	return has1stBit(f.Flags)
 }
 
 // SetTOVOLFlag sets TOVOL flag in SubsequentVolumeQuota.
 func (f *SubsequentVolumeQuotaFields) SetTOVOLFlag() {
+	if f == nil {
+		return
+	}
+
 	f.Flags |= 0x01
 }
 
@@ -137,6 +165,11 @@ func ParseSubsequentVolumeQuotaFields(b []byte) (*SubsequentVolumeQuotaFields, e
 
 // UnmarshalBinary parses b into IE.
 func (f *SubsequentVolumeQuotaFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	*f = SubsequentVolumeQuotaFields{}
+
 	l := len(b)
 	if l < 2 {
 		return io.ErrUnexpectedEOF
@@ -173,6 +206,10 @@ func (f *SubsequentVolumeQuotaFields) UnmarshalBinary(b []byte) error {
 
 // Marshal returns the serialized bytes of SubsequentVolumeQuotaFields.
 func (f *SubsequentVolumeQuotaFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+
 	b := make([]byte, f.MarshalLen())
 	if err := f.MarshalTo(b); err != nil {
 		return nil, err
@@ -182,6 +219,16 @@ func (f *SubsequentVolumeQuotaFields) Marshal() ([]byte, error) {
 
 // MarshalTo puts the byte sequence in the byte array given as b.
 func (f *SubsequentVolumeQuotaFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.MarshalLen() > 65535 {
+		return ErrInvalidLength
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+
 	l := len(b)
 	if l < 1 {
 		return io.ErrUnexpectedEOF
@@ -218,6 +265,10 @@ func (f *SubsequentVolumeQuotaFields) MarshalTo(b []byte) error {
 
 // MarshalLen returns field length in integer.
 func (f *SubsequentVolumeQuotaFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+
 	l := 1
 	if f.HasTOVOL() {
 		l += 8
