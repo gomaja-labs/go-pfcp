@@ -5,6 +5,7 @@ import (
 	"go/parser"
 	"go/token"
 	"net"
+	"net/netip"
 	"path/filepath"
 	"reflect"
 	"strings"
@@ -136,6 +137,24 @@ func constructorArgument(typ reflect.Type, name string) reflect.Value {
 // Registration happens during package initialization, before tests run.
 var constructorFixtures = map[uintptr][]any{}
 
+// A flag fixture supplies valid arguments for each supported flag combination.
+// Nil arguments exclude combinations forbidden by that constructor's clause.
+var constructorFlagFixtures = map[uintptr]func(uint8) []any{}
+
+func registerConstructorFlagFixture(fn any, args func(uint8) []any) bool {
+	key := reflect.ValueOf(fn).Pointer()
+	if _, exists := constructorFlagFixtures[key]; exists {
+		panic("duplicate constructor flag fixture")
+	}
+	constructorFlagFixtures[key] = args
+	return true
+}
+
+var constructorComparers = cmp.Options{
+	cmp.Comparer(func(a, b net.IP) bool { return a.Equal(b) }),
+	cmp.Comparer(func(a, b netip.Addr) bool { return a == b }),
+}
+
 func registerConstructorFixture(fn any, args ...any) bool {
 	key := reflect.ValueOf(fn).Pointer()
 	if _, exists := constructorFixtures[key]; exists {
@@ -207,8 +226,8 @@ func TestConstructorRoundTrips(t *testing.T) {
 				if !result[1].IsNil() {
 					t.Fatal(result[1].Interface())
 				}
-				if !cmp.Equal(result[0].Interface(), value, cmp.Comparer(func(a, b net.IP) bool { return a.Equal(b) })) {
-					t.Error("fields constructor inputs lost on decode:", cmp.Diff(value, result[0].Interface(), cmp.Comparer(func(a, b net.IP) bool { return a.Equal(b) })))
+				if !cmp.Equal(result[0].Interface(), value, constructorComparers) {
+					t.Error("fields constructor inputs lost on decode:", cmp.Diff(value, result[0].Interface(), constructorComparers))
 				}
 			} else {
 				decoded, err := ie.Parse(wire)
@@ -324,12 +343,22 @@ func TestFlagDrivenConstructorRoundTrips(t *testing.T) {
 					}
 				}
 
-				exercised++
 				args := make([]reflect.Value, fn.Type().NumIn())
 				for n := range args {
 					args[n] = constructorArgument(fn.Type().In(n), entry.params[n])
 				}
 				args[flag].SetUint(uint64(flags))
+				if fixture, ok := constructorFlagFixtures[fn.Pointer()]; ok {
+					values := fixture(uint8(flags))
+					if values == nil {
+						excluded++
+						continue
+					}
+					for n, value := range values {
+						args[n] = reflect.ValueOf(value)
+					}
+				}
+				exercised++
 				// Values whose presence flag is clear are not constructor inputs
 				// to the wire encoding. Keep them zero when comparing fields.
 				var masks map[string]int
@@ -388,8 +417,8 @@ func TestFlagDrivenConstructorRoundTrips(t *testing.T) {
 				if !parsed[1].IsNil() {
 					t.Fatalf("flag combination %d: %v", flags, parsed[1].Interface())
 				}
-				if !cmp.Equal(fields, parsed[0].Interface(), cmp.Comparer(func(a, b net.IP) bool { return a.Equal(b) })) {
-					t.Fatalf("flag combination %d lost fields: %s", flags, cmp.Diff(fields, parsed[0].Interface(), cmp.Comparer(func(a, b net.IP) bool { return a.Equal(b) })))
+				if !cmp.Equal(fields, parsed[0].Interface(), constructorComparers) {
+					t.Fatalf("flag combination %d lost fields: %s", flags, cmp.Diff(fields, parsed[0].Interface(), constructorComparers))
 				}
 			}
 		})

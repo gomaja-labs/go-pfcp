@@ -11,7 +11,7 @@ import (
 // FuzzNewNonGroupedIE exercises the typed value helpers, including every
 // conditional-field parser introduced in TS 29.244 clauses 8.2.236–286.
 func FuzzNewNonGroupedIE(f *testing.F) {
-	types := []ie.IEType{344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 357, 358, 359, 360, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 379, 380, 382, 384, 385, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 398, 402, 403, 406, 407, 408}
+	types := []ie.IEType{344, 345, 346, 347, 348, 349, 350, 351, 352, 353, 354, 357, 358, 359, 360, 364, 365, 366, 367, 368, 369, 370, 371, 372, 373, 374, 375, 376, 377, 379, 380, 382, 384, 385, 387, 388, 389, 390, 391, 392, 393, 394, 395, 396, 398, 402, 403, 405, 406, 407, 408}
 	for n := range types {
 		f.Add(uint16(n), []byte{})
 		f.Add(uint16(n), bytes.Repeat([]byte{255}, 32))
@@ -21,6 +21,7 @@ func FuzzNewNonGroupedIE(f *testing.F) {
 	f.Add(uint16(5), []byte{7, 14})
 	f.Add(uint16(9), []byte{2, 2, 1, 9, 0x12, 0x34, 0x56})
 	f.Add(uint16(40), []byte{1, 'k', 1, 's'})
+	f.Add(uint16(47), []byte{ie.MitigationActionsIDDN})
 	f.Fuzz(func(t *testing.T, selector uint16, payload []byte) {
 		if len(payload) > 65535 {
 			return
