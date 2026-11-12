@@ -8,11 +8,11 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type TSCManagementInformationWithinSessionModificationResponseFields struct {
-	// PortManagementInformationContainer: Port Management Information Container [O]. TS 29.244 V20.1.0 Table 7.5.5.3-1. Context: TSC Management Information IE within PFCP Session Modification Response.
+	// PortManagementInformationContainer is the Port Management Information Container IE [O].
 	PortManagementInformationContainer *IE
-	// UserPlaneNodeManagementInformationContainer: User Plane Node Management Information Container [O]. TS 29.244 V20.1.0 Table 7.5.5.3-1. Context: TSC Management Information IE within PFCP Session Modification Response.
+	// UserPlaneNodeManagementInformationContainer is the User Plane Node Management Information Container IE [O].
 	UserPlaneNodeManagementInformationContainer *IE
-	// NWTTPortNumber: NW-TT Port Number [C]. TS 29.244 V20.1.0 Table 7.5.5.3-1. Context: TSC Management Information IE within PFCP Session Modification Response.
+	// NWTTPortNumber is the NW-TT Port Number IE [C].
 	NWTTPortNumber *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

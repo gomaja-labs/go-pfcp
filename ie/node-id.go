@@ -15,17 +15,23 @@ import (
 
 // Node ID kinds from TS 29.244 V20.1.0 Table 8.2.38-2.
 const (
+	// NodeIDIPv4Address selects the IPv4 address kind.
 	NodeIDIPv4Address uint8 = 0
+	// NodeIDIPv6Address selects the IPv6 address kind.
 	NodeIDIPv6Address uint8 = 1
-	NodeIDFQDN        uint8 = 2
+	// NodeIDFQDN selects FQDN.
+	NodeIDFQDN uint8 = 2
 )
 
 // NodeIDValue identifies the received kind without interpreting a domain name
 // as an address. Address is set for IPv4/IPv6; FQDN is set for a domain name.
 type NodeIDValue struct {
-	Type    uint8
+	// Type selects the address or FQDN kind.
+	Type uint8
+	// Address is the IPv4 or IPv6 address for an address kind.
 	Address netip.Addr
-	FQDN    string
+	// FQDN is the domain name for the FQDN kind.
+	FQDN string
 }
 
 // NewNodeIDAddress creates a Node ID from an IPv4 or IPv6 address.

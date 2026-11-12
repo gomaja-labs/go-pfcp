@@ -9,8 +9,11 @@ import (
 type MBSSessionIdentifierFlags uint8
 
 const (
+	// MBSSessionTMGI selects TMGI.
 	MBSSessionTMGI MBSSessionIdentifierFlags = 1
+	// MBSSessionSSMI selects SSMI.
 	MBSSessionSSMI MBSSessionIdentifierFlags = 2
+	// MBSSessionNIDI selects NIDI.
 	MBSSessionNIDI MBSSessionIdentifierFlags = 4
 )
 
@@ -18,10 +21,16 @@ const (
 // TS 29.244 V20.1.0 clause 8.2.206.
 // All value fields follow TMGI, SSMI and NIDI flags; no field is inferred.
 type MBSSessionIdentifierFields struct {
-	Flags                           MBSSessionIdentifierFlags
-	TMGI                            [6]byte
-	MulticastAddress, SourceAddress netip.Addr
-	NID                             uint64
+	// Flags contains the presence and option bits.
+	Flags MBSSessionIdentifierFlags
+	// TMGI is the tmgi.
+	TMGI [6]byte
+	// MulticastAddress is the multicast address.
+	MulticastAddress netip.Addr
+	// SourceAddress is the source address.
+	SourceAddress netip.Addr
+	// NID is the nid.
+	NID uint64
 }
 
 // NewMBSSessionIdentifier creates a MBS Session Identifier IE from its fields.

@@ -8,15 +8,15 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type HeaderHandlingControlRuleFields struct {
-	// HeaderHandlingControlRuleID: Header Handling Control Rule ID [M]. TS 29.244 V20.1.0 Table 7.5.2.3-7. Context: Header Handling Control Rule IE in Forwarding Parameters.
+	// HeaderHandlingControlRuleID is the Header Handling Control Rule ID IE [M].
 	HeaderHandlingControlRuleID *IE
-	// HeaderDetectionReference: Header Detection Reference [M]. TS 29.244 V20.1.0 Table 7.5.2.3-7. Context: Header Handling Control Rule IE in Forwarding Parameters.
+	// HeaderDetectionReference is the Header Detection Reference IE [M].
 	HeaderDetectionReference *IE
-	// HeaderDetectionSupportInformation: Header Detection Support Information [O]. TS 29.244 V20.1.0 Table 7.5.2.3-7. Context: Header Handling Control Rule IE in Forwarding Parameters.
+	// HeaderDetectionSupportInformation is the Header Detection Support Information IE [O].
 	HeaderDetectionSupportInformation *IE
-	// HeaderHandlingReportingControlInfo: Header Handling Reporting Control Info [O]. TS 29.244 V20.1.0 Table 7.5.2.3-7. Context: Header Handling Control Rule IE in Forwarding Parameters.
+	// HeaderHandlingReportingControlInfo is the Header Handling Reporting Control Info IE [O].
 	HeaderHandlingReportingControlInfo []*IE
-	// HeaderHandlingControlInformation: Header Handling Control information [M]. TS 29.244 V20.1.0 Table 7.5.2.3-7. Context: Header Handling Control Rule IE in Forwarding Parameters.
+	// HeaderHandlingControlInformation is the Header Handling Control information IE [M].
 	HeaderHandlingControlInformation []*IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

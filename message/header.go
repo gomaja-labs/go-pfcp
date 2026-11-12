@@ -13,19 +13,29 @@ import (
 
 // Errors returned for invalid PFCP header values or framing.
 var (
-	ErrInvalidLength    = errors.New("invalid PFCP message length")
-	ErrInvalidHeader    = errors.New("invalid PFCP header")
-	ErrNilMessage       = errors.New("nil PFCP message or header")
+	// ErrInvalidLength reports a message length inconsistent with the datagram or encoding limit.
+	ErrInvalidLength = errors.New("invalid PFCP message length")
+	// ErrInvalidHeader reports invalid PFCP header flags or framing.
+	ErrInvalidHeader = errors.New("invalid PFCP header")
+	// ErrNilMessage reports a nil message or header.
+	ErrNilMessage = errors.New("nil PFCP message or header")
+	// ErrSequenceOverflow reports a sequence number above the 24-bit maximum.
 	ErrSequenceOverflow = errors.New("PFCP sequence number exceeds 24 bits")
-	ErrInvalidPriority  = errors.New("PFCP priority requires S=1, MP=1 and a value from 0 to 15")
-	ErrBundledMessage   = errors.New("PFCP follow-on message: use ParseDatagram")
+	// ErrInvalidPriority reports invalid session message priority settings.
+	ErrInvalidPriority = errors.New("PFCP priority requires S=1, MP=1 and a value from 0 to 15")
+	// ErrBundledMessage reports FO on a standalone parse; use ParseDatagram for bundles.
+	ErrBundledMessage = errors.New("PFCP follow-on message: use ParseDatagram")
 )
 
 // UnsupportedVersionError carries the header needed to answer with a Version
 // Not Supported Response. No version-specific IEs have been decoded.
 // TS 29.244 V20.1.0 clause 7.6.2.
-type UnsupportedVersionError struct{ Header *Header }
+type UnsupportedVersionError struct {
+	// Header exposes the common header of the unsupported-version frame.
+	Header *Header
+}
 
+// Error describes the unsupported PFCP version.
 func (e *UnsupportedVersionError) Error() string {
 	if e == nil || e.Header == nil {
 		return "unsupported PFCP version"
@@ -37,12 +47,18 @@ func (e *UnsupportedVersionError) Error() string {
 // encoded content. MessagePriority is a value from 0 to 15,
 // meaningful only when S and MP are set. Payload is the framed message body.
 type Header struct {
-	Flags           uint8 // Version, FO, MP, S; spare bits are ignored on receive.
-	Type            uint8
-	SEID            uint64
-	SequenceNumber  uint32 // Values above 0xffffff are rejected when encoding.
-	MessagePriority uint8  // Priority value, not a shifted wire octet.
-	Payload         []byte
+	// Flags contains Version, FO, MP and S; spare bits are ignored on receive.
+	Flags uint8
+	// Type is the PFCP message type.
+	Type uint8
+	// SEID is the session endpoint identifier.
+	SEID uint64
+	// SequenceNumber is the 24-bit transaction sequence; encoding rejects values above 0xffffff.
+	SequenceNumber uint32
+	// MessagePriority is the unshifted priority value from 0 to 15.
+	MessagePriority uint8
+	// Payload is the framed body and received IE ordering template.
+	Payload []byte
 }
 
 // NewHeader creates a version 1 header. S is derived from the message type;

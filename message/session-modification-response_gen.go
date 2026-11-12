@@ -7,40 +7,41 @@ import "github.com/gomaja-labs/go-pfcp/ie"
 // SessionModificationResponse represents PFCP Session Modification Response.
 // TS 29.244 V20.1.0 Table 7.5.5.1-1 (clause 7.5.5.1).
 type SessionModificationResponse struct {
+	// Header holds the PFCP framing and received IE ordering template.
 	*Header
-	// Cause: Cause [M]. TS 29.244 V20.1.0 Table 7.5.5.1-1.
+	// Cause is the Cause IE [M].
 	Cause *ie.IE
-	// OffendingIE: Offending IE [C]. TS 29.244 V20.1.0 Table 7.5.5.1-1.
+	// OffendingIE is the Offending IE IE [C].
 	OffendingIE *ie.IE
-	// CreatedPDR: Created PDR [C]. TS 29.244 V20.1.0 Table 7.5.5.1-1.
+	// CreatedPDR is the Created PDR IE [C].
 	CreatedPDR []*ie.IE
-	// LoadControlInformation: Load Control Information [O]. TS 29.244 V20.1.0 Table 7.5.5.1-1.
+	// LoadControlInformation is the Load Control Information IE [O].
 	LoadControlInformation *ie.IE
-	// OverloadControlInformation: Overload Control Information [O]. TS 29.244 V20.1.0 Table 7.5.5.1-1.
+	// OverloadControlInformation is the Overload Control Information IE [O].
 	OverloadControlInformation *ie.IE
-	// UsageReport: Usage Report [C]. TS 29.244 V20.1.0 Table 7.5.5.1-1.
+	// UsageReport is the Usage Report IE [C].
 	UsageReport []*ie.IE
-	// FailedRuleID: Failed Rule ID [C]. TS 29.244 V20.1.0 Table 7.5.5.1-1.
+	// FailedRuleID is the Failed Rule ID IE [C].
 	FailedRuleID *ie.IE
-	// AdditionalUsageReportsInformation: Additional Usage Reports Information [C]. TS 29.244 V20.1.0 Table 7.5.5.1-1.
+	// AdditionalUsageReportsInformation is the Additional Usage Reports Information IE [C].
 	AdditionalUsageReportsInformation *ie.IE
-	// CreatedUpdatedTrafficEndpoint: Created/Updated Traffic Endpoint [C]. TS 29.244 V20.1.0 Table 7.5.5.1-1.
+	// CreatedUpdatedTrafficEndpoint is the Created/Updated Traffic Endpoint IE [C].
 	CreatedUpdatedTrafficEndpoint []*ie.IE
-	// TSCManagementInformation: TSC Management Information [C]. TS 29.244 V20.1.0 Table 7.5.5.1-1.
+	// TSCManagementInformation is the TSC Management Information IE [C].
 	TSCManagementInformation []*ie.IE
-	// ATSSSControlParameters: ATSSS Control Parameters [C]. TS 29.244 V20.1.0 Table 7.5.5.1-1.
+	// ATSSSControlParameters is the ATSSS Control Parameters IE [C].
 	ATSSSControlParameters *ie.IE
-	// UpdatedPDR: Updated PDR [C]. TS 29.244 V20.1.0 Table 7.5.5.1-1.
+	// UpdatedPDR is the Updated PDR IE [C].
 	UpdatedPDR []*ie.IE
-	// PacketRateStatusReport: Packet Rate Status Report [C]. TS 29.244 V20.1.0 Table 7.5.5.1-1.
+	// PacketRateStatusReport is the Packet Rate Status Report IE [C].
 	PacketRateStatusReport []*ie.IE
-	// PartialFailureInformation: Partial Failure Information [C]. TS 29.244 V20.1.0 Table 7.5.5.1-1.
+	// PartialFailureInformation is the Partial Failure Information IE [C].
 	PartialFailureInformation []*ie.IE
-	// MBSSessionN4Information: MBS Session N4 Information [C]. TS 29.244 V20.1.0 Table 7.5.5.1-1.
+	// MBSSessionN4Information is the MBS Session N4 Information IE [C].
 	MBSSessionN4Information []*ie.IE
-	// TLContainer: TL-Container [C]. TS 29.244 V20.1.0 Table 7.5.5.1-1.
+	// TLContainer is the TL-Container IE [C].
 	TLContainer []*ie.IE
-	// MoQInformation: MoQ Information [C]. TS 29.244 V20.1.0 Table 7.5.5.1-1.
+	// MoQInformation is the MoQ Information IE [C].
 	MoQInformation *ie.IE
 	// OtherIEs retains unexpected types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

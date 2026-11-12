@@ -3,43 +3,80 @@
 // found in the LICENSE file.
 
 // Package message encodes and decodes PFCP messages as specified by
-// TS 29.244 V20.1.0.
+// 3GPP TS 29.244 V20.1.0.
 //
-// Message schemas, constructors, dispatch and type names are generated from the
-// versioned catalogue under internal/spec. Constructors take (seq, ies...);
-// session constructors take (seid, seq, ies...). They derive S from the message
-// type and default to version 1 with no priority. Nil IEs are ignored. Use SetMP
-// with a value from 0 to 15 to enable priority, and ClearMP to remove it. Encoding
-// rejects sequence numbers above 0xffffff. Header.MessagePriority stores the
-// unshifted value. The wire length is derived; Header has no stored Length field
-// and messages have no SetLength method.
+// # Building and encoding
 //
-// Lists contain every occurrence in received order. For a singular field only
-// the first occurrence is selected; further occurrences and unexpected types
-// remain in OtherIEs (clauses 7.2.3.4, 7.6.9 and 7.6.10).
+// Node constructors take (seq, ies...); session constructors take
+// (seid, seq, ies...). They derive S from the message type and default to
+// version 1 without priority. Nil IEs are ignored. For example,
+// NewHeartbeatRequest(seq, ie.NewRecoveryTimeStamp(started)) constructs a
+// heartbeat; NewSessionEstablishmentRequest(seid, seq, ies...) builds a session
+// request. The application supplies the appropriate peer SEID, including zero
+// where required for initial establishment (clause 7.2.2.4.1).
 //
-// New messages encode fields in table order followed by OtherIEs. Decoded
-// messages use the received top-level IE type order as a template; within a
-// type, current field/list order is used. Excess occurrences append in table
-// order. This preserves unedited frames without promising identity-based
-// positioning after edits among same-type IEs. Header.Payload supplies only the
-// ordering template; values come from the current fields. Decoding borrows the
-// input buffer, which must remain unchanged while the message is in use.
+// Concrete messages offer Marshal, which allocates, and MarshalTo, which writes
+// to a buffer of at least MarshalLen bytes. The Message interface exposes
+// MarshalTo and MarshalLen. Lengths are derived from current content; Marshal
+// never mutates the message. Encoding propagates ie.EncodeError for an invalid
+// IE, including one nested in a group.
+//
+// Sequence numbers are 24-bit values; encoding rejects values above 0xffffff.
+// SetSequenceNumber does not allocate transaction identifiers or handle wrap.
+// Responses use their request's sequence (clause 6.4). For session messages,
+// SetMP with a value from 0 to 15 enables priority; ClearMP removes it.
+// Header.MessagePriority holds the unshifted value (clause 7.2.2.4.1).
+//
+// # Decoding and ordering
+//
+// Parse accepts exactly one standalone message and returns a Message for a
+// type switch. Typed ParseXxx functions, such as ParseHeartbeatRequest, and
+// UnmarshalBinary decode one frame of the expected type and permit FO. They
+// do not consume a surrounding datagram. Unknown message types decode as
+// Generic. The application checks mandatory IEs, conditional applicability,
+// peer capabilities and procedural state.
+//
+// Lists contain every occurrence in received order. Singular fields select the
+// first occurrence; later occurrences and unexpected types remain in OtherIEs
+// (clauses 7.2.3.4, 7.6.9 and 7.6.10). Message decoding frames all top-level IEs
+// but can defer errors inside grouped values until a typed helper is called.
+//
+// New messages encode in table order followed by OtherIEs. Decoded messages
+// use received top-level IE type order as a template; within a type, current
+// field/list order is used. Excess occurrences append in table order. This
+// preserves unedited IE ordering without promising identity-based positioning
+// after edits among same-type IEs. Header.Payload supplies the ordering
+// template; values come from current fields. Encoding clears header spare bits.
+//
+// # Bundled datagrams
+//
+// ParseDatagram reads an entire UDP payload and checks every frame and FO
+// (follow-on) flag. MarshalDatagram sets FO on all but the last output frame
+// without changing its inputs. Bundling requires session messages, prior peer
+// support negotiation and a single destination peer (clauses 6.5 and 7.2.1A).
+// Parse rejects FO with ErrBundledMessage; use ParseDatagram for UDP receives
+// that may contain bundles. Transport size limits remain the caller's concern.
+//
+// # Version and error handling
+//
+// Only PFCP version 1 is implemented. UnsupportedVersionError is returned
+// before interpreting version-specific IEs; errors.As exposes its Header and
+// received Version so an application can send NewVersionNotSupportedResponse.
+// That response carries the highest supported version, 1, and only its header
+// (clauses 7.6.2 and 7.4.4.7). ParseHeader also exposes unsupported-version
+// common framing. Known message types reject contradictory S flags.
+//
+// An incomplete header returns io.ErrUnexpectedEOF; inconsistent declared
+// framing returns ErrInvalidLength. IE framing failures identify their type
+// through ie.DecodeError. Use errors.Is and errors.As, and check value-helper
+// errors even after Parse succeeds.
+//
+// # Ownership and concurrency
+//
+// Decoding borrows the input buffer, which must remain unchanged while the
+// message is in use. Copy a reusable receive buffer before parsing it.
 // Concurrent Marshal and MarshalTo calls are safe when callers keep the
 // message, IEs and borrowed input unchanged and use separate output buffers.
-//
-// Parse accepts exactly one standalone message. ParseDatagram accepts an entire
-// UDP payload and checks every frame and follow-on flag. MarshalDatagram sets
-// follow-on flags in the output without changing the inputs. Callers must
-// negotiate bundling and select a single peer before using it. Typed ParseX
-// functions and UnmarshalBinary decode one frame and permit FO; they do not
-// consume a surrounding datagram.
-//
-// Message decoding returns UnsupportedVersionError before interpreting IEs of
-// an unsupported version. Its Header lets a caller send Version Not Supported.
-// ParseHeader exposes the common header even for unsupported versions. Known
-// message types reject a contradictory S flag; unknown types retain their
-// received framing and decode as Generic without logging. Presence requirements,
-// conditional applicability and peer capability negotiation remain application
-// responsibilities.
+// Synchronize mutations with all readers. The package does not log or provide
+// sockets, retransmission, association state or session management.
 package message

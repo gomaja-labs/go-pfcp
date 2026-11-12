@@ -43,9 +43,13 @@ func (i *IE) SubsequentVolumeQuota() (*SubsequentVolumeQuotaFields, error) {
 
 // SubsequentVolumeQuotaFields represents a fields contained in SubsequentVolumeQuota IE.
 type SubsequentVolumeQuotaFields struct {
-	Flags          uint8
-	TotalVolume    uint64
-	UplinkVolume   uint64
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// TotalVolume is the total volume.
+	TotalVolume uint64
+	// UplinkVolume is the uplink volume.
+	UplinkVolume uint64
+	// DownlinkVolume is the downlink volume.
 	DownlinkVolume uint64
 }
 

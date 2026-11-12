@@ -8,43 +8,43 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type UsageReportWithinSessionReportRequestFields struct {
-	// URRID: URR ID [M]. TS 29.244 V20.1.0 Table 7.5.8.3-1. Context: Usage Report IE within PFCP Session Report Request.
+	// URRID is the URR ID IE [M].
 	URRID *IE
-	// URSEQN: UR-SEQN [M]. TS 29.244 V20.1.0 Table 7.5.8.3-1. Context: Usage Report IE within PFCP Session Report Request.
+	// URSEQN is the UR-SEQN IE [M].
 	URSEQN *IE
-	// UsageReportTrigger: Usage Report Trigger [M]. TS 29.244 V20.1.0 Table 7.5.8.3-1. Context: Usage Report IE within PFCP Session Report Request.
+	// UsageReportTrigger is the Usage Report Trigger IE [M].
 	UsageReportTrigger *IE
-	// StartTime: Start Time [C]. TS 29.244 V20.1.0 Table 7.5.8.3-1. Context: Usage Report IE within PFCP Session Report Request.
+	// StartTime is the Start Time IE [C].
 	StartTime *IE
-	// EndTime: End Time [C]. TS 29.244 V20.1.0 Table 7.5.8.3-1. Context: Usage Report IE within PFCP Session Report Request.
+	// EndTime is the End Time IE [C].
 	EndTime *IE
-	// VolumeMeasurement: Volume Measurement [C]. TS 29.244 V20.1.0 Table 7.5.8.3-1. Context: Usage Report IE within PFCP Session Report Request.
+	// VolumeMeasurement is the Volume Measurement IE [C].
 	VolumeMeasurement *IE
-	// DurationMeasurement: Duration Measurement [C]. TS 29.244 V20.1.0 Table 7.5.8.3-1. Context: Usage Report IE within PFCP Session Report Request.
+	// DurationMeasurement is the Duration Measurement IE [C].
 	DurationMeasurement *IE
-	// ApplicationDetectionInformation: Application Detection Information [C]. TS 29.244 V20.1.0 Table 7.5.8.3-1. Context: Usage Report IE within PFCP Session Report Request.
+	// ApplicationDetectionInformation is the Application Detection Information IE [C].
 	ApplicationDetectionInformation *IE
-	// UEIPAddress: UE IP address [C]. TS 29.244 V20.1.0 Table 7.5.8.3-1. Context: Usage Report IE within PFCP Session Report Request.
+	// UEIPAddress is the UE IP address IE [C].
 	UEIPAddress *IE
-	// NetworkInstance: Network Instance [C]. TS 29.244 V20.1.0 Table 7.5.8.3-1. Context: Usage Report IE within PFCP Session Report Request.
+	// NetworkInstance is the Network Instance IE [C].
 	NetworkInstance *IE
-	// TimeOfFirstPacket: Time of First Packet [C]. TS 29.244 V20.1.0 Table 7.5.8.3-1. Context: Usage Report IE within PFCP Session Report Request.
+	// TimeOfFirstPacket is the Time of First Packet IE [C].
 	TimeOfFirstPacket *IE
-	// TimeOfLastPacket: Time of Last Packet [C]. TS 29.244 V20.1.0 Table 7.5.8.3-1. Context: Usage Report IE within PFCP Session Report Request.
+	// TimeOfLastPacket is the Time of Last Packet IE [C].
 	TimeOfLastPacket *IE
-	// UsageInformation: Usage Information [C]. TS 29.244 V20.1.0 Table 7.5.8.3-1. Context: Usage Report IE within PFCP Session Report Request.
+	// UsageInformation is the Usage Information IE [C].
 	UsageInformation *IE
-	// QueryURRReference: Query URR Reference [C]. TS 29.244 V20.1.0 Table 7.5.8.3-1. Context: Usage Report IE within PFCP Session Report Request.
+	// QueryURRReference is the Query URR Reference IE [C].
 	QueryURRReference *IE
-	// EventTimeStamp: Event Time Stamp [C]. TS 29.244 V20.1.0 Table 7.5.8.3-1. Context: Usage Report IE within PFCP Session Report Request.
+	// EventTimeStamp is the Event Time Stamp IE [C].
 	EventTimeStamp []*IE
-	// EthernetTrafficInformation: Ethernet Traffic Information [C]. TS 29.244 V20.1.0 Table 7.5.8.3-1. Context: Usage Report IE within PFCP Session Report Request.
+	// EthernetTrafficInformation is the Ethernet Traffic Information IE [C].
 	EthernetTrafficInformation *IE
-	// JoinIPMuticastInformation: Join IP Muticast Information [C]. TS 29.244 V20.1.0 Table 7.5.8.3-1. Context: Usage Report IE within PFCP Session Report Request.
+	// JoinIPMuticastInformation is the Join IP Muticast Information IE [C].
 	JoinIPMuticastInformation []*IE
-	// LeaveIPMuticastInformation: Leave IP Muticast Information [C]. TS 29.244 V20.1.0 Table 7.5.8.3-1. Context: Usage Report IE within PFCP Session Report Request.
+	// LeaveIPMuticastInformation is the Leave IP Muticast Information IE [C].
 	LeaveIPMuticastInformation []*IE
-	// PredefinedRulesName: Predefined Rules Name [O]. TS 29.244 V20.1.0 Table 7.5.8.3-1. Context: Usage Report IE within PFCP Session Report Request.
+	// PredefinedRulesName is the Predefined Rules Name IE [O].
 	PredefinedRulesName []*IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

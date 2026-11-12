@@ -43,12 +43,19 @@ func (i *IE) VolumeMeasurement() (*VolumeMeasurementFields, error) {
 
 // VolumeMeasurementFields represents a fields contained in VolumeMeasurement IE.
 type VolumeMeasurementFields struct {
-	Flags                   uint8
-	TotalVolume             uint64
-	UplinkVolume            uint64
-	DownlinkVolume          uint64
-	TotalNumberOfPackets    uint64
-	UplinkNumberOfPackets   uint64
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// TotalVolume is the total volume.
+	TotalVolume uint64
+	// UplinkVolume is the uplink volume.
+	UplinkVolume uint64
+	// DownlinkVolume is the downlink volume.
+	DownlinkVolume uint64
+	// TotalNumberOfPackets is the total number of packets.
+	TotalNumberOfPackets uint64
+	// UplinkNumberOfPackets is the uplink number of packets.
+	UplinkNumberOfPackets uint64
+	// DownlinkNumberOfPackets is the downlink number of packets.
 	DownlinkNumberOfPackets uint64
 }
 

@@ -12,13 +12,20 @@ import (
 
 // Rule ID Type definitions.
 const (
-	RuleIDTypePDR uint8 = 0 // 16
-	RuleIDTypeFAR uint8 = 1 // 32
-	RuleIDTypeQER uint8 = 2 // 32
-	RuleIDTypeURR uint8 = 3 // 32
-	RuleIDTypeBAR uint8 = 4 // 8
-	RuleIDTypeMAR uint8 = 5 // 16
-	RuleIDTypeSRR uint8 = 6 // 8 (clause 8.2.151)
+	// RuleIDTypePDR selects PDR.
+	RuleIDTypePDR uint8 = 0
+	// RuleIDTypeFAR selects FAR.
+	RuleIDTypeFAR uint8 = 1
+	// RuleIDTypeQER selects QER.
+	RuleIDTypeQER uint8 = 2
+	// RuleIDTypeURR selects URR.
+	RuleIDTypeURR uint8 = 3
+	// RuleIDTypeBAR selects BAR.
+	RuleIDTypeBAR uint8 = 4
+	// RuleIDTypeMAR selects MAR.
+	RuleIDTypeMAR uint8 = 5
+	// RuleIDTypeSRR selects SRR.
+	RuleIDTypeSRR uint8 = 6
 )
 
 // NewFailedRuleID creates a new FailedRuleID IE.

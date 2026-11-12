@@ -42,14 +42,22 @@ func (i *IE) QoSMonitoringMeasurement() (*QoSMonitoringMeasurementFields, error)
 
 // QoSMonitoringMeasurementFields represents a fields contained in QoSMonitoringMeasurement IE.
 type QoSMonitoringMeasurementFields struct {
-	Flags                         uint8
-	DownlinkPacketDelay           uint32
-	UplinkPacketDelay             uint32
-	RoundTripPacketDelay          uint32
-	DownlinkCongestionInformation uint16 // hundredths of one percent
-	UplinkCongestionInformation   uint16 // hundredths of one percent
-	AverageDownlinkDataRate       uint64 // kbps, five octets
-	AverageUplinkDataRate         uint64 // kbps, five octets
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// DownlinkPacketDelay is the downlink packet delay.
+	DownlinkPacketDelay uint32
+	// UplinkPacketDelay is the uplink packet delay.
+	UplinkPacketDelay uint32
+	// RoundTripPacketDelay is the round trip packet delay.
+	RoundTripPacketDelay uint32
+	// DownlinkCongestionInformation is the downlink congestion in hundredths of one percent.
+	DownlinkCongestionInformation uint16
+	// UplinkCongestionInformation is the uplink congestion in hundredths of one percent.
+	UplinkCongestionInformation uint16
+	// AverageDownlinkDataRate is the downlink data rate in kbps, encoded in five octets.
+	AverageDownlinkDataRate uint64
+	// AverageUplinkDataRate is the uplink data rate in kbps, encoded in five octets.
+	AverageUplinkDataRate uint64
 }
 
 // NewQoSMonitoringMeasurementFields creates a new NewQoSMonitoringMeasurementFields.

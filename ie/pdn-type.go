@@ -6,11 +6,16 @@ package ie
 
 // PDNType definitions.
 const (
-	_               uint8 = 0
-	PDNTypeIPv4     uint8 = 1
-	PDNTypeIPv6     uint8 = 2
-	PDNTypeIPv4v6   uint8 = 3
-	PDNTypeNonIP    uint8 = 4
+	_ uint8 = 0
+	// PDNTypeIPv4 selects IPv4.
+	PDNTypeIPv4 uint8 = 1
+	// PDNTypeIPv6 selects IPv6.
+	PDNTypeIPv6 uint8 = 2
+	// PDNTypeIPv4v6 selects IPv4v6.
+	PDNTypeIPv4v6 uint8 = 3
+	// PDNTypeNonIP selects Non IP.
+	PDNTypeNonIP uint8 = 4
+	// PDNTypeEthernet selects Ethernet.
 	PDNTypeEthernet uint8 = 5
 )
 

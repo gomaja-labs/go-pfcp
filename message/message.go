@@ -8,15 +8,25 @@ package message
 
 // Message is an interface that defines PFCP messages.
 type Message interface {
+	// MarshalTo encodes the message into a buffer of at least MarshalLen bytes.
 	MarshalTo([]byte) error
+	// UnmarshalBinary replaces the receiver with one decoded frame.
 	UnmarshalBinary(b []byte) error
+	// MarshalLen returns the encoded size in octets.
 	MarshalLen() int
+	// MessageType returns the PFCP message type.
 	MessageType() uint8
+	// MessageTypeName returns the specification name of the message type.
 	MessageTypeName() string
+	// Version returns the received or constructed PFCP version.
 	Version() int
+	// SEID returns the session endpoint identifier, or zero for node messages.
 	SEID() uint64
+	// Sequence returns the transaction sequence number.
 	Sequence() uint32
+	// SetSequenceNumber sets the sequence; encoding checks its 24-bit range.
 	SetSequenceNumber(seq uint32)
+	// IsRequest reports whether the message type is a request.
 	IsRequest() bool
 }
 

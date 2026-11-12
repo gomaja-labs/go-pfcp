@@ -8,16 +8,22 @@ import (
 type LocalIngressTunnelFlags uint8
 
 const (
+	// LocalIngressV4 marks the presence of an IPv4 address.
 	LocalIngressV4 LocalIngressTunnelFlags = 1
+	// LocalIngressV6 marks the presence of an IPv6 address.
 	LocalIngressV6 LocalIngressTunnelFlags = 2
+	// LocalIngressCH selects CH.
 	LocalIngressCH LocalIngressTunnelFlags = 4
 )
 
 // LocalIngressTunnelFields is the structured value of Local Ingress Tunnel.
 // TS 29.244 V20.1.0 clause 8.2.209.
 type LocalIngressTunnelFields struct {
-	Flags   LocalIngressTunnelFlags
-	Port    uint16
+	// Flags contains the presence and option bits.
+	Flags LocalIngressTunnelFlags
+	// Port is the port.
+	Port uint16
+	// Address is the address.
 	Address netip.Addr
 }
 

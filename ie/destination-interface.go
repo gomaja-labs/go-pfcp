@@ -6,11 +6,17 @@ package ie
 
 // Interface definitions.
 const (
-	DstInterfaceAccess       uint8 = 0
-	DstInterfaceCore         uint8 = 1
-	DstInterfaceSGiLANN6LAN  uint8 = 2
-	DstInterfaceCPFunction   uint8 = 3
-	DstInterfaceLIFunction   uint8 = 4
+	// DstInterfaceAccess selects Access.
+	DstInterfaceAccess uint8 = 0
+	// DstInterfaceCore selects Core.
+	DstInterfaceCore uint8 = 1
+	// DstInterfaceSGiLANN6LAN selects the SGi-LAN/N6-LAN interface.
+	DstInterfaceSGiLANN6LAN uint8 = 2
+	// DstInterfaceCPFunction selects CP Function.
+	DstInterfaceCPFunction uint8 = 3
+	// DstInterfaceLIFunction selects LI Function.
+	DstInterfaceLIFunction uint8 = 4
+	// DstInterface5GVNInternal selects the internal 5G VN interface.
 	DstInterface5GVNInternal uint8 = 5
 )
 

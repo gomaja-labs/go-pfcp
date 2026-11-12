@@ -6,7 +6,9 @@ package ie
 // six-bit DSCP. The list contains 1 to 63 values. Extension octets cannot be
 // distinguished from DSCP values because no count or terminator is encoded.
 type DSCPToPPIMappingInformationFields struct {
-	PPI  uint8
+	// PPI is the paging policy indicator.
+	PPI uint8
+	// DSCP contains the differentiated services code points.
 	DSCP []uint8
 }
 

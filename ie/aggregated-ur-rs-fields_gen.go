@@ -8,9 +8,9 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type AggregatedURRsFields struct {
-	// AggregatedURRID: Aggregated URR ID [M]. TS 29.244 V20.1.0 Table 7.5.2.4-2. Context: Aggregated URRs.
+	// AggregatedURRID is the Aggregated URR ID IE [M].
 	AggregatedURRID *IE
-	// Multiplier: Multiplier [M]. TS 29.244 V20.1.0 Table 7.5.2.4-2. Context: Aggregated URRs.
+	// Multiplier is the Multiplier IE [M].
 	Multiplier *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

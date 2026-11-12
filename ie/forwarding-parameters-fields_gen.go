@@ -8,41 +8,41 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type ForwardingParametersFields struct {
-	// DestinationInterface: Destination Interface [M]. TS 29.244 V20.1.0 Table 7.5.2.3-2. Context: Forwarding Parameters IE in FAR.
+	// DestinationInterface is the Destination Interface IE [M].
 	DestinationInterface *IE
-	// NetworkInstance: Network Instance [O]. TS 29.244 V20.1.0 Table 7.5.2.3-2. Context: Forwarding Parameters IE in FAR.
+	// NetworkInstance is the Network Instance IE [O].
 	NetworkInstance *IE
-	// RedirectInformation: Redirect Information [C]. TS 29.244 V20.1.0 Table 7.5.2.3-2. Context: Forwarding Parameters IE in FAR.
+	// RedirectInformation is the Redirect Information IE [C].
 	RedirectInformation *IE
-	// OuterHeaderCreation: Outer Header Creation [C]. TS 29.244 V20.1.0 Table 7.5.2.3-2. Context: Forwarding Parameters IE in FAR.
+	// OuterHeaderCreation is the Outer Header Creation IE [C].
 	OuterHeaderCreation *IE
-	// TransportLevelMarking: Transport Level Marking [C]. TS 29.244 V20.1.0 Table 7.5.2.3-2. Context: Forwarding Parameters IE in FAR.
+	// TransportLevelMarking is the Transport Level Marking IE [C].
 	TransportLevelMarking *IE
-	// ExtendedTransportLevelMarking: Extended Transport Level Marking [C]. TS 29.244 V20.1.0 Table 7.5.2.3-2. Context: Forwarding Parameters IE in FAR.
+	// ExtendedTransportLevelMarking is the Extended Transport Level Marking IE [C].
 	ExtendedTransportLevelMarking []*IE
-	// TransportLevelMarkingIndications: Transport Level Marking Indications [C]. TS 29.244 V20.1.0 Table 7.5.2.3-2. Context: Forwarding Parameters IE in FAR.
+	// TransportLevelMarkingIndications is the Transport Level Marking Indications IE [C].
 	TransportLevelMarkingIndications *IE
-	// ForwardingPolicy: Forwarding Policy [C]. TS 29.244 V20.1.0 Table 7.5.2.3-2. Context: Forwarding Parameters IE in FAR.
+	// ForwardingPolicy is the Forwarding Policy IE [C].
 	ForwardingPolicy *IE
-	// Metadata: Metadata [O]. TS 29.244 V20.1.0 Table 7.5.2.3-2. Context: Forwarding Parameters IE in FAR.
+	// Metadata is the Metadata IE [O].
 	Metadata *IE
-	// HeaderEnrichment: Header Enrichment [O]. TS 29.244 V20.1.0 Table 7.5.2.3-2. Context: Forwarding Parameters IE in FAR.
+	// HeaderEnrichment is the Header Enrichment IE [O].
 	HeaderEnrichment *IE
-	// LinkedTrafficEndpointID: Linked Traffic Endpoint ID [C]. TS 29.244 V20.1.0 Table 7.5.2.3-2. Context: Forwarding Parameters IE in FAR.
+	// LinkedTrafficEndpointID is the Linked Traffic Endpoint ID IE [C].
 	LinkedTrafficEndpointID *IE
-	// Proxying: Proxying [C]. TS 29.244 V20.1.0 Table 7.5.2.3-2. Context: Forwarding Parameters IE in FAR.
+	// Proxying is the Proxying IE [C].
 	Proxying *IE
-	// DestinationInterfaceType: Destination Interface Type [C]. TS 29.244 V20.1.0 Table 7.5.2.3-2. Context: Forwarding Parameters IE in FAR.
+	// DestinationInterfaceType is the Destination Interface Type IE [C].
 	DestinationInterfaceType *IE
-	// DataNetworkAccessIdentifier: Data Network Access Identifier [C]. TS 29.244 V20.1.0 Table 7.5.2.3-2. Context: Forwarding Parameters IE in FAR.
+	// DataNetworkAccessIdentifier is the Data Network Access Identifier IE [C].
 	DataNetworkAccessIdentifier *IE
-	// IPAddressAndPortNumberReplacement: IP Address and Port Number Replacement [C]. TS 29.244 V20.1.0 Table 7.5.2.3-2. Context: Forwarding Parameters IE in FAR.
+	// IPAddressAndPortNumberReplacement is the IP Address and Port Number Replacement IE [C].
 	IPAddressAndPortNumberReplacement *IE
-	// N6RoutingInformation: N6 Routing Information [O]. TS 29.244 V20.1.0 Table 7.5.2.3-2. Context: Forwarding Parameters IE in FAR.
+	// N6RoutingInformation is the N6 Routing Information IE [O].
 	N6RoutingInformation *IE
-	// HeaderHandlingControlRule: Header Handling Control Rule [C]. TS 29.244 V20.1.0 Table 7.5.2.3-2. Context: Forwarding Parameters IE in FAR.
+	// HeaderHandlingControlRule is the Header Handling Control Rule IE [C].
 	HeaderHandlingControlRule []*IE
-	// OnPathN6ConnectionInformation: On-path N6 Connection Information [O]. TS 29.244 V20.1.0 Table 7.5.2.3-2. Context: Forwarding Parameters IE in FAR.
+	// OnPathN6ConnectionInformation is the On-path N6 Connection Information IE [O].
 	OnPathN6ConnectionInformation *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

@@ -8,7 +8,7 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type PFCPSessionRetentionInformationFields struct {
-	// CPPFCPEntityIPAddress: CP PFCP Entity IP Address [O]. TS 29.244 V20.1.0 Table 7.4.4.1-2. Context: PFCP Session Retention Information IE within PFCP Association Setup Request.
+	// CPPFCPEntityIPAddress is the CP PFCP Entity IP Address IE [O].
 	CPPFCPEntityIPAddress []*IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

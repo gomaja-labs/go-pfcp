@@ -8,9 +8,9 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type RedundantTransmissionParametersFields struct {
-	// LocalFTEIDForRedundantTransmission: Local F-TEID for Redundant Transmission [M]. TS 29.244 V20.1.0 Table 7.5.2.2-5. Context: Redundant Transmission Detection Parameters IE in PDI.
+	// LocalFTEIDForRedundantTransmission is the Local F-TEID for Redundant Transmission IE [M].
 	LocalFTEIDForRedundantTransmission *IE
-	// NetworkInstanceForRedundantTransmission: Network Instance for Redundant Transmission [C]. TS 29.244 V20.1.0 Table 7.5.2.2-5. Context: Redundant Transmission Detection Parameters IE in PDI.
+	// NetworkInstanceForRedundantTransmission is the Network Instance for Redundant Transmission IE [C].
 	NetworkInstanceForRedundantTransmission *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

@@ -11,6 +11,7 @@ import (
 
 // HeaderType definitions.
 const (
+	// HeaderTypeHTTP selects HTTP.
 	HeaderTypeHTTP uint8 = 0
 )
 
@@ -45,11 +46,17 @@ func (i *IE) HeaderEnrichment() (*HeaderEnrichmentFields, error) {
 
 // HeaderEnrichmentFields represents a fields contained in HeaderEnrichment IE.
 type HeaderEnrichmentFields struct {
-	Flags            uint8
-	HeaderType       uint8
-	NameLength       uint8
-	HeaderFieldName  string
-	ValueLength      uint8
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// HeaderType is the header type.
+	HeaderType uint8
+	// NameLength is the encoded name length in octets.
+	NameLength uint8
+	// HeaderFieldName is the header name to insert.
+	HeaderFieldName string
+	// ValueLength is the encoded value length in octets.
+	ValueLength uint8
+	// HeaderFieldValue is the header value to insert.
 	HeaderFieldValue string
 }
 

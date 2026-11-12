@@ -6,10 +6,15 @@ package ie
 
 // Interface definitions.
 const (
-	SrcInterfaceAccess       uint8 = 0
-	SrcInterfaceCore         uint8 = 1
-	SrcInterfaceSGiLANN6LAN  uint8 = 2
-	SrcInterfaceCPFunction   uint8 = 3
+	// SrcInterfaceAccess selects Access.
+	SrcInterfaceAccess uint8 = 0
+	// SrcInterfaceCore selects Core.
+	SrcInterfaceCore uint8 = 1
+	// SrcInterfaceSGiLANN6LAN selects the SGi-LAN/N6-LAN interface.
+	SrcInterfaceSGiLANN6LAN uint8 = 2
+	// SrcInterfaceCPFunction selects CP Function.
+	SrcInterfaceCPFunction uint8 = 3
+	// SrcInterface5GVNInternal selects the internal 5G VN interface.
 	SrcInterface5GVNInternal uint8 = 4
 )
 

@@ -7,44 +7,45 @@ import "github.com/gomaja-labs/go-pfcp/ie"
 // AssociationSetupResponse represents PFCP Association Setup Response.
 // TS 29.244 V20.1.0 Table 7.4.4.2-1 (clause 7.4.4.2).
 type AssociationSetupResponse struct {
+	// Header holds the PFCP framing and received IE ordering template.
 	*Header
-	// NodeID: Node ID [M]. TS 29.244 V20.1.0 Table 7.4.4.2-1.
+	// NodeID is the Node ID IE [M].
 	NodeID *ie.IE
-	// Cause: Cause [M]. TS 29.244 V20.1.0 Table 7.4.4.2-1.
+	// Cause is the Cause IE [M].
 	Cause *ie.IE
-	// RecoveryTimeStamp: Recovery Time Stamp [M]. TS 29.244 V20.1.0 Table 7.4.4.2-1.
+	// RecoveryTimeStamp is the Recovery Time Stamp IE [M].
 	RecoveryTimeStamp *ie.IE
-	// UPFunctionFeatures: UP Function Features [C]. TS 29.244 V20.1.0 Table 7.4.4.2-1.
+	// UPFunctionFeatures is the UP Function Features IE [C].
 	UPFunctionFeatures *ie.IE
-	// CPFunctionFeatures: CP Function Features [C]. TS 29.244 V20.1.0 Table 7.4.4.2-1.
+	// CPFunctionFeatures is the CP Function Features IE [C].
 	CPFunctionFeatures *ie.IE
-	// AlternativeSMFIPAddress: Alternative SMF IP Address [O]. TS 29.244 V20.1.0 Table 7.4.4.2-1.
+	// AlternativeSMFIPAddress is the Alternative SMF IP Address IE [O].
 	AlternativeSMFIPAddress []*ie.IE
-	// SMFSetID: SMF Set ID [C]. TS 29.244 V20.1.0 Table 7.4.4.2-1.
+	// SMFSetID is the SMF Set ID IE [C].
 	SMFSetID *ie.IE
-	// PFCPASRspFlags: PFCPASRsp-Flags [O]. TS 29.244 V20.1.0 Table 7.4.4.2-1.
+	// PFCPASRspFlags is the PFCPASRsp-Flags IE [O].
 	PFCPASRspFlags *ie.IE
-	// ClockDriftControlInformation: Clock Drift Control Information [C]. TS 29.244 V20.1.0 Table 7.4.4.2-1.
+	// ClockDriftControlInformation is the Clock Drift Control Information IE [C].
 	ClockDriftControlInformation []*ie.IE
-	// UEIPAddressPoolInformation: UE IP address Pool Information [O]. TS 29.244 V20.1.0 Table 7.4.4.2-1.
+	// UEIPAddressPoolInformation is the UE IP address Pool Information IE [O].
 	UEIPAddressPoolInformation []*ie.IE
-	// GTPUPathQoSControlInformation: GTP-U Path QoS Control Information [C]. TS 29.244 V20.1.0 Table 7.4.4.2-1.
+	// GTPUPathQoSControlInformation is the GTP-U Path QoS Control Information IE [C].
 	GTPUPathQoSControlInformation []*ie.IE
-	// UPFInstanceID: UPF Instance ID [C]. TS 29.244 V20.1.0 Table 7.4.4.2-1.
+	// UPFInstanceID is the UPF Instance ID IE [C].
 	UPFInstanceID *ie.IE
-	// N6DelayMeasurementControlInformation: N6 Delay Measurement Control Information [C]. TS 29.244 V20.1.0 Table 7.4.4.2-1.
+	// N6DelayMeasurementControlInformation is the N6 Delay Measurement Control Information IE [C].
 	N6DelayMeasurementControlInformation []*ie.IE
-	// N6DelayMeasurementProtocols: N6 Delay Measurement Protocols [C]. TS 29.244 V20.1.0 Table 7.4.4.2-1.
+	// N6DelayMeasurementProtocols is the N6 Delay Measurement Protocols IE [C].
 	N6DelayMeasurementProtocols *ie.IE
-	// OperatorConfigurableUPFCapability: Operator Configurable UPF Capability [O]. TS 29.244 V20.1.0 Table 7.4.4.2-1.
+	// OperatorConfigurableUPFCapability is the Operator Configurable UPF Capability IE [O].
 	OperatorConfigurableUPFCapability []*ie.IE
-	// PacketInspectionFunctionality: Packet Inspection functionality [O]. TS 29.244 V20.1.0 Table 7.4.4.2-1.
+	// PacketInspectionFunctionality is the Packet Inspection functionality IE [O].
 	PacketInspectionFunctionality *ie.IE
-	// NodeLevelMitigationActionsRules: Node Level Mitigation Actions Rules [O]. TS 29.244 V20.1.0 Table 7.4.4.2-1.
+	// NodeLevelMitigationActionsRules is the Node Level Mitigation Actions Rules IE [O].
 	NodeLevelMitigationActionsRules []*ie.IE
-	// AbnormalUserPlaneEventNotificationURI: Abnormal user plane Event Notification URI [O]. TS 29.244 V20.1.0 Table 7.4.4.2-1.
+	// AbnormalUserPlaneEventNotificationURI is the Abnormal user plane Event Notification URI IE [O].
 	AbnormalUserPlaneEventNotificationURI *ie.IE
-	// AbnormalUserPlaneNotificationCorrelationID: Abnormal user plane Notification Correlation ID [O]. TS 29.244 V20.1.0 Table 7.4.4.2-1.
+	// AbnormalUserPlaneNotificationCorrelationID is the Abnormal user plane Notification Correlation ID IE [O].
 	AbnormalUserPlaneNotificationCorrelationID *ie.IE
 	// OtherIEs retains unexpected types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

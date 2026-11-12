@@ -7,44 +7,45 @@ import "github.com/gomaja-labs/go-pfcp/ie"
 // SessionEstablishmentResponse represents PFCP Session Establishment Response.
 // TS 29.244 V20.1.0 Table 7.5.3.1-1 (clause 7.5.3.1).
 type SessionEstablishmentResponse struct {
+	// Header holds the PFCP framing and received IE ordering template.
 	*Header
-	// NodeID: Node ID [M]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
+	// NodeID is the Node ID IE [M].
 	NodeID *ie.IE
-	// Cause: Cause [M]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
+	// Cause is the Cause IE [M].
 	Cause *ie.IE
-	// OffendingIE: Offending IE [C]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
+	// OffendingIE is the Offending IE IE [C].
 	OffendingIE *ie.IE
-	// UPFSEID: UP F-SEID [C]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
+	// UPFSEID is the UP F-SEID IE [C].
 	UPFSEID *ie.IE
-	// CreatedPDR: Created PDR [C]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
+	// CreatedPDR is the Created PDR IE [C].
 	CreatedPDR []*ie.IE
-	// LoadControlInformation: Load Control Information [O]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
+	// LoadControlInformation is the Load Control Information IE [O].
 	LoadControlInformation *ie.IE
-	// OverloadControlInformation: Overload Control Information [O]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
+	// OverloadControlInformation is the Overload Control Information IE [O].
 	OverloadControlInformation *ie.IE
-	// FQCSID: PGW-U/SGW-U /UPF FQ-CSID [C]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
+	// FQCSID is the PGW-U/SGW-U /UPF FQ-CSID IE [C].
 	FQCSID *ie.IE
-	// FailedRuleID: Failed Rule ID [C]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
+	// FailedRuleID is the Failed Rule ID IE [C].
 	FailedRuleID *ie.IE
-	// CreatedTrafficEndpoint: Created Traffic Endpoint [C]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
+	// CreatedTrafficEndpoint is the Created Traffic Endpoint IE [C].
 	CreatedTrafficEndpoint []*ie.IE
-	// CreatedBridgeRouterInfo: Created Bridge/Router Info [C]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
+	// CreatedBridgeRouterInfo is the Created Bridge/Router Info IE [C].
 	CreatedBridgeRouterInfo *ie.IE
-	// ATSSSControlParameters: ATSSS Control Parameters [C]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
+	// ATSSSControlParameters is the ATSSS Control Parameters IE [C].
 	ATSSSControlParameters *ie.IE
-	// RDSConfigurationInformation: RDS configuration information [O]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
+	// RDSConfigurationInformation is the RDS configuration information IE [O].
 	RDSConfigurationInformation *ie.IE
-	// PartialFailureInformation: Partial Failure Information [C]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
+	// PartialFailureInformation is the Partial Failure Information IE [C].
 	PartialFailureInformation []*ie.IE
-	// CreatedL2TPSession: Created L2TP Session [O]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
+	// CreatedL2TPSession is the Created L2TP Session IE [O].
 	CreatedL2TPSession *ie.IE
-	// MBSSessionN4mbInformation: MBS Session N4mb Information [C]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
+	// MBSSessionN4mbInformation is the MBS Session N4mb Information IE [C].
 	MBSSessionN4mbInformation *ie.IE
-	// MBSSessionN4Information: MBS Session N4 Information [C]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
+	// MBSSessionN4Information is the MBS Session N4 Information IE [C].
 	MBSSessionN4Information []*ie.IE
-	// TLContainer: TL-Container [C]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
+	// TLContainer is the TL-Container IE [C].
 	TLContainer *ie.IE
-	// MoQInformation: MoQ Information [C]. TS 29.244 V20.1.0 Table 7.5.3.1-1.
+	// MoQInformation is the MoQ Information IE [C].
 	MoQInformation *ie.IE
 	// OtherIEs retains unexpected types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

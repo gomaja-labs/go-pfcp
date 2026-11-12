@@ -8,25 +8,25 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type UpdateMARFields struct {
-	// MARID: MAR ID [M]. TS 29.244 V20.1.0 Table 7.5.4.16-1. Context: Update MAR IE within PFCP Session Modification Request.
+	// MARID is the MAR ID IE [M].
 	MARID *IE
-	// SteeringFunctionality: Steering Functionality [C]. TS 29.244 V20.1.0 Table 7.5.4.16-1. Context: Update MAR IE within PFCP Session Modification Request.
+	// SteeringFunctionality is the Steering Functionality IE [C].
 	SteeringFunctionality *IE
-	// SteeringMode: Steering Mode [C]. TS 29.244 V20.1.0 Table 7.5.4.16-1. Context: Update MAR IE within PFCP Session Modification Request.
+	// SteeringMode is the Steering Mode IE [C].
 	SteeringMode *IE
-	// UpdateTGPPAccessForwardingActionInformation: Update 3GPP Access Forwarding Action Information [C]. TS 29.244 V20.1.0 Table 7.5.4.16-1. Context: Update MAR IE within PFCP Session Modification Request.
+	// UpdateTGPPAccessForwardingActionInformation is the Update 3GPP Access Forwarding Action Information IE [C].
 	UpdateTGPPAccessForwardingActionInformation *IE
-	// UpdateNonTGPPAccessForwardingActionInformation: Update Non-3GPP Access Forwarding Action Information [C]. TS 29.244 V20.1.0 Table 7.5.4.16-1. Context: Update MAR IE within PFCP Session Modification Request.
+	// UpdateNonTGPPAccessForwardingActionInformation is the Update Non-3GPP Access Forwarding Action Information IE [C].
 	UpdateNonTGPPAccessForwardingActionInformation *IE
-	// TGPPAccessForwardingActionInformation: 3GPP Access Forwarding Action Information [C]. TS 29.244 V20.1.0 Table 7.5.4.16-1. Context: Update MAR IE within PFCP Session Modification Request.
+	// TGPPAccessForwardingActionInformation is the 3GPP Access Forwarding Action Information IE [C].
 	TGPPAccessForwardingActionInformation *IE
-	// NonTGPPAccessForwardingActionInformation: Non-3GPP Access Forwarding Action Information [C]. TS 29.244 V20.1.0 Table 7.5.4.16-1. Context: Update MAR IE within PFCP Session Modification Request.
+	// NonTGPPAccessForwardingActionInformation is the Non-3GPP Access Forwarding Action Information IE [C].
 	NonTGPPAccessForwardingActionInformation *IE
-	// ThresholdValues: Threshold values [C]. TS 29.244 V20.1.0 Table 7.5.4.16-1. Context: Update MAR IE within PFCP Session Modification Request.
+	// ThresholdValues is the Threshold values IE [C].
 	ThresholdValues *IE
-	// SteeringModeIndicator: Steering Mode Indicator [C]. TS 29.244 V20.1.0 Table 7.5.4.16-1. Context: Update MAR IE within PFCP Session Modification Request.
+	// SteeringModeIndicator is the Steering Mode Indicator IE [C].
 	SteeringModeIndicator *IE
-	// TransportMode: Transport Mode [C]. TS 29.244 V20.1.0 Table 7.5.4.16-1. Context: Update MAR IE within PFCP Session Modification Request.
+	// TransportMode is the Transport Mode IE [C].
 	TransportMode *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

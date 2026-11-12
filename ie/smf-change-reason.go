@@ -2,8 +2,11 @@ package ie
 
 // SMFChangeReason values are defined in TS 29.244 V20.1.0 clause 8.2.267.
 const (
+	// SMFChangeReasonMPSNR selects MPSNR.
 	SMFChangeReasonMPSNR uint8 = 1
+	// SMFChangeReasonMPSSF selects MPSSF.
 	SMFChangeReasonMPSSF uint8 = 2
+	// SMFChangeReasonMPSAI selects MPSAI.
 	SMFChangeReasonMPSAI uint8 = 4
 )
 

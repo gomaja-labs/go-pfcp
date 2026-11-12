@@ -2,8 +2,10 @@ package ie
 
 // SessionReflectorModeSTAMP values are defined in TS 29.244 V20.1.0 clause 8.2.279.
 const (
+	// SessionReflectorModeSTAMPStateless selects Stateless.
 	SessionReflectorModeSTAMPStateless uint8 = 0
-	SessionReflectorModeSTAMPStateful  uint8 = 1
+	// SessionReflectorModeSTAMPStateful selects Stateful.
+	SessionReflectorModeSTAMPStateful uint8 = 1
 )
 
 // NewSessionReflectorModeSTAMP creates a Session Reflector Mode (STAMP) IE.

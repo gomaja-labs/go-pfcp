@@ -6,9 +6,9 @@ package ie
 
 import "io"
 
+// NewPortManagementInformationContainer creates a new PortManagementInformationContainer IE.
 // TS 29.244 V20.1.0 clause 8.2.144: the content is a management
 // message defined by TS 24.539 clause 8.
-// NewPortManagementInformationContainer creates a new PortManagementInformationContainer IE.
 func NewPortManagementInformationContainer(info []byte) *IE {
 	return New(PortManagementInformationContainer, info)
 }

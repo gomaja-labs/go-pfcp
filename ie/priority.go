@@ -6,11 +6,16 @@ package ie
 
 // Priority definitions.
 const (
-	PriorityActive    uint8 = 0
-	PriorityStandby   uint8 = 1
+	// PriorityActive selects Active.
+	PriorityActive uint8 = 0
+	// PriorityStandby selects Standby.
+	PriorityStandby uint8 = 1
+	// PriorityNoStandby selects No Standby.
 	PriorityNoStandby uint8 = 2
-	PriorityHigh      uint8 = 3
-	PriorityLow       uint8 = 4
+	// PriorityHigh selects High.
+	PriorityHigh uint8 = 3
+	// PriorityLow selects Low.
+	PriorityLow uint8 = 4
 )
 
 // NewPriority creates a new Priority IE.
@@ -34,6 +39,8 @@ func (i *IE) Priority() (uint8, error) {
 
 // TS 29.244 V20.1.0 Table 8.2.127-1.
 const (
-	PriorityPrimary   uint8 = 5
+	// PriorityPrimary selects Primary.
+	PriorityPrimary uint8 = 5
+	// PrioritySecondary selects Secondary.
 	PrioritySecondary uint8 = 6
 )

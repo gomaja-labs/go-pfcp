@@ -8,19 +8,19 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type ProtocolSpecificConfigurationParametersFields struct {
-	// MeasurementProtocol: Measurement Protocol [M]. TS 29.244 V20.1.0 Table 7.4.4.1.4-2. Context: Protocol Specific Configuration Parameters.
+	// MeasurementProtocol is the Measurement Protocol IE [M].
 	MeasurementProtocol *IE
-	// MeasurementEndPointPortNumber: Measurement EndPoint Port Number [O]. TS 29.244 V20.1.0 Table 7.4.4.1.4-2. Context: Protocol Specific Configuration Parameters.
+	// MeasurementEndPointPortNumber is the Measurement EndPoint Port Number IE [O].
 	MeasurementEndPointPortNumber *IE
-	// SecurityModeSTAMP: Security Mode (STAMP) [O]. TS 29.244 V20.1.0 Table 7.4.4.1.4-2. Context: Protocol Specific Configuration Parameters.
+	// SecurityModeSTAMP is the Security Mode (STAMP) IE [O].
 	SecurityModeSTAMP *IE
-	// HMACKeySTAMP: HMAC Key (STAMP) [O]. TS 29.244 V20.1.0 Table 7.4.4.1.4-2. Context: Protocol Specific Configuration Parameters.
+	// HMACKeySTAMP is the HMAC Key (STAMP) IE [O].
 	HMACKeySTAMP *IE
-	// SessionReflectorModeSTAMP: Session Reflector Mode (STAMP) [O]. TS 29.244 V20.1.0 Table 7.4.4.1.4-2. Context: Protocol Specific Configuration Parameters.
+	// SessionReflectorModeSTAMP is the Session Reflector Mode (STAMP) IE [O].
 	SessionReflectorModeSTAMP *IE
-	// SecurityModeOWAMPOrTWAMP: Security Mode (OWAMP or TWAMP) [O]. TS 29.244 V20.1.0 Table 7.4.4.1.4-2. Context: Protocol Specific Configuration Parameters.
+	// SecurityModeOWAMPOrTWAMP is the Security Mode (OWAMP or TWAMP) IE [O].
 	SecurityModeOWAMPOrTWAMP *IE
-	// KeyIDAndSharedSecretOWAMPOrTWAMP: Key ID and Shared Secret (OWAMP or TWAMP) [O]. TS 29.244 V20.1.0 Table 7.4.4.1.4-2. Context: Protocol Specific Configuration Parameters.
+	// KeyIDAndSharedSecretOWAMPOrTWAMP is the Key ID and Shared Secret (OWAMP or TWAMP) IE [O].
 	KeyIDAndSharedSecretOWAMPOrTWAMP []*IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

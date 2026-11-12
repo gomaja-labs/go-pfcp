@@ -2,6 +2,7 @@ package ie
 
 // ExtendedDLBufferingNotificationPolicy values are defined in TS 29.244 V20.1.0 clause 8.2.238.
 const (
+	// ExtendedDLBufferingNotificationPolicyEDBN selects EDBN.
 	ExtendedDLBufferingNotificationPolicyEDBN uint8 = 1
 )
 

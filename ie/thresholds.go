@@ -8,15 +8,20 @@ import (
 type ThresholdFlags uint8
 
 const (
+	// ThresholdRTT selects RTT.
 	ThresholdRTT ThresholdFlags = 1
+	// ThresholdPLR selects PLR.
 	ThresholdPLR ThresholdFlags = 2
 )
 
 // ThresholdsFields is the structured value of Thresholds.
 // TS 29.244 V20.1.0 clause 8.2.196.
 type ThresholdsFields struct {
-	Flags          ThresholdFlags
-	RTT            time.Duration
+	// Flags contains the presence and option bits.
+	Flags ThresholdFlags
+	// RTT is the round-trip time threshold.
+	RTT time.Duration
+	// PacketLossRate is the packet loss rate threshold.
 	PacketLossRate uint8
 }
 

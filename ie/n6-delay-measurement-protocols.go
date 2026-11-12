@@ -2,9 +2,13 @@ package ie
 
 // N6DelayMeasurementProtocols values are defined in TS 29.244 V20.1.0 clause 8.2.246.
 const (
+	// N6DelayMeasurementProtocolsTWAMP selects TWAMP.
 	N6DelayMeasurementProtocolsTWAMP uint8 = 1
+	// N6DelayMeasurementProtocolsOWAMP selects OWAMP.
 	N6DelayMeasurementProtocolsOWAMP uint8 = 2
+	// N6DelayMeasurementProtocolsSTAMP selects STAMP.
 	N6DelayMeasurementProtocolsSTAMP uint8 = 4
+	// N6DelayMeasurementProtocolsOther selects Other.
 	N6DelayMeasurementProtocolsOther uint8 = 8
 )
 

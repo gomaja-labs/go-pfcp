@@ -2,8 +2,11 @@ package ie
 
 // MitigationActions flags follow TS 29.244 V20.1.0 Figure 8.2.283-1.
 const (
+	// MitigationActionsDROP selects DROP.
 	MitigationActionsDROP uint8 = 1
+	// MitigationActionsTHRO selects THRO.
 	MitigationActionsTHRO uint8 = 2
+	// MitigationActionsIDDN selects IDDN.
 	MitigationActionsIDDN uint8 = 4
 )
 

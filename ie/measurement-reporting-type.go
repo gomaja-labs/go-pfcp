@@ -2,8 +2,11 @@ package ie
 
 // MeasurementReportingType values are defined in TS 29.244 V20.1.0 clause 8.2.262.
 const (
+	// MeasurementReportingTypePER selects PER.
 	MeasurementReportingTypePER uint8 = 1
+	// MeasurementReportingTypeEVT selects EVT.
 	MeasurementReportingTypeEVT uint8 = 2
+	// MeasurementReportingTypeIRE selects IRE.
 	MeasurementReportingTypeIRE uint8 = 4
 )
 

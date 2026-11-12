@@ -2,6 +2,7 @@ package ie
 
 // MTSDTControlInformation values are defined in TS 29.244 V20.1.0 clause 8.2.239.
 const (
+	// MTSDTControlInformationRDSI selects RDSI.
 	MTSDTControlInformationRDSI uint8 = 1
 )
 

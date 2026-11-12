@@ -2,10 +2,14 @@ package ie
 
 // HeaderHandlingAction values are defined in TS 29.244 V20.1.0 clause 8.2.255.
 const (
-	HeaderHandlingActionDetect  uint8 = 0
-	HeaderHandlingActionRemove  uint8 = 1
+	// HeaderHandlingActionDetect selects Detect.
+	HeaderHandlingActionDetect uint8 = 0
+	// HeaderHandlingActionRemove selects Remove.
+	HeaderHandlingActionRemove uint8 = 1
+	// HeaderHandlingActionReplace selects Replace.
 	HeaderHandlingActionReplace uint8 = 2
-	HeaderHandlingActionInsert  uint8 = 3
+	// HeaderHandlingActionInsert selects Insert.
+	HeaderHandlingActionInsert uint8 = 3
 )
 
 // NewHeaderHandlingAction creates a Header Handling Action IE.

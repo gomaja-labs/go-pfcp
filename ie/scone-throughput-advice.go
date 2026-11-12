@@ -6,7 +6,9 @@ import (
 
 // SCONEThroughputAdvice flags and values, TS 29.244 V20.1.0 clause 8.2.286.
 const (
+	// SCONEThroughputAdviceULSI selects ULSI.
 	SCONEThroughputAdviceULSI uint8 = 1
+	// SCONEThroughputAdviceDLSI selects DLSI.
 	SCONEThroughputAdviceDLSI uint8 = 2
 )
 
@@ -34,8 +36,11 @@ func (i *IE) SCONEThroughputAdvice() (*SCONEThroughputAdviceFields, error) {
 // Flags select optional fields; nonzero values for absent fields are rejected.
 // Rates are integer kilobits per second (1000 bits/s).
 type SCONEThroughputAdviceFields struct {
-	Flags                    uint8
-	UplinkThroughputAdvice   uint32
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// UplinkThroughputAdvice is the uplink throughput advice.
+	UplinkThroughputAdvice uint32
+	// DownlinkThroughputAdvice is the downlink throughput advice.
 	DownlinkThroughputAdvice uint32
 }
 

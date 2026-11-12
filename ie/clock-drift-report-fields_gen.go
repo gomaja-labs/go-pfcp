@@ -8,19 +8,19 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type ClockDriftReportFields struct {
-	// TimeDomainNumber: Time Domain Number [M]. TS 29.244 V20.1.0 Table 7.4.5.1.4-1. Context: Clock Drift Report IE within PFCP Node Report Request.
+	// TimeDomainNumber is the Time Domain Number IE [M].
 	TimeDomainNumber *IE
-	// TimeOffsetMeasurement: Time Offset Measurement [O]. TS 29.244 V20.1.0 Table 7.4.5.1.4-1. Context: Clock Drift Report IE within PFCP Node Report Request.
+	// TimeOffsetMeasurement is the Time Offset Measurement IE [O].
 	TimeOffsetMeasurement *IE
-	// CumulativeRateRatioMeasurement: Cumulative rateRatio Measurement [O]. TS 29.244 V20.1.0 Table 7.4.5.1.4-1. Context: Clock Drift Report IE within PFCP Node Report Request.
+	// CumulativeRateRatioMeasurement is the Cumulative rateRatio Measurement IE [O].
 	CumulativeRateRatioMeasurement *IE
-	// TimeStamp: Time Stamp [O]. TS 29.244 V20.1.0 Table 7.4.5.1.4-1. Context: Clock Drift Report IE within PFCP Node Report Request.
+	// TimeStamp is the Time Stamp IE [O].
 	TimeStamp *IE
-	// NetworkInstance: Network Instance [C]. TS 29.244 V20.1.0 Table 7.4.5.1.4-1. Context: Clock Drift Report IE within PFCP Node Report Request.
+	// NetworkInstance is the Network Instance IE [C].
 	NetworkInstance *IE
-	// APNDNN: APN/DNN [C]. TS 29.244 V20.1.0 Table 7.4.5.1.4-1. Context: Clock Drift Report IE within PFCP Node Report Request.
+	// APNDNN is the APN/DNN IE [C].
 	APNDNN *IE
-	// SNSSAI: S-NSSAI [C]. TS 29.244 V20.1.0 Table 7.4.5.1.4-1. Context: Clock Drift Report IE within PFCP Node Report Request.
+	// SNSSAI is the S-NSSAI IE [C].
 	SNSSAI *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

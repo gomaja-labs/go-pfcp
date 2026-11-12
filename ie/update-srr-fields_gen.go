@@ -8,15 +8,15 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type UpdateSRRFields struct {
-	// SRRID: SRR ID [M]. TS 29.244 V20.1.0 Table 7.5.4.20-1. Context: Update SRR IE within PFCP Session Modification Request.
+	// SRRID is the SRR ID IE [M].
 	SRRID *IE
-	// AccessAvailabilityControlInformation: Access Availability Control Information [C]. TS 29.244 V20.1.0 Table 7.5.4.20-1. Context: Update SRR IE within PFCP Session Modification Request.
+	// AccessAvailabilityControlInformation is the Access Availability Control Information IE [C].
 	AccessAvailabilityControlInformation *IE
-	// QoSMonitoringPerQoSFlowControlInformation: QoS Monitoring per QoS flow Control Information [C]. TS 29.244 V20.1.0 Table 7.5.4.20-1. Context: Update SRR IE within PFCP Session Modification Request.
+	// QoSMonitoringPerQoSFlowControlInformation is the QoS Monitoring per QoS flow Control Information IE [C].
 	QoSMonitoringPerQoSFlowControlInformation []*IE
-	// DirectReportingInformation: Direct Reporting Information [C]. TS 29.244 V20.1.0 Table 7.5.4.20-1. Context: Update SRR IE within PFCP Session Modification Request.
+	// DirectReportingInformation is the Direct Reporting Information IE [C].
 	DirectReportingInformation *IE
-	// TrafficParameterMeasurementControlInformation: Traffic Parameter Measurement Control Information [C]. TS 29.244 V20.1.0 Table 7.5.4.20-1. Context: Update SRR IE within PFCP Session Modification Request.
+	// TrafficParameterMeasurementControlInformation is the Traffic Parameter Measurement Control Information IE [C].
 	TrafficParameterMeasurementControlInformation []*IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

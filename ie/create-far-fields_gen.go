@@ -8,21 +8,21 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type CreateFARFields struct {
-	// FARID: FAR ID [M]. TS 29.244 V20.1.0 Table 7.5.2.3-1. Context: Create FAR IE within PFCP Session Establishment Request.
+	// FARID is the FAR ID IE [M].
 	FARID *IE
-	// ApplyAction: Apply Action [M]. TS 29.244 V20.1.0 Table 7.5.2.3-1. Context: Create FAR IE within PFCP Session Establishment Request.
+	// ApplyAction is the Apply Action IE [M].
 	ApplyAction *IE
-	// ForwardingParameters: Forwarding Parameters [C]. TS 29.244 V20.1.0 Table 7.5.2.3-1. Context: Create FAR IE within PFCP Session Establishment Request.
+	// ForwardingParameters is the Forwarding Parameters IE [C].
 	ForwardingParameters *IE
-	// DuplicatingParameters: Duplicating Parameters [C]. TS 29.244 V20.1.0 Table 7.5.2.3-1. Context: Create FAR IE within PFCP Session Establishment Request.
+	// DuplicatingParameters is the Duplicating Parameters IE [C].
 	DuplicatingParameters []*IE
-	// BARID: BAR ID [O]. TS 29.244 V20.1.0 Table 7.5.2.3-1. Context: Create FAR IE within PFCP Session Establishment Request.
+	// BARID is the BAR ID IE [O].
 	BARID *IE
-	// RedundantTransmissionForwardingParameters: Redundant Transmission Forwarding Parameters [C]. TS 29.244 V20.1.0 Table 7.5.2.3-1. Context: Create FAR IE within PFCP Session Establishment Request.
+	// RedundantTransmissionForwardingParameters is the Redundant Transmission Forwarding Parameters IE [C].
 	RedundantTransmissionForwardingParameters *IE
-	// MBSMulticastParameters: MBS Multicast Parameters [C]. TS 29.244 V20.1.0 Table 7.5.2.3-1. Context: Create FAR IE within PFCP Session Establishment Request.
+	// MBSMulticastParameters is the MBS Multicast Parameters IE [C].
 	MBSMulticastParameters *IE
-	// AddMBSUnicastParameters: Add MBS Unicast Parameters [C]. TS 29.244 V20.1.0 Table 7.5.2.3-1. Context: Create FAR IE within PFCP Session Establishment Request.
+	// AddMBSUnicastParameters is the Add MBS Unicast Parameters IE [C].
 	AddMBSUnicastParameters []*IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

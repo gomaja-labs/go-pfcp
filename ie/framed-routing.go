@@ -8,10 +8,14 @@ package ie
 //
 // Ref: https://tools.ietf.org/html/rfc2865#section-5.10
 const (
-	FramedRoutingNone                    uint32 = 0
-	FramedRoutingSendRoutingPackets      uint32 = 1
+	// FramedRoutingNone selects None.
+	FramedRoutingNone uint32 = 0
+	// FramedRoutingSendRoutingPackets selects Send Routing Packets.
+	FramedRoutingSendRoutingPackets uint32 = 1
+	// FramedRoutingListenForRoutingPackets selects Listen For Routing Packets.
 	FramedRoutingListenForRoutingPackets uint32 = 2
-	FramedRoutingSendAndListen           uint32 = 3
+	// FramedRoutingSendAndListen selects Send And Listen.
+	FramedRoutingSendAndListen uint32 = 3
 )
 
 // NewFramedRouting creates a new FramedRouting IE.

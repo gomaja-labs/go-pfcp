@@ -8,35 +8,35 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type UpdateQERFields struct {
-	// QERID: QER ID [M]. TS 29.244 V20.1.0 Table 7.5.4.5-1. Context: Update QER IE within PFCP Session Modification Request.
+	// QERID is the QER ID IE [M].
 	QERID *IE
-	// QERCorrelationID: QER Correlation ID [C]. TS 29.244 V20.1.0 Table 7.5.4.5-1. Context: Update QER IE within PFCP Session Modification Request.
+	// QERCorrelationID is the QER Correlation ID IE [C].
 	QERCorrelationID *IE
-	// GateStatus: Gate Status [C]. TS 29.244 V20.1.0 Table 7.5.4.5-1. Context: Update QER IE within PFCP Session Modification Request.
+	// GateStatus is the Gate Status IE [C].
 	GateStatus *IE
-	// MaximumBitrate: Maximum Bitrate [C]. TS 29.244 V20.1.0 Table 7.5.4.5-1. Context: Update QER IE within PFCP Session Modification Request.
+	// MaximumBitrate is the Maximum Bitrate IE [C].
 	MaximumBitrate *IE
-	// GuaranteedBitrate: Guaranteed Bitrate [C]. TS 29.244 V20.1.0 Table 7.5.4.5-1. Context: Update QER IE within PFCP Session Modification Request.
+	// GuaranteedBitrate is the Guaranteed Bitrate IE [C].
 	GuaranteedBitrate *IE
-	// PacketRate: Packet Rate [C]. TS 29.244 V20.1.0 Table 7.5.4.5-1. Context: Update QER IE within PFCP Session Modification Request.
+	// PacketRate is the Packet Rate IE [C].
 	PacketRate *IE
-	// DLFlowLevelMarking: DL Flow Level Marking [C]. TS 29.244 V20.1.0 Table 7.5.4.5-1. Context: Update QER IE within PFCP Session Modification Request.
+	// DLFlowLevelMarking is the DL Flow Level Marking IE [C].
 	DLFlowLevelMarking *IE
-	// QoSFlowIdentifier: QoS flow identifier [C]. TS 29.244 V20.1.0 Table 7.5.4.5-1. Context: Update QER IE within PFCP Session Modification Request.
+	// QoSFlowIdentifier is the QoS flow identifier IE [C].
 	QoSFlowIdentifier *IE
-	// ReflectiveQoS: Reflective QoS [C]. TS 29.244 V20.1.0 Table 7.5.4.5-1. Context: Update QER IE within PFCP Session Modification Request.
+	// ReflectiveQoS is the Reflective QoS IE [C].
 	ReflectiveQoS *IE
-	// PagingPolicyIndicator: Paging Policy Indicator [C]. TS 29.244 V20.1.0 Table 7.5.4.5-1. Context: Update QER IE within PFCP Session Modification Request.
+	// PagingPolicyIndicator is the Paging Policy Indicator IE [C].
 	PagingPolicyIndicator *IE
-	// AveragingWindow: Averaging Window [O]. TS 29.244 V20.1.0 Table 7.5.4.5-1. Context: Update QER IE within PFCP Session Modification Request.
+	// AveragingWindow is the Averaging Window IE [O].
 	AveragingWindow *IE
-	// QERControlIndications: QER Control Indications [C]. TS 29.244 V20.1.0 Table 7.5.4.5-1. Context: Update QER IE within PFCP Session Modification Request.
+	// QERControlIndications is the QER Control Indications IE [C].
 	QERControlIndications *IE
-	// QERIndications: QER Indications [C]. TS 29.244 V20.1.0 Table 7.5.4.5-1. Context: Update QER IE within PFCP Session Modification Request.
+	// QERIndications is the QER Indications IE [C].
 	QERIndications *IE
-	// PDUSetImportanceForN6UnmarkedPDUs: PDU Set Importance for N6-unmarked PDUs [C]. TS 29.244 V20.1.0 Table 7.5.4.5-1. Context: Update QER IE within PFCP Session Modification Request.
+	// PDUSetImportanceForN6UnmarkedPDUs is the PDU Set Importance for N6-unmarked PDUs IE [C].
 	PDUSetImportanceForN6UnmarkedPDUs *IE
-	// SCONEThroughputAdvice: SCONE Throughput Advice [C]. TS 29.244 V20.1.0 Table 7.5.4.5-1. Context: Update QER IE within PFCP Session Modification Request.
+	// SCONEThroughputAdvice is the SCONE Throughput Advice IE [C].
 	SCONEThroughputAdvice *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

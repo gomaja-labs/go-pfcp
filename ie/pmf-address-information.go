@@ -44,12 +44,19 @@ func (i *IE) PMFAddressInformation() (*PMFAddressInformationFields, error) {
 
 // PMFAddressInformationFields represents a fields contained in PMFAddressInformation IE.
 type PMFAddressInformationFields struct {
-	Flags                         uint8
-	PMFIPv4Address                net.IP
-	PMFIPv6Address                net.IP
-	PMFPortFor3GPPAccess          uint16
-	PMFPortForNon3GPPAccess       uint16
-	PMFMACAddressFor3GPPAccess    net.HardwareAddr
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// PMFIPv4Address is the pmfIPv4 address.
+	PMFIPv4Address net.IP
+	// PMFIPv6Address is the pmfIPv6 address.
+	PMFIPv6Address net.IP
+	// PMFPortFor3GPPAccess is the pmf port for3 gpp access.
+	PMFPortFor3GPPAccess uint16
+	// PMFPortForNon3GPPAccess is the pmf port for non3 gpp access.
+	PMFPortForNon3GPPAccess uint16
+	// PMFMACAddressFor3GPPAccess is the pmfmac address for3 gpp access.
+	PMFMACAddressFor3GPPAccess net.HardwareAddr
+	// PMFMACAddressForNon3GPPAccess is the pmfmac address for non3 gpp access.
 	PMFMACAddressForNon3GPPAccess net.HardwareAddr
 }
 

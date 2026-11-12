@@ -7,10 +7,11 @@ import "github.com/gomaja-labs/go-pfcp/ie"
 // SessionSetDeletionRequest represents PFCP Session Set Deletion Request.
 // TS 29.244 V20.1.0 Table 7.4.6.1-1 (clause 7.4.6.1).
 type SessionSetDeletionRequest struct {
+	// Header holds the PFCP framing and received IE ordering template.
 	*Header
-	// NodeID: Node ID [M]. TS 29.244 V20.1.0 Table 7.4.6.1-1.
+	// NodeID is the Node ID IE [M].
 	NodeID *ie.IE
-	// FQCSID: SGW-C FQ-CSID [C]; PGW-C/SMF FQ-CSID [C]; PGW-U/SGW-U/ UPF FQ-CSID [C]; TWAN FQ-CSID [C]; ePDG FQ-CSID [C]; MME FQ-CSID [C]. TS 29.244 V20.1.0 Table 7.4.6.1-1.
+	// FQCSID is the SGW-C FQ-CSID IE [C]. PGW-C/SMF FQ-CSID IE [C]. PGW-U/SGW-U/ UPF FQ-CSID IE [C]. TWAN FQ-CSID IE [C]. ePDG FQ-CSID IE [C]. MME FQ-CSID IE [C]. TS 29.244 V20.1.0 Table 7.4.6.1-1. Context: PFCP Session Set Deletion Request.
 	FQCSID []*ie.IE
 	// OtherIEs retains unexpected types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

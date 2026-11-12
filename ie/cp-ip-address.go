@@ -8,15 +8,21 @@ import (
 type CPIPAddressFlags uint8
 
 const (
+	// CPIPAddressV6 marks the presence of an IPv6 address.
 	CPIPAddressV6 CPIPAddressFlags = 1
+	// CPIPAddressV4 marks the presence of an IPv4 address.
 	CPIPAddressV4 CPIPAddressFlags = 2
 )
 
 // CPIPAddressFields is the structured value of CP IP Address.
 // TS 29.244 V20.1.0 clause 8.2.199.
 type CPIPAddressFields struct {
-	Flags                    CPIPAddressFlags
-	IPv4Address, IPv6Address netip.Addr
+	// Flags contains the presence and option bits.
+	Flags CPIPAddressFlags
+	// IPv4Address is the IPv4 address, when present.
+	IPv4Address netip.Addr
+	// IPv6Address is the IPv6 address, when present.
+	IPv6Address netip.Addr
 }
 
 // NewCPIPAddress creates a CP IP Address IE from its fields.

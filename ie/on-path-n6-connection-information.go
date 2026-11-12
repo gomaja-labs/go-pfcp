@@ -7,11 +7,16 @@ import (
 
 // OnPathN6ConnectionInformation flags and values, TS 29.244 V20.1.0 clause 8.2.261.
 const (
-	OnPathN6ConnectionInformationV4          uint8 = 8
-	OnPathN6ConnectionInformationV6          uint8 = 16
-	OnPathN6ConnectionInformationPN          uint8 = 32
+	// OnPathN6ConnectionInformationV4 marks the presence of an IPv4 address.
+	OnPathN6ConnectionInformationV4 uint8 = 8
+	// OnPathN6ConnectionInformationV6 marks the presence of an IPv6 address.
+	OnPathN6ConnectionInformationV6 uint8 = 16
+	// OnPathN6ConnectionInformationPN selects PN.
+	OnPathN6ConnectionInformationPN uint8 = 32
+	// OnPathN6ConnectionInformationUnspecified selects Unspecified.
 	OnPathN6ConnectionInformationUnspecified uint8 = 0
-	OnPathN6ConnectionInformationConnectUDP  uint8 = 1
+	// OnPathN6ConnectionInformationConnectUDP selects Connect UDP.
+	OnPathN6ConnectionInformationConnectUDP uint8 = 1
 )
 
 // NewOnPathN6ConnectionInformation creates a On-path N6 Connection Information IE.
@@ -37,10 +42,14 @@ func (i *IE) OnPathN6ConnectionInformation() (*OnPathN6ConnectionInformationFiel
 // OnPathN6ConnectionInformationFields models TS 29.244 V20.1.0 clause 8.2.261.
 // Flags select optional fields; nonzero values for absent fields are rejected.
 type OnPathN6ConnectionInformationFields struct {
-	Flags       uint8
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// IPv4Address is the IPv4 address, when present.
 	IPv4Address netip.Addr
+	// IPv6Address is the IPv6 address, when present.
 	IPv6Address netip.Addr
-	PortNumber  uint16
+	// PortNumber is the port number.
+	PortNumber uint16
 }
 
 // NewOnPathN6ConnectionInformationFields stores all arguments; Marshal validates their representation.

@@ -8,13 +8,13 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type ProvideATSSSControlInformationFields struct {
-	// MPTCPControlInformation: MPTCP Control Information [C]. TS 29.244 V20.1.0 Table 7.5.2.10-1. Context: Provide ATSSS Control Information IE within PFCP Session Establishment Request.
+	// MPTCPControlInformation is the MPTCP Control Information IE [C].
 	MPTCPControlInformation *IE
-	// ATSSSLLControlInformation: ATSSS-LL Control Information [C]. TS 29.244 V20.1.0 Table 7.5.2.10-1. Context: Provide ATSSS Control Information IE within PFCP Session Establishment Request.
+	// ATSSSLLControlInformation is the ATSSS-LL Control Information IE [C].
 	ATSSSLLControlInformation *IE
-	// PMFControlInformation: PMF Control Information [C]. TS 29.244 V20.1.0 Table 7.5.2.10-1. Context: Provide ATSSS Control Information IE within PFCP Session Establishment Request.
+	// PMFControlInformation is the PMF Control Information IE [C].
 	PMFControlInformation *IE
-	// MPQUICControlInformation: MPQUIC Control Information [C]. TS 29.244 V20.1.0 Table 7.5.2.10-1. Context: Provide ATSSS Control Information IE within PFCP Session Establishment Request.
+	// MPQUICControlInformation is the MPQUIC Control Information IE [C].
 	MPQUICControlInformation *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

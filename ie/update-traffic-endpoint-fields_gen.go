@@ -8,27 +8,27 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type UpdateTrafficEndpointFields struct {
-	// TrafficEndpointID: Traffic Endpoint ID [M]. TS 29.244 V20.1.0 Table 7.5.4.13-1. Context: Update Traffic Endpoint IE within PFCP Session Modification Request.
+	// TrafficEndpointID is the Traffic Endpoint ID IE [M].
 	TrafficEndpointID *IE
-	// LocalFTEID: Local F-TEID [C]. TS 29.244 V20.1.0 Table 7.5.4.13-1. Context: Update Traffic Endpoint IE within PFCP Session Modification Request.
+	// LocalFTEID is the Local F-TEID IE [C].
 	LocalFTEID *IE
-	// NetworkInstance: Network Instance [O]. TS 29.244 V20.1.0 Table 7.5.4.13-1. Context: Update Traffic Endpoint IE within PFCP Session Modification Request.
+	// NetworkInstance is the Network Instance IE [O].
 	NetworkInstance *IE
-	// RedundantTransmissionDetectionParameters: Redundant Transmission Detection Parameters [C]. TS 29.244 V20.1.0 Table 7.5.4.13-1. Context: Update Traffic Endpoint IE within PFCP Session Modification Request.
+	// RedundantTransmissionDetectionParameters is the Redundant Transmission Detection Parameters IE [C].
 	RedundantTransmissionDetectionParameters *IE
-	// UEIPAddress: UE IP address [C]. TS 29.244 V20.1.0 Table 7.5.4.13-1. Context: Update Traffic Endpoint IE within PFCP Session Modification Request.
+	// UEIPAddress is the UE IP address IE [C].
 	UEIPAddress []*IE
-	// FramedRoute: Framed-Route [C]. TS 29.244 V20.1.0 Table 7.5.4.13-1. Context: Update Traffic Endpoint IE within PFCP Session Modification Request.
+	// FramedRoute is the Framed-Route IE [C].
 	FramedRoute []*IE
-	// FramedRouting: Framed-Routing [C]. TS 29.244 V20.1.0 Table 7.5.4.13-1. Context: Update Traffic Endpoint IE within PFCP Session Modification Request.
+	// FramedRouting is the Framed-Routing IE [C].
 	FramedRouting *IE
-	// FramedIPv6Route: Framed-IPv6-Route [C]. TS 29.244 V20.1.0 Table 7.5.4.13-1. Context: Update Traffic Endpoint IE within PFCP Session Modification Request.
+	// FramedIPv6Route is the Framed-IPv6-Route IE [C].
 	FramedIPv6Route []*IE
-	// QFI: QFI [C]. TS 29.244 V20.1.0 Table 7.5.4.13-1. Context: Update Traffic Endpoint IE within PFCP Session Modification Request.
+	// QFI is the QFI IE [C].
 	QFI []*IE
-	// SourceInterfaceType: Source Interface Type [C]. TS 29.244 V20.1.0 Table 7.5.4.13-1. Context: Update Traffic Endpoint IE within PFCP Session Modification Request.
+	// SourceInterfaceType is the Source Interface Type IE [C].
 	SourceInterfaceType *IE
-	// RATType: RAT Type [O]. TS 29.244 V20.1.0 Table 7.5.4.13-1. Context: Update Traffic Endpoint IE within PFCP Session Modification Request.
+	// RATType is the RAT Type IE [O].
 	RATType *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

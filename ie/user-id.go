@@ -43,18 +43,30 @@ func (i *IE) UserID() (*UserIDFields, error) {
 
 // UserIDFields represents a fields contained in UserID IE.
 type UserIDFields struct {
-	Flags        uint8
-	IMSILength   uint8
-	IMSI         string
-	IMEILength   uint8
-	IMEI         string
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// IMSILength is the encoded IMSI length in octets.
+	IMSILength uint8
+	// IMSI is the international mobile subscriber identity.
+	IMSI string
+	// IMEILength is the encoded IMEI length in octets.
+	IMEILength uint8
+	// IMEI is the international mobile equipment identity.
+	IMEI string
+	// MSISDNLength is the encoded MSISDN length in octets.
 	MSISDNLength uint8
-	MSISDN       string
-	NAILength    uint8
-	NAI          string
-	SUPI         string
-	GPSI         string
-	PEI          string
+	// MSISDN is the mobile subscriber number.
+	MSISDN string
+	// NAILength is the encoded NAI length in octets.
+	NAILength uint8
+	// NAI is the network access identifier.
+	NAI string
+	// SUPI is the subscription permanent identifier.
+	SUPI string
+	// GPSI is the generic public subscription identifier.
+	GPSI string
+	// PEI is the permanent equipment identifier.
+	PEI string
 }
 
 // NewUserIDFields creates a new NewUserIDFields.

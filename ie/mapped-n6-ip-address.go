@@ -7,8 +7,10 @@ import (
 
 // MappedN6IPAddress flags and values, TS 29.244 V20.1.0 clause 8.2.242.
 const (
+	// MappedN6IPAddressCHV4 selects CHV4.
 	MappedN6IPAddressCHV4 uint8 = 1
-	MappedN6IPAddressV4   uint8 = 2
+	// MappedN6IPAddressV4 marks the presence of an IPv4 address.
+	MappedN6IPAddressV4 uint8 = 2
 )
 
 // NewMappedN6IPAddress creates a Mapped N6 IP Address IE.
@@ -34,7 +36,9 @@ func (i *IE) MappedN6IPAddress() (*MappedN6IPAddressFields, error) {
 // MappedN6IPAddressFields models TS 29.244 V20.1.0 clause 8.2.242.
 // Flags select optional fields; nonzero values for absent fields are rejected.
 type MappedN6IPAddressFields struct {
-	Flags       uint8
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// IPv4Address is the IPv4 address, when present.
 	IPv4Address netip.Addr
 }
 

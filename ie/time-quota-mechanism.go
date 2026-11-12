@@ -11,7 +11,9 @@ import (
 
 // BaseTimeIntervalType definitions.
 const (
+	// BTITCTP selects CTP.
 	BTITCTP uint8 = 0
+	// BTITDTP selects DTP.
 	BTITDTP uint8 = 1
 )
 

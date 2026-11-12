@@ -7,10 +7,11 @@ import "github.com/gomaja-labs/go-pfcp/ie"
 // HeartbeatRequest represents PFCP Heartbeat Request.
 // TS 29.244 V20.1.0 Table 7.4.2.1-1 (clause 7.4.2.1).
 type HeartbeatRequest struct {
+	// Header holds the PFCP framing and received IE ordering template.
 	*Header
-	// RecoveryTimeStamp: Recovery Time Stamp [M]. TS 29.244 V20.1.0 Table 7.4.2.1-1.
+	// RecoveryTimeStamp is the Recovery Time Stamp IE [M].
 	RecoveryTimeStamp *ie.IE
-	// SourceIPAddress: Source IP Address [O]. TS 29.244 V20.1.0 Table 7.4.2.1-1.
+	// SourceIPAddress is the Source IP Address IE [O].
 	SourceIPAddress *ie.IE
 	// OtherIEs retains unexpected types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

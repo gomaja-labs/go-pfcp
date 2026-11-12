@@ -11,8 +11,10 @@ import (
 // PMFControlInformationFields contains the PMF flags and the complete per-flow list.
 // TS 29.244 V20.1.0 clause 8.2.156.
 type PMFControlInformationFields struct {
+	// Flags contains the presence and option bits.
 	Flags uint8
-	QFIs  []uint8
+	// QFIs is the qf is.
+	QFIs []uint8
 }
 
 // NewPMFControlInformation creates PMF control information with an optional QFI list.

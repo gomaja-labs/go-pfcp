@@ -8,15 +8,15 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type TrafficParameterMeasurementReportFields struct {
-	// QFI: QFI [M]. TS 29.244 V20.1.0 Table 7.5.8.6-4. Context: Traffic Parameter Measurement Report IE.
+	// QFI is the QFI IE [M].
 	QFI *IE
-	// N6JitterMeasurement: N6 Jitter Measurement [C]. TS 29.244 V20.1.0 Table 7.5.8.6-4. Context: Traffic Parameter Measurement Report IE.
+	// N6JitterMeasurement is the N6 Jitter Measurement IE [C].
 	N6JitterMeasurement *IE
-	// ULPeriodicity: UL Periodicity [C]. TS 29.244 V20.1.0 Table 7.5.8.6-4. Context: Traffic Parameter Measurement Report IE.
+	// ULPeriodicity is the UL Periodicity IE [C].
 	ULPeriodicity *IE
-	// TimeStamp: Time Stamp [M]. TS 29.244 V20.1.0 Table 7.5.8.6-4. Context: Traffic Parameter Measurement Report IE.
+	// TimeStamp is the Time Stamp IE [M].
 	TimeStamp *IE
-	// StartTime: Start Time [O]. TS 29.244 V20.1.0 Table 7.5.8.6-4. Context: Traffic Parameter Measurement Report IE.
+	// StartTime is the Start Time IE [O].
 	StartTime *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

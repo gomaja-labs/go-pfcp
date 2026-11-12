@@ -2,7 +2,9 @@ package ie
 
 // RTPPayloadFormat values are defined in TS 29.244 V20.1.0 clause 8.2.237.
 const (
+	// RTPPayloadFormatH264 selects H264.
 	RTPPayloadFormatH264 uint8 = 1
+	// RTPPayloadFormatH265 selects H265.
 	RTPPayloadFormatH265 uint8 = 2
 )
 

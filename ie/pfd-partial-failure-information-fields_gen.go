@@ -8,9 +8,9 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type PFDPartialFailureInformationFields struct {
-	// ApplicationID: Application ID [M]. TS 29.244 V20.1.0 Table 7.4.3.2-2. Context: PFD Partial Failure Information within PFCP PFD Management Response.
+	// ApplicationID is the Application ID IE [M].
 	ApplicationID *IE
-	// FailureCause: Failure Cause [M]. TS 29.244 V20.1.0 Table 7.4.3.2-2. Context: PFD Partial Failure Information within PFCP PFD Management Response.
+	// FailureCause is the Failure Cause IE [M].
 	FailureCause *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

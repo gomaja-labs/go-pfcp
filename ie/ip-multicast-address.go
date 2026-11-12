@@ -43,11 +43,16 @@ func (i *IE) IPMulticastAddress() (*IPMulticastAddressFields, error) {
 
 // IPMulticastAddressFields represents a fields contained in IPMulticastAddress IE.
 type IPMulticastAddressFields struct {
-	Flags            uint8
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// StartIPv4Address is the start IPv4 address.
 	StartIPv4Address net.IP
+	// StartIPv6Address is the start IPv6 address.
 	StartIPv6Address net.IP
-	EndIPv4Address   net.IP
-	EndIPv6Address   net.IP
+	// EndIPv4Address is the end IPv4 address.
+	EndIPv4Address net.IP
+	// EndIPv6Address is the end IPv6 address.
+	EndIPv6Address net.IP
 }
 
 // NewIPMulticastAddressFields creates a new NewIPMulticastAddressFields.

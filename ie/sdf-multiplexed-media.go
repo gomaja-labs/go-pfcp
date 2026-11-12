@@ -9,12 +9,18 @@ import (
 // Flags bit 0..4 are SSRCPI, PTPI, MIDPI, RHIDMPI and RPTPI respectively.
 // TS 29.244 V20.1.0 clause 8.2.5, Figure 8.2.5-2.
 type SDFMultiplexedMedia struct {
-	Flags                  uint8
-	SynchronizationSource  uint32
-	PayloadType            uint8
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// SynchronizationSource is the synchronization source.
+	SynchronizationSource uint32
+	// PayloadType is the payload type.
+	PayloadType uint8
+	// MediaIdentificationTag is the media identification tag.
 	MediaIdentificationTag string
-	RTPHeaderExtensionID   uint8
-	RTCPPacketType         uint8
+	// RTPHeaderExtensionID is the RTP header extension ID.
+	RTPHeaderExtensionID uint8
+	// RTCPPacketType is the RTCP packet type.
+	RTCPPacketType uint8
 }
 
 func (f *SDFMultiplexedMedia) validate() error {

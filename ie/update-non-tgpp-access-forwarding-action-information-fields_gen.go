@@ -8,15 +8,15 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type UpdateNonTGPPAccessForwardingActionInformationFields struct {
-	// FARID: FAR ID [C]. TS 29.244 V20.1.0 Table 7.5.4.16-3. Context: Update Non-3GPP Access Forwarding Action Information IE in Update MAR IE.
+	// FARID is the FAR ID IE [C].
 	FARID *IE
-	// Weight: Weight [C]. TS 29.244 V20.1.0 Table 7.5.4.16-3. Context: Update Non-3GPP Access Forwarding Action Information IE in Update MAR IE.
+	// Weight is the Weight IE [C].
 	Weight *IE
-	// Priority: Priority [C]. TS 29.244 V20.1.0 Table 7.5.4.16-3. Context: Update Non-3GPP Access Forwarding Action Information IE in Update MAR IE.
+	// Priority is the Priority IE [C].
 	Priority *IE
-	// URRID: URR ID [C]. TS 29.244 V20.1.0 Table 7.5.4.16-3. Context: Update Non-3GPP Access Forwarding Action Information IE in Update MAR IE.
+	// URRID is the URR ID IE [C].
 	URRID []*IE
-	// RATType: RAT Type [O]. TS 29.244 V20.1.0 Table 7.5.4.16-3. Context: Update Non-3GPP Access Forwarding Action Information IE in Update MAR IE.
+	// RATType is the RAT Type IE [O].
 	RATType *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

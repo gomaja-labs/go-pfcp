@@ -8,9 +8,9 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type RedundantTransmissionForwardingParametersFields struct {
-	// OuterHeaderCreation: Outer Header Creation [M]. TS 29.244 V20.1.0 Table 7.5.2.3-4. Context: Redundant Transmission Forwarding Parameters IE in FAR.
+	// OuterHeaderCreation is the Outer Header Creation IE [M].
 	OuterHeaderCreation *IE
-	// NetworkInstanceForRedundantTransmission: Network Instance for Redundant Transmission [C]. TS 29.244 V20.1.0 Table 7.5.2.3-4. Context: Redundant Transmission Forwarding Parameters IE in FAR.
+	// NetworkInstanceForRedundantTransmission is the Network Instance for Redundant Transmission IE [C].
 	NetworkInstanceForRedundantTransmission *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

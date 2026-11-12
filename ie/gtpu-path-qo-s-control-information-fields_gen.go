@@ -8,23 +8,23 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type GTPUPathQoSControlInformationFields struct {
-	// RemoteGTPUPeer: Remote GTP-U Peer [C]. TS 29.244 V20.1.0 Table 7.4.4.1.3-1. Context: GTP-U Path QoS Control Information within PFCP Association Setup Request.
+	// RemoteGTPUPeer is the Remote GTP-U Peer IE [C].
 	RemoteGTPUPeer []*IE
-	// GTPUPathInterfaceType: GTP-U Path Interface Type [C]. TS 29.244 V20.1.0 Table 7.4.4.1.3-1. Context: GTP-U Path QoS Control Information within PFCP Association Setup Request.
+	// GTPUPathInterfaceType is the GTP-U Path Interface Type IE [C].
 	GTPUPathInterfaceType *IE
-	// QoSReportTrigger: QoS Report Trigger [M]. TS 29.244 V20.1.0 Table 7.4.4.1.3-1. Context: GTP-U Path QoS Control Information within PFCP Association Setup Request.
+	// QoSReportTrigger is the QoS Report Trigger IE [M].
 	QoSReportTrigger *IE
-	// DSCP: DSCP [C]. TS 29.244 V20.1.0 Table 7.4.4.1.3-1. Context: GTP-U Path QoS Control Information within PFCP Association Setup Request.
+	// DSCP is the DSCP IE [C].
 	DSCP []*IE
-	// MeasurementPeriod: Measurement Period [C]. TS 29.244 V20.1.0 Table 7.4.4.1.3-1. Context: GTP-U Path QoS Control Information within PFCP Association Setup Request.
+	// MeasurementPeriod is the Measurement Period IE [C].
 	MeasurementPeriod *IE
-	// AveragePacketDelayThreshold: Average Packet Delay Threshold [C]. TS 29.244 V20.1.0 Table 7.4.4.1.3-1. Context: GTP-U Path QoS Control Information within PFCP Association Setup Request.
+	// AveragePacketDelayThreshold is the Average Packet Delay Threshold IE [C].
 	AveragePacketDelayThreshold *IE
-	// MinimumPacketDelayThreshold: Minimum Packet Delay Threshold [C]. TS 29.244 V20.1.0 Table 7.4.4.1.3-1. Context: GTP-U Path QoS Control Information within PFCP Association Setup Request.
+	// MinimumPacketDelayThreshold is the Minimum Packet Delay Threshold IE [C].
 	MinimumPacketDelayThreshold *IE
-	// MaximumPacketDelayThreshold: Maximum Packet Delay Threshold [C]. TS 29.244 V20.1.0 Table 7.4.4.1.3-1. Context: GTP-U Path QoS Control Information within PFCP Association Setup Request.
+	// MaximumPacketDelayThreshold is the Maximum Packet Delay Threshold IE [C].
 	MaximumPacketDelayThreshold *IE
-	// MinimumWaitingTime: Minimum Waiting Time [C]. TS 29.244 V20.1.0 Table 7.4.4.1.3-1. Context: GTP-U Path QoS Control Information within PFCP Association Setup Request.
+	// MinimumWaitingTime is the Minimum Waiting Time IE [C].
 	MinimumWaitingTime *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

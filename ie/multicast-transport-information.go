@@ -7,8 +7,12 @@ import (
 // MulticastTransportInformationFields is the structured value of Multicast Transport Information.
 // TS 29.244 V20.1.0 clause 8.2.207.
 type MulticastTransportInformationFields struct {
-	CommonTEID                      uint32
-	MulticastAddress, SourceAddress netip.Addr
+	// CommonTEID is the common teid.
+	CommonTEID uint32
+	// MulticastAddress is the multicast address.
+	MulticastAddress netip.Addr
+	// SourceAddress is the source address.
+	SourceAddress netip.Addr
 }
 
 // NewMulticastTransportInformation creates a Multicast Transport Information IE from its fields.

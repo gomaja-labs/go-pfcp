@@ -49,12 +49,18 @@ func (i *IE) PacketRateStatus() (*PacketRateStatusFields, error) {
 
 // PacketRateStatusFields represents a f contained in PacketRateStatus IE.
 type PacketRateStatusFields struct {
-	Flags                                             uint8
-	NumberOfRemainingUplinkPacketsAllowed             uint16
-	NumberOfRemainingAdditionalUplinkPacketsAllowed   uint16
-	NumberOfRemainingDownlinkPacketsAllowed           uint16
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// NumberOfRemainingUplinkPacketsAllowed is the number of remaining uplink packets allowed.
+	NumberOfRemainingUplinkPacketsAllowed uint16
+	// NumberOfRemainingAdditionalUplinkPacketsAllowed is the number of remaining additional uplink packets allowed.
+	NumberOfRemainingAdditionalUplinkPacketsAllowed uint16
+	// NumberOfRemainingDownlinkPacketsAllowed is the number of remaining downlink packets allowed.
+	NumberOfRemainingDownlinkPacketsAllowed uint16
+	// NumberOfRemainingAdditionalDownlinkPacketsAllowed is the number of remaining additional downlink packets allowed.
 	NumberOfRemainingAdditionalDownlinkPacketsAllowed uint16
-	RateControlStatusValidityTime                     time.Time
+	// RateControlStatusValidityTime is the time until which the reported rate-control state is valid.
+	RateControlStatusValidityTime time.Time
 	// Retain fractions finer than time.Time can express when the decoded time
 	// is unchanged. Editing the public time recomputes the NTP timestamp.
 	wireTimestamp    uint64

@@ -7,24 +7,25 @@ import "github.com/gomaja-labs/go-pfcp/ie"
 // NodeReportRequest represents PFCP Node Report Request.
 // TS 29.244 V20.1.0 Table 7.4.5.1.1-1 (clause 7.4.5.1.1).
 type NodeReportRequest struct {
+	// Header holds the PFCP framing and received IE ordering template.
 	*Header
-	// NodeID: Node ID [M]. TS 29.244 V20.1.0 Table 7.4.5.1.1-1.
+	// NodeID is the Node ID IE [M].
 	NodeID *ie.IE
-	// NodeReportType: Node Report Type [M]. TS 29.244 V20.1.0 Table 7.4.5.1.1-1.
+	// NodeReportType is the Node Report Type IE [M].
 	NodeReportType *ie.IE
-	// VendorSpecificNodeReportType: Vendor-Specific Node Report Type [C]. TS 29.244 V20.1.0 Table 7.4.5.1.1-1.
+	// VendorSpecificNodeReportType is the Vendor-Specific Node Report Type IE [C].
 	VendorSpecificNodeReportType *ie.IE
-	// UserPlanePathFailureReport: User Plane Path Failure Report [C]. TS 29.244 V20.1.0 Table 7.4.5.1.1-1.
+	// UserPlanePathFailureReport is the User Plane Path Failure Report IE [C].
 	UserPlanePathFailureReport *ie.IE
-	// UserPlanePathRecoveryReport: User Plane Path Recovery Report [C]. TS 29.244 V20.1.0 Table 7.4.5.1.1-1.
+	// UserPlanePathRecoveryReport is the User Plane Path Recovery Report IE [C].
 	UserPlanePathRecoveryReport *ie.IE
-	// ClockDriftReport: Clock Drift Report [C]. TS 29.244 V20.1.0 Table 7.4.5.1.1-1.
+	// ClockDriftReport is the Clock Drift Report IE [C].
 	ClockDriftReport []*ie.IE
-	// GTPUPathQoSReport: GTP-U Path QoS Report [C]. TS 29.244 V20.1.0 Table 7.4.5.1.1-1.
+	// GTPUPathQoSReport is the GTP-U Path QoS Report IE [C].
 	GTPUPathQoSReport []*ie.IE
-	// PeerUPRestartReport: Peer UP Restart Report [C]. TS 29.244 V20.1.0 Table 7.4.5.1.1-1.
+	// PeerUPRestartReport is the Peer UP Restart Report IE [C].
 	PeerUPRestartReport *ie.IE
-	// N6DelayMeasurementReport: N6 Delay Measurement Report [C]. TS 29.244 V20.1.0 Table 7.4.5.1.1-1.
+	// N6DelayMeasurementReport is the N6 Delay Measurement Report IE [C].
 	N6DelayMeasurementReport []*ie.IE
 	// OtherIEs retains unexpected types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

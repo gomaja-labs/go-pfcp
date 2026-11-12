@@ -7,8 +7,9 @@ import "github.com/gomaja-labs/go-pfcp/ie"
 // AssociationReleaseRequest represents PFCP Association Release Request.
 // TS 29.244 V20.1.0 Table 7.4.4.5-1 (clause 7.4.4.5).
 type AssociationReleaseRequest struct {
+	// Header holds the PFCP framing and received IE ordering template.
 	*Header
-	// NodeID: Node ID [M]. TS 29.244 V20.1.0 Table 7.4.4.5-1.
+	// NodeID is the Node ID IE [M].
 	NodeID *ie.IE
 	// OtherIEs retains unexpected types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

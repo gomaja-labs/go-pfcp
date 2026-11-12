@@ -7,40 +7,41 @@ import "github.com/gomaja-labs/go-pfcp/ie"
 // AssociationUpdateRequest represents PFCP Association Update Request.
 // TS 29.244 V20.1.0 Table 7.4.4.3-1 (clause 7.4.4.3).
 type AssociationUpdateRequest struct {
+	// Header holds the PFCP framing and received IE ordering template.
 	*Header
-	// NodeID: Node ID [M]. TS 29.244 V20.1.0 Table 7.4.4.3-1.
+	// NodeID is the Node ID IE [M].
 	NodeID *ie.IE
-	// UPFunctionFeatures: UP Function Features [O]. TS 29.244 V20.1.0 Table 7.4.4.3-1.
+	// UPFunctionFeatures is the UP Function Features IE [O].
 	UPFunctionFeatures *ie.IE
-	// CPFunctionFeatures: CP Function Features [O]. TS 29.244 V20.1.0 Table 7.4.4.3-1.
+	// CPFunctionFeatures is the CP Function Features IE [O].
 	CPFunctionFeatures *ie.IE
-	// PFCPAssociationReleaseRequest: PFCP Association Release Request [C]. TS 29.244 V20.1.0 Table 7.4.4.3-1.
+	// PFCPAssociationReleaseRequest is the PFCP Association Release Request IE [C].
 	PFCPAssociationReleaseRequest *ie.IE
-	// GracefulReleasePeriod: Graceful Release Period [C]. TS 29.244 V20.1.0 Table 7.4.4.3-1.
+	// GracefulReleasePeriod is the Graceful Release Period IE [C].
 	GracefulReleasePeriod *ie.IE
-	// PFCPAUReqFlags: PFCPAUReq-Flags [O]. TS 29.244 V20.1.0 Table 7.4.4.3-1.
+	// PFCPAUReqFlags is the PFCPAUReq-Flags IE [O].
 	PFCPAUReqFlags *ie.IE
-	// AlternativeSMFIPAddress: Alternative SMF IP Address [O]. TS 29.244 V20.1.0 Table 7.4.4.3-1.
+	// AlternativeSMFIPAddress is the Alternative SMF IP Address IE [O].
 	AlternativeSMFIPAddress []*ie.IE
-	// SMFSetID: SMF Set ID [O]. TS 29.244 V20.1.0 Table 7.4.4.3-1.
+	// SMFSetID is the SMF Set ID IE [O].
 	SMFSetID *ie.IE
-	// ClockDriftControlInformation: Clock Drift Control Information [C]. TS 29.244 V20.1.0 Table 7.4.4.3-1.
+	// ClockDriftControlInformation is the Clock Drift Control Information IE [C].
 	ClockDriftControlInformation []*ie.IE
-	// UEIPAddressPoolInformation: UE IP address Pool Information [O]. TS 29.244 V20.1.0 Table 7.4.4.3-1.
+	// UEIPAddressPoolInformation is the UE IP address Pool Information IE [O].
 	UEIPAddressPoolInformation []*ie.IE
-	// GTPUPathQoSControlInformation: GTP-U Path QoS Control Information [C]. TS 29.244 V20.1.0 Table 7.4.4.3-1.
+	// GTPUPathQoSControlInformation is the GTP-U Path QoS Control Information IE [C].
 	GTPUPathQoSControlInformation []*ie.IE
-	// UEIPAddressUsageInformation: UE IP Address Usage Information [O]. TS 29.244 V20.1.0 Table 7.4.4.3-1.
+	// UEIPAddressUsageInformation is the UE IP Address Usage Information IE [O].
 	UEIPAddressUsageInformation []*ie.IE
-	// N6DelayMeasurementControlInformation: N6 Delay Measurement Control Information [C]. TS 29.244 V20.1.0 Table 7.4.4.3-1.
+	// N6DelayMeasurementControlInformation is the N6 Delay Measurement Control Information IE [C].
 	N6DelayMeasurementControlInformation []*ie.IE
-	// N6DelayMeasurementProtocols: N6 Delay Measurement Protocols [C]. TS 29.244 V20.1.0 Table 7.4.4.3-1.
+	// N6DelayMeasurementProtocols is the N6 Delay Measurement Protocols IE [C].
 	N6DelayMeasurementProtocols *ie.IE
-	// OperatorConfigurableUPFCapability: Operator Configurable UPF Capability [C]. TS 29.244 V20.1.0 Table 7.4.4.3-1.
+	// OperatorConfigurableUPFCapability is the Operator Configurable UPF Capability IE [C].
 	OperatorConfigurableUPFCapability []*ie.IE
-	// PacketInspectionFunctionality: Packet Inspection functionality [O]. TS 29.244 V20.1.0 Table 7.4.4.3-1.
+	// PacketInspectionFunctionality is the Packet Inspection functionality IE [O].
 	PacketInspectionFunctionality *ie.IE
-	// NodeLevelMitigationActionsRules: Node Level Mitigation Actions Rules [O]. TS 29.244 V20.1.0 Table 7.4.4.3-1.
+	// NodeLevelMitigationActionsRules is the Node Level Mitigation Actions Rules IE [O].
 	NodeLevelMitigationActionsRules []*ie.IE
 	// OtherIEs retains unexpected types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

@@ -8,11 +8,11 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type RTPHeaderExtensionInformationFields struct {
-	// RTPHeaderExtensionType: RTP Header Extension Type [C]. TS 29.244 V20.1.0 Table 7.5.2.2-8. Context: RTP Header Extension Information IE.
+	// RTPHeaderExtensionType is the RTP Header Extension Type IE [C].
 	RTPHeaderExtensionType *IE
-	// RTPHeaderExtensionID: RTP Header Extension ID [C]. TS 29.244 V20.1.0 Table 7.5.2.2-8. Context: RTP Header Extension Information IE.
+	// RTPHeaderExtensionID is the RTP Header Extension ID IE [C].
 	RTPHeaderExtensionID *IE
-	// RTPHeaderExtensionAdditionalInformation: RTP Header Extension Additional Information [O]. TS 29.244 V20.1.0 Table 7.5.2.2-8. Context: RTP Header Extension Information IE.
+	// RTPHeaderExtensionAdditionalInformation is the RTP Header Extension Additional Information IE [O].
 	RTPHeaderExtensionAdditionalInformation *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

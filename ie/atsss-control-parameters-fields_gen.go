@@ -8,13 +8,13 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type ATSSSControlParametersFields struct {
-	// MPTCPParameters: MPTCP Parameters [C]. TS 29.244 V20.1.0 Table 7.5.3.7-1. Context: ATSSS Control Parameters IE within PFCP Session Establishment Response.
+	// MPTCPParameters is the MPTCP Parameters IE [C].
 	MPTCPParameters *IE
-	// ATSSSLLParameters: ATSSS-LL Parameters [C]. TS 29.244 V20.1.0 Table 7.5.3.7-1. Context: ATSSS Control Parameters IE within PFCP Session Establishment Response.
+	// ATSSSLLParameters is the ATSSS-LL Parameters IE [C].
 	ATSSSLLParameters *IE
-	// PMFParameters: PMF Parameters [C]. TS 29.244 V20.1.0 Table 7.5.3.7-1. Context: ATSSS Control Parameters IE within PFCP Session Establishment Response.
+	// PMFParameters is the PMF Parameters IE [C].
 	PMFParameters []*IE
-	// MPQUICParameters: MPQUIC Parameters [C]. TS 29.244 V20.1.0 Table 7.5.3.7-1. Context: ATSSS Control Parameters IE within PFCP Session Establishment Response.
+	// MPQUICParameters is the MPQUIC Parameters IE [C].
 	MPQUICParameters *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

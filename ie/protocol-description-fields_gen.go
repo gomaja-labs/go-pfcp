@@ -8,13 +8,13 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type ProtocolDescriptionFields struct {
-	// TransportProtocol: Transport Protocol [O]. TS 29.244 V20.1.0 Table 7.5.2.2-7. Context: Protocol Description IE.
+	// TransportProtocol is the Transport Protocol IE [O].
 	TransportProtocol *IE
-	// RTPHeaderExtensionInformation: RTP Header Extension Information [C]. TS 29.244 V20.1.0 Table 7.5.2.2-7. Context: Protocol Description IE.
+	// RTPHeaderExtensionInformation is the RTP Header Extension Information IE [C].
 	RTPHeaderExtensionInformation []*IE
-	// RTPPayloadInformation: RTP Payload Information [O]. TS 29.244 V20.1.0 Table 7.5.2.2-7. Context: Protocol Description IE.
+	// RTPPayloadInformation is the RTP Payload Information IE [O].
 	RTPPayloadInformation []*IE
-	// MediaRelatedInformationTransferInfo: Media Related Information Transfer Info [O]. TS 29.244 V20.1.0 Table 7.5.2.2-7. Context: Protocol Description IE.
+	// MediaRelatedInformationTransferInfo is the Media Related Information Transfer Info IE [O].
 	MediaRelatedInformationTransferInfo *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

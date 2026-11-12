@@ -2,7 +2,9 @@ package ie
 
 // ExpeditedTransferIndication values are defined in TS 29.244 V20.1.0 clause 8.2.278.
 const (
-	ExpeditedTransferIndicationTrue  uint8 = 1
+	// ExpeditedTransferIndicationTrue selects True.
+	ExpeditedTransferIndicationTrue uint8 = 1
+	// ExpeditedTransferIndicationFalse selects False.
 	ExpeditedTransferIndicationFalse uint8 = 2
 )
 

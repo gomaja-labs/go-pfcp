@@ -43,14 +43,22 @@ func (i *IE) SDFFilter() (*SDFFilterFields, error) {
 
 // SDFFilterFields represents a fields contained in SDFFilter IE.
 type SDFFilterFields struct {
-	Flags                  uint8
-	FDLength               uint16
-	FlowDescription        string
-	ToSTrafficClass        []byte // 2 octets
-	SecurityParameterIndex []byte // 4 octets
-	FlowLabel              []byte // 3 octets
-	SDFFilterID            uint32
-	MultiplexedMedia       []SDFMultiplexedMedia
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// FDLength is the encoded flow description length in octets.
+	FDLength uint16
+	// FlowDescription is the flow description.
+	FlowDescription string
+	// ToSTrafficClass contains the ToS/traffic class and mask octets.
+	ToSTrafficClass []byte
+	// SecurityParameterIndex contains the four security parameter index octets.
+	SecurityParameterIndex []byte
+	// FlowLabel contains the three flow label octets.
+	FlowLabel []byte
+	// SDFFilterID is the sdf filter ID.
+	SDFFilterID uint32
+	// MultiplexedMedia is the multiplexed media.
+	MultiplexedMedia []SDFMultiplexedMedia
 }
 
 // NewSDFFilterFields creates a new NewSDFFilterFields.

@@ -8,13 +8,13 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type DuplicatingParametersFields struct {
-	// DestinationInterface: Destination Interface [M]. TS 29.244 V20.1.0 Table 7.5.2.3-3. Context: Duplicating Parameters IE in FAR.
+	// DestinationInterface is the Destination Interface IE [M].
 	DestinationInterface *IE
-	// OuterHeaderCreation: Outer Header Creation [C]. TS 29.244 V20.1.0 Table 7.5.2.3-3. Context: Duplicating Parameters IE in FAR.
+	// OuterHeaderCreation is the Outer Header Creation IE [C].
 	OuterHeaderCreation *IE
-	// TransportLevelMarking: Transport Level marking [C]. TS 29.244 V20.1.0 Table 7.5.2.3-3. Context: Duplicating Parameters IE in FAR.
+	// TransportLevelMarking is the Transport Level marking IE [C].
 	TransportLevelMarking *IE
-	// ForwardingPolicy: Forwarding Policy [C]. TS 29.244 V20.1.0 Table 7.5.2.3-3. Context: Duplicating Parameters IE in FAR.
+	// ForwardingPolicy is the Forwarding Policy IE [C].
 	ForwardingPolicy *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

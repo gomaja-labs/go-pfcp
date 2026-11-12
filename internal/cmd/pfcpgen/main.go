@@ -40,18 +40,26 @@ func constant(e spec.IEType) string {
 func fields(m spec.Container, types map[int]spec.IEType) []field {
 	result := []field{}
 	index := map[int]int{}
+	shared := map[int]bool{}
 	for _, r := range m.IEs {
-		doc := r.Name + " [" + r.Presence + "]"
+		doc := r.Name + " IE [" + r.Presence + "]."
+		shared[r.IEType] = shared[r.IEType] || r.SharedTypeGroup != nil
 		if n, ok := index[r.IEType]; ok {
 			result[n].Slice = true
-			result[n].Doc += "; " + doc
+			result[n].Doc += " " + doc
 			continue
 		}
 		index[r.IEType] = len(result)
 		result = append(result, field{r.GoField, r.IEType, constant(types[r.IEType]), r.Multiple || r.SharedTypeGroup != nil, doc})
 	}
 	for i := range result {
-		result[i].Doc += ". TS 29.244 V20.1.0 " + *m.Table + "."
+		if shared[result[i].Type] {
+			context := m.Context
+			if context == "" {
+				context = m.Name
+			}
+			result[i].Doc += " TS 29.244 V20.1.0 " + *m.Table + ". Context: " + context + "."
+		}
 	}
 	return result
 }
@@ -210,8 +218,9 @@ import "github.com/gomaja-labs/go-pfcp/ie"
 // {{.Name}} represents {{.WireName}}.
 // TS 29.244 V20.1.0 {{.Table}} (clause {{.Clause}}).
 type {{.Name}} struct {
+ // Header holds the PFCP framing and received IE ordering template.
  *Header
- {{range .Fields}}// {{.Name}}: {{.Doc}}
+ {{range .Fields}}// {{.Name}} is the {{.Doc}}
  {{.Name}} {{if .Slice}}[]{{end}}*ie.IE
  {{end}}// OtherIEs retains unexpected types and repetitions beyond a singular field's
  // first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

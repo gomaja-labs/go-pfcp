@@ -43,10 +43,15 @@ func (i *IE) MACAddress() (*MACAddressFields, error) {
 
 // MACAddressFields represents a fields contained in MACAddress IE.
 type MACAddressFields struct {
-	Flags                      uint8
-	SourceMACAddress           net.HardwareAddr
-	DestinationMACAddress      net.HardwareAddr
-	UpperSourceMACAddress      net.HardwareAddr
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// SourceMACAddress is the source mac address.
+	SourceMACAddress net.HardwareAddr
+	// DestinationMACAddress is the destination mac address.
+	DestinationMACAddress net.HardwareAddr
+	// UpperSourceMACAddress is the upper source mac address.
+	UpperSourceMACAddress net.HardwareAddr
+	// UpperDestinationMACAddress is the upper destination mac address.
 	UpperDestinationMACAddress net.HardwareAddr
 }
 

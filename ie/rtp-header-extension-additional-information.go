@@ -6,14 +6,20 @@ import (
 
 // RTP header extension flags and format values, TS 29.244 V20.1.0 clause 8.2.241.
 const (
-	// Second-octet presence values in Figure 8.2.241-1.
-	RTPHeaderExtensionAdditionalInformationPSSA        uint8 = 4
-	RTPHeaderExtensionAdditionalInformationNPDS        uint8 = 8
-	RTPHeaderExtensionAdditionalInformationFI          uint8 = 1
-	RTPHeaderExtensionAdditionalInformationPSSAI       uint8 = 2
-	RTPHeaderExtensionAdditionalInformationNPDSI       uint8 = 4
+	// RTPHeaderExtensionAdditionalInformationPSSA is the second-octet PSSA bit.
+	RTPHeaderExtensionAdditionalInformationPSSA uint8 = 4
+	// RTPHeaderExtensionAdditionalInformationNPDS selects NPDS.
+	RTPHeaderExtensionAdditionalInformationNPDS uint8 = 8
+	// RTPHeaderExtensionAdditionalInformationFI selects FI.
+	RTPHeaderExtensionAdditionalInformationFI uint8 = 1
+	// RTPHeaderExtensionAdditionalInformationPSSAI selects PSSAI.
+	RTPHeaderExtensionAdditionalInformationPSSAI uint8 = 2
+	// RTPHeaderExtensionAdditionalInformationNPDSI selects NPDSI.
+	RTPHeaderExtensionAdditionalInformationNPDSI uint8 = 4
+	// RTPHeaderExtensionAdditionalInformationShortFormat selects Short Format.
 	RTPHeaderExtensionAdditionalInformationShortFormat uint8 = 1
-	RTPHeaderExtensionAdditionalInformationLongFormat  uint8 = 2
+	// RTPHeaderExtensionAdditionalInformationLongFormat selects Long Format.
+	RTPHeaderExtensionAdditionalInformationLongFormat uint8 = 2
 )
 
 // NewRTPHeaderExtensionAdditionalInformation creates a RTP Header Extension Additional Information IE.
@@ -37,10 +43,14 @@ func (i *IE) RTPHeaderExtensionAdditionalInformation() (*RTPHeaderExtensionAddit
 
 // RTPHeaderExtensionAdditionalInformationFields models TS 29.244 V20.1.0 clause 8.2.241.
 type RTPHeaderExtensionAdditionalInformationFields struct {
-	Flags  uint8
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// Format selects the short or long RTP header extension format.
 	Format uint8
-	PSSA   bool
-	NPDS   bool
+	// PSSA reports PDU Set Size presence in every RTP packet when PSSAI is set.
+	PSSA bool
+	// NPDS reports PDU count presence in every RTP packet when NPDSI is set.
+	NPDS bool
 }
 
 // NewRTPHeaderExtensionAdditionalInformationFields retains all supplied arguments; Marshal validates them.

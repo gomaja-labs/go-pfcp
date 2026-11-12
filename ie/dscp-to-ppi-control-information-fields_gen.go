@@ -8,9 +8,9 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type DSCPToPPIControlInformationFields struct {
-	// DSCPToPPIMappingInformation: DSCP to PPI Mapping Information [M]. TS 29.244 V20.1.0 Table 7.5.2.1-6. Context: DSCP to PPI Control Information IE within PFCP Session Establishment Request.
+	// DSCPToPPIMappingInformation is the DSCP to PPI Mapping Information IE [M].
 	DSCPToPPIMappingInformation []*IE
-	// QFI: QFI [O]. TS 29.244 V20.1.0 Table 7.5.2.1-6. Context: DSCP to PPI Control Information IE within PFCP Session Establishment Request.
+	// QFI is the QFI IE [O].
 	QFI []*IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

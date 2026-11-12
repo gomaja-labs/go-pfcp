@@ -11,9 +11,13 @@ import (
 
 // FlowDirection definitions.
 const (
-	FlowDirectionUnspecified   uint8 = 0
-	FlowDirectionDownlink      uint8 = 1
-	FlowDirectionUplink        uint8 = 2
+	// FlowDirectionUnspecified selects Unspecified.
+	FlowDirectionUnspecified uint8 = 0
+	// FlowDirectionDownlink selects Downlink.
+	FlowDirectionDownlink uint8 = 1
+	// FlowDirectionUplink selects Uplink.
+	FlowDirectionUplink uint8 = 2
+	// FlowDirectionBidirectional selects Bidirectional.
 	FlowDirectionBidirectional uint8 = 3
 )
 

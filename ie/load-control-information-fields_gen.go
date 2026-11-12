@@ -8,9 +8,9 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type LoadControlInformationFields struct {
-	// LoadControlSequenceNumber: Load Control Sequence Number [M]. TS 29.244 V20.1.0 Table 7.5.3.3-1. Context: Load Control Information IE within PFCP Session Establishment Response.
+	// LoadControlSequenceNumber is the Load Control Sequence Number IE [M].
 	LoadControlSequenceNumber *IE
-	// LoadMetric: Load Metric [M]. TS 29.244 V20.1.0 Table 7.5.3.3-1. Context: Load Control Information IE within PFCP Session Establishment Response.
+	// LoadMetric is the Load Metric IE [M].
 	LoadMetric *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

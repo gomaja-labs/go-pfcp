@@ -8,25 +8,25 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type QoSMonitoringPerQoSFlowControlInformationFields struct {
-	// QFI: QFI [M]. TS 29.244 V20.1.0 Table 7.5.2.9-3. Context: QoS Monitoring per QoS flow Control Information.
+	// QFI is the QFI IE [M].
 	QFI []*IE
-	// RequestedQoSMonitoring: Requested QoS Monitoring [M]. TS 29.244 V20.1.0 Table 7.5.2.9-3. Context: QoS Monitoring per QoS flow Control Information.
+	// RequestedQoSMonitoring is the Requested QoS Monitoring IE [M].
 	RequestedQoSMonitoring *IE
-	// ReportingFrequency: Reporting Frequency [M]. TS 29.244 V20.1.0 Table 7.5.2.9-3. Context: QoS Monitoring per QoS flow Control Information.
+	// ReportingFrequency is the Reporting Frequency IE [M].
 	ReportingFrequency *IE
-	// PacketDelayThresholds: Packet Delay Thresholds [C]. TS 29.244 V20.1.0 Table 7.5.2.9-3. Context: QoS Monitoring per QoS flow Control Information.
+	// PacketDelayThresholds is the Packet Delay Thresholds IE [C].
 	PacketDelayThresholds *IE
-	// MinimumWaitTime: Minimum Wait Time [C]. TS 29.244 V20.1.0 Table 7.5.2.9-3. Context: QoS Monitoring per QoS flow Control Information.
+	// MinimumWaitTime is the Minimum Wait Time IE [C].
 	MinimumWaitTime *IE
-	// MeasurementPeriod: Measurement Period [C]. TS 29.244 V20.1.0 Table 7.5.2.9-3. Context: QoS Monitoring per QoS flow Control Information.
+	// MeasurementPeriod is the Measurement Period IE [C].
 	MeasurementPeriod *IE
-	// ReportingSuggestionInfo: Reporting Suggestion Info [C]. TS 29.244 V20.1.0 Table 7.5.2.9-3. Context: QoS Monitoring per QoS flow Control Information.
+	// ReportingSuggestionInfo is the Reporting Suggestion Info IE [C].
 	ReportingSuggestionInfo *IE
-	// MeasurementIndication: Measurement Indication [C]. TS 29.244 V20.1.0 Table 7.5.2.9-3. Context: QoS Monitoring per QoS flow Control Information.
+	// MeasurementIndication is the Measurement Indication IE [C].
 	MeasurementIndication *IE
-	// ReportingThresholds: Reporting Thresholds [C]. TS 29.244 V20.1.0 Table 7.5.2.9-3. Context: QoS Monitoring per QoS flow Control Information.
+	// ReportingThresholds is the Reporting Thresholds IE [C].
 	ReportingThresholds *IE
-	// RemainingDataReportingIndication: Remaining Data Reporting Indication [O]. TS 29.244 V20.1.0 Table 7.5.2.9-3. Context: QoS Monitoring per QoS flow Control Information.
+	// RemainingDataReportingIndication is the Remaining Data Reporting Indication IE [O].
 	RemainingDataReportingIndication *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

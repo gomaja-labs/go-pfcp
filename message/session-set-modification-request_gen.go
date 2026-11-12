@@ -7,10 +7,11 @@ import "github.com/gomaja-labs/go-pfcp/ie"
 // SessionSetModificationRequest represents PFCP Session Set Modification Request.
 // TS 29.244 V20.1.0 Table 7.4.7.1-1 (clause 7.4.7.1).
 type SessionSetModificationRequest struct {
+	// Header holds the PFCP framing and received IE ordering template.
 	*Header
-	// NodeID: Node ID [M]. TS 29.244 V20.1.0 Table 7.4.7.1-1.
+	// NodeID is the Node ID IE [M].
 	NodeID *ie.IE
-	// PFCPSessionChangeInfo: PFCP Session Change Info [M]. TS 29.244 V20.1.0 Table 7.4.7.1-1.
+	// PFCPSessionChangeInfo is the PFCP Session Change Info IE [M].
 	PFCPSessionChangeInfo []*ie.IE
 	// OtherIEs retains unexpected types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

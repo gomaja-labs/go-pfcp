@@ -8,19 +8,19 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type CreateBARFields struct {
-	// BARID: BAR ID [M]. TS 29.244 V20.1.0 Table 7.5.2.6-1. Context: Create BAR IE within PFCP Session Establishment Request.
+	// BARID is the BAR ID IE [M].
 	BARID *IE
-	// DownlinkDataNotificationDelay: Downlink Data Notification Delay [C]. TS 29.244 V20.1.0 Table 7.5.2.6-1. Context: Create BAR IE within PFCP Session Establishment Request.
+	// DownlinkDataNotificationDelay is the Downlink Data Notification Delay IE [C].
 	DownlinkDataNotificationDelay *IE
-	// SuggestedBufferingPacketsCount: Suggested Buffering Packets Count [C]. TS 29.244 V20.1.0 Table 7.5.2.6-1. Context: Create BAR IE within PFCP Session Establishment Request.
+	// SuggestedBufferingPacketsCount is the Suggested Buffering Packets Count IE [C].
 	SuggestedBufferingPacketsCount *IE
-	// MTEDTControlInformation: MT-EDT Control Information [O]. TS 29.244 V20.1.0 Table 7.5.2.6-1. Context: Create BAR IE within PFCP Session Establishment Request.
+	// MTEDTControlInformation is the MT-EDT Control Information IE [O].
 	MTEDTControlInformation *IE
-	// MTSDTControlInformation: MT-SDT Control Information [O]. TS 29.244 V20.1.0 Table 7.5.2.6-1. Context: Create BAR IE within PFCP Session Establishment Request.
+	// MTSDTControlInformation is the MT-SDT Control Information IE [O].
 	MTSDTControlInformation *IE
-	// DLBufferingDuration: DL Buffering Duration [C]. TS 29.244 V20.1.0 Table 7.5.2.6-1. Context: Create BAR IE within PFCP Session Establishment Request.
+	// DLBufferingDuration is the DL Buffering Duration IE [C].
 	DLBufferingDuration *IE
-	// DLBufferingSuggestedPacketCount: DL Buffering Suggested Packet Count [O]. TS 29.244 V20.1.0 Table 7.5.2.6-1. Context: Create BAR IE within PFCP Session Establishment Request.
+	// DLBufferingSuggestedPacketCount is the DL Buffering Suggested Packet Count IE [O].
 	DLBufferingSuggestedPacketCount *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

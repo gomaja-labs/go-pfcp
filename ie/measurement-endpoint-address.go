@@ -7,7 +7,9 @@ import (
 
 // MeasurementEndpointAddress flags and values, TS 29.244 V20.1.0 clause 8.2.248.
 const (
+	// MeasurementEndpointAddressV4 marks the presence of an IPv4 address.
 	MeasurementEndpointAddressV4 uint8 = 1
+	// MeasurementEndpointAddressV6 marks the presence of an IPv6 address.
 	MeasurementEndpointAddressV6 uint8 = 2
 )
 
@@ -34,8 +36,11 @@ func (i *IE) MeasurementEndpointAddress() (*MeasurementEndpointAddressFields, er
 // MeasurementEndpointAddressFields models TS 29.244 V20.1.0 clause 8.2.248.
 // Flags select optional fields; nonzero values for absent fields are rejected.
 type MeasurementEndpointAddressFields struct {
-	Flags       uint8
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// IPv4Address is the IPv4 address, when present.
 	IPv4Address netip.Addr
+	// IPv6Address is the IPv6 address, when present.
 	IPv6Address netip.Addr
 }
 

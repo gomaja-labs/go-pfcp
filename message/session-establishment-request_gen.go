@@ -7,76 +7,77 @@ import "github.com/gomaja-labs/go-pfcp/ie"
 // SessionEstablishmentRequest represents PFCP Session Establishment Request.
 // TS 29.244 V20.1.0 Table 7.5.2.1-1 (clause 7.5.2.1).
 type SessionEstablishmentRequest struct {
+	// Header holds the PFCP framing and received IE ordering template.
 	*Header
-	// NodeID: Node ID [M]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// NodeID is the Node ID IE [M].
 	NodeID *ie.IE
-	// CPFSEID: CP F-SEID [M]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// CPFSEID is the CP F-SEID IE [M].
 	CPFSEID *ie.IE
-	// CreatePDR: Create PDR [M]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// CreatePDR is the Create PDR IE [M].
 	CreatePDR []*ie.IE
-	// CreateFAR: Create FAR [M]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// CreateFAR is the Create FAR IE [M].
 	CreateFAR []*ie.IE
-	// CreateURR: Create URR [C]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// CreateURR is the Create URR IE [C].
 	CreateURR []*ie.IE
-	// CreateQER: Create QER [C]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// CreateQER is the Create QER IE [C].
 	CreateQER []*ie.IE
-	// CreateBAR: Create BAR [O]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// CreateBAR is the Create BAR IE [O].
 	CreateBAR *ie.IE
-	// CreateTrafficEndpoint: Create Traffic Endpoint [C]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// CreateTrafficEndpoint is the Create Traffic Endpoint IE [C].
 	CreateTrafficEndpoint []*ie.IE
-	// PDNType: PDN Type [C]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// PDNType is the PDN Type IE [C].
 	PDNType *ie.IE
-	// FQCSID: SGW-C FQ-CSID [C]; MME FQ-CSID [C]; PGW-C/SMF FQ-CSID [C]; ePDG FQ-CSID [C]; TWAN FQ-CSID [C]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// FQCSID is the SGW-C FQ-CSID IE [C]. MME FQ-CSID IE [C]. PGW-C/SMF FQ-CSID IE [C]. ePDG FQ-CSID IE [C]. TWAN FQ-CSID IE [C]. TS 29.244 V20.1.0 Table 7.5.2.1-1. Context: PFCP Session Establishment Request.
 	FQCSID []*ie.IE
-	// UserPlaneInactivityTimer: User Plane Inactivity Timer [O]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// UserPlaneInactivityTimer is the User Plane Inactivity Timer IE [O].
 	UserPlaneInactivityTimer *ie.IE
-	// UserID: User ID [O]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// UserID is the User ID IE [O].
 	UserID *ie.IE
-	// TraceInformation: Trace Information [O]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// TraceInformation is the Trace Information IE [O].
 	TraceInformation *ie.IE
-	// APNDNN: APN/DNN [O]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// APNDNN is the APN/DNN IE [O].
 	APNDNN *ie.IE
-	// CreateMAR: Create MAR [C]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// CreateMAR is the Create MAR IE [C].
 	CreateMAR []*ie.IE
-	// PFCPSEReqFlags: PFCPSEReq-Flags [C]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// PFCPSEReqFlags is the PFCPSEReq-Flags IE [C].
 	PFCPSEReqFlags *ie.IE
-	// CreateBridgeRouterInfo: Create Bridge/Router Info [C]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// CreateBridgeRouterInfo is the Create Bridge/Router Info IE [C].
 	CreateBridgeRouterInfo *ie.IE
-	// CreateSRR: Create SRR [O]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// CreateSRR is the Create SRR IE [O].
 	CreateSRR []*ie.IE
-	// ProvideATSSSControlInformation: Provide ATSSS Control Information [C]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// ProvideATSSSControlInformation is the Provide ATSSS Control Information IE [C].
 	ProvideATSSSControlInformation *ie.IE
-	// RecoveryTimeStamp: Recovery Time Stamp [O]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// RecoveryTimeStamp is the Recovery Time Stamp IE [O].
 	RecoveryTimeStamp *ie.IE
-	// SNSSAI: S-NSSAI [O]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// SNSSAI is the S-NSSAI IE [O].
 	SNSSAI *ie.IE
-	// HPLMNSNSSAI: HPLMN S-NSSAI [C]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// HPLMNSNSSAI is the HPLMN S-NSSAI IE [C].
 	HPLMNSNSSAI *ie.IE
-	// ProvideRDSConfigurationInformation: Provide RDS configuration information [O]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// ProvideRDSConfigurationInformation is the Provide RDS configuration information IE [O].
 	ProvideRDSConfigurationInformation *ie.IE
-	// RATType: RAT Type [O]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// RATType is the RAT Type IE [O].
 	RATType *ie.IE
-	// L2TPTunnelInformation: L2TP Tunnel Information [C]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// L2TPTunnelInformation is the L2TP Tunnel Information IE [C].
 	L2TPTunnelInformation []*ie.IE
-	// L2TPSessionInformation: L2TP Session Information [C]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// L2TPSessionInformation is the L2TP Session Information IE [C].
 	L2TPSessionInformation *ie.IE
-	// GroupId: Group Id [O]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// GroupId is the Group Id IE [O].
 	GroupId *ie.IE
-	// MBSSessionN4mbControlInformation: MBS Session N4mb Control Information [M]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// MBSSessionN4mbControlInformation is the MBS Session N4mb Control Information IE [M].
 	MBSSessionN4mbControlInformation *ie.IE
-	// MBSSessionN4ControlInformation: MBS Session N4 Control Information [C]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// MBSSessionN4ControlInformation is the MBS Session N4 Control Information IE [C].
 	MBSSessionN4ControlInformation []*ie.IE
-	// DSCPToPPIControlInformation: DSCP to PPI Control Information [O]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// DSCPToPPIControlInformation is the DSCP to PPI Control Information IE [O].
 	DSCPToPPIControlInformation []*ie.IE
-	// TLContainer: TL-Container [C]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// TLContainer is the TL-Container IE [C].
 	TLContainer *ie.IE
-	// TraceCollectionEntityURI: Trace Collection Entity URI [O]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// TraceCollectionEntityURI is the Trace Collection Entity URI IE [O].
 	TraceCollectionEntityURI *ie.IE
-	// UELevelMeasurementsConfiguration: UE Level Measurements Configuration [O]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// UELevelMeasurementsConfiguration is the UE Level Measurements Configuration IE [O].
 	UELevelMeasurementsConfiguration *ie.IE
-	// AlternativeSMFIPAddress: Alternative SMF IP Address [O]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// AlternativeSMFIPAddress is the Alternative SMF IP Address IE [O].
 	AlternativeSMFIPAddress *ie.IE
-	// MoQControlInformation: MoQ Control Information [C]. TS 29.244 V20.1.0 Table 7.5.2.1-1.
+	// MoQControlInformation is the MoQ Control Information IE [C].
 	MoQControlInformation *ie.IE
 	// OtherIEs retains unexpected types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

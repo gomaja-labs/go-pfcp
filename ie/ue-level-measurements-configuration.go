@@ -7,16 +7,27 @@ import (
 
 // Job and measurement values, TS 29.244 V20.1.0 tables 8.2.245-1 and 8.2.245-2.
 const (
-	UELevelMeasurementsConfigurationMeasurementsOnly                       uint8 = 1
-	UELevelMeasurementsConfigurationTraceAndMeasurements                   uint8 = 2
-	UELevelMeasurementsConfigurationAverageDLPSAUPFToUE                    uint8 = 1
-	UELevelMeasurementsConfigurationAverageULPSAUPFToUEExcludingD1         uint8 = 2
-	UELevelMeasurementsConfigurationAverageULPSAUPFToUEIncludingD1         uint8 = 3
-	UELevelMeasurementsConfigurationAverageULPSAUPFToNGRAN                 uint8 = 4
-	UELevelMeasurementsConfigurationAverageDLPSAUPFToNGRAN                 uint8 = 5
-	UELevelMeasurementsConfigurationAverageRTTPSAUPFToNGRAN                uint8 = 6
-	UELevelMeasurementsConfigurationAverageRTTPSAUPFToNGRANForSNSSAI       uint8 = 7
-	UELevelMeasurementsConfigurationAverageRTTPSAUPFToNGRANForQFI          uint8 = 8
+	// UELevelMeasurementsConfigurationMeasurementsOnly selects Measurements Only.
+	UELevelMeasurementsConfigurationMeasurementsOnly uint8 = 1
+	// UELevelMeasurementsConfigurationTraceAndMeasurements selects Trace And Measurements.
+	UELevelMeasurementsConfigurationTraceAndMeasurements uint8 = 2
+	// UELevelMeasurementsConfigurationAverageDLPSAUPFToUE selects Average DLPSAUPF To UE.
+	UELevelMeasurementsConfigurationAverageDLPSAUPFToUE uint8 = 1
+	// UELevelMeasurementsConfigurationAverageULPSAUPFToUEExcludingD1 selects Average ULPSAUPF To UE Excluding D1.
+	UELevelMeasurementsConfigurationAverageULPSAUPFToUEExcludingD1 uint8 = 2
+	// UELevelMeasurementsConfigurationAverageULPSAUPFToUEIncludingD1 selects Average ULPSAUPF To UE Including D1.
+	UELevelMeasurementsConfigurationAverageULPSAUPFToUEIncludingD1 uint8 = 3
+	// UELevelMeasurementsConfigurationAverageULPSAUPFToNGRAN selects Average ULPSAUPF To NGRAN.
+	UELevelMeasurementsConfigurationAverageULPSAUPFToNGRAN uint8 = 4
+	// UELevelMeasurementsConfigurationAverageDLPSAUPFToNGRAN selects Average DLPSAUPF To NGRAN.
+	UELevelMeasurementsConfigurationAverageDLPSAUPFToNGRAN uint8 = 5
+	// UELevelMeasurementsConfigurationAverageRTTPSAUPFToNGRAN selects Average RTTPSAUPF To NGRAN.
+	UELevelMeasurementsConfigurationAverageRTTPSAUPFToNGRAN uint8 = 6
+	// UELevelMeasurementsConfigurationAverageRTTPSAUPFToNGRANForSNSSAI selects Average RTTPSAUPF To NGRAN For SNSSAI.
+	UELevelMeasurementsConfigurationAverageRTTPSAUPFToNGRANForSNSSAI uint8 = 7
+	// UELevelMeasurementsConfigurationAverageRTTPSAUPFToNGRANForQFI selects Average RTTPSAUPF To NGRAN For QFI.
+	UELevelMeasurementsConfigurationAverageRTTPSAUPFToNGRANForQFI uint8 = 8
+	// UELevelMeasurementsConfigurationAverageRTTPSAUPFToNGRANForSNSSAIAndQFI selects Average RTTPSAUPF To NGRAN For SNSSAI And QFI.
 	UELevelMeasurementsConfigurationAverageRTTPSAUPFToNGRANForSNSSAIAndQFI uint8 = 9
 )
 
@@ -41,9 +52,12 @@ func (i *IE) UELevelMeasurementsConfiguration() (*UELevelMeasurementsConfigurati
 
 // UELevelMeasurementsConfigurationFields models TS 29.244 V20.1.0 clause 8.2.245.
 type UELevelMeasurementsConfigurationFields struct {
-	JobType          uint8
+	// JobType selects measurements only or trace and measurements.
+	JobType uint8
+	// MeasurementTypes contains the requested measurement bit mask.
 	MeasurementTypes []uint8
-	TimePeriod       time.Duration
+	// TimePeriod is the measurement time period.
+	TimePeriod time.Duration
 }
 
 // NewUELevelMeasurementsConfigurationFields retains all supplied arguments; Marshal validates them.

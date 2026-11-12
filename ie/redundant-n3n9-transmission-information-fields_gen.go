@@ -8,9 +8,9 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type RedundantN3N9TransmissionInformationFields struct {
-	// LocalN3N9TunnelInformation: Local N3/N9 Tunnel Information [M]. TS 29.244 V20.1.0 Table 7.5.8.6-5. Context: Redundant N3/N9 Transmission Information IE.
+	// LocalN3N9TunnelInformation is the Local N3/N9 Tunnel Information IE [M].
 	LocalN3N9TunnelInformation *IE
-	// RemoteN3N9TunnelInformation: Remote N3/N9 Tunnel Information [M]. TS 29.244 V20.1.0 Table 7.5.8.6-5. Context: Redundant N3/N9 Transmission Information IE.
+	// RemoteN3N9TunnelInformation is the Remote N3/N9 Tunnel Information IE [M].
 	RemoteN3N9TunnelInformation *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

@@ -131,11 +131,16 @@ func (i *IE) HasSD() bool {
 
 // UEIPAddressFields represents a fields contained in UEIPAddress IE.
 type UEIPAddressFields struct {
-	Flags                    uint8
-	IPv4Address              net.IP
-	IPv6Address              net.IP
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// IPv4Address is the IPv4 address, when present.
+	IPv4Address net.IP
+	// IPv6Address is the IPv6 address, when present.
+	IPv6Address net.IP
+	// IPv6PrefixDelegationBits is the IPv6 prefix delegation bits.
 	IPv6PrefixDelegationBits uint8
-	IPv6PrefixLength         uint8
+	// IPv6PrefixLength is the encoded ipv6prefix length in octets.
+	IPv6PrefixLength uint8
 }
 
 // NewUEIPAddressFields creates a new UEIPAddressFields.

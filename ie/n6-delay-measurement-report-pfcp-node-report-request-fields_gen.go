@@ -8,21 +8,21 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type N6DelayMeasurementReportPFCPNodeReportRequestFields struct {
-	// MeasurementEndPointAddress: Measurement EndPoint Address [M]. TS 29.244 V20.1.0 Table 7.4.5.1.8-1. Context: N6 Delay Measurement Report IE within PFCP Node Report Request.
+	// MeasurementEndPointAddress is the Measurement EndPoint Address IE [M].
 	MeasurementEndPointAddress *IE
-	// NetworkInstance: Network Instance [M]. TS 29.244 V20.1.0 Table 7.4.5.1.8-1. Context: N6 Delay Measurement Report IE within PFCP Node Report Request.
+	// NetworkInstance is the Network Instance IE [M].
 	NetworkInstance *IE
-	// MeasurementReportingType: Measurement Reporting Type [M]. TS 29.244 V20.1.0 Table 7.4.5.1.8-1. Context: N6 Delay Measurement Report IE within PFCP Node Report Request.
+	// MeasurementReportingType is the Measurement Reporting Type IE [M].
 	MeasurementReportingType *IE
-	// TimeStamp: Time Stamp [M]. TS 29.244 V20.1.0 Table 7.4.5.1.8-1. Context: N6 Delay Measurement Report IE within PFCP Node Report Request.
+	// TimeStamp is the Time Stamp IE [M].
 	TimeStamp *IE
-	// StartTime: Start Time [C]. TS 29.244 V20.1.0 Table 7.4.5.1.8-1. Context: N6 Delay Measurement Report IE within PFCP Node Report Request.
+	// StartTime is the Start Time IE [C].
 	StartTime *IE
-	// N6DelayMeasurementInformation: N6 Delay Measurement Information [C]. TS 29.244 V20.1.0 Table 7.4.5.1.8-1. Context: N6 Delay Measurement Report IE within PFCP Node Report Request.
+	// N6DelayMeasurementInformation is the N6 Delay Measurement Information IE [C].
 	N6DelayMeasurementInformation *IE
-	// N6DelayMeasurementFailureInformation: N6 Delay Measurement Failure Information [C]. TS 29.244 V20.1.0 Table 7.4.5.1.8-1. Context: N6 Delay Measurement Report IE within PFCP Node Report Request.
+	// N6DelayMeasurementFailureInformation is the N6 Delay Measurement Failure Information IE [C].
 	N6DelayMeasurementFailureInformation *IE
-	// MeasurementEndPointPortNumber: Measurement EndPoint Port Number [O]. TS 29.244 V20.1.0 Table 7.4.5.1.8-1. Context: N6 Delay Measurement Report IE within PFCP Node Report Request.
+	// MeasurementEndPointPortNumber is the Measurement EndPoint Port Number IE [O].
 	MeasurementEndPointPortNumber *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

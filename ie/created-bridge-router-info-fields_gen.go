@@ -8,9 +8,9 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type CreatedBridgeRouterInfoFields struct {
-	// PortNumber: Port Number [C]. TS 29.244 V20.1.0 Table 7.5.3.6-1. Context: Created Bridge/Router Info IE within PFCP Session Establishment Response.
+	// PortNumber is the Port Number IE [C].
 	PortNumber *IE
-	// FiveGSUserPlaneNodeID: 5GS User Plane Node ID [C]. TS 29.244 V20.1.0 Table 7.5.3.6-1. Context: Created Bridge/Router Info IE within PFCP Session Establishment Response.
+	// FiveGSUserPlaneNodeID is the 5GS User Plane Node ID IE [C].
 	FiveGSUserPlaneNodeID *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

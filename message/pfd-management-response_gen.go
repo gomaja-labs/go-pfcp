@@ -7,14 +7,15 @@ import "github.com/gomaja-labs/go-pfcp/ie"
 // PFDManagementResponse represents PFCP PFD Management Response.
 // TS 29.244 V20.1.0 Table 7.4.3.2-1 (clause 7.4.3.2).
 type PFDManagementResponse struct {
+	// Header holds the PFCP framing and received IE ordering template.
 	*Header
-	// Cause: Cause [M]. TS 29.244 V20.1.0 Table 7.4.3.2-1.
+	// Cause is the Cause IE [M].
 	Cause *ie.IE
-	// OffendingIE: Offending IE [C]. TS 29.244 V20.1.0 Table 7.4.3.2-1.
+	// OffendingIE is the Offending IE IE [C].
 	OffendingIE *ie.IE
-	// NodeID: Node ID [O]. TS 29.244 V20.1.0 Table 7.4.3.2-1.
+	// NodeID is the Node ID IE [O].
 	NodeID *ie.IE
-	// PFDPartialFailureInformation: PFD Partial Failure Information [C]. TS 29.244 V20.1.0 Table 7.4.3.2-1.
+	// PFDPartialFailureInformation is the PFD Partial Failure Information IE [C].
 	PFDPartialFailureInformation []*ie.IE
 	// OtherIEs retains unexpected types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

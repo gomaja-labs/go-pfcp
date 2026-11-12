@@ -43,9 +43,13 @@ func (i *IE) FSEID() (*FSEIDFields, error) {
 
 // FSEIDFields represents a fields contained in FSEID IE.
 type FSEIDFields struct {
-	Flags       uint8
-	SEID        uint64
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// SEID is the session endpoint identifier.
+	SEID uint64
+	// IPv4Address is the IPv4 address, when present.
 	IPv4Address net.IP
+	// IPv6Address is the IPv6 address, when present.
 	IPv6Address net.IP
 }
 

@@ -8,15 +8,15 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type ClockDriftControlInformationFields struct {
-	// RequestedClockDriftInformation: Requested Clock Drift Information [M]. TS 29.244 V20.1.0 Table 7.4.4.1.2-1. Context: Clock Drift Control Information within PFCP Association Setup Request.
+	// RequestedClockDriftInformation is the Requested Clock Drift Information IE [M].
 	RequestedClockDriftInformation *IE
-	// TimeDomainNumber: Time Domain Number [C]. TS 29.244 V20.1.0 Table 7.4.4.1.2-1. Context: Clock Drift Control Information within PFCP Association Setup Request.
+	// TimeDomainNumber is the Time Domain Number IE [C].
 	TimeDomainNumber []*IE
-	// ConfiguredTimeDomain: Configured Time Domain [C]. TS 29.244 V20.1.0 Table 7.4.4.1.2-1. Context: Clock Drift Control Information within PFCP Association Setup Request.
+	// ConfiguredTimeDomain is the Configured Time Domain IE [C].
 	ConfiguredTimeDomain *IE
-	// TimeOffsetThreshold: Time Offset Threshold [C]. TS 29.244 V20.1.0 Table 7.4.4.1.2-1. Context: Clock Drift Control Information within PFCP Association Setup Request.
+	// TimeOffsetThreshold is the Time Offset Threshold IE [C].
 	TimeOffsetThreshold *IE
-	// CumulativeRateRatioThreshold: Cumulative rateRatio Threshold [C]. TS 29.244 V20.1.0 Table 7.4.4.1.2-1. Context: Clock Drift Control Information within PFCP Association Setup Request.
+	// CumulativeRateRatioThreshold is the Cumulative rateRatio Threshold IE [C].
 	CumulativeRateRatioThreshold *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

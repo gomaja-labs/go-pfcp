@@ -75,8 +75,11 @@ func (i *IE) HasSCI() bool {
 
 // DLFlowLevelMarkingFields represents a f contained in DLFlowLevelMarking IE.
 type DLFlowLevelMarkingFields struct {
-	Flags                  uint8
-	ToSTrafficClass        []byte
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// ToSTrafficClass contains the ToS/traffic class and mask octets.
+	ToSTrafficClass []byte
+	// ServiceClassIdentifier contains the service class identifier octets.
 	ServiceClassIdentifier []byte
 }
 
