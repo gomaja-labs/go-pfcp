@@ -4,8 +4,8 @@
 
 package ie
 
-// TS 29.244 V20.1.0 clause 8.2.73: no text repertoire is specified for this identifier.
 // NewDeactivatePredefinedRules creates a new DeactivatePredefinedRules IE.
+// TS 29.244 V20.1.0 clause 8.2.73: no text repertoire is specified for this identifier.
 func NewDeactivatePredefinedRules(name []byte) *IE {
 	return New(DeactivatePredefinedRules, name)
 }

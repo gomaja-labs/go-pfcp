@@ -4,8 +4,8 @@
 
 package ie
 
-// TS 29.244 V20.1.0 clause 8.2.6: no text repertoire is specified for this identifier.
 // NewApplicationID creates a new ApplicationID IE.
+// TS 29.244 V20.1.0 clause 8.2.6: no text repertoire is specified for this identifier.
 func NewApplicationID(instance []byte) *IE {
 	return New(ApplicationID, instance)
 }
