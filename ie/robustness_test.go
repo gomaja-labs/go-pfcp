@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"math/rand/v2"
+	"net/netip"
 	"reflect"
 	"strings"
 	"testing"
@@ -214,8 +215,8 @@ func TestIEEqual(t *testing.T) {
 		{"different value", ie.NewPDRID(1), ie.NewPDRID(2), false},
 		{"different type", ie.NewPDRID(1), ie.New(ie.Precedence, []byte{0, 1}), false},
 		{"decoded and constructed group", decoded, ie.NewCreatePDR(ie.NewPDRID(1)), true},
-		{"same invalid value", ie.NewNodeID("", "", ""), ie.NewNodeID("", "", ""), true},
-		{"invalid and valid", ie.NewNodeID("", "", ""), ie.NewNodeID("192.0.2.1", "", ""), false},
+		{"same invalid value", ie.NewNodeIDFQDN(""), ie.NewNodeIDFQDN(""), true},
+		{"invalid and valid", ie.NewNodeIDFQDN(""), ie.NewNodeIDAddress(netip.MustParseAddr("192.0.2.1")), false},
 	} {
 		if got := c.a.Equal(c.b); got != c.want {
 			t.Errorf("%s: Equal = %v, want %v", c.name, got, c.want)

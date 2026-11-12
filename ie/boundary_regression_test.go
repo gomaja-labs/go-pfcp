@@ -3,6 +3,7 @@ package ie_test
 import (
 	"errors"
 	"io"
+	"net/netip"
 	"strings"
 	"testing"
 
@@ -73,7 +74,7 @@ func TestForwardingPolicyLengthBoundary(t *testing.T) {
 }
 
 func TestNodeIDSpareBits(t *testing.T) {
-	for _, i := range []*ie.IE{ie.NewNodeID("192.0.2.1", "", ""), ie.NewNodeID("", "2001:db8::1", ""), ie.NewNodeID("", "", "node.example")} {
+	for _, i := range []*ie.IE{ie.NewNodeIDAddress(netip.MustParseAddr("192.0.2.1")), ie.NewNodeIDAddress(netip.MustParseAddr("2001:db8::1")), ie.NewNodeIDFQDN("node.example")} {
 		want, err := i.NodeID()
 		if err != nil {
 			t.Fatal(err)
