@@ -125,6 +125,11 @@ func TestGeneratedFieldDocumentation(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	for _, name := range []string{"message/types_gen.go", "message/session-set-modification-response_gen.go"} {
+		if strings.Contains(string(files[name]), "Modifcation") {
+			t.Errorf("%s contains the uncorrected Table 7.3-1 message name", name)
+		}
+	}
 	for _, name := range []string{"ie/create-pdr-fields_gen.go", "message/session-establishment-request_gen.go"} {
 		src := string(files[name])
 		if strings.Contains(src, "// PDRID:") || strings.Contains(src, "// CreatePDR:") {
