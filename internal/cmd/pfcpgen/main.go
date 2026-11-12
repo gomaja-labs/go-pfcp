@@ -125,8 +125,8 @@ func generate(c *spec.Catalogue) (map[string][]byte, error) {
 package ie
 
 import (
- "testing"
  "strconv"
+ "testing"
 
  "github.com/gomaja-labs/go-pfcp/internal/spec"
 )
