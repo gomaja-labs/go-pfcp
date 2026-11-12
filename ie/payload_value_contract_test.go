@@ -16,7 +16,12 @@ func TestPayloadValueLengths(t *testing.T) {
 		value  *ie.IE
 		helper func(*ie.IE) ([]byte, error)
 	}{
-		{"downlink", ie.NewDownlinkDataServiceInformation(true, true, 1, 2), (*ie.IE).DownlinkDataServiceInformation},
+		{"downlink", ie.NewDownlinkDataServiceInformation(true, true, 1, 2), func(i *ie.IE) ([]byte, error) {
+			if _, err := i.DownlinkDataServiceInformation(); err != nil {
+				return nil, err
+			}
+			return i.Payload, nil
+		}},
 		{"flow", ie.NewFlowInformation(ie.FlowDirectionUplink, "abc"), (*ie.IE).FlowInformation},
 		{"policy", ie.NewForwardingPolicy("abc"), (*ie.IE).ForwardingPolicy},
 		{"time quota", ie.NewTimeQuotaMechanism(ie.BTITCTP, time.Second), (*ie.IE).TimeQuotaMechanism},
