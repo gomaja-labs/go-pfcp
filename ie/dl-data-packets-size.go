@@ -16,6 +16,15 @@ func (i *IE) DLDataPacketsSize() (uint16, error) {
 	}
 
 	switch i.Type {
+	case DownlinkDataServiceInformation:
+		f, e := i.DownlinkDataServiceInformation()
+		if e != nil {
+			return 0, e
+		}
+		if f.Flags&4 == 0 {
+			return 0, ErrIENotFound
+		}
+		return f.DLDataPacketsSize, nil
 	case DLDataPacketsSize:
 		return i.ValueAsUint16()
 	default:

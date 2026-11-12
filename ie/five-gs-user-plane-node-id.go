@@ -4,68 +4,54 @@
 
 package ie
 
-// TS 29.244 V20.1.0 clause 8.2.143.
-
 import (
+	"encoding/binary"
 	"io"
-	"net"
 )
 
-// NewFiveGSUserPlaneNodeID creates a new FiveGSUserPlaneNodeID IE.
-// TS 29.244 V20.1.0 clause 8.2.143 instead defines type 198 as the
-// 5GS User Plane Node ID with an eight-octet value. This constructor's
-// MAC-based API does not represent that current definition.
-func NewFiveGSUserPlaneNodeID(mac net.HardwareAddr) *IE {
-	if mac == nil {
-		return New(FiveGSUserPlaneNodeID, []byte{0x00})
+// FiveGSUserPlaneNodeIDFields contains the optional Unsigned64 node identifier.
+// TS 29.244 V20.1.0 clause 8.2.143.
+type FiveGSUserPlaneNodeIDFields struct {
+	BID   bool
+	Value uint64
+}
+
+// NewFiveGSUserPlaneNodeID creates a 5GS User Plane Node ID with explicit presence.
+func NewFiveGSUserPlaneNodeID(bid bool, id uint64) *IE {
+	if !bid && id != 0 {
+		return newInvalidIE(FiveGSUserPlaneNodeID, ErrInvalidValue)
 	}
-	l := len(mac) + 1
-	b := make([]byte, l)
-	b[0] = 0x01
-	copy(b[1:l], mac)
+	b := []byte{0}
+	if bid {
+		b = make([]byte, 9)
+		b[0] = 1
+		binary.BigEndian.PutUint64(b[1:], id)
+	}
 	return New(FiveGSUserPlaneNodeID, b)
 }
 
-// HasMAC reports whether an IE has MAC bit.
-func (i *IE) HasMAC() bool {
-	if i == nil {
-		return false
-	}
-
-	switch i.Type {
-	case FiveGSUserPlaneNodeID:
-		if len(i.Payload) == 0 {
-			return false
-		}
-		return has1stBit(i.Payload[0])
-	default:
-		return false
-	}
+// HasBID reports whether the Unsigned64 User Plane Node ID is present.
+func (i *IE) HasBID() bool {
+	return i != nil && i.Type == FiveGSUserPlaneNodeID && len(i.Payload) > 0 && i.Payload[0]&1 != 0
 }
 
-// FiveGSUserPlaneNodeID returns FiveGSUserPlaneNodeID in net.HardwareAddr if the type of IE matches.
-func (i *IE) FiveGSUserPlaneNodeID() (net.HardwareAddr, error) {
+// FiveGSUserPlaneNodeID decodes the kind-independent eight-octet identifier.
+func (i *IE) FiveGSUserPlaneNodeID() (*FiveGSUserPlaneNodeIDFields, error) {
 	if i == nil {
 		return nil, ErrIENotFound
 	}
-
-	switch i.Type {
-	case FiveGSUserPlaneNodeID:
-		if len(i.Payload) < 1 {
-			return nil, io.ErrUnexpectedEOF
-		}
-
-		if !has1stBit(i.Payload[0]) {
-			return nil, nil
-		}
-		if (len(i.Payload) != 7) && (len(i.Payload) < 9) {
-			return nil, io.ErrUnexpectedEOF
-		}
-		if len(i.Payload) == 7 {
-			return net.HardwareAddr(i.Payload[1:7]), nil
-		}
-		return net.HardwareAddr(i.Payload[1:9]), nil
-	default:
+	if i.Type != FiveGSUserPlaneNodeID {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
+	if len(i.Payload) < 1 {
+		return nil, io.ErrUnexpectedEOF
+	}
+	f := &FiveGSUserPlaneNodeIDFields{BID: i.HasBID()}
+	if f.BID {
+		if len(i.Payload) < 9 {
+			return nil, io.ErrUnexpectedEOF
+		}
+		f.Value = binary.BigEndian.Uint64(i.Payload[1:9])
+	}
+	return f, nil
 }

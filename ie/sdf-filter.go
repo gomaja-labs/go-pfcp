@@ -10,11 +10,11 @@ import (
 )
 
 // NewSDFFilter creates a new SDFFilter IE.
-func NewSDFFilter(fd, ttc, spi, fl string, fid uint32) *IE {
+func NewSDFFilter(fd string, ttc, spi, fl []byte, fid uint32) *IE {
 	f := NewSDFFilterFields(fd, ttc, spi, fl, fid)
 	b, err := f.Marshal()
 	if err != nil {
-		return nil
+		return newInvalidIE(SDFFilter, ErrInvalidValue)
 	}
 
 	return New(SDFFilter, b)
@@ -46,14 +46,15 @@ type SDFFilterFields struct {
 	Flags                  uint8
 	FDLength               uint16
 	FlowDescription        string
-	ToSTrafficClass        string // 2 octets
-	SecurityParameterIndex string // 4 octets
-	FlowLabel              string // 3 octets
+	ToSTrafficClass        []byte // 2 octets
+	SecurityParameterIndex []byte // 4 octets
+	FlowLabel              []byte // 3 octets
 	SDFFilterID            uint32
+	MultiplexedMedia       []SDFMultiplexedMedia
 }
 
 // NewSDFFilterFields creates a new NewSDFFilterFields.
-func NewSDFFilterFields(fd, ttc, spi, fl string, fid uint32) *SDFFilterFields {
+func NewSDFFilterFields(fd string, ttc, spi, fl []byte, fid uint32) *SDFFilterFields {
 	f := &SDFFilterFields{}
 	if fd != "" {
 		f.FlowDescription = fd
@@ -61,17 +62,17 @@ func NewSDFFilterFields(fd, ttc, spi, fl string, fid uint32) *SDFFilterFields {
 		f.SetFDFlag()
 	}
 
-	if ttc != "" {
+	if len(ttc) != 0 {
 		f.ToSTrafficClass = ttc
 		f.SetTTCFlag()
 	}
 
-	if spi != "" {
+	if len(spi) != 0 {
 		f.SecurityParameterIndex = spi
 		f.SetSPIFlag()
 	}
 
-	if fl != "" {
+	if len(fl) != 0 {
 		f.FlowLabel = fl
 		f.SetFLFlag()
 	}
@@ -195,7 +196,7 @@ func (f *SDFFilterFields) UnmarshalBinary(b []byte) error {
 		return io.ErrUnexpectedEOF
 	}
 
-	f.Flags = b[0]
+	f.Flags = b[0] & 0x3f
 	offset := 2 // 2nd octet is spare
 
 	// TS 29.244 V20.1.0 clause 8.2.5.
@@ -212,7 +213,7 @@ func (f *SDFFilterFields) UnmarshalBinary(b []byte) error {
 		if len(b[offset:]) < 2 {
 			return io.ErrUnexpectedEOF
 		}
-		f.ToSTrafficClass = string(b[offset : offset+2])
+		f.ToSTrafficClass = append([]byte(nil), b[offset:offset+2]...)
 		offset += 2
 	}
 
@@ -220,7 +221,7 @@ func (f *SDFFilterFields) UnmarshalBinary(b []byte) error {
 		if len(b[offset:]) < 4 {
 			return io.ErrUnexpectedEOF
 		}
-		f.SecurityParameterIndex = string(b[offset : offset+4])
+		f.SecurityParameterIndex = append([]byte(nil), b[offset:offset+4]...)
 		offset += 4
 	}
 
@@ -228,7 +229,7 @@ func (f *SDFFilterFields) UnmarshalBinary(b []byte) error {
 		if len(b[offset:]) < 3 {
 			return io.ErrUnexpectedEOF
 		}
-		f.FlowLabel = string(b[offset : offset+3])
+		f.FlowLabel = append([]byte(nil), b[offset:offset+3]...)
 		offset += 3
 	}
 
@@ -237,8 +238,31 @@ func (f *SDFFilterFields) UnmarshalBinary(b []byte) error {
 			return io.ErrUnexpectedEOF
 		}
 		f.SDFFilterID = binary.BigEndian.Uint32(b[offset : offset+4])
+		offset += 4
 	}
 
+	if f.Flags&0x20 != 0 {
+		if len(b) < offset+1 {
+			return io.ErrUnexpectedEOF
+		}
+		n := int(b[offset])
+		offset++
+		if n == 0 {
+			return ErrInvalidLength
+		}
+		f.MultiplexedMedia = make([]SDFMultiplexedMedia, 0, n)
+		for range n {
+			v, e := takeLength16(b, &offset)
+			if e != nil {
+				return e
+			}
+			entry := SDFMultiplexedMedia{}
+			if e := entry.UnmarshalBinary(v); e != nil {
+				return e
+			}
+			f.MultiplexedMedia = append(f.MultiplexedMedia, entry)
+		}
+	}
 	return nil
 }
 
@@ -260,6 +284,15 @@ func (f *SDFFilterFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
 	}
+	if f.Flags&^uint8(0x3f) != 0 || f.Flags&1 == 0 && (f.FDLength != 0 || f.FlowDescription != "") || f.Flags&2 == 0 && len(f.ToSTrafficClass) != 0 || f.Flags&4 == 0 && len(f.SecurityParameterIndex) != 0 || f.Flags&8 == 0 && len(f.FlowLabel) != 0 || f.Flags&16 == 0 && f.SDFFilterID != 0 {
+		return ErrInvalidValue
+	}
+	if f.Flags&0x20 != 0 && (len(f.MultiplexedMedia) == 0 || len(f.MultiplexedMedia) > 255) {
+		return ErrInvalidLength
+	}
+	if f.Flags&0x20 == 0 && len(f.MultiplexedMedia) != 0 {
+		return ErrInvalidValue
+	}
 	if f.MarshalLen() > 65535 {
 		return ErrInvalidLength
 	}
@@ -275,7 +308,8 @@ func (f *SDFFilterFields) MarshalTo(b []byte) error {
 		return io.ErrUnexpectedEOF
 	}
 
-	b[0] = f.Flags
+	b[0] = f.Flags & 0x3f
+	b[1] = 0
 	offset := 2 // 2nd octet is spare
 
 	if f.HasFD() {
@@ -301,8 +335,23 @@ func (f *SDFFilterFields) MarshalTo(b []byte) error {
 
 	if f.HasBID() {
 		binary.BigEndian.PutUint32(b[offset:offset+4], f.SDFFilterID)
+		offset += 4
 	}
 
+	if f.Flags&0x20 != 0 {
+		b[offset] = uint8(len(f.MultiplexedMedia))
+		offset++
+		for k := range f.MultiplexedMedia {
+			entry := &f.MultiplexedMedia[k]
+			n := entry.MarshalLen()
+			binary.BigEndian.PutUint16(b[offset:offset+2], uint16(n))
+			offset += 2
+			if e := entry.MarshalTo(b[offset : offset+n]); e != nil {
+				return e
+			}
+			offset += n
+		}
+	}
 	return nil
 }
 
@@ -334,5 +383,30 @@ func (f *SDFFilterFields) MarshalLen() int {
 		l += 4
 	}
 
+	if f.Flags&0x20 != 0 {
+		l++
+		for k := range f.MultiplexedMedia {
+			l += 2 + f.MultiplexedMedia[k].MarshalLen()
+		}
+	}
 	return l
+}
+
+// NewSDFFilterFromFields encodes all current fields of SDFFilter.
+func NewSDFFilterFromFields(fields *SDFFilterFields) *IE {
+	b, err := fields.Marshal()
+	if err != nil {
+		return newInvalidIE(SDFFilter, ErrInvalidValue)
+	}
+	return New(SDFFilter, b)
+}
+
+// HasSMMII reports whether multiplexed media identification is present.
+func (f *SDFFilterFields) HasSMMII() bool { return f != nil && f.Flags&0x20 != 0 }
+
+// SetSMMIIFlag enables the multiplexed media list.
+func (f *SDFFilterFields) SetSMMIIFlag() {
+	if f != nil {
+		f.Flags |= 0x20
+	}
 }

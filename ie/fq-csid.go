@@ -19,7 +19,11 @@ const (
 )
 
 // NewFQCSID creates a new FQCSID IE.
-func NewFQCSID(nodeAddr string, csIDs ...uint16) *IE {
+func NewFQCSID(nodeAddr string, nodeType uint8, csIDs ...uint16) *IE {
+	// TS 29.244 V20.1.0 clause 8.2.43: Node Type follows the advertised CSIDs.
+	if nodeType > 5 || len(csIDs) > 15 {
+		return newInvalidIE(FQCSID, ErrInvalidValue)
+	}
 	var (
 		nid   []byte
 		ntype uint8
@@ -29,7 +33,10 @@ func NewFQCSID(nodeAddr string, csIDs ...uint16) *IE {
 		var err error
 		nid, err = hex.DecodeString(nodeAddr)
 		if err != nil {
-			return nil
+			return newInvalidIE(FQCSID, ErrInvalidValue)
+		}
+		if len(nid) != 4 {
+			return newInvalidIE(FQCSID, ErrInvalidValue)
 		}
 		ntype = nodeIDOther
 	} else if v4 := ip.To4(); v4 != nil {
@@ -40,7 +47,7 @@ func NewFQCSID(nodeAddr string, csIDs ...uint16) *IE {
 		ntype = nodeIDIPv6
 	}
 
-	i := New(FQCSID, make([]byte, 1+len(nid)+len(csIDs)*2))
+	i := New(FQCSID, make([]byte, 2+len(nid)+len(csIDs)*2))
 	i.Payload[0] = ((ntype << 4) & 0xf0) | uint8(len(csIDs)&0x0f)
 
 	offset := len(nid) + 1
@@ -48,6 +55,7 @@ func NewFQCSID(nodeAddr string, csIDs ...uint16) *IE {
 	for n, csid := range csIDs {
 		binary.BigEndian.PutUint16(i.Payload[offset+n*2:offset+n*2+2], csid)
 	}
+	i.Payload[len(i.Payload)-1] = nodeType
 	return i
 }
 
@@ -60,8 +68,8 @@ func (i *IE) FQCSID() ([]byte, error) {
 	if i.Type != FQCSID {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
-	if len(i.Payload) < 3 {
-		return nil, io.ErrUnexpectedEOF
+	if _, err := i.CSIDs(); err != nil {
+		return nil, err
 	}
 
 	return i.Payload, nil
@@ -141,7 +149,7 @@ func (i *IE) CSIDs() ([]uint16, error) {
 		// TS 29.244 V20.1.0 clause 8.2.43: count is the low nibble;
 		// the following Node Type and extension octets are not CSIDs.
 		count := int(i.Payload[0] & 0x0f)
-		if len(i.Payload) < offset+2*count {
+		if len(i.Payload) < offset+2*count+1 {
 			return nil, io.ErrUnexpectedEOF
 		}
 		csids := make([]uint16, count)
@@ -154,4 +162,23 @@ func (i *IE) CSIDs() ([]uint16, error) {
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
+}
+
+// FQCSIDNodeType returns the trailing Node Type, excluding its spare bits.
+// TS 29.244 V20.1.0 clause 8.2.43, Table 8.2.43-2.
+func (i *IE) FQCSIDNodeType() (uint8, error) {
+	if i == nil {
+		return 0, ErrIENotFound
+	}
+	if i.Type != FQCSID {
+		return 0, &InvalidTypeError{Type: i.Type}
+	}
+	if _, err := i.CSIDs(); err != nil {
+		return 0, err
+	}
+	addr, err := i.NodeAddress()
+	if err != nil {
+		return 0, err
+	}
+	return i.Payload[1+len(addr)+2*int(i.Payload[0]&15)] & 15, nil
 }

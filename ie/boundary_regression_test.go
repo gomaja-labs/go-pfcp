@@ -38,7 +38,7 @@ func TestRedirectAddressLengthOverflow(t *testing.T) {
 		if len(addrs) == 2 {
 			typ = ie.RedirectAddrIPv4AndIPv6
 		}
-		if i := ie.NewRedirectInformation(typ, addrs...); i != nil {
+		if _, err := ie.NewRedirectInformation(typ, addrs...).Marshal(); !errors.Is(err, ie.ErrInvalidValue) {
 			t.Error("constructor accepted overflowing address length")
 		}
 		f := ie.NewRedirectInformationFields(typ, addrs...)

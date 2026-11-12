@@ -46,8 +46,8 @@ func TestEmptyFlagHelpers(t *testing.T) {
 		name string
 		call func()
 	}{
-		{"HasMAC", func() {
-			if ie.New(ie.FiveGSUserPlaneNodeID, nil).HasMAC() {
+		{"HasBID", func() {
+			if ie.New(ie.FiveGSUserPlaneNodeID, nil).HasBID() {
 				t.Error("unexpected MAC")
 			}
 		}},
@@ -104,7 +104,7 @@ func TestFQCSIDCounts(t *testing.T) {
 			}
 			t.Run(addr+fmt.Sprintf("count_%d", n), func(t *testing.T) {
 				if p := panicOf(func() {
-					i := ie.NewFQCSID(addr, ids...)
+					i := ie.NewFQCSID(addr, 2, ids...)
 					got, e := i.CSIDs()
 					if e != nil {
 						t.Fatal(e)
@@ -232,7 +232,14 @@ func TestTraceInformationRoundTrip(t *testing.T) {
 
 func TestDownlinkDataServiceFlags(t *testing.T) {
 	for flags := 0; flags < 4; flags++ {
-		i := ie.NewDownlinkDataServiceInformation(flags&1 != 0, flags&2 != 0, 5, 9)
+		ppi, qfi := uint8(0), uint8(0)
+		if flags&1 != 0 {
+			ppi = 5
+		}
+		if flags&2 != 0 {
+			qfi = 9
+		}
+		i := ie.NewDownlinkDataServiceInformation(flags&1 != 0, flags&2 != 0, ppi, qfi)
 		if flags&2 != 0 {
 			if p := panicOf(func() {
 				v, e := i.QFI()

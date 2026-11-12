@@ -23,7 +23,7 @@ func NewPacketRate(flags uint8, ulunit uint8, ulpackets uint16, dlunit uint8, dl
 	fields := NewPacketRateFields(flags, ulunit, ulpackets, dlunit, dlpackets)
 	b, err := fields.Marshal()
 	if err != nil {
-		return nil
+		return newInvalidIE(PacketRate, ErrInvalidValue)
 	}
 
 	return New(PacketRate, b)
@@ -82,26 +82,20 @@ func (i *IE) HasULPR() bool {
 
 // PacketRateFields represents a fields contained in PacketRate IE.
 type PacketRateFields struct {
-	Flags              uint8
-	UplinkTimeUnit     uint8
-	DownlinkTimeUnit   uint8
-	UplinkPacketRate   uint16
-	DownlinkPacketRate uint16
+	Flags                        uint8
+	UplinkTimeUnit               uint8
+	DownlinkTimeUnit             uint8
+	UplinkPacketRate             uint16
+	DownlinkPacketRate           uint16
+	AdditionalUplinkTimeUnit     uint8
+	AdditionalDownlinkTimeUnit   uint8
+	AdditionalUplinkPacketRate   uint16
+	AdditionalDownlinkPacketRate uint16
 }
 
 // NewPacketRateFields creates a new PacketRateFields.
 func NewPacketRateFields(flags uint8, ulunit uint8, ulpackets uint16, dlunit uint8, dlpackets uint16) *PacketRateFields {
-	f := &PacketRateFields{Flags: flags}
-
-	if has1stBit(flags) {
-		f.UplinkTimeUnit = ulunit
-		f.UplinkPacketRate = ulpackets
-	}
-
-	if has2ndBit(flags) {
-		f.DownlinkTimeUnit = dlunit
-		f.DownlinkPacketRate = dlpackets
-	}
+	f := &PacketRateFields{Flags: flags, UplinkTimeUnit: ulunit, UplinkPacketRate: ulpackets, DownlinkTimeUnit: dlunit, DownlinkPacketRate: dlpackets}
 
 	return f
 }
@@ -128,14 +122,14 @@ func (f *PacketRateFields) UnmarshalBinary(b []byte) error {
 		return io.ErrUnexpectedEOF
 	}
 
-	f.Flags = b[0]
+	f.Flags = b[0] & 7
 	offset := 1
 
 	if has1stBit(f.Flags) {
 		if l < offset+3 {
 			return io.ErrUnexpectedEOF
 		}
-		f.UplinkTimeUnit = b[offset]
+		f.UplinkTimeUnit = b[offset] & 7
 		f.UplinkPacketRate = binary.BigEndian.Uint16(b[offset+1 : offset+3])
 		offset += 3
 	}
@@ -144,10 +138,26 @@ func (f *PacketRateFields) UnmarshalBinary(b []byte) error {
 		if l < offset+3 {
 			return io.ErrUnexpectedEOF
 		}
-		f.DownlinkTimeUnit = b[offset]
+		f.DownlinkTimeUnit = b[offset] & 7
 		f.DownlinkPacketRate = binary.BigEndian.Uint16(b[offset+1 : offset+3])
+		offset += 3
 	}
 
+	// TS 29.244 V20.1.0 clause 8.2.63: APRC uses the same direction flags.
+	for _, v := range []struct {
+		bit  uint8
+		unit *uint8
+		rate *uint16
+	}{{1, &f.AdditionalUplinkTimeUnit, &f.AdditionalUplinkPacketRate}, {2, &f.AdditionalDownlinkTimeUnit, &f.AdditionalDownlinkPacketRate}} {
+		if f.Flags&4 != 0 && f.Flags&v.bit != 0 {
+			if l < offset+3 {
+				return io.ErrUnexpectedEOF
+			}
+			*v.unit = b[offset] & 7
+			*v.rate = binary.BigEndian.Uint16(b[offset+1 : offset+3])
+			offset += 3
+		}
+	}
 	return nil
 }
 
@@ -169,6 +179,12 @@ func (f *PacketRateFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
 	}
+	if f.Flags&^uint8(7) != 0 || f.Flags&1 == 0 && (f.UplinkTimeUnit != 0 || f.UplinkPacketRate != 0) || f.Flags&2 == 0 && (f.DownlinkTimeUnit != 0 || f.DownlinkPacketRate != 0) || f.Flags&5 != 5 && (f.AdditionalUplinkTimeUnit != 0 || f.AdditionalUplinkPacketRate != 0) || f.Flags&6 != 6 && (f.AdditionalDownlinkTimeUnit != 0 || f.AdditionalDownlinkPacketRate != 0) {
+		return ErrInvalidValue
+	}
+	if f.UplinkTimeUnit > 4 || f.DownlinkTimeUnit > 4 || f.AdditionalUplinkTimeUnit > 4 || f.AdditionalDownlinkTimeUnit > 4 {
+		return ErrInvalidValue
+	}
 	if f.MarshalLen() > 65535 {
 		return ErrInvalidLength
 	}
@@ -182,20 +198,32 @@ func (f *PacketRateFields) MarshalTo(b []byte) error {
 		return io.ErrUnexpectedEOF
 	}
 
-	b[0] = f.Flags
+	b[0] = f.Flags & 7
 	offset := 1
 
 	if has1stBit(f.Flags) {
-		b[offset] = f.UplinkTimeUnit
+		b[offset] = f.UplinkTimeUnit & 7
 		binary.BigEndian.PutUint16(b[offset+1:offset+3], f.UplinkPacketRate)
 		offset += 3
 	}
 
 	if has2ndBit(f.Flags) {
-		b[offset] = f.DownlinkTimeUnit
+		b[offset] = f.DownlinkTimeUnit & 7
 		binary.BigEndian.PutUint16(b[offset+1:offset+3], f.DownlinkPacketRate)
+		offset += 3
 	}
 
+	for _, v := range []struct {
+		bit  uint8
+		unit uint8
+		rate uint16
+	}{{1, f.AdditionalUplinkTimeUnit, f.AdditionalUplinkPacketRate}, {2, f.AdditionalDownlinkTimeUnit, f.AdditionalDownlinkPacketRate}} {
+		if f.Flags&4 != 0 && f.Flags&v.bit != 0 {
+			b[offset] = v.unit & 7
+			binary.BigEndian.PutUint16(b[offset+1:offset+3], v.rate)
+			offset += 3
+		}
+	}
 	return nil
 }
 
@@ -213,5 +241,22 @@ func (f *PacketRateFields) MarshalLen() int {
 		l += 3
 	}
 
+	if f.Flags&4 != 0 {
+		if f.Flags&1 != 0 {
+			l += 3
+		}
+		if f.Flags&2 != 0 {
+			l += 3
+		}
+	}
 	return l
+}
+
+// NewPacketRateFromFields encodes all current fields of PacketRate.
+func NewPacketRateFromFields(fields *PacketRateFields) *IE {
+	b, err := fields.Marshal()
+	if err != nil {
+		return newInvalidIE(PacketRate, ErrInvalidValue)
+	}
+	return New(PacketRate, b)
 }

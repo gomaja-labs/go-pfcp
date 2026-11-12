@@ -15,7 +15,7 @@ func NewQoSMonitoringMeasurement(flags uint8, dl, ul, rp uint32) *IE {
 
 	b, err := fields.Marshal()
 	if err != nil {
-		return nil
+		return newInvalidIE(QoSMonitoringMeasurement, ErrInvalidValue)
 	}
 
 	return New(QoSMonitoringMeasurement, b)
@@ -42,10 +42,14 @@ func (i *IE) QoSMonitoringMeasurement() (*QoSMonitoringMeasurementFields, error)
 
 // QoSMonitoringMeasurementFields represents a fields contained in QoSMonitoringMeasurement IE.
 type QoSMonitoringMeasurementFields struct {
-	Flags                uint8
-	DownlinkPacketDelay  uint32
-	UplinkPacketDelay    uint32
-	RoundTripPacketDelay uint32
+	Flags                         uint8
+	DownlinkPacketDelay           uint32
+	UplinkPacketDelay             uint32
+	RoundTripPacketDelay          uint32
+	DownlinkCongestionInformation uint16 // hundredths of one percent
+	UplinkCongestionInformation   uint16 // hundredths of one percent
+	AverageDownlinkDataRate       uint64 // kbps, five octets
+	AverageUplinkDataRate         uint64 // kbps, five octets
 }
 
 // NewQoSMonitoringMeasurementFields creates a new NewQoSMonitoringMeasurementFields.
@@ -175,9 +179,36 @@ func (f *QoSMonitoringMeasurementFields) UnmarshalBinary(b []byte) error {
 			return io.ErrUnexpectedEOF
 		}
 		f.RoundTripPacketDelay = binary.BigEndian.Uint32(b[offset : offset+4])
+		offset += 4
 	}
 
-	return nil
+	for _, item := range []struct {
+		bit uint8
+		dst *uint16
+	}{{0x10, &f.DownlinkCongestionInformation}, {0x20, &f.UplinkCongestionInformation}} {
+		if f.Flags&item.bit != 0 {
+			if l < offset+2 {
+				return io.ErrUnexpectedEOF
+			}
+			*item.dst = binary.BigEndian.Uint16(b[offset : offset+2])
+			offset += 2
+		}
+	}
+	for _, item := range []struct {
+		bit uint8
+		dst *uint64
+	}{{0x40, &f.AverageDownlinkDataRate}, {0x80, &f.AverageUplinkDataRate}} {
+		if f.Flags&item.bit != 0 {
+			if l < offset+5 {
+				return io.ErrUnexpectedEOF
+			}
+			for _, v := range b[offset : offset+5] {
+				*item.dst = *item.dst<<8 | uint64(v)
+			}
+			offset += 5
+		}
+	}
+	return f.validate()
 }
 
 // Marshal returns the serialized bytes of QoSMonitoringMeasurementFields.
@@ -197,6 +228,9 @@ func (f *QoSMonitoringMeasurementFields) Marshal() ([]byte, error) {
 func (f *QoSMonitoringMeasurementFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
+	}
+	if err := f.validate(); err != nil {
+		return err
 	}
 	if f.MarshalLen() > 65535 {
 		return ErrInvalidLength
@@ -234,8 +268,30 @@ func (f *QoSMonitoringMeasurementFields) MarshalTo(b []byte) error {
 			return io.ErrUnexpectedEOF
 		}
 		binary.BigEndian.PutUint32(b[offset:offset+4], f.RoundTripPacketDelay)
+		offset += 4
 	}
 
+	for _, item := range []struct {
+		bit uint8
+		v   uint16
+	}{{0x10, f.DownlinkCongestionInformation}, {0x20, f.UplinkCongestionInformation}} {
+		if f.Flags&item.bit != 0 {
+			binary.BigEndian.PutUint16(b[offset:offset+2], item.v)
+			offset += 2
+		}
+	}
+	for _, item := range []struct {
+		bit uint8
+		v   uint64
+	}{{0x40, f.AverageDownlinkDataRate}, {0x80, f.AverageUplinkDataRate}} {
+		if f.Flags&item.bit != 0 {
+			for k := 4; k >= 0; k-- {
+				b[offset+k] = uint8(item.v)
+				item.v >>= 8
+			}
+			offset += 5
+		}
+	}
 	return nil
 }
 
@@ -255,5 +311,42 @@ func (f *QoSMonitoringMeasurementFields) MarshalLen() int {
 	if f.HasRP() {
 		l += 4
 	}
+	if f.Flags&0x10 != 0 {
+		l += 2
+	}
+	if f.Flags&0x20 != 0 {
+		l += 2
+	}
+	if f.Flags&0x40 != 0 {
+		l += 5
+	}
+	if f.Flags&0x80 != 0 {
+		l += 5
+	}
 	return l
+}
+
+// NewQoSMonitoringMeasurementFromFields encodes all current fields of QoSMonitoringMeasurement.
+func NewQoSMonitoringMeasurementFromFields(fields *QoSMonitoringMeasurementFields) *IE {
+	b, err := fields.Marshal()
+	if err != nil {
+		return newInvalidIE(QoSMonitoringMeasurement, ErrInvalidValue)
+	}
+	return New(QoSMonitoringMeasurement, b)
+}
+
+// TS 29.244 V20.1.0 clause 8.2.171: congestion is 0..10000 and
+// data rates occupy 40 bits. Failure excludes all packet delay fields.
+func (f *QoSMonitoringMeasurementFields) validate() error {
+	if f.Flags&1 == 0 && f.DownlinkPacketDelay != 0 || f.Flags&2 == 0 && f.UplinkPacketDelay != 0 || f.Flags&4 == 0 && f.RoundTripPacketDelay != 0 || f.Flags&16 == 0 && f.DownlinkCongestionInformation != 0 || f.Flags&32 == 0 && f.UplinkCongestionInformation != 0 || f.Flags&64 == 0 && f.AverageDownlinkDataRate != 0 || f.Flags&128 == 0 && f.AverageUplinkDataRate != 0 {
+		return ErrInvalidValue
+	}
+
+	if f.Flags == 0 || f.Flags&8 != 0 && f.Flags&7 != 0 {
+		return ErrInvalidValue
+	}
+	if f.DownlinkCongestionInformation > 10000 || f.UplinkCongestionInformation > 10000 || f.AverageDownlinkDataRate>>40 != 0 || f.AverageUplinkDataRate>>40 != 0 {
+		return ErrInvalidValue
+	}
+	return nil
 }
