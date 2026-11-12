@@ -186,3 +186,46 @@ func ExampleNewSessionModificationRequest_nullLength() {
 	// PDR: 7 remove URRs: true
 	// has URR value: false
 }
+
+func ExampleInvalidLengthError() {
+	request := message.NewSessionDeletionRequest(100, 83)
+	wire, err := request.Marshal()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	wire[3]++ // Synthetic Length is one larger than the received datagram.
+	_, err = message.ParseDatagram(wire)
+	var invalid *message.InvalidLengthError
+	if !errors.As(err, &invalid) {
+		fmt.Println("expected invalid length:", err)
+		return
+	}
+	h := invalid.Header
+	fmt.Println(invalid)
+	fmt.Println(message.MessageTypeName(h.Type), h.SequenceNumber, h.IsRequest())
+	// TS 29.244 V20.1.0 clause 7.2.2.4.2: the response carries the peer's
+	// SEID, looked up from the session that the received SEID identifies, or 0.
+	// Here the peer's SEID is the synthetic constant 200.
+	response := message.NewSessionDeletionResponse(200, h.SequenceNumber, ie.NewCause(ie.CauseInvalidLength))
+	wire, err = response.Marshal()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	decoded, err := message.ParseSessionDeletionResponse(wire)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	cause, err := decoded.Cause.Cause()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(decoded.MessageTypeName(), decoded.Sequence(), cause)
+	// Output:
+	// invalid PFCP message length: Length field 13 but 12 octets follow it
+	// Session Deletion Request 83 true
+	// Session Deletion Response 83 68
+}

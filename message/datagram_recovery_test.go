@@ -31,12 +31,19 @@ func TestDatagramRetainsChainFailureFrame(t *testing.T) {
 			b := append(append(first, last...), tc.tail...)
 			ms, err := message.ParseDatagram(b)
 			var de *message.DatagramError
-			if len(ms) != 2 || !errors.Is(err, tc.want) || !errors.As(err, &de) || de.Index != 1 || de.Offset != len(first) {
+			wantMessages, wantIndex, wantOffset := 1, 1, len(first)
+			if tc.follow {
+				wantMessages, wantIndex, wantOffset = 2, 2, len(b)
+			}
+			if len(ms) != wantMessages || !errors.Is(err, tc.want) || !errors.As(err, &de) || de.Index != wantIndex || de.Offset != wantOffset {
 				t.Fatalf("messages=%d error=%v", len(ms), err)
+			}
+			if (de.Header == nil) != tc.follow {
+				t.Fatal("only the missing follow-on lacks a header")
 			}
 		})
 	}
-	// A bad body and a chain failure on the same frame are one failed frame.
+	// A bad body and a missing follow-on are failures of separate frames.
 	b := wireHeader(0x25, 54, []byte{0, 19, 0, 2, 1})
 	ms, err := message.ParseDatagram(b)
 	var de *message.DatagramError
@@ -45,8 +52,21 @@ func TestDatagramRetainsChainFailureFrame(t *testing.T) {
 		t.Fatalf("messages=%d error=%v", len(ms), err)
 	}
 	joined := err.(interface{ Unwrap() []error })
-	if len(joined.Unwrap()) != 1 {
-		t.Fatal("one failed frame must have one detail")
+	if len(joined.Unwrap()) != 2 {
+		t.Fatal("body and missing follow-on must have separate details")
+	}
+	for n, detail := range joined.Unwrap() {
+		var frame *message.DatagramError
+		if !errors.As(detail, &frame) || frame.Index != n || frame.Offset != n*len(b) {
+			t.Fatalf("detail %d: %v", n, detail)
+		}
+		if n == 0 {
+			if frame.Header == nil || !errors.Is(frame.Err, ie.ErrInvalidLength) {
+				t.Fatal("body failure lacks header or cause")
+			}
+		} else if frame.Header != nil || !errors.Is(frame.Err, io.ErrUnexpectedEOF) {
+			t.Fatal("missing frame lacks incomplete-header context")
+		}
 	}
 }
 

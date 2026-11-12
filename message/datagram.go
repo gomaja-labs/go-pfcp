@@ -7,19 +7,20 @@ package message
 import (
 	"errors"
 	"fmt"
-	"io"
 )
 
 // DatagramError identifies a failed frame in a UDP payload.
 // Index is zero-based; Offset counts octets from the start of the datagram.
-// Header is available when the complete version-1 header was decoded, or from
-// UnsupportedVersionError when only a future-version prefix could be read.
+// Header is nil only when the input ended before the frame's complete header
+// (TS 29.244 V20.1.0 clause 7.6.3: silently discard it). For an unsupported
+// version it holds the readable prefix; see UnsupportedVersionError.
 type DatagramError struct {
 	// Index is the zero-based frame index.
 	Index int
 	// Offset is the frame start in octets from the datagram start.
 	Offset int
-	// Header is the received header when it can be decoded.
+	// Header is the received header or unsupported-version prefix; nil means
+	// the input ended before the complete frame header.
 	Header *Header
 	// Err is the underlying decoding or framing failure.
 	Err error
@@ -38,9 +39,12 @@ func (e *DatagramError) Unwrap() error { return e.Err }
 // joined error containing at most 16 *DatagramError details, in wire order,
 // followed by a count of further failed frames when details were omitted.
 // A malformed body does not prevent decoding later frames. A framing failure
-// (incomplete header, inconsistent length or FO chain, invalid bundle framing),
-// or an unsupported version whose layout is unknown, stops further decoding.
-// A consistent, decodable frame is returned even if its FO chain check fails.
+// (incomplete header, inconsistent length, invalid bundle framing) or an
+// unsupported version whose layout is unknown stops further decoding.
+// A frame with FO=0 that does not end the datagram has an inconsistent length:
+// it is reported as InvalidLengthError and neither decoded nor returned.
+// A frame with FO=1 that ends the datagram is decoded, and the frame it
+// announces is reported missing at the datagram end with a nil Header.
 // Applications must process both the returned messages and the error.
 // TS 29.244 V20.1.0 clauses 6.5, 7.2.1A, 7.2.2.4.1 and 7.6.2–7.6.7.
 func ParseDatagram(b []byte) ([]Message, error) {
@@ -54,52 +58,40 @@ func ParseDatagram(b []byte) ([]Message, error) {
 			omitted++
 		}
 	}
-	if len(b) == 0 {
-		fail(nil, io.ErrUnexpectedEOF)
-	}
-	for len(b) > 0 {
+	for {
 		n, err := frameSize(b)
 		if err != nil {
 			var v *UnsupportedVersionError
+			var l *InvalidLengthError
 			var h *Header
 			if errors.As(err, &v) {
 				h = v.Header
+			} else if errors.As(err, &l) {
+				h = l.Header
 			}
 			fail(h, err)
 			break
 		}
 		frame := b[:n:n]
-		h, err := ParseHeader(frame)
-		if err != nil {
-			fail(nil, err)
-			break
-		}
+		h := decodeHeaderFields(frame)
+		h.Payload = frame[h.MarshalLen():n:n]
 		if (h.HasFO() || index > 0) && !h.HasSEID() {
-			fail(h, ErrInvalidHeader)
+			fail(&h, ErrInvalidHeader)
 			break
-		}
-		var chainErr error
-		if h.HasFO() && n == len(b) {
-			chainErr = io.ErrUnexpectedEOF
 		}
 		if !h.HasFO() && n != len(b) {
-			chainErr = ErrInvalidLength
+			err := invalidLength(b)
+			fail(err.Header, err)
+			break
 		}
 		// Clause 6.5: handle each framed message as if sent on its own.
-		m, bodyErr := parseMessage(frame)
-		if bodyErr == nil {
+		m, err := parseMessage(frame)
+		if err != nil {
+			fail(&h, err)
+		} else {
 			messages = append(messages, m)
 		}
-		if bodyErr != nil || chainErr != nil {
-			err := bodyErr
-			if err == nil {
-				err = chainErr
-			} else if chainErr != nil {
-				err = errors.Join(bodyErr, chainErr)
-			}
-			fail(h, err)
-		}
-		if chainErr != nil {
+		if !h.HasFO() {
 			break
 		}
 		b = b[n:]

@@ -28,7 +28,8 @@
 //
 // Decode failures distinguish incomplete headers, inconsistent framing and
 // offending IE types. Use errors.Is for sentinel errors and errors.As for
-// ie.DecodeError, ie.EncodeError and message.UnsupportedVersionError. Reading
+// ie.DecodeError, ie.EncodeError, message.UnsupportedVersionError,
+// message.InvalidLengthError and message.DatagramError. Reading
 // an IE value can fail after message framing succeeds; check helper errors too.
 // Invalid arguments retained by constructors surface when encoding.
 //

@@ -57,31 +57,44 @@
 // support negotiation and a single destination peer (clauses 6.5 and 7.2.1A).
 // Parse rejects FO with ErrBundledMessage; use ParseDatagram for UDP receives
 // that may contain bundles. ParseDatagram returns successful frames even when
-// others fail, including a decodable frame whose FO chain check fails.
+// others fail. A frame with FO=0 that does not end the datagram has an
+// inconsistent length: it is reported as InvalidLengthError and neither decoded
+// nor returned. A frame with FO=1 that ends the datagram is decoded, and the
+// frame it announces is reported missing at the datagram end, with a nil Header
+// and io.ErrUnexpectedEOF (TS 29.244 V20.1.0 clauses 6.5 and 7.6.3).
 // The joined error contains at most 16 *DatagramError details (zero-based Index,
 // octet Offset, received Header and underlying Err), followed by a count of
 // further failed frames. Later failures still allow valid frames to decode;
 // omitted details are unavailable through errors.Is/As. Body failures allow later
-// frames to decode; an incomplete header, inconsistent length or FO chain,
-// invalid bundle framing, or unsupported version stops decoding. Always handle
-// both the messages and the error. Transport size limits remain the caller's concern.
+// frames to decode; an incomplete header, inconsistent length, invalid bundle
+// framing or unsupported version stops decoding. Always handle both the messages
+// and the error. Transport size limits remain the caller's concern.
 //
 // # Version and error handling
 //
 // Only PFCP version 1 is implemented. UnsupportedVersionError is returned
 // as soon as octet 1 exists, before any length or framing check. errors.As
-// exposes its Header and
-// received Version so an application can send NewVersionNotSupportedResponse.
+// exposes its Header and received Version so an application can send
+// NewVersionNotSupportedResponse.
 // That response carries the highest supported version, 1, and only its header
 // (clauses 7.6.2 and 7.4.4.7). The error Header contains only available fields;
 // sequence and SEID are best-effort at version-1 offsets. ParseHeader follows
 // the same version-first rule. Known message types reject contradictory S flags.
 //
-// An incomplete header returns io.ErrUnexpectedEOF; inconsistent declared
-// framing returns ErrInvalidLength. Truncated IE framing wraps both
-// ie.ErrInvalidLength and io.ErrUnexpectedEOF and identifies its available type
-// through ie.DecodeError. Use errors.Is and errors.As, and check value-helper
-// errors even after Parse succeeds.
+// An incomplete header returns io.ErrUnexpectedEOF; clause 7.6.3 discards such
+// a message silently. A complete header with an inconsistent Length returns
+// InvalidLengthError, which wraps ErrInvalidLength and carries the received
+// header fields without a Payload. If Header.IsRequest reports true, answer
+// with ie.CauseInvalidLength and the received sequence number; a session
+// response carries the peer's SEID, or 0 (clause 7.2.2.4.2). Discard unknown
+// message types (clause 7.6.4). For a response, stop retransmitting the
+// outstanding request with the same sequence number and notify the application
+// (TS 29.244 V20.1.0 clause 7.6.3). DatagramError.Header is the same Header; a
+// nil DatagramError.Header means that the frame's complete header was not
+// received. Truncated IE framing wraps both ie.ErrInvalidLength and
+// io.ErrUnexpectedEOF and identifies its available type through
+// ie.DecodeError. Use errors.Is and errors.As, and check value-helper errors
+// even after Parse succeeds.
 //
 // # Ownership and concurrency
 //
