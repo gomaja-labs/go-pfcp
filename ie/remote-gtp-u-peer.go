@@ -8,6 +8,7 @@ import (
 	"encoding/binary"
 	"io"
 	"net"
+	"time"
 )
 
 // NewRemoteGTPUPeer creates a new RemoteGTPUPeer IE.
@@ -15,7 +16,7 @@ func NewRemoteGTPUPeer(flags uint8, v4, v6 string, di uint8, ni string) *IE {
 	fields := NewRemoteGTPUPeerFields(flags, v4, v6, di, ni)
 	b, err := fields.Marshal()
 	if err != nil {
-		return nil
+		return newInvalidIE(RemoteGTPUPeer, ErrInvalidValue)
 	}
 
 	return New(RemoteGTPUPeer, b)
@@ -81,29 +82,27 @@ type RemoteGTPUPeerFields struct {
 	DestinationInterface uint8
 	NILength             uint16
 	NetworkInstance      string
+	RecoveryTimestamp    time.Time
 }
 
 // NewRemoteGTPUPeerFields creates a new RemoteGTPUPeerFields.
 func NewRemoteGTPUPeerFields(flags uint8, v4, v6 string, di uint8, ni string) *RemoteGTPUPeerFields {
 	f := &RemoteGTPUPeerFields{Flags: flags}
 
-	if has2ndBit(flags) {
-		f.IPv4Address = net.ParseIP(v4).To4()
+	f.IPv4Address = net.ParseIP(v4).To4()
+	if v4 != "" && f.IPv4Address == nil {
+		f.IPv4Address = net.IP([]byte(v4))
 	}
-
-	if has1stBit(flags) {
-		f.IPv6Address = net.ParseIP(v6).To16()
+	f.IPv6Address = net.ParseIP(v6).To16()
+	if v6 != "" && f.IPv6Address == nil {
+		f.IPv6Address = net.IP([]byte(v6))
 	}
-
-	if has3rdBit(flags) {
-		f.DILength = 1 // DI is half-octet long
-		f.DestinationInterface = di & 0x0f
+	f.DestinationInterface = di
+	if flags&4 != 0 {
+		f.DILength = 1
 	}
-
-	if has4thBit(flags) {
-		f.NILength = uint16(len(ni))
-		f.NetworkInstance = ni
-	}
+	f.NetworkInstance = ni
+	f.NILength = uint16(len(ni))
 
 	return f
 }
@@ -129,7 +128,7 @@ func (f *RemoteGTPUPeerFields) UnmarshalBinary(b []byte) error {
 		return io.ErrUnexpectedEOF
 	}
 
-	f.Flags = b[0]
+	f.Flags = b[0] & 0x1f
 	offset := 1
 
 	if has2ndBit(f.Flags) {
@@ -163,7 +162,7 @@ func (f *RemoteGTPUPeerFields) UnmarshalBinary(b []byte) error {
 		if f.DILength == 0 {
 			return ErrInvalidLength
 		}
-		f.DestinationInterface = b[offset]
+		f.DestinationInterface = b[offset] & 0x0f
 		offset += int(f.DILength)
 	}
 
@@ -178,8 +177,20 @@ func (f *RemoteGTPUPeerFields) UnmarshalBinary(b []byte) error {
 			return io.ErrUnexpectedEOF
 		}
 		f.NetworkInstance = string(b[offset : offset+int(f.NILength)])
+		offset += int(f.NILength)
 	}
 
+	// TS 29.244 V20.1.0 clause 8.2.70 references the timestamp in 8.2.114.
+	if f.Flags&0x10 != 0 {
+		if l < offset+4 {
+			return io.ErrUnexpectedEOF
+		}
+		v, e := New(RecoveryTimeStamp, b[offset:offset+4]).valueAs3GPPTimestamp()
+		if e != nil {
+			return e
+		}
+		f.RecoveryTimestamp = v
+	}
 	return nil
 }
 
@@ -201,6 +212,9 @@ func (f *RemoteGTPUPeerFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
 	}
+	if f.Flags&^uint8(31) != 0 || f.Flags&2 == 0 && len(f.IPv4Address) != 0 || f.Flags&1 == 0 && len(f.IPv6Address) != 0 || f.Flags&4 == 0 && (f.DILength != 0 || f.DestinationInterface != 0) || f.Flags&8 == 0 && (f.NILength != 0 || f.NetworkInstance != "") || f.Flags&16 == 0 && !f.RecoveryTimestamp.IsZero() || f.DestinationInterface > 15 {
+		return ErrInvalidValue
+	}
 	if f.MarshalLen() > 65535 {
 		return ErrInvalidLength
 	}
@@ -220,7 +234,7 @@ func (f *RemoteGTPUPeerFields) MarshalTo(b []byte) error {
 		return io.ErrUnexpectedEOF
 	}
 
-	b[0] = f.Flags
+	b[0] = f.Flags & 0x1f
 	offset := 1
 
 	if has2ndBit(f.Flags) {
@@ -250,8 +264,16 @@ func (f *RemoteGTPUPeerFields) MarshalTo(b []byte) error {
 		binary.BigEndian.PutUint16(b[offset:offset+2], f.NILength)
 		offset += 2
 		copy(b[offset:offset+int(f.NILength)], f.NetworkInstance)
+		offset += int(f.NILength)
 	}
 
+	if f.Flags&0x10 != 0 {
+		v := NewRecoveryTimeStamp(f.RecoveryTimestamp)
+		if _, err := v.Marshal(); err != nil {
+			return err
+		}
+		copy(b[offset:offset+4], v.Payload)
+	}
 	return nil
 }
 
@@ -275,5 +297,17 @@ func (f *RemoteGTPUPeerFields) MarshalLen() int {
 		l += 2 + int(f.NILength)
 	}
 
+	if f.Flags&0x10 != 0 {
+		l += 4
+	}
 	return l
+}
+
+// NewRemoteGTPUPeerFromFields encodes all current fields of RemoteGTPUPeer.
+func NewRemoteGTPUPeerFromFields(fields *RemoteGTPUPeerFields) *IE {
+	b, err := fields.Marshal()
+	if err != nil {
+		return newInvalidIE(RemoteGTPUPeer, ErrInvalidValue)
+	}
+	return New(RemoteGTPUPeer, b)
 }

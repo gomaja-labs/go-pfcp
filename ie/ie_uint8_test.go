@@ -399,12 +399,12 @@ func TestUint8IEs(t *testing.T) {
 			},
 		}, {
 			description: "FQCSID/NodeIDType/IPv4",
-			structured:  ie.NewFQCSID("127.0.0.1", 1),
+			structured:  ie.NewFQCSID("127.0.0.1", 2, 1),
 			decoded:     ie.NodeIDIPv4Address,
 			decoderFunc: func(i *ie.IE) (uint8, error) { return i.NodeIDType() },
 		}, {
 			description: "FQCSID/NodeIDType/IPv6",
-			structured:  ie.NewFQCSID("2001::1", 1),
+			structured:  ie.NewFQCSID("2001::1", 2, 1),
 			decoded:     ie.NodeIDIPv6Address,
 			decoderFunc: func(i *ie.IE) (uint8, error) { return i.NodeIDType() },
 		}, {
@@ -797,9 +797,15 @@ func TestUint8IEs(t *testing.T) {
 			decoderFunc: func(i *ie.IE) (uint8, error) { return i.PFCPSRRspFlags() },
 		}, {
 			description: "PMFControlInformation",
-			structured:  ie.NewPMFControlInformation(0xff),
-			decoded:     0x01, // first bit should only be evaluated.
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.PMFControlInformation() },
+			structured:  ie.NewPMFControlInformation(0x03),
+			decoded:     0x03, // PMFI and DRTTI are defined flags.
+			decoderFunc: func(i *ie.IE) (uint8, error) {
+				f, e := i.PMFControlInformation()
+				if e != nil {
+					return 0, e
+				}
+				return f.Flags, nil
+			},
 		}, {
 			description: "PMFControlInformation/ProvideATSSSControlInformation",
 			structured: ie.NewProvideATSSSControlInformation(
@@ -812,7 +818,11 @@ func TestUint8IEs(t *testing.T) {
 				if err != nil {
 					return 0, err
 				}
-				return f0.PMFControlInformation.PMFControlInformation()
+				f, e := f0.PMFControlInformation.PMFControlInformation()
+				if e != nil {
+					return 0, e
+				}
+				return f.Flags, nil
 			},
 		}, {
 			description: "Priority",
@@ -1164,7 +1174,7 @@ func TestUint8IEs(t *testing.T) {
 			description: "RequestedQoSMonitoring",
 			structured:  ie.NewRequestedQoSMonitoring(1, 1, 1),
 			decoded:     0x07,
-			decoderFunc: func(i *ie.IE) (uint8, error) { return i.RequestedQoSMonitoring() },
+			decoderFunc: func(i *ie.IE) (uint8, error) { v, e := i.RequestedQoSMonitoring(); return uint8(v), e },
 		}, {
 			description: "RequestedQoSMonitoring/QoSMonitoringPerQoSFlowControlInformation",
 			structured: ie.NewQoSMonitoringPerQoSFlowControlInformation(
@@ -1177,7 +1187,8 @@ func TestUint8IEs(t *testing.T) {
 				if err != nil {
 					return 0, err
 				}
-				return f0.RequestedQoSMonitoring.RequestedQoSMonitoring()
+				v, e := f0.RequestedQoSMonitoring.RequestedQoSMonitoring()
+				return uint8(v), e
 			},
 		}, {
 			description: "RQI",

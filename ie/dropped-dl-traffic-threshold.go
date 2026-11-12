@@ -6,78 +6,129 @@ package ie
 
 import (
 	"encoding/binary"
+	"io"
 )
 
-// NewDroppedDLTrafficThreshold creates a new DroppedDLTrafficThreshold IE.
-//
-// TODO: structurize
+// DroppedDLTrafficThresholdFields contains independently present packet and byte limits.
+// TS 29.244 V20.1.0 clause 8.2.49.
+type DroppedDLTrafficThresholdFields struct {
+	Flags             uint8
+	DownlinkPackets   uint64
+	DownlinkDataBytes uint64
+}
+
+// NewDroppedDLTrafficThreshold creates independently present Unsigned64 thresholds.
 func NewDroppedDLTrafficThreshold(dlpa, dlby bool, packets, bytes uint64) *IE {
+	f := &DroppedDLTrafficThresholdFields{DownlinkPackets: packets, DownlinkDataBytes: bytes}
 	if dlpa {
-		if dlby { // has both
-			i := New(DroppedDLTrafficThreshold, make([]byte, 17))
-			i.Payload[0] = 0x03
-			binary.BigEndian.PutUint64(i.Payload[1:9], packets)
-			binary.BigEndian.PutUint64(i.Payload[9:17], bytes)
-			return i
-		}
-
-		// has DLPA only
-		i := New(DroppedDLTrafficThreshold, make([]byte, 9))
-		i.Payload[0] = 0x01
-		binary.BigEndian.PutUint64(i.Payload[1:9], packets)
-		return i
+		f.Flags |= 1
 	}
-
-	if dlby { // has DLBY only
-		i := New(DroppedDLTrafficThreshold, make([]byte, 9))
-		i.Payload[0] = 0x02
-		binary.BigEndian.PutUint64(i.Payload[1:9], bytes)
-		return i
+	if dlby {
+		f.Flags |= 2
 	}
-
-	return New(DroppedDLTrafficThreshold, []byte{0x00})
+	b, e := f.Marshal()
+	if e != nil {
+		return newInvalidIE(DroppedDLTrafficThreshold, ErrInvalidValue)
+	}
+	return New(DroppedDLTrafficThreshold, b)
 }
 
-// DroppedDLTrafficThreshold returns DroppedDLTrafficThreshold in uint8 if the type of IE matches.
-//
-// TODO: implement!
-func (i *IE) DroppedDLTrafficThreshold() (uint8, error) {
+// DroppedDLTrafficThreshold returns both limits and their presence flags.
+func (i *IE) DroppedDLTrafficThreshold() (*DroppedDLTrafficThresholdFields, error) {
 	if i == nil {
-		return 0, ErrIENotFound
+		return nil, ErrIENotFound
 	}
-
-	switch i.Type {
-	case DroppedDLTrafficThreshold:
-		return i.ValueAsUint8()
-	default:
-		return 0, &InvalidTypeError{Type: i.Type}
+	if i.Type != DroppedDLTrafficThreshold {
+		return nil, &InvalidTypeError{Type: i.Type}
 	}
+	return ParseDroppedDLTrafficThresholdFields(i.Payload)
 }
 
-// HasDLBY reports whether an IE has DLBY bit.
-func (i *IE) HasDLBY() bool {
-	if i == nil {
-		return false
+// ParseDroppedDLTrafficThresholdFields decodes the thresholds.
+func ParseDroppedDLTrafficThresholdFields(b []byte) (*DroppedDLTrafficThresholdFields, error) {
+	f := &DroppedDLTrafficThresholdFields{}
+	if e := f.UnmarshalBinary(b); e != nil {
+		return nil, e
 	}
-
-	v, err := i.DroppedDLTrafficThreshold()
-	if err != nil {
-		return false
-	}
-
-	return has2ndBit(v)
+	return f, nil
 }
 
-// HasDLPA reports whether an IE has DLPA bit.
-func (i *IE) HasDLPA() bool {
-	if i == nil {
-		return false
+// UnmarshalBinary decodes thresholds and ignores trailing extension octets.
+func (f *DroppedDLTrafficThresholdFields) UnmarshalBinary(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
 	}
-
-	v, err := i.DroppedDLTrafficThreshold()
-	if err != nil {
-		return false
+	*f = DroppedDLTrafficThresholdFields{}
+	if len(b) < 1 {
+		return io.ErrUnexpectedEOF
 	}
-
-	return has1stBit(v)
+	f.Flags = b[0] & 3
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+	o := 1
+	if f.Flags&1 != 0 {
+		f.DownlinkPackets = binary.BigEndian.Uint64(b[o : o+8])
+		o += 8
+	}
+	if f.Flags&2 != 0 {
+		f.DownlinkDataBytes = binary.BigEndian.Uint64(b[o : o+8])
+	}
+	return nil
 }
+
+// Marshal serializes the thresholds.
+func (f *DroppedDLTrafficThresholdFields) Marshal() ([]byte, error) {
+	if f == nil {
+		return nil, ErrIENotFound
+	}
+	b := make([]byte, f.MarshalLen())
+	if e := f.MarshalTo(b); e != nil {
+		return nil, e
+	}
+	return b, nil
+}
+
+// MarshalLen returns the encoded size.
+func (f *DroppedDLTrafficThresholdFields) MarshalLen() int {
+	if f == nil {
+		return 0
+	}
+	n := 1
+	if f.Flags&1 != 0 {
+		n += 8
+	}
+	if f.Flags&2 != 0 {
+		n += 8
+	}
+	return n
+}
+
+// MarshalTo writes both counters according to their presence flags.
+func (f *DroppedDLTrafficThresholdFields) MarshalTo(b []byte) error {
+	if f == nil {
+		return ErrIENotFound
+	}
+	if f.Flags&^uint8(3) != 0 || f.Flags&1 == 0 && f.DownlinkPackets != 0 || f.Flags&2 == 0 && f.DownlinkDataBytes != 0 {
+		return ErrInvalidValue
+	}
+	if len(b) < f.MarshalLen() {
+		return io.ErrUnexpectedEOF
+	}
+	b[0] = f.Flags
+	o := 1
+	if f.Flags&1 != 0 {
+		binary.BigEndian.PutUint64(b[o:o+8], f.DownlinkPackets)
+		o += 8
+	}
+	if f.Flags&2 != 0 {
+		binary.BigEndian.PutUint64(b[o:o+8], f.DownlinkDataBytes)
+	}
+	return nil
+}
+
+// HasDLBY reports presence of the byte threshold.
+func (i *IE) HasDLBY() bool { f, e := i.DroppedDLTrafficThreshold(); return e == nil && f.Flags&2 != 0 }
+
+// HasDLPA reports presence of the packet threshold.
+func (i *IE) HasDLPA() bool { f, e := i.DroppedDLTrafficThreshold(); return e == nil && f.Flags&1 != 0 }

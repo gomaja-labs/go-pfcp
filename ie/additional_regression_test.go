@@ -35,7 +35,11 @@ func TestUserIDEvenDigits(t *testing.T) {
 
 func TestRedirectAddresses(t *testing.T) {
 	for _, typ := range []uint8{ie.RedirectAddrIPv4, ie.RedirectAddrIPv4AndIPv6} {
-		i := ie.NewRedirectInformation(typ, "192.0.2.1", "2001:db8::1")
+		addrs := []string{"192.0.2.1"}
+		if typ == ie.RedirectAddrIPv4AndIPv6 {
+			addrs = append(addrs, "2001:db8::1")
+		}
+		i := ie.NewRedirectInformation(typ, addrs...)
 		got, err := i.RedirectInformation()
 		if err != nil {
 			t.Fatal(err)

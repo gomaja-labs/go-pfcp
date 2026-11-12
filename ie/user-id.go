@@ -6,6 +6,8 @@ package ie
 
 import (
 	"io"
+	"strings"
+	"unicode/utf8"
 
 	"github.com/gomaja-labs/go-pfcp/internal/utils"
 )
@@ -16,7 +18,7 @@ func NewUserID(flags uint8, imsi, imei, msisdn, nai string) *IE {
 
 	b, err := fields.Marshal()
 	if err != nil {
-		return nil
+		return newInvalidIE(UserID, ErrInvalidValue)
 	}
 
 	return New(UserID, b)
@@ -50,6 +52,9 @@ type UserIDFields struct {
 	MSISDN       string
 	NAILength    uint8
 	NAI          string
+	SUPI         string
+	GPSI         string
+	PEI          string
 }
 
 // NewUserIDFields creates a new NewUserIDFields.
@@ -58,37 +63,14 @@ func NewUserIDFields(flags uint8, imsi, imei, msisdn, nai string) *UserIDFields 
 		Flags: flags,
 	}
 
-	if has1stBit(flags) {
-		v, err := utils.StrToSwappedBytes(imsi, "f")
-		if err != nil {
-			return nil
-		}
-		f.IMSILength = uint8(len(v))
-		f.IMSI = imsi
-	}
-
-	if has2ndBit(flags) {
-		v, err := utils.StrToSwappedBytes(imei, "f")
-		if err != nil {
-			return nil
-		}
-		f.IMEILength = uint8(len(v))
-		f.IMEI = imei
-	}
-
-	if has3rdBit(flags) {
-		v, err := utils.StrToSwappedBytes(msisdn, "f")
-		if err != nil {
-			return nil
-		}
-		f.MSISDNLength = uint8(len(v))
-		f.MSISDN = msisdn
-	}
-
-	if has4thBit(flags) {
-		f.NAILength = uint8(len([]byte(nai)))
-		f.NAI = nai
-	}
+	f.IMSI = imsi
+	f.IMSILength = uint8((len(imsi) + 1) / 2)
+	f.IMEI = imei
+	f.IMEILength = uint8((len(imei) + 1) / 2)
+	f.MSISDN = msisdn
+	f.MSISDNLength = uint8((len(msisdn) + 1) / 2)
+	f.NAI = nai
+	f.NAILength = uint8(len(nai))
 
 	return f
 }
@@ -114,7 +96,7 @@ func (f *UserIDFields) UnmarshalBinary(b []byte) error {
 		return io.ErrUnexpectedEOF
 	}
 
-	f.Flags = b[0]
+	f.Flags = b[0] & 0x7f
 	offset := 1
 
 	if has1stBit(f.Flags) {
@@ -170,9 +152,29 @@ func (f *UserIDFields) UnmarshalBinary(b []byte) error {
 			return io.ErrUnexpectedEOF
 		}
 		f.NAI = string(b[offset : offset+int(f.NAILength)])
+		offset += int(f.NAILength)
 	}
 
-	return nil
+	// TS 29.244 V20.1.0 clause 8.2.101: SUPI/GPSI/PEI use TS 29.571
+	// V20.1.0 clause 5.3.2 string data types, rather than the legacy TBCD fields.
+	for _, v := range []struct {
+		bit uint8
+		dst *string
+	}{{0x10, &f.SUPI}, {0x20, &f.GPSI}, {0x40, &f.PEI}} {
+		if f.Flags&v.bit != 0 {
+			if l < offset+1 {
+				return io.ErrUnexpectedEOF
+			}
+			n := int(b[offset])
+			offset++
+			if l < offset+n {
+				return io.ErrUnexpectedEOF
+			}
+			*v.dst = string(b[offset : offset+n])
+			offset += n
+		}
+	}
+	return f.validateIdentities()
 }
 
 // Marshal returns the serialized bytes of UserIDFields.
@@ -193,6 +195,9 @@ func (f *UserIDFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
 	}
+	if err := f.validateIdentities(); err != nil {
+		return err
+	}
 	if f.MarshalLen() > 65535 {
 		return ErrInvalidLength
 	}
@@ -205,7 +210,7 @@ func (f *UserIDFields) MarshalTo(b []byte) error {
 		return io.ErrUnexpectedEOF
 	}
 
-	b[0] = f.Flags
+	b[0] = f.Flags & 0x7f
 	offset := 1
 
 	if has1stBit(f.Flags) {
@@ -261,8 +266,20 @@ func (f *UserIDFields) MarshalTo(b []byte) error {
 			return ErrInvalidLength
 		}
 		copy(b[offset:offset+int(f.NAILength)], f.NAI)
+		offset += int(f.NAILength)
 	}
 
+	for _, v := range []struct {
+		bit   uint8
+		value string
+	}{{0x10, f.SUPI}, {0x20, f.GPSI}, {0x40, f.PEI}} {
+		if f.Flags&v.bit != 0 {
+			b[offset] = uint8(len(v.value))
+			offset++
+			copy(b[offset:], v.value)
+			offset += len(v.value)
+		}
+	}
 	return nil
 }
 
@@ -286,5 +303,104 @@ func (f *UserIDFields) MarshalLen() int {
 		l += 1 + int(f.NAILength)
 	}
 
+	for _, v := range []struct {
+		bit   uint8
+		value string
+	}{{0x10, f.SUPI}, {0x20, f.GPSI}, {0x40, f.PEI}} {
+		if f.Flags&v.bit != 0 {
+			l += 1 + len(v.value)
+		}
+	}
 	return l
+}
+
+// NewUserIDFromFields encodes all current fields of UserID.
+func NewUserIDFromFields(fields *UserIDFields) *IE {
+	b, err := fields.Marshal()
+	if err != nil {
+		return newInvalidIE(UserID, ErrInvalidValue)
+	}
+	return New(UserID, b)
+}
+
+// TS 29.244 V20.1.0 clause 8.2.101 limits these fields to GCI/GLI,
+// External Identifier, and MAC/EUI respectively. Other identity kinds belong
+// in the existing IMSI/NAI, MSISDN, or IMEI fields.
+func (f *UserIDFields) validateIdentities() error {
+	if f.Flags&0x80 != 0 || f.Flags&1 == 0 && (f.IMSI != "" || f.IMSILength != 0) || f.Flags&2 == 0 && (f.IMEI != "" || f.IMEILength != 0) || f.Flags&4 == 0 && (f.MSISDN != "" || f.MSISDNLength != 0) || f.Flags&8 == 0 && (f.NAI != "" || f.NAILength != 0) {
+		return ErrInvalidValue
+	}
+
+	for _, v := range []struct {
+		bit      uint8
+		s        string
+		prefixes []string
+	}{{0x10, f.SUPI, []string{"gci-", "gli-"}}, {0x20, f.GPSI, []string{"extid-"}}, {0x40, f.PEI, []string{"mac-", "eui-"}}} {
+		if f.Flags&v.bit == 0 {
+			if v.s != "" {
+				return ErrInvalidValue
+			}
+			continue
+		}
+		if len(v.s) > 255 {
+			return ErrInvalidLength
+		}
+		if !utf8.ValidString(v.s) {
+			return ErrInvalidValue
+		}
+		ok := false
+		for _, p := range v.prefixes {
+			if strings.HasPrefix(v.s, p) && len(v.s) > len(p) {
+				ok = true
+			}
+		}
+		if !ok {
+			return ErrInvalidValue
+		}
+		if v.bit == 0x20 {
+			local, domain, found := strings.Cut(strings.TrimPrefix(v.s, "extid-"), "@")
+			if !found || local == "" || domain == "" || strings.Contains(domain, "@") {
+				return ErrInvalidValue
+			}
+		}
+		if v.bit == 0x40 && !validUserPEI(v.s) {
+			return ErrInvalidValue
+		}
+	}
+	return nil
+}
+
+// TS 29.571 V20.1.0 clause 5.3.2, Pei: MAC/EUI octets are hyphen-separated.
+func validUserPEI(s string) bool {
+	parts := strings.Split(s, "-")
+	n := 6
+	if len(parts) == 0 {
+		return false
+	}
+	switch parts[0] {
+	case "mac":
+		if len(parts) == 8 && parts[7] == "untrusted" {
+			parts = parts[:7]
+		}
+	case "eui":
+		n = 8
+	default:
+		return false
+	}
+	if len(parts) != n+1 {
+		return false
+	}
+	for _, part := range parts[1:] {
+		if len(part) != 2 {
+			return false
+		}
+		for _, c := range part {
+			switch {
+			case c >= '0' && c <= '9', c >= 'a' && c <= 'f', c >= 'A' && c <= 'F':
+			default:
+				return false
+			}
+		}
+	}
+	return true
 }

@@ -291,7 +291,7 @@ func TestUint16IEs(t *testing.T) {
 			description: "PDRID/DownlinkDataReport",
 			structured: ie.NewDownlinkDataReport(
 				ie.NewPDRID(0xffff),
-				ie.NewDownlinkDataServiceInformation(true, true, 0xff, 0xff),
+				ie.NewDownlinkDataServiceInformation(true, true, 7, 63),
 			),
 			decoded: 0xffff,
 			decoderFunc: func(i *ie.IE) (uint16, error) {

@@ -62,6 +62,20 @@ func constructorArgument(typ reflect.Type, name string) reflect.Value {
 	switch typ {
 	case reflect.TypeFor[netip.Addr]():
 		return reflect.ValueOf(netip.MustParseAddr("192.0.2.1"))
+	case reflect.TypeFor[*ie.SDFFilterFields]():
+		return reflect.ValueOf(&ie.SDFFilterFields{Flags: 0x20, MultiplexedMedia: []ie.SDFMultiplexedMedia{{Flags: 1, SynchronizationSource: 9}}})
+	case reflect.TypeFor[*ie.UserIDFields]():
+		return reflect.ValueOf(&ie.UserIDFields{Flags: 0x20, GPSI: "extid-a@example"})
+	case reflect.TypeFor[*ie.RemoteGTPUPeerFields]():
+		return reflect.ValueOf(&ie.RemoteGTPUPeerFields{Flags: 0x12, IPv4Address: net.ParseIP("192.0.2.1"), RecoveryTimestamp: time.Unix(1700000000, 0)})
+	case reflect.TypeFor[*ie.QoSMonitoringMeasurementFields]():
+		return reflect.ValueOf(&ie.QoSMonitoringMeasurementFields{Flags: 0xf0, DownlinkCongestionInformation: 10000, UplinkCongestionInformation: 1, AverageDownlinkDataRate: 9, AverageUplinkDataRate: 10})
+	case reflect.TypeFor[*ie.PacketRateFields]():
+		return reflect.ValueOf(&ie.PacketRateFields{Flags: 5, UplinkPacketRate: 1, AdditionalUplinkTimeUnit: 1, AdditionalUplinkPacketRate: 9})
+	case reflect.TypeFor[*ie.RedirectInformationFields]():
+		return reflect.ValueOf(&ie.RedirectInformationFields{RedirectAddressType: ie.RedirectAddrPort, RedirectPort: 8080})
+	case reflect.TypeFor[*ie.DownlinkDataServiceInformationFields]():
+		return reflect.ValueOf(&ie.DownlinkDataServiceInformationFields{Flags: 7, PagingPolicyIndication: 1, QFI: 9, DLDataPacketsSize: 65535})
 	case reflect.TypeFor[time.Time]():
 		return reflect.ValueOf(time.Unix(1700000000, 0).UTC())
 	case reflect.TypeFor[time.Duration]():
@@ -126,7 +140,16 @@ func constructorArgument(typ reflect.Type, name string) reflect.Value {
 		v.SetInt(1)
 	case reflect.Slice:
 		if typ == reflect.TypeFor[[]byte]() {
-			v = reflect.MakeSlice(typ, 16, 16)
+			n := 16
+			switch name {
+			case "ttc":
+				n = 2
+			case "spi":
+				n = 4
+			case "fl":
+				n = 3
+			}
+			v = reflect.MakeSlice(typ, n, n)
 			return v
 		}
 		v = reflect.MakeSlice(typ, 1, 1)
@@ -193,6 +216,20 @@ func callConstructor(entry constructorEntry) []reflect.Value {
 				args[k] = reflect.ValueOf(ie.IEType(0x8001))
 			}
 		}
+		if name == "flags" {
+			switch fn.Pointer() {
+			case reflect.ValueOf(ie.NewRemoteGTPUPeer).Pointer(), reflect.ValueOf(ie.NewRemoteGTPUPeerFields).Pointer():
+				args[k].SetUint(15)
+			case reflect.ValueOf(ie.NewUserID).Pointer(), reflect.ValueOf(ie.NewUserIDFields).Pointer():
+				args[k].SetUint(15)
+			case reflect.ValueOf(ie.NewQoSMonitoringMeasurement).Pointer(), reflect.ValueOf(ie.NewQoSMonitoringMeasurementFields).Pointer():
+				args[k].SetUint(7)
+			case reflect.ValueOf(ie.NewPacketRate).Pointer(), reflect.ValueOf(ie.NewPacketRateFields).Pointer():
+				args[k].SetUint(7)
+			case reflect.ValueOf(ie.NewPMFControlInformation).Pointer():
+				args[k].SetUint(7)
+			}
+		}
 		if name == "flags" && (fn.Pointer() == reflect.ValueOf(ie.NewPacketRateStatus).Pointer() || fn.Pointer() == reflect.ValueOf(ie.NewPacketRateStatusFields).Pointer()) {
 			args[k].SetUint(7)
 		}
@@ -222,7 +259,7 @@ func TestConstructorRoundTrips(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if strings.HasSuffix(name, "Fields") {
+			if got.Type() != reflect.TypeFor[*ie.IE]() {
 				parse := reflect.ValueOf(fieldParsers["Parse"+strings.TrimPrefix(name, "New")])
 				result := parse.Call([]reflect.Value{reflect.ValueOf(wire)})
 				if !result[1].IsNil() {
@@ -273,7 +310,7 @@ func TestConstructorRoundTrips(t *testing.T) {
 
 func TestFieldsInconsistentLengths(t *testing.T) {
 	for name, entry := range constructors {
-		if !strings.HasSuffix(name, "Fields") {
+		if reflect.TypeOf(entry.fn).Out(0) == reflect.TypeFor[*ie.IE]() {
 			continue
 		}
 		t.Run(name, func(t *testing.T) {
@@ -305,7 +342,7 @@ func TestFlagDrivenConstructorRoundTrips(t *testing.T) {
 	exercised, excluded := 0, 0
 	defer func() { t.Logf("flag combinations exercised=%d excluded_by_presence_rule=%d", exercised, excluded) }()
 	for name, entry := range constructors {
-		if !strings.HasSuffix(name, "Fields") {
+		if reflect.TypeOf(entry.fn).Out(0) == reflect.TypeFor[*ie.IE]() {
 			continue
 		}
 		flag := -1
@@ -339,7 +376,25 @@ func TestFlagDrivenConstructorRoundTrips(t *testing.T) {
 						continue
 					}
 				case "NewPacketRateFields":
-					if flags&7 == 0 {
+					if flags&7 == 0 || flags&^7 != 0 {
+						excluded++
+						continue
+					}
+				case "NewUserIDFields":
+					// This constructor supplies the four legacy identities; current ones use FromFields.
+					if flags&^15 != 0 {
+						excluded++
+						continue
+					}
+				case "NewRemoteGTPUPeerFields":
+					// Recovery Timestamp is supplied explicitly with FromFields.
+					if flags&^15 != 0 {
+						excluded++
+						continue
+					}
+				case "NewQoSMonitoringMeasurementFields":
+					// Clause 8.2.171 excludes failure with packet delay and requires a set bit.
+					if flags == 0 || flags&8 != 0 && flags&7 != 0 {
 						excluded++
 						continue
 					}
@@ -358,6 +413,21 @@ func TestFlagDrivenConstructorRoundTrips(t *testing.T) {
 					}
 					for n, value := range values {
 						args[n] = reflect.ValueOf(value)
+					}
+				}
+				// Constructors preserve supplied values; clear disabled conditional arguments.
+				var conditional map[string]int
+				switch name {
+				case "NewUserIDFields":
+					conditional = map[string]int{"imsi": 1, "imei": 2, "msisdn": 4, "nai": 8}
+				case "NewRemoteGTPUPeerFields":
+					conditional = map[string]int{"v4": 2, "v6": 1, "di": 4, "ni": 8}
+				case "NewPacketRateFields":
+					conditional = map[string]int{"ulunit": 1, "ulpackets": 1, "dlunit": 2, "dlpackets": 2}
+				}
+				for n, param := range entry.params {
+					if mask, ok := conditional[param]; ok && flags&mask == 0 {
+						args[n] = reflect.Zero(args[n].Type())
 					}
 				}
 				exercised++
@@ -429,7 +499,7 @@ func TestFlagDrivenConstructorRoundTrips(t *testing.T) {
 
 func TestOversizedFieldInputs(t *testing.T) {
 	for name, entry := range constructors {
-		if !strings.HasSuffix(name, "Fields") {
+		if reflect.TypeOf(entry.fn).Out(0) == reflect.TypeFor[*ie.IE]() {
 			continue
 		}
 		t.Run(name, func(t *testing.T) {
