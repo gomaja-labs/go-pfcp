@@ -7,12 +7,13 @@ import "github.com/gomaja-labs/go-pfcp/ie"
 // SessionDeletionRequest represents PFCP Session Deletion Request.
 // TS 29.244 V20.1.0 Table 7.5.6-1 (clause 7.5.6).
 type SessionDeletionRequest struct {
+	// Header holds the PFCP framing and received IE ordering template.
 	*Header
-	// TLContainer: TL-Container [C]. TS 29.244 V20.1.0 Table 7.5.6-1.
+	// TLContainer is the TL-Container IE [C].
 	TLContainer []*ie.IE
-	// NodeID: Node ID [C]. TS 29.244 V20.1.0 Table 7.5.6-1.
+	// NodeID is the Node ID IE [C].
 	NodeID *ie.IE
-	// CPFSEID: CP F-SEID [C]. TS 29.244 V20.1.0 Table 7.5.6-1.
+	// CPFSEID is the CP F-SEID IE [C].
 	CPFSEID *ie.IE
 	// OtherIEs retains unexpected types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

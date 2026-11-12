@@ -8,9 +8,9 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type IPMulticastAddressingInfoFields struct {
-	// IPMulticastAddress: IP Multicast Address [M]. TS 29.244 V20.1.0 Table 7.5.2.2-4. Context: IP Multicast Addressing Info IE within PFCP Session Establishment Request.
+	// IPMulticastAddress is the IP Multicast Address IE [M].
 	IPMulticastAddress *IE
-	// SourceIPAddress: Source IP Address [O]; Source IP Address [M]. TS 29.244 V20.1.0 Table 7.5.2.2-4. Context: IP Multicast Addressing Info IE within PFCP Session Establishment Request.
+	// SourceIPAddress is the Source IP Address IE [O]. Source IP Address IE [M]. TS 29.244 V20.1.0 Table 7.5.2.2-4. Context: IP Multicast Addressing Info IE within PFCP Session Establishment Request.
 	SourceIPAddress []*IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

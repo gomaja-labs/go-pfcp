@@ -12,8 +12,11 @@ import (
 // DroppedDLTrafficThresholdFields contains independently present packet and byte limits.
 // TS 29.244 V20.1.0 clause 8.2.49.
 type DroppedDLTrafficThresholdFields struct {
-	Flags             uint8
-	DownlinkPackets   uint64
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// DownlinkPackets is the downlink packets.
+	DownlinkPackets uint64
+	// DownlinkDataBytes is the downlink data bytes.
 	DownlinkDataBytes uint64
 }
 

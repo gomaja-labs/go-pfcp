@@ -22,6 +22,10 @@ type groupedData struct {
 func groupedDefinitions(c *spec.Catalogue, types map[int]spec.IEType) ([]groupedData, error) {
 	var result []groupedData
 	index := map[int]int{}
+	contexts := map[int]int{}
+	for _, g := range c.Grouped {
+		contexts[g.Type]++
+	}
 	for _, g := range c.Grouped {
 		n, ok := index[g.Type]
 		if !ok {
@@ -35,7 +39,9 @@ func groupedDefinitions(c *spec.Catalogue, types map[int]spec.IEType) ([]grouped
 		}
 		d.Tables += *g.Table + " (" + g.Context + ")"
 		for _, f := range fields(g, types) {
-			f.Doc += " Context: " + g.Context + "."
+			if contexts[g.Type] > 1 && !strings.Contains(f.Doc, "Context:") {
+				f.Doc += " TS 29.244 V20.1.0 " + *g.Table + ". Context: " + g.Context + "."
+			}
 			found := false
 			for j := range d.Fields {
 				if d.Fields[j].Type == f.Type {
@@ -156,7 +162,7 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type {{.Name}}Fields struct {
- {{range .Fields}}// {{.Name}}: {{.Doc}}
+ {{range .Fields}}// {{.Name}} is the {{.Doc}}
  {{.Name}} {{if .Slice}}[]{{end}}*IE
  {{end}}// OtherIEs retains unknown types and repetitions beyond a singular field's
  // first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

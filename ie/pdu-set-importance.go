@@ -2,21 +2,37 @@ package ie
 
 // PDU Set Importance bitmap values, TS 29.244 V20.1.0 clause 8.2.268.
 const (
+	// PDUSetImportancePSI0 selects PSI0.
 	PDUSetImportancePSI0 uint16 = 1 << iota
+	// PDUSetImportancePSI1 selects PSI1.
 	PDUSetImportancePSI1
+	// PDUSetImportancePSI2 selects PSI2.
 	PDUSetImportancePSI2
+	// PDUSetImportancePSI3 selects PSI3.
 	PDUSetImportancePSI3
+	// PDUSetImportancePSI4 selects PSI4.
 	PDUSetImportancePSI4
+	// PDUSetImportancePSI5 selects PSI5.
 	PDUSetImportancePSI5
+	// PDUSetImportancePSI6 selects PSI6.
 	PDUSetImportancePSI6
+	// PDUSetImportancePSI7 selects PSI7.
 	PDUSetImportancePSI7
+	// PDUSetImportancePSI8 selects PSI8.
 	PDUSetImportancePSI8
+	// PDUSetImportancePSI9 selects PSI9.
 	PDUSetImportancePSI9
+	// PDUSetImportancePSI10 selects PSI10.
 	PDUSetImportancePSI10
+	// PDUSetImportancePSI11 selects PSI11.
 	PDUSetImportancePSI11
+	// PDUSetImportancePSI12 selects PSI12.
 	PDUSetImportancePSI12
+	// PDUSetImportancePSI13 selects PSI13.
 	PDUSetImportancePSI13
+	// PDUSetImportancePSI14 selects PSI14.
 	PDUSetImportancePSI14
+	// PDUSetImportancePSI15 selects PSI15.
 	PDUSetImportancePSI15
 )
 

@@ -8,9 +8,9 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type PMFParametersFields struct {
-	// PMFAddressInformation: PMF Address Information [M]. TS 29.244 V20.1.0 Table 7.5.3.7-4. Context: PMF Parameters IE within PFCP Session Establishment Response.
+	// PMFAddressInformation is the PMF Address Information IE [M].
 	PMFAddressInformation *IE
-	// QoSFlowIdentifier: QoS flow identifier [O]. TS 29.244 V20.1.0 Table 7.5.3.7-4. Context: PMF Parameters IE within PFCP Session Establishment Response.
+	// QoSFlowIdentifier is the QoS flow identifier IE [O].
 	QoSFlowIdentifier *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

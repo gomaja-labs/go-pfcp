@@ -107,14 +107,24 @@ func (i *IE) RequestsDLDR() bool { v, e := i.RequestedQoSMonitoring(); return e 
 
 // Requested QoS monitoring flags, TS 29.244 V20.1.0 clause 8.2.167.
 const (
-	RequestedQoSMonitoringDLPD   uint16 = 1 << 0
-	RequestedQoSMonitoringULPD   uint16 = 1 << 1
-	RequestedQoSMonitoringRPPD   uint16 = 1 << 2
+	// RequestedQoSMonitoringDLPD selects DLPD.
+	RequestedQoSMonitoringDLPD uint16 = 1 << 0
+	// RequestedQoSMonitoringULPD selects ULPD.
+	RequestedQoSMonitoringULPD uint16 = 1 << 1
+	// RequestedQoSMonitoringRPPD selects RPPD.
+	RequestedQoSMonitoringRPPD uint16 = 1 << 2
+	// RequestedQoSMonitoringGTPUPM selects GTPUPM.
 	RequestedQoSMonitoringGTPUPM uint16 = 1 << 3
-	RequestedQoSMonitoringDLCI   uint16 = 1 << 4
-	RequestedQoSMonitoringULCI   uint16 = 1 << 5
-	RequestedQoSMonitoringDLDR   uint16 = 1 << 6
-	RequestedQoSMonitoringULDR   uint16 = 1 << 7
-	RequestedQoSMonitoringDLAB   uint16 = 1 << 8
-	RequestedQoSMonitoringULAB   uint16 = 1 << 9
+	// RequestedQoSMonitoringDLCI selects DLCI.
+	RequestedQoSMonitoringDLCI uint16 = 1 << 4
+	// RequestedQoSMonitoringULCI selects ULCI.
+	RequestedQoSMonitoringULCI uint16 = 1 << 5
+	// RequestedQoSMonitoringDLDR selects DLDR.
+	RequestedQoSMonitoringDLDR uint16 = 1 << 6
+	// RequestedQoSMonitoringULDR selects ULDR.
+	RequestedQoSMonitoringULDR uint16 = 1 << 7
+	// RequestedQoSMonitoringDLAB selects DLAB.
+	RequestedQoSMonitoringDLAB uint16 = 1 << 8
+	// RequestedQoSMonitoringULAB selects ULAB.
+	RequestedQoSMonitoringULAB uint16 = 1 << 9
 )

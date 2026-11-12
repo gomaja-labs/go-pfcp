@@ -8,13 +8,13 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type MBSSessionN4InformationFields struct {
-	// MBSSessionIdentifier: MBS Session Identifier [M]. TS 29.244 V20.1.0 Table 7.5.3.1-5. Context: MBS Session N4 Information IE within PFCP Session Establishment Response.
+	// MBSSessionIdentifier is the MBS Session Identifier IE [M].
 	MBSSessionIdentifier *IE
-	// AreaSessionID: Area Session ID [C]. TS 29.244 V20.1.0 Table 7.5.3.1-5. Context: MBS Session N4 Information IE within PFCP Session Establishment Response.
+	// AreaSessionID is the Area Session ID IE [C].
 	AreaSessionID *IE
-	// N19mbDLTunnelID: N19mb DL Tunnel ID [C]. TS 29.244 V20.1.0 Table 7.5.3.1-5. Context: MBS Session N4 Information IE within PFCP Session Establishment Response.
+	// N19mbDLTunnelID is the N19mb DL Tunnel ID IE [C].
 	N19mbDLTunnelID *IE
-	// MBSN4RespFlags: MBSN4Resp-Flags [C]. TS 29.244 V20.1.0 Table 7.5.3.1-5. Context: MBS Session N4 Information IE within PFCP Session Establishment Response.
+	// MBSN4RespFlags is the MBSN4Resp-Flags IE [C].
 	MBSN4RespFlags *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

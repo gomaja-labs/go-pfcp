@@ -8,11 +8,11 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type L2TPTunnelInformationFields struct {
-	// LNSAddress: LNS Address [M]. TS 29.244 V20.1.0 Table 7.5.2.1-2. Context: L2TP Tunnel Information IE in the PFCP Session Establishment Request message.
+	// LNSAddress is the LNS Address IE [M].
 	LNSAddress *IE
-	// TunnelPassword: Tunnel Password [O]. TS 29.244 V20.1.0 Table 7.5.2.1-2. Context: L2TP Tunnel Information IE in the PFCP Session Establishment Request message.
+	// TunnelPassword is the Tunnel Password IE [O].
 	TunnelPassword *IE
-	// TunnelPreference: Tunnel Preference [C]. TS 29.244 V20.1.0 Table 7.5.2.1-2. Context: L2TP Tunnel Information IE in the PFCP Session Establishment Request message.
+	// TunnelPreference is the Tunnel Preference IE [C].
 	TunnelPreference *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

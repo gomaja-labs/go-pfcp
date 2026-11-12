@@ -8,11 +8,11 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type PartialFailureInformationFields struct {
-	// FailedRuleID: Failed Rule ID [M]. TS 29.244 V20.1.0 Table 7.5.3.1-2. Context: Information Elements in a Partial Failure Information.
+	// FailedRuleID is the Failed Rule ID IE [M].
 	FailedRuleID *IE
-	// FailureCause: Failure Cause [M]. TS 29.244 V20.1.0 Table 7.5.3.1-2. Context: Information Elements in a Partial Failure Information.
+	// FailureCause is the Failure Cause IE [M].
 	FailureCause *IE
-	// OffendingIEInformation: Offending IE Information [M]. TS 29.244 V20.1.0 Table 7.5.3.1-2. Context: Information Elements in a Partial Failure Information.
+	// OffendingIEInformation is the Offending IE Information IE [M].
 	OffendingIEInformation []*IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

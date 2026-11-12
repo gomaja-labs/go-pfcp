@@ -7,6 +7,7 @@ import "github.com/gomaja-labs/go-pfcp/ie"
 // VersionNotSupportedResponse represents PFCP Version Not Supported Response.
 // TS 29.244 V20.1.0 clause 7.4.4.7 (clause 7.4.4.7).
 type VersionNotSupportedResponse struct {
+	// Header holds the PFCP framing and received IE ordering template.
 	*Header
 	// OtherIEs retains unexpected types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

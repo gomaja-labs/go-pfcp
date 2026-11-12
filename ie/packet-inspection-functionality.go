@@ -2,8 +2,11 @@ package ie
 
 // PacketInspectionFunctionality values are defined in TS 29.244 V20.1.0 clause 8.2.250.
 const (
+	// PacketInspectionFunctionalityIPBD selects IPBD.
 	PacketInspectionFunctionalityIPBD uint8 = 1
+	// PacketInspectionFunctionalityMACD selects MACD.
 	PacketInspectionFunctionalityMACD uint8 = 2
+	// PacketInspectionFunctionalityDPID selects DPID.
 	PacketInspectionFunctionalityDPID uint8 = 4
 )
 

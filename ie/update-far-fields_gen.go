@@ -8,21 +8,21 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type UpdateFARFields struct {
-	// FARID: FAR ID [M]. TS 29.244 V20.1.0 Table 7.5.4.3-1. Context: Update FAR IE within PFCP Session Modification Request.
+	// FARID is the FAR ID IE [M].
 	FARID *IE
-	// ApplyAction: Apply Action [C]. TS 29.244 V20.1.0 Table 7.5.4.3-1. Context: Update FAR IE within PFCP Session Modification Request.
+	// ApplyAction is the Apply Action IE [C].
 	ApplyAction *IE
-	// UpdateForwardingParameters: Update Forwarding parameters [C]. TS 29.244 V20.1.0 Table 7.5.4.3-1. Context: Update FAR IE within PFCP Session Modification Request.
+	// UpdateForwardingParameters is the Update Forwarding parameters IE [C].
 	UpdateForwardingParameters *IE
-	// UpdateDuplicatingParameters: Update Duplicating Parameters [C]. TS 29.244 V20.1.0 Table 7.5.4.3-1. Context: Update FAR IE within PFCP Session Modification Request.
+	// UpdateDuplicatingParameters is the Update Duplicating Parameters IE [C].
 	UpdateDuplicatingParameters []*IE
-	// RedundantTransmissionForwardingParameters: Redundant Transmission Forwarding Parameters [C]. TS 29.244 V20.1.0 Table 7.5.4.3-1. Context: Update FAR IE within PFCP Session Modification Request.
+	// RedundantTransmissionForwardingParameters is the Redundant Transmission Forwarding Parameters IE [C].
 	RedundantTransmissionForwardingParameters *IE
-	// BARID: BAR ID [C]. TS 29.244 V20.1.0 Table 7.5.4.3-1. Context: Update FAR IE within PFCP Session Modification Request.
+	// BARID is the BAR ID IE [C].
 	BARID *IE
-	// AddMBSUnicastParameters: Add MBS Unicast Parameters [C]. TS 29.244 V20.1.0 Table 7.5.4.3-1. Context: Update FAR IE within PFCP Session Modification Request.
+	// AddMBSUnicastParameters is the Add MBS Unicast Parameters IE [C].
 	AddMBSUnicastParameters []*IE
-	// RemoveMBSUnicastParameters: Remove MBS Unicast Parameters [C]. TS 29.244 V20.1.0 Table 7.5.4.3-1. Context: Update FAR IE within PFCP Session Modification Request.
+	// RemoveMBSUnicastParameters is the Remove MBS Unicast Parameters IE [C].
 	RemoveMBSUnicastParameters []*IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

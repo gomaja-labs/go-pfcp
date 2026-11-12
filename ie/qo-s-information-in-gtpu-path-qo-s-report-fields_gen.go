@@ -8,13 +8,13 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type QoSInformationInGTPUPathQoSReportFields struct {
-	// AveragePacketDelay: Average Packet Delay [M]. TS 29.244 V20.1.0 Table 7.4.5.1.6-1. Context: QoS Information in GTP-U Path QoS Report IE.
+	// AveragePacketDelay is the Average Packet Delay IE [M].
 	AveragePacketDelay *IE
-	// MinimumPacketDelay: Minimum Packet Delay [C]. TS 29.244 V20.1.0 Table 7.4.5.1.6-1. Context: QoS Information in GTP-U Path QoS Report IE.
+	// MinimumPacketDelay is the Minimum Packet Delay IE [C].
 	MinimumPacketDelay *IE
-	// MaximumPacketDelay: Maximum Packet Delay [C]. TS 29.244 V20.1.0 Table 7.4.5.1.6-1. Context: QoS Information in GTP-U Path QoS Report IE.
+	// MaximumPacketDelay is the Maximum Packet Delay IE [C].
 	MaximumPacketDelay *IE
-	// DSCP: DSCP [C]. TS 29.244 V20.1.0 Table 7.4.5.1.6-1. Context: QoS Information in GTP-U Path QoS Report IE.
+	// DSCP is the DSCP IE [C].
 	DSCP *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

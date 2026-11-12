@@ -56,10 +56,14 @@ func (i *IE) STAG() (*STAGFields, error) {
 
 // STAGFields represents a fields contained in STAG IE.
 type STAGFields struct {
-	Flags   uint8
-	PCP     uint8  // 3 bit
-	DEIFlag uint8  // 1 bit
-	CVID    uint16 // 12 bit
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// PCP is the three-bit priority code point.
+	PCP uint8
+	// DEIFlag is the one-bit drop eligible indicator.
+	DEIFlag uint8
+	// CVID is the twelve-bit VLAN identifier.
+	CVID uint16
 }
 
 // NewSTAGFields creates a new NewSTAGFields.

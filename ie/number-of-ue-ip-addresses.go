@@ -43,8 +43,11 @@ func (i *IE) NumberOfUEIPAddresses() (*NumberOfUEIPAddressesFields, error) {
 
 // NumberOfUEIPAddressesFields represents a fields contained in NumberOfUEIPAddresses IE.
 type NumberOfUEIPAddressesFields struct {
-	Flags                   uint8
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// NumberOfUEIPv4Addresses is the number of ueIPv4 addresses.
 	NumberOfUEIPv4Addresses uint32
+	// NumberOfUEIPv6Addresses is the number of ueIPv6 addresses.
 	NumberOfUEIPv6Addresses uint32
 }
 

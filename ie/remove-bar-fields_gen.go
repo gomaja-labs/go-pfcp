@@ -8,7 +8,7 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type RemoveBARFields struct {
-	// BARID: BAR ID [M]. TS 29.244 V20.1.0 Table 7.5.4.12-1. Context: Remove BAR IE within PFCP Session Modification Request.
+	// BARID is the BAR ID IE [M].
 	BARID *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

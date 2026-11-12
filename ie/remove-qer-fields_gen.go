@@ -8,7 +8,7 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type RemoveQERFields struct {
-	// QERID: QER ID [M]. TS 29.244 V20.1.0 Table 7.5.4.9-1. Context: Remove QER IE PFCP Session Modification Request.
+	// QERID is the QER ID IE [M].
 	QERID *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

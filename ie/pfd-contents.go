@@ -10,9 +10,9 @@ import (
 	"io"
 )
 
+// NewPFDContents creates a new PFDContents IE.
 // TS 29.244 V20.1.0 clause 8.2.39 defines the length-delimited content;
 // clause 5.2.1A.4 note 2 leaves Custom PFD Content interpretation implementation specific.
-// NewPFDContents creates a new PFDContents IE.
 func NewPFDContents(fd, url, dn string, cp []byte, dnp string, afd, aurl, adnp []string) *IE {
 	f := NewPFDContentsFields(fd, url, dn, cp, dnp, afd, aurl, adnp)
 	b, err := f.Marshal()
@@ -45,22 +45,39 @@ func (i *IE) PFDContents() (*PFDContentsFields, error) {
 
 // PFDContentsFields represents a fields contained in PFDContents IE.
 type PFDContentsFields struct {
-	Flags                           uint8
-	FDLength                        uint16
-	FlowDescription                 string
-	URLLength                       uint16
-	URL                             string
-	DNLength                        uint16
-	DomainName                      string
-	CPLength                        uint16
-	CustomPFDContent                []byte
-	DNPLength                       uint16
-	DomainNameProtocol              string
-	AFDLength                       uint16
-	AdditionalFlowDescription       []string
-	AURLLength                      uint16
-	AdditionalURL                   []string
-	ADNPLength                      uint16
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// FDLength is the encoded flow description length in octets.
+	FDLength uint16
+	// FlowDescription is the flow description.
+	FlowDescription string
+	// URLLength is the encoded URL length in octets.
+	URLLength uint16
+	// URL is the URL.
+	URL string
+	// DNLength is the encoded domain name length in octets.
+	DNLength uint16
+	// DomainName is the domain name.
+	DomainName string
+	// CPLength is the encoded custom PFD content length in octets.
+	CPLength uint16
+	// CustomPFDContent is the custom PFD content.
+	CustomPFDContent []byte
+	// DNPLength is the encoded domain name protocol length in octets.
+	DNPLength uint16
+	// DomainNameProtocol is the domain name protocol.
+	DomainNameProtocol string
+	// AFDLength is the encoded additional flow descriptions length in octets.
+	AFDLength uint16
+	// AdditionalFlowDescription is the additional flow description.
+	AdditionalFlowDescription []string
+	// AURLLength is the encoded additional URLs length in octets.
+	AURLLength uint16
+	// AdditionalURL is the additional URL.
+	AdditionalURL []string
+	// ADNPLength is the encoded additional domain names and protocols length in octets.
+	ADNPLength uint16
+	// AdditionalDomainNameAndProtocol is the additional domain name and protocol.
 	AdditionalDomainNameAndProtocol []string
 }
 

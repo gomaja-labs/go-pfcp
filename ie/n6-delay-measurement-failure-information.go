@@ -2,10 +2,14 @@ package ie
 
 // N6DelayMeasurementFailureInformation values are defined in TS 29.244 V20.1.0 clause 8.2.263.
 const (
-	N6DelayMeasurementFailureInformationUnspecified                    uint8 = 0
+	// N6DelayMeasurementFailureInformationUnspecified selects Unspecified.
+	N6DelayMeasurementFailureInformationUnspecified uint8 = 0
+	// N6DelayMeasurementFailureInformationConnectionEstablishmentFailure selects Connection Establishment Failure.
 	N6DelayMeasurementFailureInformationConnectionEstablishmentFailure uint8 = 1
-	N6DelayMeasurementFailureInformationConnectionLost                 uint8 = 2
-	N6DelayMeasurementFailureInformationAuthenticationFailure          uint8 = 3
+	// N6DelayMeasurementFailureInformationConnectionLost selects Connection Lost.
+	N6DelayMeasurementFailureInformationConnectionLost uint8 = 2
+	// N6DelayMeasurementFailureInformationAuthenticationFailure selects Authentication Failure.
+	N6DelayMeasurementFailureInformationAuthenticationFailure uint8 = 3
 )
 
 // NewN6DelayMeasurementFailureInformation creates a N6 Delay Measurement Failure Information IE.

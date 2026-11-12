@@ -7,7 +7,10 @@ import (
 
 // DNSQueryResponseFilterFields is the structured value of DNS Query/Response Filter.
 // TS 29.244 V20.1.0 clause 8.2.201.
-type DNSQueryResponseFilterFields struct{ DomainNamePattern []byte }
+type DNSQueryResponseFilterFields struct {
+	// DomainNamePattern contains the domain name pattern octets.
+	DomainNamePattern []byte
+}
 
 // NewDNSQueryResponseFilter creates a DNS Query/Response Filter IE from its fields.
 // TS 29.244 V20.1.0 clause 8.2.201.

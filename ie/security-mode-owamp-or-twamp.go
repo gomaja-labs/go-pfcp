@@ -5,18 +5,30 @@ package ie
 // section 3, RFC 5938 section 3, RFC 6038 section 4.1, RFC 7717 section 7,
 // RFC 7750 section 2 and RFC 8186 section 2. OWAMP's IKE bit is different.
 const (
-	SecurityModeOWAMPOrTWAMPStop                          uint32 = 0
-	SecurityModeOWAMPOrTWAMPUnauthenticated               uint32 = 1
-	SecurityModeOWAMPOrTWAMPAuthenticated                 uint32 = 2
-	SecurityModeOWAMPOrTWAMPEncrypted                     uint32 = 4
-	SecurityModeOWAMPOrTWAMPMixed                         uint32 = 8
-	SecurityModeOWAMPOrTWAMPOWAMPIKEv2Derived             uint32 = 16
+	// SecurityModeOWAMPOrTWAMPStop selects Stop.
+	SecurityModeOWAMPOrTWAMPStop uint32 = 0
+	// SecurityModeOWAMPOrTWAMPUnauthenticated selects Unauthenticated.
+	SecurityModeOWAMPOrTWAMPUnauthenticated uint32 = 1
+	// SecurityModeOWAMPOrTWAMPAuthenticated selects Authenticated.
+	SecurityModeOWAMPOrTWAMPAuthenticated uint32 = 2
+	// SecurityModeOWAMPOrTWAMPEncrypted selects Encrypted.
+	SecurityModeOWAMPOrTWAMPEncrypted uint32 = 4
+	// SecurityModeOWAMPOrTWAMPMixed selects Mixed.
+	SecurityModeOWAMPOrTWAMPMixed uint32 = 8
+	// SecurityModeOWAMPOrTWAMPOWAMPIKEv2Derived selects OWAMP IKEv2 Derived.
+	SecurityModeOWAMPOrTWAMPOWAMPIKEv2Derived uint32 = 16
+	// SecurityModeOWAMPOrTWAMPTWAMPIndividualSessionControl selects TWAMP Individual Session Control.
 	SecurityModeOWAMPOrTWAMPTWAMPIndividualSessionControl uint32 = 16
-	SecurityModeOWAMPOrTWAMPTWAMPReflectOctets            uint32 = 32
-	SecurityModeOWAMPOrTWAMPTWAMPSymmetricalSize          uint32 = 64
-	SecurityModeOWAMPOrTWAMPTWAMPIKEv2Derived             uint32 = 128
-	SecurityModeOWAMPOrTWAMPTWAMPDSCPECNMonitoring        uint32 = 256
-	SecurityModeOWAMPOrTWAMPTWAMPPTPv2Timestamp           uint32 = 512
+	// SecurityModeOWAMPOrTWAMPTWAMPReflectOctets selects TWAMP Reflect Octets.
+	SecurityModeOWAMPOrTWAMPTWAMPReflectOctets uint32 = 32
+	// SecurityModeOWAMPOrTWAMPTWAMPSymmetricalSize selects TWAMP Symmetrical Size.
+	SecurityModeOWAMPOrTWAMPTWAMPSymmetricalSize uint32 = 64
+	// SecurityModeOWAMPOrTWAMPTWAMPIKEv2Derived selects TWAMP IKEv2 Derived.
+	SecurityModeOWAMPOrTWAMPTWAMPIKEv2Derived uint32 = 128
+	// SecurityModeOWAMPOrTWAMPTWAMPDSCPECNMonitoring selects TWAMP DSCP/ECN Monitoring.
+	SecurityModeOWAMPOrTWAMPTWAMPDSCPECNMonitoring uint32 = 256
+	// SecurityModeOWAMPOrTWAMPTWAMPPTPv2Timestamp selects TWAMP PTPv2 Timestamp.
+	SecurityModeOWAMPOrTWAMPTWAMPPTPv2Timestamp uint32 = 512
 )
 
 // NewSecurityModeOWAMPOrTWAMP creates the requested Mode field.

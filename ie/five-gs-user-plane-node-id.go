@@ -12,7 +12,9 @@ import (
 // FiveGSUserPlaneNodeIDFields contains the optional Unsigned64 node identifier.
 // TS 29.244 V20.1.0 clause 8.2.143.
 type FiveGSUserPlaneNodeIDFields struct {
-	BID   bool
+	// BID reports whether the Unsigned64 node identifier is present.
+	BID bool
+	// Value is the Unsigned64 node identifier when BID is true.
 	Value uint64
 }
 

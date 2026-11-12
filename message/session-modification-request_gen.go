@@ -7,102 +7,103 @@ import "github.com/gomaja-labs/go-pfcp/ie"
 // SessionModificationRequest represents PFCP Session Modification Request.
 // TS 29.244 V20.1.0 Table 7.5.4.1-1 (clause 7.5.4.1).
 type SessionModificationRequest struct {
+	// Header holds the PFCP framing and received IE ordering template.
 	*Header
-	// CPFSEID: CP F-SEID [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// CPFSEID is the CP F-SEID IE [C].
 	CPFSEID *ie.IE
-	// RemovePDR: Remove PDR [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// RemovePDR is the Remove PDR IE [C].
 	RemovePDR []*ie.IE
-	// RemoveFAR: Remove FAR [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// RemoveFAR is the Remove FAR IE [C].
 	RemoveFAR []*ie.IE
-	// RemoveURR: Remove URR [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// RemoveURR is the Remove URR IE [C].
 	RemoveURR []*ie.IE
-	// RemoveQER: Remove QER [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// RemoveQER is the Remove QER IE [C].
 	RemoveQER []*ie.IE
-	// RemoveBAR: Remove BAR [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// RemoveBAR is the Remove BAR IE [C].
 	RemoveBAR *ie.IE
-	// RemoveTrafficEndpoint: Remove Traffic Endpoint [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// RemoveTrafficEndpoint is the Remove Traffic Endpoint IE [C].
 	RemoveTrafficEndpoint []*ie.IE
-	// CreatePDR: Create PDR [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// CreatePDR is the Create PDR IE [C].
 	CreatePDR []*ie.IE
-	// CreateFAR: Create FAR [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// CreateFAR is the Create FAR IE [C].
 	CreateFAR []*ie.IE
-	// CreateURR: Create URR [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// CreateURR is the Create URR IE [C].
 	CreateURR []*ie.IE
-	// CreateQER: Create QER [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// CreateQER is the Create QER IE [C].
 	CreateQER []*ie.IE
-	// CreateBAR: Create BAR [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// CreateBAR is the Create BAR IE [C].
 	CreateBAR *ie.IE
-	// CreateTrafficEndpoint: Create Traffic Endpoint [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// CreateTrafficEndpoint is the Create Traffic Endpoint IE [C].
 	CreateTrafficEndpoint []*ie.IE
-	// UpdatePDR: Update PDR [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// UpdatePDR is the Update PDR IE [C].
 	UpdatePDR []*ie.IE
-	// UpdateFAR: Update FAR [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// UpdateFAR is the Update FAR IE [C].
 	UpdateFAR []*ie.IE
-	// UpdateURR: Update URR [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// UpdateURR is the Update URR IE [C].
 	UpdateURR []*ie.IE
-	// UpdateQER: Update QER [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// UpdateQER is the Update QER IE [C].
 	UpdateQER []*ie.IE
-	// UpdateBAR: Update BAR [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// UpdateBAR is the Update BAR IE [C].
 	UpdateBAR *ie.IE
-	// UpdateTrafficEndpoint: Update Traffic Endpoint [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// UpdateTrafficEndpoint is the Update Traffic Endpoint IE [C].
 	UpdateTrafficEndpoint []*ie.IE
-	// PFCPSMReqFlags: PFCPSMReq-Flags [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// PFCPSMReqFlags is the PFCPSMReq-Flags IE [C].
 	PFCPSMReqFlags *ie.IE
-	// QueryURR: Query URR [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// QueryURR is the Query URR IE [C].
 	QueryURR []*ie.IE
-	// FQCSID: PGW-C/SMF FQ-CSID [C]; SGW-C FQ-CSID [C]; MME FQ-CSID [C]; ePDG FQ-CSID [C]; TWAN FQ-CSID [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// FQCSID is the PGW-C/SMF FQ-CSID IE [C]. SGW-C FQ-CSID IE [C]. MME FQ-CSID IE [C]. ePDG FQ-CSID IE [C]. TWAN FQ-CSID IE [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1. Context: PFCP Session Modification Request.
 	FQCSID []*ie.IE
-	// UserPlaneInactivityTimer: User Plane Inactivity Timer [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// UserPlaneInactivityTimer is the User Plane Inactivity Timer IE [C].
 	UserPlaneInactivityTimer *ie.IE
-	// QueryURRReference: Query URR Reference [O]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// QueryURRReference is the Query URR Reference IE [O].
 	QueryURRReference *ie.IE
-	// TraceInformation: Trace Information [O]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// TraceInformation is the Trace Information IE [O].
 	TraceInformation *ie.IE
-	// RemoveMAR: Remove MAR [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// RemoveMAR is the Remove MAR IE [C].
 	RemoveMAR []*ie.IE
-	// UpdateMAR: Update MAR [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// UpdateMAR is the Update MAR IE [C].
 	UpdateMAR []*ie.IE
-	// CreateMAR: Create MAR [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// CreateMAR is the Create MAR IE [C].
 	CreateMAR []*ie.IE
-	// NodeID: Node ID [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// NodeID is the Node ID IE [C].
 	NodeID *ie.IE
-	// TSCManagementInformation: TSC Management Information [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// TSCManagementInformation is the TSC Management Information IE [C].
 	TSCManagementInformation []*ie.IE
-	// RemoveSRR: Remove SRR [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// RemoveSRR is the Remove SRR IE [C].
 	RemoveSRR []*ie.IE
-	// CreateSRR: Create SRR [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// CreateSRR is the Create SRR IE [C].
 	CreateSRR []*ie.IE
-	// UpdateSRR: Update SRR [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// UpdateSRR is the Update SRR IE [C].
 	UpdateSRR []*ie.IE
-	// ProvideATSSSControlInformation: Provide ATSSS Control Information [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// ProvideATSSSControlInformation is the Provide ATSSS Control Information IE [C].
 	ProvideATSSSControlInformation *ie.IE
-	// EthernetContextInformation: Ethernet Context Information [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// EthernetContextInformation is the Ethernet Context Information IE [C].
 	EthernetContextInformation *ie.IE
-	// AccessAvailabilityInformation: Access Availability Information [O]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// AccessAvailabilityInformation is the Access Availability Information IE [O].
 	AccessAvailabilityInformation []*ie.IE
-	// QueryPacketRateStatus: Query Packet Rate Status [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// QueryPacketRateStatus is the Query Packet Rate Status IE [C].
 	QueryPacketRateStatus []*ie.IE
-	// SNSSAI: S-NSSAI [O]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// SNSSAI is the S-NSSAI IE [O].
 	SNSSAI *ie.IE
-	// HPLMNSNSSAI: HPLMN S-NSSAI [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// HPLMNSNSSAI is the HPLMN S-NSSAI IE [C].
 	HPLMNSNSSAI *ie.IE
-	// DNN: DNN [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// DNN is the DNN IE [C].
 	DNN *ie.IE
-	// GroupId: Group Id [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// GroupId is the Group Id IE [C].
 	GroupId *ie.IE
-	// MBSSessionN4ControlInformation: MBS Session N4 Control Information [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// MBSSessionN4ControlInformation is the MBS Session N4 Control Information IE [C].
 	MBSSessionN4ControlInformation []*ie.IE
-	// DSCPToPPIControlInformation: DSCP to PPI Control Information [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// DSCPToPPIControlInformation is the DSCP to PPI Control Information IE [C].
 	DSCPToPPIControlInformation *ie.IE
-	// TLContainer: TL-Container [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// TLContainer is the TL-Container IE [C].
 	TLContainer []*ie.IE
-	// TraceCollectionEntityURI: Trace Collection Entity URI [O]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// TraceCollectionEntityURI is the Trace Collection Entity URI IE [O].
 	TraceCollectionEntityURI *ie.IE
-	// UELevelMeasurementsConfiguration: UE Level Measurements Configuration [O]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// UELevelMeasurementsConfiguration is the UE Level Measurements Configuration IE [O].
 	UELevelMeasurementsConfiguration *ie.IE
-	// AlternativeSMFIPAddress: Alternative SMF IP Address [O]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// AlternativeSMFIPAddress is the Alternative SMF IP Address IE [O].
 	AlternativeSMFIPAddress *ie.IE
-	// MoQControlInformation: MoQ Control Information [C]. TS 29.244 V20.1.0 Table 7.5.4.1-1.
+	// MoQControlInformation is the MoQ Control Information IE [C].
 	MoQControlInformation *ie.IE
 	// OtherIEs retains unexpected types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

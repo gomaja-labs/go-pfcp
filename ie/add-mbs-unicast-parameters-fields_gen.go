@@ -8,17 +8,17 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type AddMBSUnicastParametersFields struct {
-	// DestinationInterface: Destination Interface [M]. TS 29.244 V20.1.0 Table 7.5.2.3-6. Context: Add MBS Unicast Parameters IE in the Create FAR IE.
+	// DestinationInterface is the Destination Interface IE [M].
 	DestinationInterface *IE
-	// MBSUnicastParametersID: MBS Unicast Parameters ID [M]. TS 29.244 V20.1.0 Table 7.5.2.3-6. Context: Add MBS Unicast Parameters IE in the Create FAR IE.
+	// MBSUnicastParametersID is the MBS Unicast Parameters ID IE [M].
 	MBSUnicastParametersID *IE
-	// NetworkInstance: Network Instance [O]. TS 29.244 V20.1.0 Table 7.5.2.3-6. Context: Add MBS Unicast Parameters IE in the Create FAR IE.
+	// NetworkInstance is the Network Instance IE [O].
 	NetworkInstance *IE
-	// OuterHeaderCreation: Outer Header Creation [M]. TS 29.244 V20.1.0 Table 7.5.2.3-6. Context: Add MBS Unicast Parameters IE in the Create FAR IE.
+	// OuterHeaderCreation is the Outer Header Creation IE [M].
 	OuterHeaderCreation *IE
-	// TransportLevelMarking: Transport Level marking [C]. TS 29.244 V20.1.0 Table 7.5.2.3-6. Context: Add MBS Unicast Parameters IE in the Create FAR IE.
+	// TransportLevelMarking is the Transport Level marking IE [C].
 	TransportLevelMarking *IE
-	// DestinationInterfaceType: Destination Interface Type [O]. TS 29.244 V20.1.0 Table 7.5.2.3-6. Context: Add MBS Unicast Parameters IE in the Create FAR IE.
+	// DestinationInterfaceType is the Destination Interface Type IE [O].
 	DestinationInterfaceType *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

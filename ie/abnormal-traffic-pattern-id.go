@@ -2,11 +2,17 @@ package ie
 
 // AbnormalTrafficPatternID values are defined in TS 29.244 V20.1.0 clause 8.2.285.
 const (
-	AbnormalTrafficPatternIDMalformedPackets    uint8 = 0
-	AbnormalTrafficPatternIDDuplicatePackets    uint8 = 1
-	AbnormalTrafficPatternIDFragmentedPackets   uint8 = 2
-	AbnormalTrafficPatternIDDDOS                uint8 = 3
+	// AbnormalTrafficPatternIDMalformedPackets selects Malformed Packets.
+	AbnormalTrafficPatternIDMalformedPackets uint8 = 0
+	// AbnormalTrafficPatternIDDuplicatePackets selects Duplicate Packets.
+	AbnormalTrafficPatternIDDuplicatePackets uint8 = 1
+	// AbnormalTrafficPatternIDFragmentedPackets selects Fragmented Packets.
+	AbnormalTrafficPatternIDFragmentedPackets uint8 = 2
+	// AbnormalTrafficPatternIDDDOS selects DDOS.
+	AbnormalTrafficPatternIDDDOS uint8 = 3
+	// AbnormalTrafficPatternIDOperatorSpecificMin is the first operator-specific abnormal traffic pattern.
 	AbnormalTrafficPatternIDOperatorSpecificMin uint8 = 32
+	// AbnormalTrafficPatternIDOperatorSpecificMax is the last operator-specific abnormal traffic pattern.
 	AbnormalTrafficPatternIDOperatorSpecificMax uint8 = 63
 )
 

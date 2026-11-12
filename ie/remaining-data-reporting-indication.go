@@ -2,8 +2,10 @@ package ie
 
 // RemainingDataReportingIndication values are defined in TS 29.244 V20.1.0 clause 8.2.277.
 const (
+	// RemainingDataReportingIndicationDiscard selects Discard.
 	RemainingDataReportingIndicationDiscard uint8 = 0
-	RemainingDataReportingIndicationSend    uint8 = 1
+	// RemainingDataReportingIndicationSend selects Send.
+	RemainingDataReportingIndicationSend uint8 = 1
 )
 
 // NewRemainingDataReportingIndication creates a Remaining Data Reporting Indication IE.

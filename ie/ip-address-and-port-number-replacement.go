@@ -8,13 +8,20 @@ import (
 type IPReplacementFlags uint8
 
 const (
-	IPReplacementDestinationV4   IPReplacementFlags = 1
-	IPReplacementDestinationV6   IPReplacementFlags = 2
+	// IPReplacementDestinationV4 selects Destination V4.
+	IPReplacementDestinationV4 IPReplacementFlags = 1
+	// IPReplacementDestinationV6 selects Destination V6.
+	IPReplacementDestinationV6 IPReplacementFlags = 2
+	// IPReplacementDestinationPort selects Destination Port.
 	IPReplacementDestinationPort IPReplacementFlags = 4
-	IPReplacementSourceV4        IPReplacementFlags = 8
-	IPReplacementSourceV6        IPReplacementFlags = 16
-	IPReplacementSourcePort      IPReplacementFlags = 32
-	IPReplacementUseMappedN6     IPReplacementFlags = 64
+	// IPReplacementSourceV4 selects Source V4.
+	IPReplacementSourceV4 IPReplacementFlags = 8
+	// IPReplacementSourceV6 selects Source V6.
+	IPReplacementSourceV6 IPReplacementFlags = 16
+	// IPReplacementSourcePort selects Source Port.
+	IPReplacementSourcePort IPReplacementFlags = 32
+	// IPReplacementUseMappedN6 selects Use Mapped N6.
+	IPReplacementUseMappedN6 IPReplacementFlags = 64
 )
 
 // IPAddressAndPortNumberReplacementFields is the structured value of IPAddressAndPortNumberReplacement.
@@ -24,9 +31,20 @@ const (
 // The IE constructor requires an address unless UMN6RS is set, and forbids
 // address and port fields with UMN6RS. The decoder follows the received flags.
 type IPAddressAndPortNumberReplacementFields struct {
-	Flags                                                    IPReplacementFlags
-	DestinationIPv4, DestinationIPv6, SourceIPv4, SourceIPv6 netip.Addr
-	DestinationPort, SourcePort                              uint16
+	// Flags contains the presence and option bits.
+	Flags IPReplacementFlags
+	// DestinationIPv4 is the destination ipv4.
+	DestinationIPv4 netip.Addr
+	// DestinationIPv6 is the destination ipv6.
+	DestinationIPv6 netip.Addr
+	// SourceIPv4 is the source ipv4.
+	SourceIPv4 netip.Addr
+	// SourceIPv6 is the source ipv6.
+	SourceIPv6 netip.Addr
+	// DestinationPort is the destination port.
+	DestinationPort uint16
+	// SourcePort is the source port.
+	SourcePort uint16
 }
 
 // NewIPAddressAndPortNumberReplacement creates an IE, retaining invalid arguments as an encoding error.

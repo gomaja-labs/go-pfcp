@@ -8,41 +8,41 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type CreateTrafficEndpointFields struct {
-	// TrafficEndpointID: Traffic Endpoint ID [M]. TS 29.244 V20.1.0 Table 7.5.2.7-1. Context: Create Traffic Endpoint IE within PFCP Session Establishment Request.
+	// TrafficEndpointID is the Traffic Endpoint ID IE [M].
 	TrafficEndpointID *IE
-	// LocalFTEID: Local F-TEID [O]. TS 29.244 V20.1.0 Table 7.5.2.7-1. Context: Create Traffic Endpoint IE within PFCP Session Establishment Request.
+	// LocalFTEID is the Local F-TEID IE [O].
 	LocalFTEID *IE
-	// NetworkInstance: Network Instance [O]. TS 29.244 V20.1.0 Table 7.5.2.7-1. Context: Create Traffic Endpoint IE within PFCP Session Establishment Request.
+	// NetworkInstance is the Network Instance IE [O].
 	NetworkInstance *IE
-	// RedundantTransmissionDetectionParameters: Redundant Transmission Detection Parameters [O]. TS 29.244 V20.1.0 Table 7.5.2.7-1. Context: Create Traffic Endpoint IE within PFCP Session Establishment Request.
+	// RedundantTransmissionDetectionParameters is the Redundant Transmission Detection Parameters IE [O].
 	RedundantTransmissionDetectionParameters *IE
-	// UEIPAddress: UE IP address [O]. TS 29.244 V20.1.0 Table 7.5.2.7-1. Context: Create Traffic Endpoint IE within PFCP Session Establishment Request.
+	// UEIPAddress is the UE IP address IE [O].
 	UEIPAddress []*IE
-	// MappedN6IPAddress: Mapped N6 IP Address [O]. TS 29.244 V20.1.0 Table 7.5.2.7-1. Context: Create Traffic Endpoint IE within PFCP Session Establishment Request.
+	// MappedN6IPAddress is the Mapped N6 IP Address IE [O].
 	MappedN6IPAddress *IE
-	// N6RoutingInformation: N6 Routing Information [O]. TS 29.244 V20.1.0 Table 7.5.2.7-1. Context: Create Traffic Endpoint IE within PFCP Session Establishment Request.
+	// N6RoutingInformation is the N6 Routing Information IE [O].
 	N6RoutingInformation *IE
-	// EthernetPDUSessionInformation: Ethernet PDU Session Information [O]. TS 29.244 V20.1.0 Table 7.5.2.7-1. Context: Create Traffic Endpoint IE within PFCP Session Establishment Request.
+	// EthernetPDUSessionInformation is the Ethernet PDU Session Information IE [O].
 	EthernetPDUSessionInformation *IE
-	// FramedRoute: Framed-Route [O]. TS 29.244 V20.1.0 Table 7.5.2.7-1. Context: Create Traffic Endpoint IE within PFCP Session Establishment Request.
+	// FramedRoute is the Framed-Route IE [O].
 	FramedRoute []*IE
-	// FramedRouting: Framed-Routing [O]. TS 29.244 V20.1.0 Table 7.5.2.7-1. Context: Create Traffic Endpoint IE within PFCP Session Establishment Request.
+	// FramedRouting is the Framed-Routing IE [O].
 	FramedRouting *IE
-	// FramedIPv6Route: Framed-IPv6-Route [O]. TS 29.244 V20.1.0 Table 7.5.2.7-1. Context: Create Traffic Endpoint IE within PFCP Session Establishment Request.
+	// FramedIPv6Route is the Framed-IPv6-Route IE [O].
 	FramedIPv6Route []*IE
-	// QFI: QFI [O]. TS 29.244 V20.1.0 Table 7.5.2.7-1. Context: Create Traffic Endpoint IE within PFCP Session Establishment Request.
+	// QFI is the QFI IE [O].
 	QFI []*IE
-	// SourceInterfaceType: Source Interface Type [C]. TS 29.244 V20.1.0 Table 7.5.2.7-1. Context: Create Traffic Endpoint IE within PFCP Session Establishment Request.
+	// SourceInterfaceType is the Source Interface Type IE [C].
 	SourceInterfaceType *IE
-	// LocalIngressTunnel: Local Ingress Tunnel [C]. TS 29.244 V20.1.0 Table 7.5.2.7-1. Context: Create Traffic Endpoint IE within PFCP Session Establishment Request.
+	// LocalIngressTunnel is the Local Ingress Tunnel IE [C].
 	LocalIngressTunnel *IE
-	// IPMulticastAddressingInfo: IP Multicast Addressing Info [C]. TS 29.244 V20.1.0 Table 7.5.2.7-1. Context: Create Traffic Endpoint IE within PFCP Session Establishment Request.
+	// IPMulticastAddressingInfo is the IP Multicast Addressing Info IE [C].
 	IPMulticastAddressingInfo *IE
-	// MBSSessionIdentifier: MBS Session Identifier [C]. TS 29.244 V20.1.0 Table 7.5.2.7-1. Context: Create Traffic Endpoint IE within PFCP Session Establishment Request.
+	// MBSSessionIdentifier is the MBS Session Identifier IE [C].
 	MBSSessionIdentifier *IE
-	// AreaSessionID: Area Session ID [C]. TS 29.244 V20.1.0 Table 7.5.2.7-1. Context: Create Traffic Endpoint IE within PFCP Session Establishment Request.
+	// AreaSessionID is the Area Session ID IE [C].
 	AreaSessionID *IE
-	// RATType: RAT Type [O]. TS 29.244 V20.1.0 Table 7.5.2.7-1. Context: Create Traffic Endpoint IE within PFCP Session Establishment Request.
+	// RATType is the RAT Type IE [O].
 	RATType *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

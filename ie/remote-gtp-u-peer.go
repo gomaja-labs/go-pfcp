@@ -76,15 +76,23 @@ func (i *IE) HasDI() bool {
 
 // RemoteGTPUPeerFields represents a fields contained in RemoteGTPUPeer IE.
 type RemoteGTPUPeerFields struct {
-	Flags                uint8
-	IPv4Address          net.IP
-	IPv6Address          net.IP
-	DILength             uint16
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// IPv4Address is the IPv4 address, when present.
+	IPv4Address net.IP
+	// IPv6Address is the IPv6 address, when present.
+	IPv6Address net.IP
+	// DILength is the encoded destination interface length in octets.
+	DILength uint16
+	// DestinationInterface is the destination interface.
 	DestinationInterface uint8
-	NILength             uint16
-	NetworkInstance      []byte
-	RecoveryTimestamp    time.Time
-	invalidArgument      bool
+	// NILength is the encoded network instance length in octets.
+	NILength uint16
+	// NetworkInstance is the encoded Network Instance value (clause 8.2.4).
+	NetworkInstance []byte
+	// RecoveryTimestamp is the recovery timestamp of the peer GTP-U entity.
+	RecoveryTimestamp time.Time
+	invalidArgument   bool
 }
 
 // NewRemoteGTPUPeerFields creates a new RemoteGTPUPeerFields.

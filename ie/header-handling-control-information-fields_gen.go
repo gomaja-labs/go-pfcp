@@ -8,19 +8,19 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type HeaderHandlingControlInformationFields struct {
-	// HeaderHandlingControlID: Header Handling Control ID [M]. TS 29.244 V20.1.0 Table 7.5.2.3-9. Context: Header Handling Control information IE in Header Handling Control Rule.
+	// HeaderHandlingControlID is the Header Handling Control ID IE [M].
 	HeaderHandlingControlID *IE
-	// HeaderHandlingControlReference: Header Handling Control Reference [C]. TS 29.244 V20.1.0 Table 7.5.2.3-9. Context: Header Handling Control information IE in Header Handling Control Rule.
+	// HeaderHandlingControlReference is the Header Handling Control Reference IE [C].
 	HeaderHandlingControlReference *IE
-	// HeaderHandlingAction: Header Handling Action [C]. TS 29.244 V20.1.0 Table 7.5.2.3-9. Context: Header Handling Control information IE in Header Handling Control Rule.
+	// HeaderHandlingAction is the Header Handling Action IE [C].
 	HeaderHandlingAction *IE
-	// HeaderInformation: Header Information [C]. TS 29.244 V20.1.0 Table 7.5.2.3-9. Context: Header Handling Control information IE in Header Handling Control Rule.
+	// HeaderInformation is the Header Information IE [C].
 	HeaderInformation *IE
-	// HeaderValue: Header Value [C]. TS 29.244 V20.1.0 Table 7.5.2.3-9. Context: Header Handling Control information IE in Header Handling Control Rule.
+	// HeaderValue is the Header Value IE [C].
 	HeaderValue *IE
-	// HeaderHandlingCondition: Header Handling Condition [C]. TS 29.244 V20.1.0 Table 7.5.2.3-9. Context: Header Handling Control information IE in Header Handling Control Rule.
+	// HeaderHandlingCondition is the Header Handling Condition IE [C].
 	HeaderHandlingCondition *IE
-	// HeaderHandlingReporting: Header Handling Reporting [C]. TS 29.244 V20.1.0 Table 7.5.2.3-9. Context: Header Handling Control information IE in Header Handling Control Rule.
+	// HeaderHandlingReporting is the Header Handling Reporting IE [C].
 	HeaderHandlingReporting []*IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

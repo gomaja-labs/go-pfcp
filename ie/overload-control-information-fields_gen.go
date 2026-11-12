@@ -8,13 +8,13 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type OverloadControlInformationFields struct {
-	// OverloadControlSequenceNumber: Overload Control Sequence Number [M]. TS 29.244 V20.1.0 Table 7.5.3.4-1. Context: Overload Control Information IE within PFCP Session Establishment Response.
+	// OverloadControlSequenceNumber is the Overload Control Sequence Number IE [M].
 	OverloadControlSequenceNumber *IE
-	// OverloadReductionMetric: Overload Reduction Metric [M]. TS 29.244 V20.1.0 Table 7.5.3.4-1. Context: Overload Control Information IE within PFCP Session Establishment Response.
+	// OverloadReductionMetric is the Overload Reduction Metric IE [M].
 	OverloadReductionMetric *IE
-	// PeriodOfValidity: Period of Validity [M]. TS 29.244 V20.1.0 Table 7.5.3.4-1. Context: Overload Control Information IE within PFCP Session Establishment Response.
+	// PeriodOfValidity is the Period of Validity IE [M].
 	PeriodOfValidity *IE
-	// OverloadControlInformationFlags: Overload Control Information Flags [C]. TS 29.244 V20.1.0 Table 7.5.3.4-1. Context: Overload Control Information IE within PFCP Session Establishment Response.
+	// OverloadControlInformationFlags is the Overload Control Information Flags IE [C].
 	OverloadControlInformationFlags *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

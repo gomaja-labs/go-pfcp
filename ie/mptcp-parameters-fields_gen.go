@@ -8,9 +8,9 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type MPTCPParametersFields struct {
-	// MPTCPAddressInformation: MPTCP Address Information [M]. TS 29.244 V20.1.0 Table 7.5.3.7-2. Context: MPTCP Parameters IE within PFCP Session Establishment Response.
+	// MPTCPAddressInformation is the MPTCP Address Information IE [M].
 	MPTCPAddressInformation *IE
-	// MPTCPLinkSpecificIPAddress: MPTCP Link-Specific IP Address [M]. TS 29.244 V20.1.0 Table 7.5.3.7-2. Context: MPTCP Parameters IE within PFCP Session Establishment Response.
+	// MPTCPLinkSpecificIPAddress is the MPTCP Link-Specific IP Address IE [M].
 	MPTCPLinkSpecificIPAddress *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

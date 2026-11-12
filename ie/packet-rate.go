@@ -11,11 +11,16 @@ import (
 
 // Time Unit definitions
 const (
-	TimeUnitMinute   uint8 = 0
+	// TimeUnitMinute selects Minute.
+	TimeUnitMinute uint8 = 0
+	// TimeUnit6Minutes selects 6 Minutes.
 	TimeUnit6Minutes uint8 = 1
-	TimeUnitHour     uint8 = 2
-	TimeUnitDay      uint8 = 3
-	TimeUnitWeek     uint8 = 4
+	// TimeUnitHour selects Hour.
+	TimeUnitHour uint8 = 2
+	// TimeUnitDay selects Day.
+	TimeUnitDay uint8 = 3
+	// TimeUnitWeek selects Week.
+	TimeUnitWeek uint8 = 4
 )
 
 // NewPacketRate creates a new PacketRate IE.
@@ -82,14 +87,23 @@ func (i *IE) HasULPR() bool {
 
 // PacketRateFields represents a fields contained in PacketRate IE.
 type PacketRateFields struct {
-	Flags                        uint8
-	UplinkTimeUnit               uint8
-	DownlinkTimeUnit             uint8
-	UplinkPacketRate             uint16
-	DownlinkPacketRate           uint16
-	AdditionalUplinkTimeUnit     uint8
-	AdditionalDownlinkTimeUnit   uint8
-	AdditionalUplinkPacketRate   uint16
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// UplinkTimeUnit is the uplink time unit.
+	UplinkTimeUnit uint8
+	// DownlinkTimeUnit is the downlink time unit.
+	DownlinkTimeUnit uint8
+	// UplinkPacketRate is the uplink packet rate.
+	UplinkPacketRate uint16
+	// DownlinkPacketRate is the downlink packet rate.
+	DownlinkPacketRate uint16
+	// AdditionalUplinkTimeUnit is the additional uplink time unit.
+	AdditionalUplinkTimeUnit uint8
+	// AdditionalDownlinkTimeUnit is the additional downlink time unit.
+	AdditionalDownlinkTimeUnit uint8
+	// AdditionalUplinkPacketRate is the additional uplink packet rate.
+	AdditionalUplinkPacketRate uint16
+	// AdditionalDownlinkPacketRate is the additional downlink packet rate.
 	AdditionalDownlinkPacketRate uint16
 }
 

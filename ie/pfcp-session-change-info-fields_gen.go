@@ -8,13 +8,13 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type PFCPSessionChangeInfoFields struct {
-	// PGWCSMFFQCSID: PGW-C/SMF FQ-CSID [C]. TS 29.244 V20.1.0 Table 7.4.7.1-2. Context: PFCP Session Change Info IE within PFCP Session Set Modification Request.
+	// PGWCSMFFQCSID is the PGW-C/SMF FQ-CSID IE [C].
 	PGWCSMFFQCSID []*IE
-	// GroupId: Group Id [C]. TS 29.244 V20.1.0 Table 7.4.7.1-2. Context: PFCP Session Change Info IE within PFCP Session Set Modification Request.
+	// GroupId is the Group Id IE [C].
 	GroupId []*IE
-	// CPIPAddress: CP IP Address [C]. TS 29.244 V20.1.0 Table 7.4.7.1-2. Context: PFCP Session Change Info IE within PFCP Session Set Modification Request.
+	// CPIPAddress is the CP IP Address IE [C].
 	CPIPAddress []*IE
-	// AlternativeSMFPGWCIPAddress: Alternative SMF/PGW-C IP Address [M]. TS 29.244 V20.1.0 Table 7.4.7.1-2. Context: PFCP Session Change Info IE within PFCP Session Set Modification Request.
+	// AlternativeSMFPGWCIPAddress is the Alternative SMF/PGW-C IP Address IE [M].
 	AlternativeSMFPGWCIPAddress *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

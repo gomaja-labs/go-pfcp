@@ -8,27 +8,27 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type UsageReportWithinSessionDeletionResponseFields struct {
-	// URRID: URR ID [M]. TS 29.244 V20.1.0 Table 7.5.7.2-1. Context: Usage Report IE within PFCP Session Deletion Response.
+	// URRID is the URR ID IE [M].
 	URRID *IE
-	// URSEQN: UR-SEQN [M]. TS 29.244 V20.1.0 Table 7.5.7.2-1. Context: Usage Report IE within PFCP Session Deletion Response.
+	// URSEQN is the UR-SEQN IE [M].
 	URSEQN *IE
-	// UsageReportTrigger: Usage Report Trigger [M]. TS 29.244 V20.1.0 Table 7.5.7.2-1. Context: Usage Report IE within PFCP Session Deletion Response.
+	// UsageReportTrigger is the Usage Report Trigger IE [M].
 	UsageReportTrigger *IE
-	// StartTime: Start Time [C]. TS 29.244 V20.1.0 Table 7.5.7.2-1. Context: Usage Report IE within PFCP Session Deletion Response.
+	// StartTime is the Start Time IE [C].
 	StartTime *IE
-	// EndTime: End Time [C]. TS 29.244 V20.1.0 Table 7.5.7.2-1. Context: Usage Report IE within PFCP Session Deletion Response.
+	// EndTime is the End Time IE [C].
 	EndTime *IE
-	// VolumeMeasurement: Volume Measurement [C]. TS 29.244 V20.1.0 Table 7.5.7.2-1. Context: Usage Report IE within PFCP Session Deletion Response.
+	// VolumeMeasurement is the Volume Measurement IE [C].
 	VolumeMeasurement *IE
-	// DurationMeasurement: Duration Measurement [C]. TS 29.244 V20.1.0 Table 7.5.7.2-1. Context: Usage Report IE within PFCP Session Deletion Response.
+	// DurationMeasurement is the Duration Measurement IE [C].
 	DurationMeasurement *IE
-	// TimeOfFirstPacket: Time of First Packet [C]. TS 29.244 V20.1.0 Table 7.5.7.2-1. Context: Usage Report IE within PFCP Session Deletion Response.
+	// TimeOfFirstPacket is the Time of First Packet IE [C].
 	TimeOfFirstPacket *IE
-	// TimeOfLastPacket: Time of Last Packet [C]. TS 29.244 V20.1.0 Table 7.5.7.2-1. Context: Usage Report IE within PFCP Session Deletion Response.
+	// TimeOfLastPacket is the Time of Last Packet IE [C].
 	TimeOfLastPacket *IE
-	// UsageInformation: Usage Information [C]. TS 29.244 V20.1.0 Table 7.5.7.2-1. Context: Usage Report IE within PFCP Session Deletion Response.
+	// UsageInformation is the Usage Information IE [C].
 	UsageInformation *IE
-	// EthernetTrafficInformation: Ethernet Traffic Information [C]. TS 29.244 V20.1.0 Table 7.5.7.2-1. Context: Usage Report IE within PFCP Session Deletion Response.
+	// EthernetTrafficInformation is the Ethernet Traffic Information IE [C].
 	EthernetTrafficInformation *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

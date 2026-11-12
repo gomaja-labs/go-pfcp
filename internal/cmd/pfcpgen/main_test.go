@@ -115,3 +115,36 @@ func TestGroupedUnionOrder(t *testing.T) {
 		t.Fatal("union violates Table 7.5.8.6-1 order")
 	}
 }
+
+func TestGeneratedFieldDocumentation(t *testing.T) {
+	c, err := spec.Load()
+	if err != nil {
+		t.Fatal(err)
+	}
+	files, err := generate(c)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, name := range []string{"ie/create-pdr-fields_gen.go", "message/session-establishment-request_gen.go"} {
+		src := string(files[name])
+		if strings.Contains(src, "// PDRID:") || strings.Contains(src, "// CreatePDR:") {
+			t.Errorf("%s repeats table context or uses label comments", name)
+		}
+	}
+	if !strings.Contains(string(files["ie/create-pdr-fields_gen.go"]), "// PDRID is the PDR ID IE [M].") {
+		t.Error("missing concise field documentation")
+	}
+	ordinary := string(files["ie/create-pdr-fields_gen.go"])
+	if strings.Contains(ordinary, "Context:") {
+		t.Error("ordinary fields repeat their struct context")
+	}
+	shared := string(files["message/session-establishment-request_gen.go"])
+	if strings.Count(shared, "Context:") != 1 {
+		t.Error("shared-type roles must share one field context")
+	}
+	for _, name := range []string{"ie/session-report-fields_gen.go", "ie/direct-reporting-information-fields_gen.go"} {
+		if !strings.Contains(string(files[name]), "Context:") {
+			t.Errorf("%s lost union row context", name)
+		}
+	}
+}

@@ -43,9 +43,13 @@ func (i *IE) PacketDelayThresholds() (*PacketDelayThresholdsFields, error) {
 
 // PacketDelayThresholdsFields represents a fields contained in PacketDelayThresholds IE.
 type PacketDelayThresholdsFields struct {
-	Flags                          uint8
-	DownlinkPacketDelayThresholds  uint32
-	UplinkPacketDelayThresholds    uint32
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// DownlinkPacketDelayThresholds is the downlink packet delay thresholds.
+	DownlinkPacketDelayThresholds uint32
+	// UplinkPacketDelayThresholds is the uplink packet delay thresholds.
+	UplinkPacketDelayThresholds uint32
+	// RoundTripPacketDelayThresholds is the round trip packet delay thresholds.
 	RoundTripPacketDelayThresholds uint32
 }
 

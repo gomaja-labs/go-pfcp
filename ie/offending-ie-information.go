@@ -10,7 +10,9 @@ import (
 // OffendingIEInformationFields is the structured value of Offending IE Information.
 // TS 29.244 V20.1.0 clause 8.2.185.
 type OffendingIEInformationFields struct {
-	Type  IEType
+	// Type identifies the offending IE type.
+	Type IEType
+	// Value contains the offending IE value octets.
 	Value []byte
 }
 

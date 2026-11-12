@@ -11,11 +11,15 @@ import (
 
 // Error definitions.
 var (
+	// ErrInvalidLength reports an IE length inconsistent with its framing or value format.
 	ErrInvalidLength = errors.New("length value is invalid")
 
+	// ErrInvalidType reports an inappropriate IE type.
 	ErrInvalidType = errors.New("invalid type")
-	ErrIENotFound  = errors.New("could not find the specified IE in a grouped IE")
+	// ErrIENotFound reports a nil IE receiver or a missing requested child.
+	ErrIENotFound = errors.New("could not find the specified IE in a grouped IE")
 
+	// ErrMalformed reports a malformed IE value.
 	ErrMalformed = errors.New("malformed IE")
 
 	// ErrInvalidValue reports a constructor argument that cannot be encoded,
@@ -63,8 +67,10 @@ func (e *DecodeError) IEType() IEType { return e.Type }
 // underlying error, such as ErrInvalidValue for an argument a constructor could
 // not encode.
 type EncodeError struct {
+	// Type identifies the IE that could not be encoded.
 	Type IEType
-	Err  error
+	// Err is the underlying failure.
+	Err error
 }
 
 // Error describes the IE and the underlying encoding failure.
@@ -80,6 +86,7 @@ func (e *EncodeError) IEType() IEType { return e.Type }
 
 // InvalidTypeError indicates the type of IE is invalid.
 type InvalidTypeError struct {
+	// Type is the unexpected IE type.
 	Type IEType
 }
 
@@ -90,6 +97,7 @@ func (e *InvalidTypeError) Error() string {
 
 // InvalidNodeIDError indicates the NodeID value is invalid.
 type InvalidNodeIDError struct {
+	// ID is the unsupported Node ID kind.
 	ID uint8
 }
 

@@ -8,9 +8,9 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type MPQUICParametersFields struct {
-	// MPQUICAddressInformation: MPQUIC Address Information [M]. TS 29.244 V20.1.0 Table 7.5.3.7-5. Context: MPQUIC Parameters IE within PFCP Session Establishment Response.
+	// MPQUICAddressInformation is the MPQUIC Address Information IE [M].
 	MPQUICAddressInformation []*IE
-	// MPQUICLinkSpecificIPAddress: MPQUIC Link-Specific IP Address [M]. TS 29.244 V20.1.0 Table 7.5.3.7-5. Context: MPQUIC Parameters IE within PFCP Session Establishment Response.
+	// MPQUICLinkSpecificIPAddress is the MPQUIC Link-Specific IP Address IE [M].
 	MPQUICLinkSpecificIPAddress *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

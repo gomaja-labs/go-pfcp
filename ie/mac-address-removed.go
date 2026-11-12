@@ -43,12 +43,18 @@ func (i *IE) MACAddressesRemoved() (*MACAddressesRemovedFields, error) {
 
 // MACAddressesRemovedFields represents a fields contained in MACAddressesRemoved IE.
 type MACAddressesRemovedFields struct {
+	// NumberOfMACAddresses is the number of mac addresses.
 	NumberOfMACAddresses uint8
-	MACAddresses         []net.HardwareAddr
-	CTAGLength           uint8
-	CTAG                 []byte
-	STAGLength           uint8
-	STAG                 []byte
+	// MACAddresses is the mac addresses.
+	MACAddresses []net.HardwareAddr
+	// CTAGLength is the encoded C-TAG length in octets.
+	CTAGLength uint8
+	// CTAG is the C-TAG.
+	CTAG []byte
+	// STAGLength is the encoded S-TAG length in octets.
+	STAGLength uint8
+	// STAG is the S-TAG.
+	STAG []byte
 }
 
 // NewMACAddressesRemovedFields creates a new NewMACAddressesRemovedFields.

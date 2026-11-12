@@ -8,15 +8,15 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type CreatedPDRFields struct {
-	// PDRID: PDR ID [M]. TS 29.244 V20.1.0 Table 7.5.3.2-1. Context: Created PDR IE within PFCP Session Establishment Response.
+	// PDRID is the PDR ID IE [M].
 	PDRID *IE
-	// FTEID: Local F-TEID [C]; Local F-TEID for Redundant Transmission [C]. TS 29.244 V20.1.0 Table 7.5.3.2-1. Context: Created PDR IE within PFCP Session Establishment Response.
+	// FTEID is the Local F-TEID IE [C]. Local F-TEID for Redundant Transmission IE [C]. TS 29.244 V20.1.0 Table 7.5.3.2-1. Context: Created PDR IE within PFCP Session Establishment Response.
 	FTEID []*IE
-	// UEIPAddress: UE IP Address [C]. TS 29.244 V20.1.0 Table 7.5.3.2-1. Context: Created PDR IE within PFCP Session Establishment Response.
+	// UEIPAddress is the UE IP Address IE [C].
 	UEIPAddress []*IE
-	// MappedN6IPAddress: Mapped N6 IP Address [C]. TS 29.244 V20.1.0 Table 7.5.3.2-1. Context: Created PDR IE within PFCP Session Establishment Response.
+	// MappedN6IPAddress is the Mapped N6 IP Address IE [C].
 	MappedN6IPAddress *IE
-	// LocalIngressTunnel: Local Ingress Tunnel [C]. TS 29.244 V20.1.0 Table 7.5.3.2-1. Context: Created PDR IE within PFCP Session Establishment Response.
+	// LocalIngressTunnel is the Local Ingress Tunnel IE [C].
 	LocalIngressTunnel *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

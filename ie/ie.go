@@ -14,16 +14,22 @@ import (
 	"github.com/gomaja-labs/go-pfcp/internal/utils"
 )
 
+// IEType is the sixteen-bit PFCP Information Element type code.
+//
 //go:generate go run ../internal/cmd/pfcpgen -target ie
 //go:generate go run ../internal/testutil/registrygen
 type IEType uint16
 
 // IE represents an Information Element of PFCP messages.
 type IE struct {
-	Type         IEType
+	// Type identifies the Information Element type.
+	Type IEType
+	// EnterpriseID is the vendor enterprise identifier.
 	EnterpriseID uint16
-	Payload      []byte
-	ChildIEs     []*IE
+	// Payload contains the raw value octets.
+	Payload []byte
+	// ChildIEs contains the decoded or explicitly constructed grouped children.
+	ChildIEs []*IE
 
 	// err is set by a constructor whose arguments cannot be encoded. Marshal
 	// and MarshalTo report it as an *EncodeError, so an invalid argument is
@@ -86,22 +92,22 @@ func NewVendorSpecificGroupedIE(itype IEType, eid uint16, ies ...*IE) *IE {
 	return newGroupedIE(itype, eid, ies...)
 }
 
-// NewUint8ValIE creates a new IE with uint8 value.
+// NewUint8IE creates a new IE with uint8 value.
 func NewUint8IE(itype IEType, v uint8) *IE {
 	return newUint8ValIE(itype, v)
 }
 
-// NewUint16ValIE creates a new IE with uint16 value.
+// NewUint16IE creates a new IE with uint16 value.
 func NewUint16IE(itype IEType, v uint16) *IE {
 	return newUint16ValIE(itype, v)
 }
 
-// NewUint32ValIE creates a new IE with uint32 value.
+// NewUint32IE creates a new IE with uint32 value.
 func NewUint32IE(itype IEType, v uint32) *IE {
 	return newUint32ValIE(itype, v)
 }
 
-// NewUint64ValIE creates a new IE with uint64 value.
+// NewUint64IE creates a new IE with uint64 value.
 func NewUint64IE(itype IEType, v uint64) *IE {
 	return newUint64ValIE(itype, v)
 }

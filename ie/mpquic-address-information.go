@@ -10,9 +10,13 @@ import (
 type MPQUICProxyType uint8
 
 const (
-	MPQUICProxyUDP      MPQUICProxyType = 2
-	MPQUICProxyIP       MPQUICProxyType = 3
+	// MPQUICProxyUDP selects UDP.
+	MPQUICProxyUDP MPQUICProxyType = 2
+	// MPQUICProxyIP selects IP.
+	MPQUICProxyIP MPQUICProxyType = 3
+	// MPQUICProxyUDPAndIP selects UDP And IP.
 	MPQUICProxyUDPAndIP MPQUICProxyType = 4
+	// MPQUICProxyEthernet selects Ethernet.
 	MPQUICProxyEthernet MPQUICProxyType = 5
 )
 
@@ -20,7 +24,9 @@ const (
 type MPQUICAddressFlags uint8
 
 const (
+	// MPQUICAddressV4 marks the presence of an IPv4 address.
 	MPQUICAddressV4 MPQUICAddressFlags = 1
+	// MPQUICAddressV6 marks the presence of an IPv6 address.
 	MPQUICAddressV6 MPQUICAddressFlags = 2
 )
 
@@ -28,10 +34,16 @@ const (
 // TS 29.244 V20.1.0 clause 8.2.226.
 // Proxy type and port are mandatory; address fields follow V4 and V6 flags.
 type MPQUICAddressInformationFields struct {
-	Flags                    MPQUICAddressFlags
-	ProxyType                MPQUICProxyType
-	Port                     uint16
-	IPv4Address, IPv6Address netip.Addr
+	// Flags contains the presence and option bits.
+	Flags MPQUICAddressFlags
+	// ProxyType is the proxy type.
+	ProxyType MPQUICProxyType
+	// Port is the port.
+	Port uint16
+	// IPv4Address is the IPv4 address, when present.
+	IPv4Address netip.Addr
+	// IPv6Address is the IPv6 address, when present.
+	IPv6Address netip.Addr
 }
 
 // NewMPQUICAddressInformation creates a MPQUIC Address Information IE from its fields.

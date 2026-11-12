@@ -12,7 +12,9 @@ import (
 
 // Generic retains the header and IEs of a message without a generated schema.
 type Generic struct {
+	// Header holds the PFCP framing and received IE ordering template.
 	*Header
+	// OtherIEs retains received IEs outside the named fields.
 	OtherIEs []*ie.IE
 }
 

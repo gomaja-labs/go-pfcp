@@ -8,15 +8,15 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type QoSMonitoringReportFields struct {
-	// QFI: QFI [M]. TS 29.244 V20.1.0 Table 7.5.8.6-3. Context: QoS Monitoring Report IE.
+	// QFI is the QFI IE [M].
 	QFI *IE
-	// QoSMonitoringMeasurement: QoS Monitoring Measurement [M]. TS 29.244 V20.1.0 Table 7.5.8.6-3. Context: QoS Monitoring Report IE.
+	// QoSMonitoringMeasurement is the QoS Monitoring Measurement IE [M].
 	QoSMonitoringMeasurement *IE
-	// RedundantN3N9TransmissionInformation: Redundant N3/N9 Transmission Information [C]. TS 29.244 V20.1.0 Table 7.5.8.6-3. Context: QoS Monitoring Report IE.
+	// RedundantN3N9TransmissionInformation is the Redundant N3/N9 Transmission Information IE [C].
 	RedundantN3N9TransmissionInformation *IE
-	// TimeStamp: Time Stamp [M]. TS 29.244 V20.1.0 Table 7.5.8.6-3. Context: QoS Monitoring Report IE.
+	// TimeStamp is the Time Stamp IE [M].
 	TimeStamp *IE
-	// StartTime: Start Time [O]. TS 29.244 V20.1.0 Table 7.5.8.6-3. Context: QoS Monitoring Report IE.
+	// StartTime is the Start Time IE [O].
 	StartTime *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

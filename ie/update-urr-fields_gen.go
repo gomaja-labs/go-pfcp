@@ -8,69 +8,69 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type UpdateURRFields struct {
-	// URRID: URR ID [M]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// URRID is the URR ID IE [M].
 	URRID *IE
-	// MeasurementMethod: Measurement Method [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// MeasurementMethod is the Measurement Method IE [C].
 	MeasurementMethod *IE
-	// ReportingTriggers: Reporting Triggers [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// ReportingTriggers is the Reporting Triggers IE [C].
 	ReportingTriggers *IE
-	// MeasurementPeriod: Measurement Period [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// MeasurementPeriod is the Measurement Period IE [C].
 	MeasurementPeriod *IE
-	// VolumeThreshold: Volume Threshold [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// VolumeThreshold is the Volume Threshold IE [C].
 	VolumeThreshold *IE
-	// VolumeQuota: Volume Quota [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// VolumeQuota is the Volume Quota IE [C].
 	VolumeQuota *IE
-	// TimeThreshold: Time Threshold [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// TimeThreshold is the Time Threshold IE [C].
 	TimeThreshold *IE
-	// TimeQuota: Time Quota [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// TimeQuota is the Time Quota IE [C].
 	TimeQuota *IE
-	// EventThreshold: Event Threshold [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// EventThreshold is the Event Threshold IE [C].
 	EventThreshold *IE
-	// EventQuota: Event Quota [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// EventQuota is the Event Quota IE [C].
 	EventQuota *IE
-	// QuotaHoldingTime: Quota Holding Time [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// QuotaHoldingTime is the Quota Holding Time IE [C].
 	QuotaHoldingTime *IE
-	// DroppedDLTrafficThreshold: Dropped DL Traffic Threshold [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// DroppedDLTrafficThreshold is the Dropped DL Traffic Threshold IE [C].
 	DroppedDLTrafficThreshold *IE
-	// QuotaValidityTime: Quota Validity Time [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// QuotaValidityTime is the Quota Validity Time IE [C].
 	QuotaValidityTime *IE
-	// MonitoringTime: Monitoring Time [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// MonitoringTime is the Monitoring Time IE [C].
 	MonitoringTime *IE
-	// SubsequentVolumeThreshold: Subsequent Volume Threshold [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// SubsequentVolumeThreshold is the Subsequent Volume Threshold IE [C].
 	SubsequentVolumeThreshold *IE
-	// SubsequentTimeThreshold: Subsequent Time Threshold [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// SubsequentTimeThreshold is the Subsequent Time Threshold IE [C].
 	SubsequentTimeThreshold *IE
-	// SubsequentVolumeQuota: Subsequent Volume Quota [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// SubsequentVolumeQuota is the Subsequent Volume Quota IE [C].
 	SubsequentVolumeQuota *IE
-	// SubsequentTimeQuota: Subsequent Time Quota [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// SubsequentTimeQuota is the Subsequent Time Quota IE [C].
 	SubsequentTimeQuota *IE
-	// SubsequentEventThreshold: Subsequent Event Threshold [O]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// SubsequentEventThreshold is the Subsequent Event Threshold IE [O].
 	SubsequentEventThreshold *IE
-	// SubsequentEventQuota: Subsequent Event Quota [O]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// SubsequentEventQuota is the Subsequent Event Quota IE [O].
 	SubsequentEventQuota *IE
-	// InactivityDetectionTime: Inactivity Detection Time [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// InactivityDetectionTime is the Inactivity Detection Time IE [C].
 	InactivityDetectionTime *IE
-	// LinkedURRID: Linked URR ID [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// LinkedURRID is the Linked URR ID IE [C].
 	LinkedURRID []*IE
-	// MeasurementInformation: Measurement Information [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// MeasurementInformation is the Measurement Information IE [C].
 	MeasurementInformation *IE
-	// TimeQuotaMechanism: Time Quota Mechanism [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// TimeQuotaMechanism is the Time Quota Mechanism IE [C].
 	TimeQuotaMechanism *IE
-	// AggregatedURRs: Aggregated URRs [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// AggregatedURRs is the Aggregated URRs IE [C].
 	AggregatedURRs []*IE
-	// FARIDForQuotaAction: FAR ID for Quota Action [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// FARIDForQuotaAction is the FAR ID for Quota Action IE [C].
 	FARIDForQuotaAction *IE
-	// EthernetInactivityTimer: Ethernet Inactivity Timer [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// EthernetInactivityTimer is the Ethernet Inactivity Timer IE [C].
 	EthernetInactivityTimer *IE
-	// AdditionalMonitoringTime: Additional Monitoring Time [O]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// AdditionalMonitoringTime is the Additional Monitoring Time IE [O].
 	AdditionalMonitoringTime []*IE
-	// NumberOfReports: Number of Reports [O]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// NumberOfReports is the Number of Reports IE [O].
 	NumberOfReports *IE
-	// ExemptedApplicationIDForQuotaAction: Exempted Application ID for Quota Action [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// ExemptedApplicationIDForQuotaAction is the Exempted Application ID for Quota Action IE [C].
 	ExemptedApplicationIDForQuotaAction []*IE
-	// ExemptedSDFFilterForQuotaAction: Exempted SDF Filter for Quota Action [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// ExemptedSDFFilterForQuotaAction is the Exempted SDF Filter for Quota Action IE [C].
 	ExemptedSDFFilterForQuotaAction []*IE
-	// UserPlaneInactivityTimer: User Plane Inactivity Timer [C]. TS 29.244 V20.1.0 Table 7.5.4.4-1. Context: Update URR IE within PFCP Session Modification Request.
+	// UserPlaneInactivityTimer is the User Plane Inactivity Timer IE [C].
 	UserPlaneInactivityTimer *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

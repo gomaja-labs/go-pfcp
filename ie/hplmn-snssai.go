@@ -3,8 +3,10 @@ package ie
 // HPLMNSNSSAIFields is the structured value of HPLMN S-NSSAI.
 // TS 29.244 V20.1.0 clause 8.2.232.
 type HPLMNSNSSAIFields struct {
+	// SST is the slice/service type.
 	SST uint8
-	SD  uint32
+	// SD contains the slice differentiator octets.
+	SD uint32
 }
 
 // NewHPLMNSNSSAI creates a HPLMN S-NSSAI IE from its fields.

@@ -43,11 +43,16 @@ func (i *IE) CPPFCPEntityIPAddress() (*CPPFCPEntityIPAddressFields, error) {
 
 // CPPFCPEntityIPAddressFields represents a fields contained in CPPFCPEntityIPAddress IE.
 type CPPFCPEntityIPAddressFields struct {
-	Flags       uint8
-	TEID        uint32
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// TEID is the tunnel endpoint identifier.
+	TEID uint32
+	// IPv4Address is the IPv4 address, when present.
 	IPv4Address net.IP
+	// IPv6Address is the IPv6 address, when present.
 	IPv6Address net.IP
-	ChooseID    []byte
+	// ChooseID is the choose identifier, when its presence bit is set.
+	ChooseID []byte
 }
 
 // NewCPPFCPEntityIPAddressFields creates a new NewCPPFCPEntityIPAddressFields.

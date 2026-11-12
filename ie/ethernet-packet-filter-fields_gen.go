@@ -8,19 +8,19 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type EthernetPacketFilterFields struct {
-	// EthernetFilterID: Ethernet Filter ID [C]. TS 29.244 V20.1.0 Table 7.5.2.2-3. Context: Ethernet Packet Filter IE within PFCP Session Establishment Request.
+	// EthernetFilterID is the Ethernet Filter ID IE [C].
 	EthernetFilterID *IE
-	// EthernetFilterProperties: Ethernet Filter Properties [C]. TS 29.244 V20.1.0 Table 7.5.2.2-3. Context: Ethernet Packet Filter IE within PFCP Session Establishment Request.
+	// EthernetFilterProperties is the Ethernet Filter Properties IE [C].
 	EthernetFilterProperties *IE
-	// MACAddress: MAC address [O]. TS 29.244 V20.1.0 Table 7.5.2.2-3. Context: Ethernet Packet Filter IE within PFCP Session Establishment Request.
+	// MACAddress is the MAC address IE [O].
 	MACAddress []*IE
-	// Ethertype: Ethertype [O]. TS 29.244 V20.1.0 Table 7.5.2.2-3. Context: Ethernet Packet Filter IE within PFCP Session Establishment Request.
+	// Ethertype is the Ethertype IE [O].
 	Ethertype *IE
-	// CTAG: C-TAG [O]. TS 29.244 V20.1.0 Table 7.5.2.2-3. Context: Ethernet Packet Filter IE within PFCP Session Establishment Request.
+	// CTAG is the C-TAG IE [O].
 	CTAG *IE
-	// STAG: S-TAG [O]. TS 29.244 V20.1.0 Table 7.5.2.2-3. Context: Ethernet Packet Filter IE within PFCP Session Establishment Request.
+	// STAG is the S-TAG IE [O].
 	STAG *IE
-	// SDFFilter: SDF Filter [O]. TS 29.244 V20.1.0 Table 7.5.2.2-3. Context: Ethernet Packet Filter IE within PFCP Session Establishment Request.
+	// SDFFilter is the SDF Filter IE [O].
 	SDFFilter []*IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

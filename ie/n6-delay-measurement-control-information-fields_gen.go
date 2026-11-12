@@ -8,27 +8,27 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type N6DelayMeasurementControlInformationFields struct {
-	// N6DelayMeasurementControlInformationID: N6 Delay Measurement Control Information ID [M]. TS 29.244 V20.1.0 Table 7.4.4.1.4-1. Context: N6 Delay Measurement Control Information within PFCP Association Setup Request.
+	// N6DelayMeasurementControlInformationID is the N6 Delay Measurement Control Information ID IE [M].
 	N6DelayMeasurementControlInformationID *IE
-	// MeasurementEndpointAddress: Measurement Endpoint Address [M]. TS 29.244 V20.1.0 Table 7.4.4.1.4-1. Context: N6 Delay Measurement Control Information within PFCP Association Setup Request.
+	// MeasurementEndpointAddress is the Measurement Endpoint Address IE [M].
 	MeasurementEndpointAddress []*IE
-	// NetworkInstance: Network Instance [M]. TS 29.244 V20.1.0 Table 7.4.4.1.4-1. Context: N6 Delay Measurement Control Information within PFCP Association Setup Request.
+	// NetworkInstance is the Network Instance IE [M].
 	NetworkInstance *IE
-	// MeasurementProtocols: Measurement Protocols [M]. TS 29.244 V20.1.0 Table 7.4.4.1.4-1. Context: N6 Delay Measurement Control Information within PFCP Association Setup Request.
+	// MeasurementProtocols is the Measurement Protocols IE [M].
 	MeasurementProtocols []*IE
-	// ProtocolSpecificConfigurationParameters: Protocol Specific Configuration Parameters [O]. TS 29.244 V20.1.0 Table 7.4.4.1.4-1. Context: N6 Delay Measurement Control Information within PFCP Association Setup Request.
+	// ProtocolSpecificConfigurationParameters is the Protocol Specific Configuration Parameters IE [O].
 	ProtocolSpecificConfigurationParameters *IE
-	// MeasurementReportingType: Measurement Reporting Type [M]. TS 29.244 V20.1.0 Table 7.4.4.1.4-1. Context: N6 Delay Measurement Control Information within PFCP Association Setup Request.
+	// MeasurementReportingType is the Measurement Reporting Type IE [M].
 	MeasurementReportingType *IE
-	// MeasurementPeriod: Measurement Period [C]. TS 29.244 V20.1.0 Table 7.4.4.1.4-1. Context: N6 Delay Measurement Control Information within PFCP Association Setup Request.
+	// MeasurementPeriod is the Measurement Period IE [C].
 	MeasurementPeriod *IE
-	// AveragePacketDelayThreshold: Average Packet Delay Threshold [O]. TS 29.244 V20.1.0 Table 7.4.4.1.4-1. Context: N6 Delay Measurement Control Information within PFCP Association Setup Request.
+	// AveragePacketDelayThreshold is the Average Packet Delay Threshold IE [O].
 	AveragePacketDelayThreshold *IE
-	// MinimumPacketDelayThreshold: Minimum Packet Delay Threshold [O]. TS 29.244 V20.1.0 Table 7.4.4.1.4-1. Context: N6 Delay Measurement Control Information within PFCP Association Setup Request.
+	// MinimumPacketDelayThreshold is the Minimum Packet Delay Threshold IE [O].
 	MinimumPacketDelayThreshold *IE
-	// MaximumPacketDelayThreshold: Maximum Packet Delay Threshold [O]. TS 29.244 V20.1.0 Table 7.4.4.1.4-1. Context: N6 Delay Measurement Control Information within PFCP Association Setup Request.
+	// MaximumPacketDelayThreshold is the Maximum Packet Delay Threshold IE [O].
 	MaximumPacketDelayThreshold *IE
-	// MinimumWaitingTime: Minimum Waiting Time [O]. TS 29.244 V20.1.0 Table 7.4.4.1.4-1. Context: N6 Delay Measurement Control Information within PFCP Association Setup Request.
+	// MinimumWaitingTime is the Minimum Waiting Time IE [O].
 	MinimumWaitingTime *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

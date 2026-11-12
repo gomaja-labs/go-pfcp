@@ -8,11 +8,11 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type CreatedL2TPSessionFields struct {
-	// DNSServerAddress: DNS Server Address [O]. TS 29.244 V20.1.0 Table 7.5.3.1-3. Context: Created L2TP Session IE in the PFCP Session Establishment Response message.
+	// DNSServerAddress is the DNS Server Address IE [O].
 	DNSServerAddress []*IE
-	// NBNSServerAddress: NBNS Server Address [O]. TS 29.244 V20.1.0 Table 7.5.3.1-3. Context: Created L2TP Session IE in the PFCP Session Establishment Response message.
+	// NBNSServerAddress is the NBNS Server Address IE [O].
 	NBNSServerAddress []*IE
-	// LNSAddress: LNS Address [O]. TS 29.244 V20.1.0 Table 7.5.3.1-3. Context: Created L2TP Session IE in the PFCP Session Establishment Response message.
+	// LNSAddress is the LNS Address IE [O].
 	LNSAddress *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

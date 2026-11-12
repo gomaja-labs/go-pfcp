@@ -6,9 +6,13 @@ import (
 
 // ReportingThresholds flags and values, TS 29.244 V20.1.0 clause 8.2.240.
 const (
+	// ReportingThresholdsDLCI selects DLCI.
 	ReportingThresholdsDLCI uint8 = 1
+	// ReportingThresholdsULCI selects ULCI.
 	ReportingThresholdsULCI uint8 = 2
+	// ReportingThresholdsDLDR selects DLDR.
 	ReportingThresholdsDLDR uint8 = 4
+	// ReportingThresholdsULDR selects ULDR.
 	ReportingThresholdsULDR uint8 = 8
 )
 
@@ -37,11 +41,16 @@ func (i *IE) ReportingThresholds() (*ReportingThresholdsFields, error) {
 // Rates are integer kilobits per second (1000 bits/s).
 // Congestion values are hundredths of a percent, from 0 through 10000.
 type ReportingThresholdsFields struct {
-	Flags              uint8
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// DownlinkCongestion is the downlink congestion.
 	DownlinkCongestion uint16
-	UplinkCongestion   uint16
-	DownlinkDataRate   uint64
-	UplinkDataRate     uint64
+	// UplinkCongestion is the uplink congestion.
+	UplinkCongestion uint16
+	// DownlinkDataRate is the downlink data rate.
+	DownlinkDataRate uint64
+	// UplinkDataRate is the uplink data rate.
+	UplinkDataRate uint64
 }
 
 // NewReportingThresholdsFields stores all arguments; Marshal validates their representation.

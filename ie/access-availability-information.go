@@ -6,14 +6,18 @@ package ie
 
 // AccessType definitions.
 const (
-	AccessType3GPP    uint8 = 0
+	// AccessType3GPP selects 3 GPP.
+	AccessType3GPP uint8 = 0
+	// AccessTypeNon3GPP selects Non3 GPP.
 	AccessTypeNon3GPP uint8 = 1
 )
 
 // AvailabilityStatus definitions.
 const (
+	// AvailabilityStatusAccessHasBecomeUnavaiable selects Access Has Become Unavailable.
 	AvailabilityStatusAccessHasBecomeUnavaiable uint8 = 0
-	AvailabilityStatusAccessHasBecomeAvaiable   uint8 = 1
+	// AvailabilityStatusAccessHasBecomeAvaiable selects Access Has Become Available.
+	AvailabilityStatusAccessHasBecomeAvaiable uint8 = 1
 )
 
 // NewAccessAvailabilityInformation creates a new AccessAvailabilityInformation IE.

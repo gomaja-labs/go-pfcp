@@ -90,10 +90,14 @@ func (i *IE) PPI() (uint8, error) {
 // DownlinkDataServiceInformationFields carries independently optional PPI, QFI and
 // packet size. TS 29.244 V20.1.0 clause 8.2.27.
 type DownlinkDataServiceInformationFields struct {
-	Flags                  uint8
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// PagingPolicyIndication is the paging policy indication.
 	PagingPolicyIndication uint8
-	QFI                    uint8
-	DLDataPacketsSize      uint16
+	// QFI is the QoS flow identifier.
+	QFI uint8
+	// DLDataPacketsSize is the downlink data packets size.
+	DLDataPacketsSize uint16
 }
 
 // NewDownlinkDataServiceInformationFromFields encodes every service field.

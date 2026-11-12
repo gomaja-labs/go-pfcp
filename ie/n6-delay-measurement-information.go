@@ -7,7 +7,9 @@ import (
 
 // N6DelayMeasurementInformation flags and values, TS 29.244 V20.1.0 clause 8.2.247.
 const (
+	// N6DelayMeasurementInformationMIND selects MIND.
 	N6DelayMeasurementInformationMIND uint8 = 1
+	// N6DelayMeasurementInformationMAXD selects MAXD.
 	N6DelayMeasurementInformationMAXD uint8 = 2
 )
 
@@ -35,9 +37,13 @@ func (i *IE) N6DelayMeasurementInformation() (*N6DelayMeasurementInformationFiel
 // Flags select optional fields; nonzero values for absent fields are rejected.
 // Packet delays must be nonnegative integral milliseconds fitting in 32 bits.
 type N6DelayMeasurementInformationFields struct {
-	Flags              uint8
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// AveragePacketDelay is the average packet delay.
 	AveragePacketDelay time.Duration
+	// MinimumPacketDelay is the minimum packet delay.
 	MinimumPacketDelay time.Duration
+	// MaximumPacketDelay is the maximum packet delay.
 	MaximumPacketDelay time.Duration
 }
 

@@ -7,13 +7,20 @@ import (
 // N6JitterMeasurementFlags identifies the downlink fields in clause 8.2.222.
 type N6JitterMeasurementFlags uint8
 
+// N6JitterDL selects DL.
 const N6JitterDL N6JitterMeasurementFlags = 1
 
 // N6JitterMeasurementFields is the structured value of N6 Jitter Measurement.
 // TS 29.244 V20.1.0 clause 8.2.222.
 type N6JitterMeasurementFields struct {
-	Flags                                        N6JitterMeasurementFlags
-	DLPeriodicity, LowerDLJitter, HigherDLJitter time.Duration
+	// Flags contains the presence and option bits.
+	Flags N6JitterMeasurementFlags
+	// DLPeriodicity is the downlink periodicity.
+	DLPeriodicity time.Duration
+	// LowerDLJitter is the lower downlink jitter.
+	LowerDLJitter time.Duration
+	// HigherDLJitter is the higher downlink jitter.
+	HigherDLJitter time.Duration
 }
 
 // NewN6JitterMeasurement creates a N6 Jitter Measurement IE from its fields.

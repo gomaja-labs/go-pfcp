@@ -8,17 +8,17 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type UpdateBARWithinSessionReportResponseFields struct {
-	// BARID: BAR ID [M]. TS 29.244 V20.1.0 Table 7.5.9.2-1. Context: Update BAR IE in PFCP Session Report Response.
+	// BARID is the BAR ID IE [M].
 	BARID *IE
-	// DownlinkDataNotificationDelay: Downlink Data Notification Delay [C]. TS 29.244 V20.1.0 Table 7.5.9.2-1. Context: Update BAR IE in PFCP Session Report Response.
+	// DownlinkDataNotificationDelay is the Downlink Data Notification Delay IE [C].
 	DownlinkDataNotificationDelay *IE
-	// DLBufferingDuration: DL Buffering Duration [C]. TS 29.244 V20.1.0 Table 7.5.9.2-1. Context: Update BAR IE in PFCP Session Report Response.
+	// DLBufferingDuration is the DL Buffering Duration IE [C].
 	DLBufferingDuration *IE
-	// DLBufferingSuggestedPacketCount: DL Buffering Suggested Packet Count [O]. TS 29.244 V20.1.0 Table 7.5.9.2-1. Context: Update BAR IE in PFCP Session Report Response.
+	// DLBufferingSuggestedPacketCount is the DL Buffering Suggested Packet Count IE [O].
 	DLBufferingSuggestedPacketCount *IE
-	// SuggestedBufferingPacketsCount: Suggested Buffering Packets Count [C]. TS 29.244 V20.1.0 Table 7.5.9.2-1. Context: Update BAR IE in PFCP Session Report Response.
+	// SuggestedBufferingPacketsCount is the Suggested Buffering Packets Count IE [C].
 	SuggestedBufferingPacketsCount *IE
-	// ExtendedDLBufferingNotificationPolicy: Extended DL Buffering Notification Policy [C]. TS 29.244 V20.1.0 Table 7.5.9.2-1. Context: Update BAR IE in PFCP Session Report Response.
+	// ExtendedDLBufferingNotificationPolicy is the Extended DL Buffering Notification Policy IE [C].
 	ExtendedDLBufferingNotificationPolicy *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

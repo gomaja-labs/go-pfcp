@@ -2,6 +2,7 @@ package ie
 
 // TransportLevelMarkingIndications values are defined in TS 29.244 V20.1.0 clause 8.2.280.
 const (
+	// TransportLevelMarkingIndicationsTLMIP selects TLMIP.
 	TransportLevelMarkingIndicationsTLMIP uint8 = 1
 )
 

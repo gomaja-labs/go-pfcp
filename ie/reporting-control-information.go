@@ -2,6 +2,7 @@ package ie
 
 // ReportingControlInformation values are defined in TS 29.244 V20.1.0 clause 8.2.272.
 const (
+	// ReportingControlInformationUELM selects UELM.
 	ReportingControlInformationUELM uint8 = 1
 )
 

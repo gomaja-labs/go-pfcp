@@ -7,8 +7,9 @@ import "github.com/gomaja-labs/go-pfcp/ie"
 // HeartbeatResponse represents PFCP Heartbeat Response.
 // TS 29.244 V20.1.0 Table 7.4.2.2-1 (clause 7.4.2.2).
 type HeartbeatResponse struct {
+	// Header holds the PFCP framing and received IE ordering template.
 	*Header
-	// RecoveryTimeStamp: Recovery Time Stamp [M]. TS 29.244 V20.1.0 Table 7.4.2.2-1.
+	// RecoveryTimeStamp is the Recovery Time Stamp IE [M].
 	RecoveryTimeStamp *ie.IE
 	// OtherIEs retains unexpected types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

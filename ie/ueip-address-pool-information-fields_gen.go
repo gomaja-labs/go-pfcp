@@ -8,13 +8,13 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type UEIPAddressPoolInformationFields struct {
-	// UEIPAddressPoolIdentity: UE IP address Pool Identity [M]. TS 29.244 V20.1.0 Table 7.4.4.1-3. Context: UE IP address Pool Information IE within PFCP Association Setup Request.
+	// UEIPAddressPoolIdentity is the UE IP address Pool Identity IE [M].
 	UEIPAddressPoolIdentity []*IE
-	// NetworkInstance: Network Instance [O]. TS 29.244 V20.1.0 Table 7.4.4.1-3. Context: UE IP address Pool Information IE within PFCP Association Setup Request.
+	// NetworkInstance is the Network Instance IE [O].
 	NetworkInstance *IE
-	// SNSSAI: S-NSSAI [O]. TS 29.244 V20.1.0 Table 7.4.4.1-3. Context: UE IP address Pool Information IE within PFCP Association Setup Request.
+	// SNSSAI is the S-NSSAI IE [O].
 	SNSSAI []*IE
-	// IPVersion: IP version [O]. TS 29.244 V20.1.0 Table 7.4.4.1-3. Context: UE IP address Pool Information IE within PFCP Association Setup Request.
+	// IPVersion is the IP version IE [O].
 	IPVersion *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

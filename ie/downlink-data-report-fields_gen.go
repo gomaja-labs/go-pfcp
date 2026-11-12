@@ -8,13 +8,13 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type DownlinkDataReportFields struct {
-	// PDRID: PDR ID [M]. TS 29.244 V20.1.0 Table 7.5.8.2-1. Context: Downlink Data Report IE within PFCP Session Report Request.
+	// PDRID is the PDR ID IE [M].
 	PDRID []*IE
-	// DownlinkDataServiceInformation: Downlink Data Service Information [C]. TS 29.244 V20.1.0 Table 7.5.8.2-1. Context: Downlink Data Report IE within PFCP Session Report Request.
+	// DownlinkDataServiceInformation is the Downlink Data Service Information IE [C].
 	DownlinkDataServiceInformation []*IE
-	// DLDataPacketsSize: DL Data Packets Size [O]. TS 29.244 V20.1.0 Table 7.5.8.2-1. Context: Downlink Data Report IE within PFCP Session Report Request.
+	// DLDataPacketsSize is the DL Data Packets Size IE [O].
 	DLDataPacketsSize *IE
-	// DLDataStatus: DL Data Status [O]. TS 29.244 V20.1.0 Table 7.5.8.2-1. Context: Downlink Data Report IE within PFCP Session Report Request.
+	// DLDataStatus is the DL Data Status IE [O].
 	DLDataStatus *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

@@ -45,14 +45,26 @@ func (i *IE) TraceInformation() (*TraceInformationFields, error) {
 
 // TraceInformationFields represents a fields contained in TraceInformation IE.
 type TraceInformationFields struct {
-	MCC, MNC, TraceID                      string
-	TriggeringEventsLength                 uint8
-	TriggeringEvents                       []byte
-	SessionTraceDepth                      uint8
-	ListOfInterfacesLength                 uint8
-	ListOfInterfaces                       []byte
+	// MCC is the mobile country code.
+	MCC string
+	// MNC is the mobile network code.
+	MNC string
+	// TraceID is the trace ID.
+	TraceID string
+	// TriggeringEventsLength is the encoded triggering events length in octets.
+	TriggeringEventsLength uint8
+	// TriggeringEvents is the triggering events.
+	TriggeringEvents []byte
+	// SessionTraceDepth is the session trace depth.
+	SessionTraceDepth uint8
+	// ListOfInterfacesLength is the encoded list of interfaces length in octets.
+	ListOfInterfacesLength uint8
+	// ListOfInterfaces is the list of interfaces.
+	ListOfInterfaces []byte
+	// IPAddressOfTraceCollectionEntityLength is the encoded ipaddress of trace collection entity length in octets.
 	IPAddressOfTraceCollectionEntityLength uint8
-	IPAddressOfTraceCollectionEntity       net.IP
+	// IPAddressOfTraceCollectionEntity is the IP address of trace collection entity.
+	IPAddressOfTraceCollectionEntity net.IP
 }
 
 // NewTraceInformationFields creates a new NewTraceInformationFields.

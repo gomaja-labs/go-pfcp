@@ -7,12 +7,18 @@ import (
 
 // N6RoutingInformation flags and values, TS 29.244 V20.1.0 clause 8.2.243.
 const (
+	// N6RoutingInformationSIPV4 selects SIPV4.
 	N6RoutingInformationSIPV4 uint8 = 1
+	// N6RoutingInformationSIPV6 selects SIPV6.
 	N6RoutingInformationSIPV6 uint8 = 2
-	N6RoutingInformationSPO   uint8 = 4
+	// N6RoutingInformationSPO selects SPO.
+	N6RoutingInformationSPO uint8 = 4
+	// N6RoutingInformationDIPV4 selects DIPV4.
 	N6RoutingInformationDIPV4 uint8 = 8
+	// N6RoutingInformationDIPV6 selects DIPV6.
 	N6RoutingInformationDIPV6 uint8 = 16
-	N6RoutingInformationDPO   uint8 = 32
+	// N6RoutingInformationDPO selects DPO.
+	N6RoutingInformationDPO uint8 = 32
 )
 
 // NewN6RoutingInformation creates a N6 Routing Information IE.
@@ -38,13 +44,20 @@ func (i *IE) N6RoutingInformation() (*N6RoutingInformationFields, error) {
 // N6RoutingInformationFields models TS 29.244 V20.1.0 clause 8.2.243.
 // Flags select optional fields; nonzero values for absent fields are rejected.
 type N6RoutingInformationFields struct {
-	Flags                  uint8
-	SourceIPv4Address      netip.Addr
-	SourceIPv6Address      netip.Addr
-	SourcePort             uint16
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// SourceIPv4Address is the source IPv4 address.
+	SourceIPv4Address netip.Addr
+	// SourceIPv6Address is the source IPv6 address.
+	SourceIPv6Address netip.Addr
+	// SourcePort is the source port.
+	SourcePort uint16
+	// DestinationIPv4Address is the destination IPv4 address.
 	DestinationIPv4Address netip.Addr
+	// DestinationIPv6Address is the destination IPv6 address.
 	DestinationIPv6Address netip.Addr
-	DestinationPort        uint16
+	// DestinationPort is the destination port.
+	DestinationPort uint16
 }
 
 // NewN6RoutingInformationFields stores all arguments; Marshal validates their representation.

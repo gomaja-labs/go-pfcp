@@ -8,15 +8,15 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type TrafficParameterMeasurementControlInformationFields struct {
-	// QFI: QFI [M]. TS 29.244 V20.1.0 Table 7.5.2.9-5. Context: Traffic Parameter Measurement Control Information IE.
+	// QFI is the QFI IE [M].
 	QFI []*IE
-	// TrafficParameterMeasurementIndication: Traffic Parameter Measurement Indication [M]. TS 29.244 V20.1.0 Table 7.5.2.9-5. Context: Traffic Parameter Measurement Control Information IE.
+	// TrafficParameterMeasurementIndication is the Traffic Parameter Measurement Indication IE [M].
 	TrafficParameterMeasurementIndication *IE
-	// MeasurementPeriod: Measurement Period [C]. TS 29.244 V20.1.0 Table 7.5.2.9-5. Context: Traffic Parameter Measurement Control Information IE.
+	// MeasurementPeriod is the Measurement Period IE [C].
 	MeasurementPeriod *IE
-	// DLPeriodicity: DL Periodicity [C]. TS 29.244 V20.1.0 Table 7.5.2.9-5. Context: Traffic Parameter Measurement Control Information IE.
+	// DLPeriodicity is the DL Periodicity IE [C].
 	DLPeriodicity *IE
-	// TrafficParameterThreshold: Traffic Parameter Threshold [C]. TS 29.244 V20.1.0 Table 7.5.2.9-5. Context: Traffic Parameter Measurement Control Information IE.
+	// TrafficParameterThreshold is the Traffic Parameter Threshold IE [C].
 	TrafficParameterThreshold *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

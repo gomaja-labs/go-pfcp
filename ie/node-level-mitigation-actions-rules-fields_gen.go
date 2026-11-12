@@ -8,17 +8,17 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type NodeLevelMitigationActionsRulesFields struct {
-	// NodeLevelRuleID: Node Level Rule ID [M]. TS 29.244 V20.1.0 Table 7.4.4.1-4. Context: Node Level Mitigation Actions Rules IE within PFCP Association Setup Request.
+	// NodeLevelRuleID is the Node Level Rule ID IE [M].
 	NodeLevelRuleID *IE
-	// AbnormalTrafficType: Abnormal Traffic Type [M]. TS 29.244 V20.1.0 Table 7.4.4.1-4. Context: Node Level Mitigation Actions Rules IE within PFCP Association Setup Request.
+	// AbnormalTrafficType is the Abnormal Traffic Type IE [M].
 	AbnormalTrafficType []*IE
-	// SDFFilter: SDF Filter [O]. TS 29.244 V20.1.0 Table 7.4.4.1-4. Context: Node Level Mitigation Actions Rules IE within PFCP Association Setup Request.
+	// SDFFilter is the SDF Filter IE [O].
 	SDFFilter []*IE
-	// ApplicationID: Application ID [O]. TS 29.244 V20.1.0 Table 7.4.4.1-4. Context: Node Level Mitigation Actions Rules IE within PFCP Association Setup Request.
+	// ApplicationID is the Application ID IE [O].
 	ApplicationID []*IE
-	// MaximumBitrate: Maximum Bitrate [C]. TS 29.244 V20.1.0 Table 7.4.4.1-4. Context: Node Level Mitigation Actions Rules IE within PFCP Association Setup Request.
+	// MaximumBitrate is the Maximum Bitrate IE [C].
 	MaximumBitrate *IE
-	// MitigationActions: Mitigation Actions [M]. TS 29.244 V20.1.0 Table 7.4.4.1-4. Context: Node Level Mitigation Actions Rules IE within PFCP Association Setup Request.
+	// MitigationActions is the Mitigation Actions IE [M].
 	MitigationActions *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

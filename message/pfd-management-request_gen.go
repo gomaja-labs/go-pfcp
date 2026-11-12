@@ -7,10 +7,11 @@ import "github.com/gomaja-labs/go-pfcp/ie"
 // PFDManagementRequest represents PFCP PFD Management Request.
 // TS 29.244 V20.1.0 Table 7.4.3.1-1 (clause 7.4.3.1).
 type PFDManagementRequest struct {
+	// Header holds the PFCP framing and received IE ordering template.
 	*Header
-	// ApplicationIDsPFDs: Application ID's PFDs [C]. TS 29.244 V20.1.0 Table 7.4.3.1-1.
+	// ApplicationIDsPFDs is the Application ID's PFDs IE [C].
 	ApplicationIDsPFDs []*ie.IE
-	// NodeID: Node ID [O]. TS 29.244 V20.1.0 Table 7.4.3.1-1.
+	// NodeID is the Node ID IE [O].
 	NodeID *ie.IE
 	// OtherIEs retains unexpected types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

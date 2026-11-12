@@ -8,19 +8,19 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type UEIPAddressUsageInformationFields struct {
-	// UEIPAddressUsageSequenceNumber: UE IP Address Usage Sequence Number [M]. TS 29.244 V20.1.0 Table 7.4.4.3.1-1. Context: UE IP Address Usage Information IE within PFCP Association Update Request.
+	// UEIPAddressUsageSequenceNumber is the UE IP Address Usage Sequence Number IE [M].
 	UEIPAddressUsageSequenceNumber *IE
-	// UEIPAddressUsageMetric: UE IP Address Usage Metric [M]. TS 29.244 V20.1.0 Table 7.4.4.3.1-1. Context: UE IP Address Usage Information IE within PFCP Association Update Request.
+	// UEIPAddressUsageMetric is the UE IP Address Usage Metric IE [M].
 	UEIPAddressUsageMetric *IE
-	// ValidityTimer: Validity Timer [M]. TS 29.244 V20.1.0 Table 7.4.4.3.1-1. Context: UE IP Address Usage Information IE within PFCP Association Update Request.
+	// ValidityTimer is the Validity Timer IE [M].
 	ValidityTimer *IE
-	// NumberOfUEIPAddresses: Number of UE IP Addresses [M]. TS 29.244 V20.1.0 Table 7.4.4.3.1-1. Context: UE IP Address Usage Information IE within PFCP Association Update Request.
+	// NumberOfUEIPAddresses is the Number of UE IP Addresses IE [M].
 	NumberOfUEIPAddresses *IE
-	// NetworkInstance: Network Instance [M]. TS 29.244 V20.1.0 Table 7.4.4.3.1-1. Context: UE IP Address Usage Information IE within PFCP Association Update Request.
+	// NetworkInstance is the Network Instance IE [M].
 	NetworkInstance *IE
-	// UEIPAddressPoolId: UE IP Address Pool Id [O]. TS 29.244 V20.1.0 Table 7.4.4.3.1-1. Context: UE IP Address Usage Information IE within PFCP Association Update Request.
+	// UEIPAddressPoolId is the UE IP Address Pool Id IE [O].
 	UEIPAddressPoolId *IE
-	// SNSSAI: S-NSSAI [O]. TS 29.244 V20.1.0 Table 7.4.4.3.1-1. Context: UE IP Address Usage Information IE within PFCP Association Update Request.
+	// SNSSAI is the S-NSSAI IE [O].
 	SNSSAI *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

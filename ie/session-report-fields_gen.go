@@ -8,13 +8,13 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type SessionReportFields struct {
-	// SRRID: SRR ID [M]. TS 29.244 V20.1.0 Table 7.5.7.3-1. Context: Session Report IE within PFCP Session Deletion Response. SRR ID [M]. TS 29.244 V20.1.0 Table 7.5.8.6-1. Context: Session Report IE within PFCP Session Report Request.
+	// SRRID is the SRR ID IE [M]. TS 29.244 V20.1.0 Table 7.5.7.3-1. Context: Session Report IE within PFCP Session Deletion Response. SRR ID IE [M]. TS 29.244 V20.1.0 Table 7.5.8.6-1. Context: Session Report IE within PFCP Session Report Request.
 	SRRID *IE
-	// AccessAvailabilityReport: Access Availability Report [C]. TS 29.244 V20.1.0 Table 7.5.8.6-1. Context: Session Report IE within PFCP Session Report Request.
+	// AccessAvailabilityReport is the Access Availability Report IE [C]. TS 29.244 V20.1.0 Table 7.5.8.6-1. Context: Session Report IE within PFCP Session Report Request.
 	AccessAvailabilityReport *IE
-	// QoSMonitoringReport: QoS Monitoring Report [C]. TS 29.244 V20.1.0 Table 7.5.7.3-1. Context: Session Report IE within PFCP Session Deletion Response. QoS Monitoring Report [C]. TS 29.244 V20.1.0 Table 7.5.8.6-1. Context: Session Report IE within PFCP Session Report Request.
+	// QoSMonitoringReport is the QoS Monitoring Report IE [C]. TS 29.244 V20.1.0 Table 7.5.7.3-1. Context: Session Report IE within PFCP Session Deletion Response. QoS Monitoring Report IE [C]. TS 29.244 V20.1.0 Table 7.5.8.6-1. Context: Session Report IE within PFCP Session Report Request.
 	QoSMonitoringReport []*IE
-	// TrafficParameterMeasurementReport: Traffic Parameter Measurement Report [C]. TS 29.244 V20.1.0 Table 7.5.8.6-1. Context: Session Report IE within PFCP Session Report Request.
+	// TrafficParameterMeasurementReport is the Traffic Parameter Measurement Report IE [C]. TS 29.244 V20.1.0 Table 7.5.8.6-1. Context: Session Report IE within PFCP Session Report Request.
 	TrafficParameterMeasurementReport []*IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

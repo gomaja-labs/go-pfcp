@@ -8,39 +8,39 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type CreatePDRFields struct {
-	// PDRID: PDR ID [M]. TS 29.244 V20.1.0 Table 7.5.2.2-1. Context: Create PDR IE within PFCP Session Establishment Request.
+	// PDRID is the PDR ID IE [M].
 	PDRID *IE
-	// Precedence: Precedence [M]. TS 29.244 V20.1.0 Table 7.5.2.2-1. Context: Create PDR IE within PFCP Session Establishment Request.
+	// Precedence is the Precedence IE [M].
 	Precedence *IE
-	// PDI: PDI [M]. TS 29.244 V20.1.0 Table 7.5.2.2-1. Context: Create PDR IE within PFCP Session Establishment Request.
+	// PDI is the PDI IE [M].
 	PDI *IE
-	// OuterHeaderRemoval: Outer Header Removal [C]. TS 29.244 V20.1.0 Table 7.5.2.2-1. Context: Create PDR IE within PFCP Session Establishment Request.
+	// OuterHeaderRemoval is the Outer Header Removal IE [C].
 	OuterHeaderRemoval *IE
-	// FARID: FAR ID [C]. TS 29.244 V20.1.0 Table 7.5.2.2-1. Context: Create PDR IE within PFCP Session Establishment Request.
+	// FARID is the FAR ID IE [C].
 	FARID *IE
-	// URRID: URR ID [C]. TS 29.244 V20.1.0 Table 7.5.2.2-1. Context: Create PDR IE within PFCP Session Establishment Request.
+	// URRID is the URR ID IE [C].
 	URRID []*IE
-	// QERID: QER ID [C]. TS 29.244 V20.1.0 Table 7.5.2.2-1. Context: Create PDR IE within PFCP Session Establishment Request.
+	// QERID is the QER ID IE [C].
 	QERID []*IE
-	// ActivatePredefinedRules: Activate Predefined Rules [C]. TS 29.244 V20.1.0 Table 7.5.2.2-1. Context: Create PDR IE within PFCP Session Establishment Request.
+	// ActivatePredefinedRules is the Activate Predefined Rules IE [C].
 	ActivatePredefinedRules []*IE
-	// ActivationTime: Activation Time [O]. TS 29.244 V20.1.0 Table 7.5.2.2-1. Context: Create PDR IE within PFCP Session Establishment Request.
+	// ActivationTime is the Activation Time IE [O].
 	ActivationTime *IE
-	// DeactivationTime: Deactivation Time [O]. TS 29.244 V20.1.0 Table 7.5.2.2-1. Context: Create PDR IE within PFCP Session Establishment Request.
+	// DeactivationTime is the Deactivation Time IE [O].
 	DeactivationTime *IE
-	// MARID: MAR ID [C]. TS 29.244 V20.1.0 Table 7.5.2.2-1. Context: Create PDR IE within PFCP Session Establishment Request.
+	// MARID is the MAR ID IE [C].
 	MARID *IE
-	// PacketReplicationAndDetectionCarryOnInformation: Packet Replication and Detection Carry-On Information [C]. TS 29.244 V20.1.0 Table 7.5.2.2-1. Context: Create PDR IE within PFCP Session Establishment Request.
+	// PacketReplicationAndDetectionCarryOnInformation is the Packet Replication and Detection Carry-On Information IE [C].
 	PacketReplicationAndDetectionCarryOnInformation *IE
-	// IPMulticastAddressingInfo: IP Multicast Addressing Info [O]. TS 29.244 V20.1.0 Table 7.5.2.2-1. Context: Create PDR IE within PFCP Session Establishment Request.
+	// IPMulticastAddressingInfo is the IP Multicast Addressing Info IE [O].
 	IPMulticastAddressingInfo []*IE
-	// UEIPAddressPoolIdentity: UE IP address Pool Identity [O]. TS 29.244 V20.1.0 Table 7.5.2.2-1. Context: Create PDR IE within PFCP Session Establishment Request.
+	// UEIPAddressPoolIdentity is the UE IP address Pool Identity IE [O].
 	UEIPAddressPoolIdentity []*IE
-	// MultipathApplicableIndication: Multipath Applicable Indication [C]. TS 29.244 V20.1.0 Table 7.5.2.2-1. Context: Create PDR IE within PFCP Session Establishment Request.
+	// MultipathApplicableIndication is the Multipath Applicable Indication IE [C].
 	MultipathApplicableIndication *IE
-	// TransportDelayReporting: Transport Delay Reporting [C]. TS 29.244 V20.1.0 Table 7.5.2.2-1. Context: Create PDR IE within PFCP Session Establishment Request.
+	// TransportDelayReporting is the Transport Delay Reporting IE [C].
 	TransportDelayReporting *IE
-	// RATType: RAT Type [O]. TS 29.244 V20.1.0 Table 7.5.2.2-1. Context: Create PDR IE within PFCP Session Establishment Request.
+	// RATType is the RAT Type IE [O].
 	RATType *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

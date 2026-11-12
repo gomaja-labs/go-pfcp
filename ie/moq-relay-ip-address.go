@@ -7,7 +7,9 @@ import (
 
 // MoQRelayIPAddress flags and values, TS 29.244 V20.1.0 clause 8.2.270.
 const (
+	// MoQRelayIPAddressV4 marks the presence of an IPv4 address.
 	MoQRelayIPAddressV4 uint8 = 2
+	// MoQRelayIPAddressV6 marks the presence of an IPv6 address.
 	MoQRelayIPAddressV6 uint8 = 1
 )
 
@@ -34,8 +36,11 @@ func (i *IE) MoQRelayIPAddress() (*MoQRelayIPAddressFields, error) {
 // MoQRelayIPAddressFields models TS 29.244 V20.1.0 clause 8.2.270.
 // Flags select optional fields; nonzero values for absent fields are rejected.
 type MoQRelayIPAddressFields struct {
-	Flags       uint8
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// IPv4Address is the IPv4 address, when present.
 	IPv4Address netip.Addr
+	// IPv6Address is the IPv6 address, when present.
 	IPv6Address netip.Addr
 }
 

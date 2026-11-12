@@ -4,9 +4,13 @@ package ie
 type L2TPAuthenticationFlags uint8
 
 const (
+	// L2TPAuthenticationPAN selects PAN.
 	L2TPAuthenticationPAN L2TPAuthenticationFlags = 1
+	// L2TPAuthenticationPAC selects PAC.
 	L2TPAuthenticationPAC L2TPAuthenticationFlags = 2
+	// L2TPAuthenticationPAR selects PAR.
 	L2TPAuthenticationPAR L2TPAuthenticationFlags = 4
+	// L2TPAuthenticationPAI selects PAI.
 	L2TPAuthenticationPAI L2TPAuthenticationFlags = 8
 )
 
@@ -17,10 +21,18 @@ const (
 // The IE constructor enforces the type-dependent required flags; the decoder
 // reads exactly the received flags without inferring missing fields.
 type L2TPUserAuthenticationFields struct {
-	Type                      uint16
-	Flags                     L2TPAuthenticationFlags
-	Name, Challenge, Response []byte
-	ID                        uint8
+	// Type selects the authentication method.
+	Type uint16
+	// Flags contains the presence and option bits.
+	Flags L2TPAuthenticationFlags
+	// Name is the name.
+	Name []byte
+	// Challenge is the challenge.
+	Challenge []byte
+	// Response is the response.
+	Response []byte
+	// ID is the authentication identifier.
+	ID uint8
 }
 
 // NewL2TPUserAuthentication creates an IE, retaining invalid arguments as an encoding error.

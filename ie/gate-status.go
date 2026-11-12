@@ -6,7 +6,9 @@ package ie
 
 // GateStatus definitions.
 const (
-	GateStatusOpen   uint8 = 0
+	// GateStatusOpen selects Open.
+	GateStatusOpen uint8 = 0
+	// GateStatusClosed selects Closed.
 	GateStatusClosed uint8 = 1
 )
 

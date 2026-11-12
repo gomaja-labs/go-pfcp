@@ -2,7 +2,9 @@ package ie
 
 // SecurityModeSTAMP values are defined in TS 29.244 V20.1.0 clause 8.2.273.
 const (
+	// SecurityModeSTAMPINTP selects INTP.
 	SecurityModeSTAMPINTP uint8 = 1
+	// SecurityModeSTAMPCONP selects CONP.
 	SecurityModeSTAMPCONP uint8 = 2
 )
 

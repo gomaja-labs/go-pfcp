@@ -8,13 +8,13 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type DirectReportingInformationFields struct {
-	// EventNotificationURI: Event Notification URI [M]. TS 29.244 V20.1.0 Table 7.5.2.9-4. Context: Direct Reporting Information. Event Notification URI [M]. TS 29.244 V20.1.0 Table 7.5.4.18-2. Context: Direct Reporting Information.
+	// EventNotificationURI is the Event Notification URI IE [M]. TS 29.244 V20.1.0 Table 7.5.2.9-4. Context: Direct Reporting Information. Event Notification URI IE [M]. TS 29.244 V20.1.0 Table 7.5.4.18-2. Context: Direct Reporting Information.
 	EventNotificationURI *IE
-	// NotificationCorrelationID: Notification Correlation ID [C]. TS 29.244 V20.1.0 Table 7.5.2.9-4. Context: Direct Reporting Information. Notification Correlation ID [C]. TS 29.244 V20.1.0 Table 7.5.4.18-2. Context: Direct Reporting Information.
+	// NotificationCorrelationID is the Notification Correlation ID IE [C]. TS 29.244 V20.1.0 Table 7.5.2.9-4. Context: Direct Reporting Information. Notification Correlation ID IE [C]. TS 29.244 V20.1.0 Table 7.5.4.18-2. Context: Direct Reporting Information.
 	NotificationCorrelationID *IE
-	// NotificationBindingIndication: Notification Binding Indication [C]. TS 29.244 V20.1.0 Table 7.5.2.9-4. Context: Direct Reporting Information. Notification Binding Indication [C]. TS 29.244 V20.1.0 Table 7.5.4.18-2. Context: Direct Reporting Information.
+	// NotificationBindingIndication is the Notification Binding Indication IE [C]. TS 29.244 V20.1.0 Table 7.5.2.9-4. Context: Direct Reporting Information. Notification Binding Indication IE [C]. TS 29.244 V20.1.0 Table 7.5.4.18-2. Context: Direct Reporting Information.
 	NotificationBindingIndication *IE
-	// ReportingFlags: Reporting Flags [C]. TS 29.244 V20.1.0 Table 7.5.2.9-4. Context: Direct Reporting Information.
+	// ReportingFlags is the Reporting Flags IE [C]. TS 29.244 V20.1.0 Table 7.5.2.9-4. Context: Direct Reporting Information.
 	ReportingFlags *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

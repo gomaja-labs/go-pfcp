@@ -5,10 +5,10 @@ import (
 	"unicode/utf8"
 )
 
+// NewKeyIDAndSharedSecretOWAMPOrTWAMP creates a Key ID and Shared Secret (OWAMP or TWAMP) IE.
 // The key ID is UTF-8, at most 80 octets without padding. The shared secret
 // is a UTF-8 encoded ASCII passphrase without CR or LF: TS 29.244 V20.1.0
 // clause 8.2.276, RFC 4656 section 3.1 and RFC 5357 section 3.1.
-// NewKeyIDAndSharedSecretOWAMPOrTWAMP creates a Key ID and Shared Secret (OWAMP or TWAMP) IE.
 // TS 29.244 V20.1.0 clause 8.2.276.
 func NewKeyIDAndSharedSecretOWAMPOrTWAMP(keyID, sharedSecret string) *IE {
 	return recentFieldsIE(KeyIDAndSharedSecretOWAMPOrTWAMP, NewKeyIDAndSharedSecretOWAMPOrTWAMPFields(keyID, sharedSecret))
@@ -29,7 +29,9 @@ func (i *IE) KeyIDAndSharedSecretOWAMPOrTWAMP() (*KeyIDAndSharedSecretOWAMPOrTWA
 
 // KeyIDAndSharedSecretOWAMPOrTWAMPFields models TS 29.244 V20.1.0 clause 8.2.276.
 type KeyIDAndSharedSecretOWAMPOrTWAMPFields struct {
-	KeyID        string
+	// KeyID is the key ID.
+	KeyID string
+	// SharedSecret is the shared secret.
 	SharedSecret string
 }
 

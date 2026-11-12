@@ -13,6 +13,7 @@ import (
 
 // MPTCP Proxy Type definitions(TS24.193).
 const (
+	// MPTCPProxyTransportConverter selects Transport Converter.
 	MPTCPProxyTransportConverter uint8 = 1
 )
 
@@ -49,10 +50,15 @@ func (i *IE) MPTCPAddressInformation() (*MPTCPAddressInformationFields, error) {
 
 // MPTCPAddressInformationFields represents a fields contained in MPTCPAddressInformation IE.
 type MPTCPAddressInformationFields struct {
-	Flags            uint8
-	MPTCPProxyType   uint8
-	MPTCPProxyPort   uint16
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// MPTCPProxyType is the mptcp proxy type.
+	MPTCPProxyType uint8
+	// MPTCPProxyPort is the mptcp proxy port.
+	MPTCPProxyPort uint16
+	// MPTCPIPv4Address is the mptcpIPv4 address.
 	MPTCPIPv4Address net.IP
+	// MPTCPIPv6Address is the mptcpIPv6 address.
 	MPTCPIPv6Address net.IP
 }
 

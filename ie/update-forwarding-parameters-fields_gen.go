@@ -8,37 +8,37 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type UpdateForwardingParametersFields struct {
-	// DestinationInterface: Destination Interface [C]. TS 29.244 V20.1.0 Table 7.5.4.3-2. Context: Update Forwarding Parameters IE in the Update FAR IE.
+	// DestinationInterface is the Destination Interface IE [C].
 	DestinationInterface *IE
-	// NetworkInstance: Network instance [C]. TS 29.244 V20.1.0 Table 7.5.4.3-2. Context: Update Forwarding Parameters IE in the Update FAR IE.
+	// NetworkInstance is the Network instance IE [C].
 	NetworkInstance *IE
-	// RedirectInformation: Redirect Information [C]. TS 29.244 V20.1.0 Table 7.5.4.3-2. Context: Update Forwarding Parameters IE in the Update FAR IE.
+	// RedirectInformation is the Redirect Information IE [C].
 	RedirectInformation *IE
-	// OuterHeaderCreation: Outer Header Creation [C]. TS 29.244 V20.1.0 Table 7.5.4.3-2. Context: Update Forwarding Parameters IE in the Update FAR IE.
+	// OuterHeaderCreation is the Outer Header Creation IE [C].
 	OuterHeaderCreation *IE
-	// TransportLevelMarking: Transport Level Marking [C]. TS 29.244 V20.1.0 Table 7.5.4.3-2. Context: Update Forwarding Parameters IE in the Update FAR IE.
+	// TransportLevelMarking is the Transport Level Marking IE [C].
 	TransportLevelMarking *IE
-	// ExtendedTransportLevelMarking: Extended Transport Level Marking [C]. TS 29.244 V20.1.0 Table 7.5.4.3-2. Context: Update Forwarding Parameters IE in the Update FAR IE.
+	// ExtendedTransportLevelMarking is the Extended Transport Level Marking IE [C].
 	ExtendedTransportLevelMarking *IE
-	// TransportLevelMarkingIndications: Transport Level Marking Indications [C]. TS 29.244 V20.1.0 Table 7.5.4.3-2. Context: Update Forwarding Parameters IE in the Update FAR IE.
+	// TransportLevelMarkingIndications is the Transport Level Marking Indications IE [C].
 	TransportLevelMarkingIndications *IE
-	// ForwardingPolicy: Forwarding Policy [C]. TS 29.244 V20.1.0 Table 7.5.4.3-2. Context: Update Forwarding Parameters IE in the Update FAR IE.
+	// ForwardingPolicy is the Forwarding Policy IE [C].
 	ForwardingPolicy *IE
-	// Metadata: Metadata [C]. TS 29.244 V20.1.0 Table 7.5.4.3-2. Context: Update Forwarding Parameters IE in the Update FAR IE.
+	// Metadata is the Metadata IE [C].
 	Metadata *IE
-	// HeaderEnrichment: Header Enrichment [C]. TS 29.244 V20.1.0 Table 7.5.4.3-2. Context: Update Forwarding Parameters IE in the Update FAR IE.
+	// HeaderEnrichment is the Header Enrichment IE [C].
 	HeaderEnrichment *IE
-	// PFCPSMReqFlags: PFCPSMReq-Flags [C]. TS 29.244 V20.1.0 Table 7.5.4.3-2. Context: Update Forwarding Parameters IE in the Update FAR IE.
+	// PFCPSMReqFlags is the PFCPSMReq-Flags IE [C].
 	PFCPSMReqFlags *IE
-	// LinkedTrafficEndpointID: Linked Traffic Endpoint ID [C]. TS 29.244 V20.1.0 Table 7.5.4.3-2. Context: Update Forwarding Parameters IE in the Update FAR IE.
+	// LinkedTrafficEndpointID is the Linked Traffic Endpoint ID IE [C].
 	LinkedTrafficEndpointID *IE
-	// DestinationInterfaceType: Destination Interface Type [C]. TS 29.244 V20.1.0 Table 7.5.4.3-2. Context: Update Forwarding Parameters IE in the Update FAR IE.
+	// DestinationInterfaceType is the Destination Interface Type IE [C].
 	DestinationInterfaceType *IE
-	// DataNetworkAccessIdentifier: Data Network Access Identifier [C]. TS 29.244 V20.1.0 Table 7.5.4.3-2. Context: Update Forwarding Parameters IE in the Update FAR IE.
+	// DataNetworkAccessIdentifier is the Data Network Access Identifier IE [C].
 	DataNetworkAccessIdentifier *IE
-	// IPAddressAndPortNumberReplacement: IP Address and Port Number Replacement [C]. TS 29.244 V20.1.0 Table 7.5.4.3-2. Context: Update Forwarding Parameters IE in the Update FAR IE.
+	// IPAddressAndPortNumberReplacement is the IP Address and Port Number Replacement IE [C].
 	IPAddressAndPortNumberReplacement *IE
-	// HeaderHandlingControlRule: Header Handling Control Rule [C]. TS 29.244 V20.1.0 Table 7.5.4.3-2. Context: Update Forwarding Parameters IE in the Update FAR IE.
+	// HeaderHandlingControlRule is the Header Handling Control Rule IE [C].
 	HeaderHandlingControlRule *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

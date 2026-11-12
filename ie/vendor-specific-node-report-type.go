@@ -3,8 +3,10 @@ package ie
 // VendorSpecificNodeReportTypeFields is the structured value of Vendor-Specific Node Report Type.
 // TS 29.244 V20.1.0 clause 8.2.217.
 type VendorSpecificNodeReportTypeFields struct {
+	// EnterpriseID is the vendor enterprise identifier.
 	EnterpriseID uint16
-	ReportTypes  []byte
+	// ReportTypes is the report types.
+	ReportTypes []byte
 }
 
 // NewVendorSpecificNodeReportType creates a Vendor-Specific Node Report Type IE from its fields.

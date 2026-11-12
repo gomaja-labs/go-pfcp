@@ -8,19 +8,19 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type HeaderHandlingReportingControlInfoFields struct {
-	// ReportingEndpointID: Reporting Endpoint ID [M]. TS 29.244 V20.1.0 Table 7.5.2.3-8. Context: Header Handling Reporting Control Info IE in Header Handling Control Rule.
+	// ReportingEndpointID is the Reporting Endpoint ID IE [M].
 	ReportingEndpointID *IE
-	// MinimumWaitTime: Minimum Wait Time [C]. TS 29.244 V20.1.0 Table 7.5.2.3-8. Context: Header Handling Reporting Control Info IE in Header Handling Control Rule.
+	// MinimumWaitTime is the Minimum Wait Time IE [C].
 	MinimumWaitTime *IE
-	// ReportingSuggestionInfo: Reporting Suggestion Info [O]. TS 29.244 V20.1.0 Table 7.5.2.3-8. Context: Header Handling Reporting Control Info IE in Header Handling Control Rule.
+	// ReportingSuggestionInfo is the Reporting Suggestion Info IE [O].
 	ReportingSuggestionInfo *IE
-	// EventNotificationURI: Event Notification URI [M]. TS 29.244 V20.1.0 Table 7.5.2.3-8. Context: Header Handling Reporting Control Info IE in Header Handling Control Rule.
+	// EventNotificationURI is the Event Notification URI IE [M].
 	EventNotificationURI *IE
-	// NotificationBindingIndication: Notification Binding Indication [C]. TS 29.244 V20.1.0 Table 7.5.2.3-8. Context: Header Handling Reporting Control Info IE in Header Handling Control Rule.
+	// NotificationBindingIndication is the Notification Binding Indication IE [C].
 	NotificationBindingIndication *IE
-	// NotificationCorrelationID: Notification Correlation ID [M]. TS 29.244 V20.1.0 Table 7.5.2.3-8. Context: Header Handling Reporting Control Info IE in Header Handling Control Rule.
+	// NotificationCorrelationID is the Notification Correlation ID IE [M].
 	NotificationCorrelationID *IE
-	// HeaderHandlingReportingIndication: Header Handling Reporting Indication [C]. TS 29.244 V20.1.0 Table 7.5.2.3-8. Context: Header Handling Reporting Control Info IE in Header Handling Control Rule.
+	// HeaderHandlingReportingIndication is the Header Handling Reporting Indication IE [C].
 	HeaderHandlingReportingIndication *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

@@ -8,21 +8,21 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type CreateMARFields struct {
-	// MARID: MAR ID [M]. TS 29.244 V20.1.0 Table 7.5.2.8-1. Context: Create MAR IE within PFCP Session Establishment Request.
+	// MARID is the MAR ID IE [M].
 	MARID *IE
-	// SteeringFunctionality: Steering Functionality [M]. TS 29.244 V20.1.0 Table 7.5.2.8-1. Context: Create MAR IE within PFCP Session Establishment Request.
+	// SteeringFunctionality is the Steering Functionality IE [M].
 	SteeringFunctionality *IE
-	// SteeringMode: Steering Mode [M]. TS 29.244 V20.1.0 Table 7.5.2.8-1. Context: Create MAR IE within PFCP Session Establishment Request.
+	// SteeringMode is the Steering Mode IE [M].
 	SteeringMode *IE
-	// TGPPAccessForwardingActionInformation: 3GPP Access Forwarding Action Information [C]. TS 29.244 V20.1.0 Table 7.5.2.8-1. Context: Create MAR IE within PFCP Session Establishment Request.
+	// TGPPAccessForwardingActionInformation is the 3GPP Access Forwarding Action Information IE [C].
 	TGPPAccessForwardingActionInformation *IE
-	// NonTGPPAccessForwardingActionInformation: Non-3GPP Access Forwarding Action Information [C]. TS 29.244 V20.1.0 Table 7.5.2.8-1. Context: Create MAR IE within PFCP Session Establishment Request.
+	// NonTGPPAccessForwardingActionInformation is the Non-3GPP Access Forwarding Action Information IE [C].
 	NonTGPPAccessForwardingActionInformation *IE
-	// ThresholdValues: Threshold Values [C]. TS 29.244 V20.1.0 Table 7.5.2.8-1. Context: Create MAR IE within PFCP Session Establishment Request.
+	// ThresholdValues is the Threshold Values IE [C].
 	ThresholdValues *IE
-	// SteeringModeIndicator: Steering Mode Indicator [C]. TS 29.244 V20.1.0 Table 7.5.2.8-1. Context: Create MAR IE within PFCP Session Establishment Request.
+	// SteeringModeIndicator is the Steering Mode Indicator IE [C].
 	SteeringModeIndicator *IE
-	// TransportMode: Transport Mode [C]. TS 29.244 V20.1.0 Table 7.5.2.8-1. Context: Create MAR IE within PFCP Session Establishment Request.
+	// TransportMode is the Transport Mode IE [C].
 	TransportMode *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

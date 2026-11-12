@@ -277,13 +277,20 @@ func (i *IE) IsLLSSMCTEID() bool {
 
 // OuterHeaderCreationFields represents a fields contained in OuterHeaderCreation IE.
 type OuterHeaderCreationFields struct {
+	// OuterHeaderCreationDescription is the outer header creation description.
 	OuterHeaderCreationDescription uint16
-	TEID                           uint32
-	IPv4Address                    net.IP
-	IPv6Address                    net.IP
-	PortNumber                     uint16
-	CTag                           uint32
-	STag                           uint32
+	// TEID is the tunnel endpoint identifier.
+	TEID uint32
+	// IPv4Address is the IPv4 address, when present.
+	IPv4Address net.IP
+	// IPv6Address is the IPv6 address, when present.
+	IPv6Address net.IP
+	// PortNumber is the port number.
+	PortNumber uint16
+	// CTag is the c tag.
+	CTag uint32
+	// STag is the s tag.
+	STag uint32
 }
 
 // NewOuterHeaderCreationFields creates a new OuterHeaderCreationFields.

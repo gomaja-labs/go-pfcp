@@ -8,13 +8,13 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type ApplicationDetectionInformationFields struct {
-	// ApplicationID: Application ID [M]. TS 29.244 V20.1.0 Table 7.5.8.3-2. Context: Application Detection Information IE within Usage Report IE.
+	// ApplicationID is the Application ID IE [M].
 	ApplicationID *IE
-	// ApplicationInstanceID: Application Instance ID [C]. TS 29.244 V20.1.0 Table 7.5.8.3-2. Context: Application Detection Information IE within Usage Report IE.
+	// ApplicationInstanceID is the Application Instance ID IE [C].
 	ApplicationInstanceID *IE
-	// FlowInformation: Flow Information [C]. TS 29.244 V20.1.0 Table 7.5.8.3-2. Context: Application Detection Information IE within Usage Report IE.
+	// FlowInformation is the Flow Information IE [C].
 	FlowInformation *IE
-	// PDRID: PDR ID [O]. TS 29.244 V20.1.0 Table 7.5.8.3-2. Context: Application Detection Information IE within Usage Report IE.
+	// PDRID is the PDR ID IE [O].
 	PDRID *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

@@ -8,9 +8,9 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type EthernetTrafficInformationFields struct {
-	// MACAddressesDetected: MAC Addresses Detected [C]. TS 29.244 V20.1.0 Table 7.5.8.3-3. Context: Ethernet Traffic Information IE within Usage Report IE.
+	// MACAddressesDetected is the MAC Addresses Detected IE [C].
 	MACAddressesDetected []*IE
-	// MACAddressesRemoved: MAC Addresses Removed [C]. TS 29.244 V20.1.0 Table 7.5.8.3-3. Context: Ethernet Traffic Information IE within Usage Report IE.
+	// MACAddressesRemoved is the MAC Addresses Removed IE [C].
 	MACAddressesRemoved []*IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

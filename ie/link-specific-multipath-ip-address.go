@@ -45,10 +45,15 @@ func (i *IE) LinkSpecificMultipathIPAddress() (*LinkSpecificMultipathIPAddressFi
 
 // LinkSpecificMultipathIPAddressFields represents a fields contained in LinkSpecificMultipathIPAddress IE.
 type LinkSpecificMultipathIPAddressFields struct {
-	Flags                                     uint8
-	UELinkSpecificIPv4AddressFor3GPPAccess    net.IP
-	UELinkSpecificIPv6AddressFor3GPPAccess    net.IP
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// UELinkSpecificIPv4AddressFor3GPPAccess is the ue link specific IPv4 address for3 gpp access.
+	UELinkSpecificIPv4AddressFor3GPPAccess net.IP
+	// UELinkSpecificIPv6AddressFor3GPPAccess is the ue link specific IPv6 address for3 gpp access.
+	UELinkSpecificIPv6AddressFor3GPPAccess net.IP
+	// UELinkSpecificIPv4AddressForNon3GPPAccess is the ue link specific IPv4 address for non3 gpp access.
 	UELinkSpecificIPv4AddressForNon3GPPAccess net.IP
+	// UELinkSpecificIPv6AddressForNon3GPPAccess is the ue link specific IPv6 address for non3 gpp access.
 	UELinkSpecificIPv6AddressForNon3GPPAccess net.IP
 }
 

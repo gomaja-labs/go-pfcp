@@ -42,8 +42,11 @@ func (i *IE) AlternativeSMFIPAddress() (*AlternativeSMFIPAddressFields, error) {
 
 // AlternativeSMFIPAddressFields represents a fields contained in AlternativeSMFIPAddress IE.
 type AlternativeSMFIPAddressFields struct {
-	Flags       uint8
+	// Flags contains the presence and option bits.
+	Flags uint8
+	// IPv4Address is the IPv4 address, when present.
 	IPv4Address net.IP
+	// IPv6Address is the IPv6 address, when present.
 	IPv6Address net.IP
 }
 

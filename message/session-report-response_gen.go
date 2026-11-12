@@ -7,26 +7,27 @@ import "github.com/gomaja-labs/go-pfcp/ie"
 // SessionReportResponse represents PFCP Session Report Response.
 // TS 29.244 V20.1.0 Table 7.5.9.1-1 (clause 7.5.9.1).
 type SessionReportResponse struct {
+	// Header holds the PFCP framing and received IE ordering template.
 	*Header
-	// Cause: Cause [M]. TS 29.244 V20.1.0 Table 7.5.9.1-1.
+	// Cause is the Cause IE [M].
 	Cause *ie.IE
-	// OffendingIE: Offending IE [C]. TS 29.244 V20.1.0 Table 7.5.9.1-1.
+	// OffendingIE is the Offending IE IE [C].
 	OffendingIE *ie.IE
-	// UpdateBAR: Update BAR [C]. TS 29.244 V20.1.0 Table 7.5.9.1-1.
+	// UpdateBAR is the Update BAR IE [C].
 	UpdateBAR *ie.IE
-	// PFCPSRRspFlags: PFCPSRRsp-Flags [C]. TS 29.244 V20.1.0 Table 7.5.9.1-1.
+	// PFCPSRRspFlags is the PFCPSRRsp-Flags IE [C].
 	PFCPSRRspFlags *ie.IE
-	// CPFSEID: CP F-SEID [O]. TS 29.244 V20.1.0 Table 7.5.9.1-1.
+	// CPFSEID is the CP F-SEID IE [O].
 	CPFSEID *ie.IE
-	// N4UFTEID: N4-u F-TEID [O]. TS 29.244 V20.1.0 Table 7.5.9.1-1.
+	// N4UFTEID is the N4-u F-TEID IE [O].
 	N4UFTEID *ie.IE
-	// AlternativeSMFIPAddress: Alternative SMF IP Address [O]; Alternative SMF IP Address [O]. TS 29.244 V20.1.0 Table 7.5.9.1-1.
+	// AlternativeSMFIPAddress is the Alternative SMF IP Address IE [O]. Alternative SMF IP Address IE [O]. TS 29.244 V20.1.0 Table 7.5.9.1-1. Context: PFCP Session Report Response.
 	AlternativeSMFIPAddress []*ie.IE
-	// PGWCSMFFQCSID: PGW-C/SMF FQ-CSID [O]. TS 29.244 V20.1.0 Table 7.5.9.1-1.
+	// PGWCSMFFQCSID is the PGW-C/SMF FQ-CSID IE [O].
 	PGWCSMFFQCSID *ie.IE
-	// GroupId: Group Id [C]. TS 29.244 V20.1.0 Table 7.5.9.1-1.
+	// GroupId is the Group Id IE [C].
 	GroupId *ie.IE
-	// NodeID: Node ID [C]. TS 29.244 V20.1.0 Table 7.5.9.1-1.
+	// NodeID is the Node ID IE [C].
 	NodeID *ie.IE
 	// OtherIEs retains unexpected types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

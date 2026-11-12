@@ -8,19 +8,19 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type AdditionalMonitoringTimeFields struct {
-	// MonitoringTime: Monitoring Time [M]. TS 29.244 V20.1.0 Table 7.5.2.4-3. Context: Additional Monitoring Time.
+	// MonitoringTime is the Monitoring Time IE [M].
 	MonitoringTime *IE
-	// SubsequentVolumeThreshold: Subsequent Volume Threshold [O]. TS 29.244 V20.1.0 Table 7.5.2.4-3. Context: Additional Monitoring Time.
+	// SubsequentVolumeThreshold is the Subsequent Volume Threshold IE [O].
 	SubsequentVolumeThreshold *IE
-	// SubsequentTimeThreshold: Subsequent Time Threshold [O]. TS 29.244 V20.1.0 Table 7.5.2.4-3. Context: Additional Monitoring Time.
+	// SubsequentTimeThreshold is the Subsequent Time Threshold IE [O].
 	SubsequentTimeThreshold *IE
-	// SubsequentVolumeQuota: Subsequent Volume Quota [O]. TS 29.244 V20.1.0 Table 7.5.2.4-3. Context: Additional Monitoring Time.
+	// SubsequentVolumeQuota is the Subsequent Volume Quota IE [O].
 	SubsequentVolumeQuota *IE
-	// SubsequentTimeQuota: Subsequent Time Quota [O]. TS 29.244 V20.1.0 Table 7.5.2.4-3. Context: Additional Monitoring Time.
+	// SubsequentTimeQuota is the Subsequent Time Quota IE [O].
 	SubsequentTimeQuota *IE
-	// SubsequentEventThreshold: Subsequent Event Threshold [O]. TS 29.244 V20.1.0 Table 7.5.2.4-3. Context: Additional Monitoring Time.
+	// SubsequentEventThreshold is the Subsequent Event Threshold IE [O].
 	SubsequentEventThreshold *IE
-	// SubsequentEventQuota: Subsequent Event Quota [O]. TS 29.244 V20.1.0 Table 7.5.2.4-3. Context: Additional Monitoring Time.
+	// SubsequentEventQuota is the Subsequent Event Quota IE [O].
 	SubsequentEventQuota *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

@@ -8,9 +8,9 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type LocalN3N9TunnelInformationFields struct {
-	// FTEID: F-TEID [M]. TS 29.244 V20.1.0 Table 7.5.8.6-6. Context: Local N3/N9 Tunnel Information IE.
+	// FTEID is the F-TEID IE [M].
 	FTEID *IE
-	// NetworkInstance: Network Instance [O]. TS 29.244 V20.1.0 Table 7.5.8.6-6. Context: Local N3/N9 Tunnel Information IE.
+	// NetworkInstance is the Network Instance IE [O].
 	NetworkInstance *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

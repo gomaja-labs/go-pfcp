@@ -7,10 +7,11 @@ import "github.com/gomaja-labs/go-pfcp/ie"
 // AssociationReleaseResponse represents PFCP Association Release Response.
 // TS 29.244 V20.1.0 Table 7.4.4.6-1 (clause 7.4.4.6).
 type AssociationReleaseResponse struct {
+	// Header holds the PFCP framing and received IE ordering template.
 	*Header
-	// NodeID: Node ID [M]. TS 29.244 V20.1.0 Table 7.4.4.6-1.
+	// NodeID is the Node ID IE [M].
 	NodeID *ie.IE
-	// Cause: Cause [M]. TS 29.244 V20.1.0 Table 7.4.4.6-1.
+	// Cause is the Cause IE [M].
 	Cause *ie.IE
 	// OtherIEs retains unexpected types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

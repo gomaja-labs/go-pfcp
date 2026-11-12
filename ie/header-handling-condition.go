@@ -2,7 +2,9 @@ package ie
 
 // HeaderHandlingCondition values are defined in TS 29.244 V20.1.0 clause 8.2.258.
 const (
-	HeaderHandlingConditionEveryMatch     uint8 = 0
+	// HeaderHandlingConditionEveryMatch selects Every Match.
+	HeaderHandlingConditionEveryMatch uint8 = 0
+	// HeaderHandlingConditionFirstMatchOnly selects First Match Only.
 	HeaderHandlingConditionFirstMatchOnly uint8 = 1
 )
 

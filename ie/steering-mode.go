@@ -6,9 +6,13 @@ package ie
 
 // SteeringMode definitions.
 const (
+	// SteeringModeActiveStandby selects Active Standby.
 	SteeringModeActiveStandby uint8 = 0
+	// SteeringModeSmallestDelay selects Smallest Delay.
 	SteeringModeSmallestDelay uint8 = 1
+	// SteeringModeLoadBalancing selects Load Balancing.
 	SteeringModeLoadBalancing uint8 = 2
+	// SteeringModePriorityBased selects Priority Based.
 	SteeringModePriorityBased uint8 = 3
 )
 
@@ -33,5 +37,6 @@ func (i *IE) SteeringMode() (uint8, error) {
 
 // TS 29.244 V20.1.0 Table 8.2.125-1.
 const (
+	// SteeringModeRedundant selects Redundant.
 	SteeringModeRedundant uint8 = 4
 )

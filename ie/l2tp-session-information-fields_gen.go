@@ -8,15 +8,15 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type L2TPSessionInformationFields struct {
-	// CallingNumber: Calling Number [O]. TS 29.244 V20.1.0 Table 7.5.2.1-3. Context: L2TP Session Information IE in the PFCP Session Establishment Request message.
+	// CallingNumber is the Calling Number IE [O].
 	CallingNumber *IE
-	// CalledNumber: Called Number [O]. TS 29.244 V20.1.0 Table 7.5.2.1-3. Context: L2TP Session Information IE in the PFCP Session Establishment Request message.
+	// CalledNumber is the Called Number IE [O].
 	CalledNumber *IE
-	// MaximumReceiveUnit: Maximum Receive Unit [O]. TS 29.244 V20.1.0 Table 7.5.2.1-3. Context: L2TP Session Information IE in the PFCP Session Establishment Request message.
+	// MaximumReceiveUnit is the Maximum Receive Unit IE [O].
 	MaximumReceiveUnit *IE
-	// L2TPSessionIndications: L2TP Session Indications [C]. TS 29.244 V20.1.0 Table 7.5.2.1-3. Context: L2TP Session Information IE in the PFCP Session Establishment Request message.
+	// L2TPSessionIndications is the L2TP Session Indications IE [C].
 	L2TPSessionIndications *IE
-	// L2TPUserAuthentication: L2TP User Authentication [O]. TS 29.244 V20.1.0 Table 7.5.2.1-3. Context: L2TP Session Information IE in the PFCP Session Establishment Request message.
+	// L2TPUserAuthentication is the L2TP User Authentication IE [O].
 	L2TPUserAuthentication *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

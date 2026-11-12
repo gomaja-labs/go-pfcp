@@ -3,9 +3,6 @@
 // found in the LICENSE file.
 
 // Command hb-client sends a HeartbeatRequest and checks response.
-//
-// Heartbeat exchanging feature is planned be included in the go-pfcp package's
-// built-in functions in the future.
 package main
 
 import (

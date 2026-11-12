@@ -8,37 +8,37 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type CreateQERFields struct {
-	// QERID: QER ID [M]. TS 29.244 V20.1.0 Table 7.5.2.5-1. Context: Create QER IE within PFCP Session Establishment Request.
+	// QERID is the QER ID IE [M].
 	QERID *IE
-	// QERCorrelationID: QER Correlation ID [C]. TS 29.244 V20.1.0 Table 7.5.2.5-1. Context: Create QER IE within PFCP Session Establishment Request.
+	// QERCorrelationID is the QER Correlation ID IE [C].
 	QERCorrelationID *IE
-	// GateStatus: Gate Status [M]. TS 29.244 V20.1.0 Table 7.5.2.5-1. Context: Create QER IE within PFCP Session Establishment Request.
+	// GateStatus is the Gate Status IE [M].
 	GateStatus *IE
-	// MaximumBitrate: Maximum Bitrate [C]. TS 29.244 V20.1.0 Table 7.5.2.5-1. Context: Create QER IE within PFCP Session Establishment Request.
+	// MaximumBitrate is the Maximum Bitrate IE [C].
 	MaximumBitrate *IE
-	// GuaranteedBitrate: Guaranteed Bitrate [C]. TS 29.244 V20.1.0 Table 7.5.2.5-1. Context: Create QER IE within PFCP Session Establishment Request.
+	// GuaranteedBitrate is the Guaranteed Bitrate IE [C].
 	GuaranteedBitrate *IE
-	// PacketRate: Packet Rate [C]. TS 29.244 V20.1.0 Table 7.5.2.5-1. Context: Create QER IE within PFCP Session Establishment Request.
+	// PacketRate is the Packet Rate IE [C].
 	PacketRate *IE
-	// PacketRateStatus: Packet Rate Status [C]. TS 29.244 V20.1.0 Table 7.5.2.5-1. Context: Create QER IE within PFCP Session Establishment Request.
+	// PacketRateStatus is the Packet Rate Status IE [C].
 	PacketRateStatus *IE
-	// DLFlowLevelMarking: DL Flow Level Marking [C]. TS 29.244 V20.1.0 Table 7.5.2.5-1. Context: Create QER IE within PFCP Session Establishment Request.
+	// DLFlowLevelMarking is the DL Flow Level Marking IE [C].
 	DLFlowLevelMarking *IE
-	// QoSFlowIdentifier: QoS flow identifier [C]. TS 29.244 V20.1.0 Table 7.5.2.5-1. Context: Create QER IE within PFCP Session Establishment Request.
+	// QoSFlowIdentifier is the QoS flow identifier IE [C].
 	QoSFlowIdentifier *IE
-	// ReflectiveQoS: Reflective QoS [C]. TS 29.244 V20.1.0 Table 7.5.2.5-1. Context: Create QER IE within PFCP Session Establishment Request.
+	// ReflectiveQoS is the Reflective QoS IE [C].
 	ReflectiveQoS *IE
-	// PagingPolicyIndicator: Paging Policy Indicator [C]. TS 29.244 V20.1.0 Table 7.5.2.5-1. Context: Create QER IE within PFCP Session Establishment Request.
+	// PagingPolicyIndicator is the Paging Policy Indicator IE [C].
 	PagingPolicyIndicator *IE
-	// AveragingWindow: Averaging Window [O]. TS 29.244 V20.1.0 Table 7.5.2.5-1. Context: Create QER IE within PFCP Session Establishment Request.
+	// AveragingWindow is the Averaging Window IE [O].
 	AveragingWindow *IE
-	// QERControlIndications: QER Control Indications [C]. TS 29.244 V20.1.0 Table 7.5.2.5-1. Context: Create QER IE within PFCP Session Establishment Request.
+	// QERControlIndications is the QER Control Indications IE [C].
 	QERControlIndications *IE
-	// QERIndications: QER Indications [C]. TS 29.244 V20.1.0 Table 7.5.2.5-1. Context: Create QER IE within PFCP Session Establishment Request.
+	// QERIndications is the QER Indications IE [C].
 	QERIndications *IE
-	// PDUSetImportanceForN6UnmarkedPDUs: PDU Set Importance for N6-unmarked PDUs [C]. TS 29.244 V20.1.0 Table 7.5.2.5-1. Context: Create QER IE within PFCP Session Establishment Request.
+	// PDUSetImportanceForN6UnmarkedPDUs is the PDU Set Importance for N6-unmarked PDUs IE [C].
 	PDUSetImportanceForN6UnmarkedPDUs *IE
-	// SCONEThroughputAdvice: SCONE Throughput Advice [O]. TS 29.244 V20.1.0 Table 7.5.2.5-1. Context: Create QER IE within PFCP Session Establishment Request.
+	// SCONEThroughputAdvice is the SCONE Throughput Advice IE [O].
 	SCONEThroughputAdvice *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

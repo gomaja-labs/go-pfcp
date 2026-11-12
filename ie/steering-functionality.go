@@ -6,8 +6,10 @@ package ie
 
 // SteeringFunctionality definitions.
 const (
+	// SteeringFunctionalityATSSSLL selects ATSSSLL.
 	SteeringFunctionalityATSSSLL uint8 = 0
-	SteeringFunctionalityMPTCP   uint8 = 1
+	// SteeringFunctionalityMPTCP selects MPTCP.
+	SteeringFunctionalityMPTCP uint8 = 1
 )
 
 // NewSteeringFunctionality creates a new SteeringFunctionality IE.
@@ -31,7 +33,10 @@ func (i *IE) SteeringFunctionality() (uint8, error) {
 
 // TS 29.244 V20.1.0 Table 8.2.124-1.
 const (
+	// SteeringFunctionalityMPQUICUDP selects MPQUICUDP.
 	SteeringFunctionalityMPQUICUDP uint8 = 2
-	SteeringFunctionalityMPQUICIP  uint8 = 3
-	SteeringFunctionalityMPQUICE   uint8 = 4
+	// SteeringFunctionalityMPQUICIP selects MPQUICIP.
+	SteeringFunctionalityMPQUICIP uint8 = 3
+	// SteeringFunctionalityMPQUICE selects MPQUICE.
+	SteeringFunctionalityMPQUICE uint8 = 4
 )

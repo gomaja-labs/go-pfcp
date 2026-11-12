@@ -8,9 +8,9 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type TransportDelayReportingFields struct {
-	// PrecedingULGTPUPeer: Preceding UL GTP-U Peer [M]. TS 29.244 V20.1.0 Table 7.5.2.2-6. Context: Transport Delay Reporting IE in Create PDR IE.
+	// PrecedingULGTPUPeer is the Preceding UL GTP-U Peer IE [M].
 	PrecedingULGTPUPeer *IE
-	// DSCP: DSCP [O]. TS 29.244 V20.1.0 Table 7.5.2.2-6. Context: Transport Delay Reporting IE in Create PDR IE.
+	// DSCP is the DSCP IE [O].
 	DSCP *IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

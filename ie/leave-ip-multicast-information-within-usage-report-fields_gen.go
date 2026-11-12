@@ -8,9 +8,9 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type LeaveIPMulticastInformationWithinUsageReportFields struct {
-	// IPMulticastAddress: IP Multicast Address [M]. TS 29.244 V20.1.0 Table 7.5.8.3-5. Context: Leave IP Multicast Information IE within Usage Report IE.
+	// IPMulticastAddress is the IP Multicast Address IE [M].
 	IPMulticastAddress *IE
-	// SourceIPAddress: Source IP Address [C]. TS 29.244 V20.1.0 Table 7.5.8.3-5. Context: Leave IP Multicast Information IE within Usage Report IE.
+	// SourceIPAddress is the Source IP Address IE [C].
 	SourceIPAddress []*IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

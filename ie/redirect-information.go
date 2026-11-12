@@ -43,14 +43,23 @@ func (i *IE) RedirectInformation() (*RedirectInformationFields, error) {
 
 // RedirectAddressType definitions.
 const (
-	RedirectAddrIPv4               uint8 = 0
-	RedirectAddrIPv6               uint8 = 1
-	RedirectAddrURL                uint8 = 2
-	RedirectAddrSIPURI             uint8 = 3
-	RedirectAddrIPv4AndIPv6        uint8 = 4
-	RedirectAddrPort               uint8 = 5
-	RedirectAddrIPv4AndPort        uint8 = 6
-	RedirectAddrIPv6AndPort        uint8 = 7
+	// RedirectAddrIPv4 selects IPv4.
+	RedirectAddrIPv4 uint8 = 0
+	// RedirectAddrIPv6 selects IPv6.
+	RedirectAddrIPv6 uint8 = 1
+	// RedirectAddrURL selects URL.
+	RedirectAddrURL uint8 = 2
+	// RedirectAddrSIPURI selects SIPURI.
+	RedirectAddrSIPURI uint8 = 3
+	// RedirectAddrIPv4AndIPv6 selects IPv4 And IPv6.
+	RedirectAddrIPv4AndIPv6 uint8 = 4
+	// RedirectAddrPort selects Port.
+	RedirectAddrPort uint8 = 5
+	// RedirectAddrIPv4AndPort selects IPv4 And Port.
+	RedirectAddrIPv4AndPort uint8 = 6
+	// RedirectAddrIPv6AndPort selects IPv6 And Port.
+	RedirectAddrIPv6AndPort uint8 = 7
+	// RedirectAddrIPv4AndIPv6AndPort selects IPv4 And IPv6 And Port.
 	RedirectAddrIPv4AndIPv6AndPort uint8 = 8
 )
 
@@ -58,12 +67,18 @@ const (
 // TS 29.244 V20.1.0 clause 8.2.20. Address text follows RFC 8506
 // section 8.38, which replaces the RFC 4006 reference in the 3GPP text.
 type RedirectInformationFields struct {
-	RedirectAddressType        uint8
-	ServerAddrLength           uint16
-	RedirectServerAddress      string
-	OtherServerAddrLength      uint16
+	// RedirectAddressType is the redirect address type.
+	RedirectAddressType uint8
+	// ServerAddrLength is the encoded server addr length in octets.
+	ServerAddrLength uint16
+	// RedirectServerAddress is the redirect server address.
+	RedirectServerAddress string
+	// OtherServerAddrLength is the encoded other server addr length in octets.
+	OtherServerAddrLength uint16
+	// OtherRedirectServerAddress is the other redirect server address.
 	OtherRedirectServerAddress string
-	RedirectPort               uint16
+	// RedirectPort is the redirect port.
+	RedirectPort uint16
 }
 
 // NewRedirectInformationFields creates an address-only redirect. Port redirects

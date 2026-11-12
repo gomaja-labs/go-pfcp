@@ -8,14 +8,18 @@ import (
 type ReportingUrgency uint8
 
 const (
-	ReportingDelayTolerant    ReportingUrgency = 0
+	// ReportingDelayTolerant selects Delay Tolerant.
+	ReportingDelayTolerant ReportingUrgency = 0
+	// ReportingNonDelayTolerant selects Non Delay Tolerant.
 	ReportingNonDelayTolerant ReportingUrgency = 1
 )
 
 // ReportingSuggestionInfoFields is the structured value of Reporting Suggestion Info.
 // TS 29.244 V20.1.0 clause 8.2.229.
 type ReportingSuggestionInfoFields struct {
-	Urgency       ReportingUrgency
+	// Urgency selects delay-tolerant or non-delay-tolerant reporting.
+	Urgency ReportingUrgency
+	// ReportingTime is the delay-tolerant reporting interval.
 	ReportingTime time.Duration
 }
 

@@ -7,34 +7,35 @@ import "github.com/gomaja-labs/go-pfcp/ie"
 // SessionReportRequest represents PFCP Session Report Request.
 // TS 29.244 V20.1.0 Table 7.5.8.1-1 (clause 7.5.8.1).
 type SessionReportRequest struct {
+	// Header holds the PFCP framing and received IE ordering template.
 	*Header
-	// ReportType: Report Type [M]. TS 29.244 V20.1.0 Table 7.5.8.1-1.
+	// ReportType is the Report Type IE [M].
 	ReportType *ie.IE
-	// DownlinkDataReport: Downlink Data Report [C]. TS 29.244 V20.1.0 Table 7.5.8.1-1.
+	// DownlinkDataReport is the Downlink Data Report IE [C].
 	DownlinkDataReport *ie.IE
-	// UsageReport: Usage Report [C]. TS 29.244 V20.1.0 Table 7.5.8.1-1.
+	// UsageReport is the Usage Report IE [C].
 	UsageReport []*ie.IE
-	// ErrorIndicationReport: Error Indication Report [C]. TS 29.244 V20.1.0 Table 7.5.8.1-1.
+	// ErrorIndicationReport is the Error Indication Report IE [C].
 	ErrorIndicationReport *ie.IE
-	// LoadControlInformation: Load Control Information [O]. TS 29.244 V20.1.0 Table 7.5.8.1-1.
+	// LoadControlInformation is the Load Control Information IE [O].
 	LoadControlInformation *ie.IE
-	// OverloadControlInformation: Overload Control Information [O]. TS 29.244 V20.1.0 Table 7.5.8.1-1.
+	// OverloadControlInformation is the Overload Control Information IE [O].
 	OverloadControlInformation *ie.IE
-	// AdditionalUsageReportsInformation: Additional Usage Reports Information [C]. TS 29.244 V20.1.0 Table 7.5.8.1-1.
+	// AdditionalUsageReportsInformation is the Additional Usage Reports Information IE [C].
 	AdditionalUsageReportsInformation *ie.IE
-	// PFCPSRReqFlags: PFCPSRReq-Flags [C]. TS 29.244 V20.1.0 Table 7.5.8.1-1.
+	// PFCPSRReqFlags is the PFCPSRReq-Flags IE [C].
 	PFCPSRReqFlags *ie.IE
-	// OldCPFSEID: Old CP F-SEID [C]. TS 29.244 V20.1.0 Table 7.5.8.1-1.
+	// OldCPFSEID is the Old CP F-SEID IE [C].
 	OldCPFSEID *ie.IE
-	// SMFChangeReason: SMF Change Reason [O]. TS 29.244 V20.1.0 Table 7.5.8.1-1.
+	// SMFChangeReason is the SMF Change Reason IE [O].
 	SMFChangeReason *ie.IE
-	// PacketRateStatusReport: Packet Rate Status Report [C]. TS 29.244 V20.1.0 Table 7.5.8.1-1.
+	// PacketRateStatusReport is the Packet Rate Status Report IE [C].
 	PacketRateStatusReport *ie.IE
-	// TSCManagementInformation: TSC Management Information [C]. TS 29.244 V20.1.0 Table 7.5.8.1-1.
+	// TSCManagementInformation is the TSC Management Information IE [C].
 	TSCManagementInformation []*ie.IE
-	// SessionReport: Session Report [C]. TS 29.244 V20.1.0 Table 7.5.8.1-1.
+	// SessionReport is the Session Report IE [C].
 	SessionReport []*ie.IE
-	// Cause: Cause [O]. TS 29.244 V20.1.0 Table 7.5.8.1-1.
+	// Cause is the Cause IE [O].
 	Cause *ie.IE
 	// OtherIEs retains unexpected types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.

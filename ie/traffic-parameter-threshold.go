@@ -7,12 +7,15 @@ import (
 // TrafficParameterThresholdFlags identifies the downlink jitter field in clause 8.2.220.
 type TrafficParameterThresholdFlags uint8
 
+// TrafficParameterThresholdDL selects DL.
 const TrafficParameterThresholdDL TrafficParameterThresholdFlags = 1
 
 // TrafficParameterThresholdFields is the structured value of Traffic Parameter Threshold.
 // TS 29.244 V20.1.0 clause 8.2.220.
 type TrafficParameterThresholdFields struct {
-	Flags          TrafficParameterThresholdFlags
+	// Flags contains the presence and option bits.
+	Flags TrafficParameterThresholdFlags
+	// DownlinkJitter is the downlink jitter.
 	DownlinkJitter time.Duration
 }
 

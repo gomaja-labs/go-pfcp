@@ -8,17 +8,17 @@ package ie
 // IE builds children in table order, followed by OtherIEs; use the original IE
 // to retain a received ordering. Repeated rows across contexts share one field.
 type GTPUPathQoSReportFields struct {
-	// RemoteGTPUPeer: Remote GTP-U Peer [M]. TS 29.244 V20.1.0 Table 7.4.5.1.5-1. Context: GTP-U Path QoS Report IE within PFCP Node Report Request.
+	// RemoteGTPUPeer is the Remote GTP-U Peer IE [M].
 	RemoteGTPUPeer *IE
-	// GTPUPathInterfaceType: GTP-U Path Interface Type [C]. TS 29.244 V20.1.0 Table 7.4.5.1.5-1. Context: GTP-U Path QoS Report IE within PFCP Node Report Request.
+	// GTPUPathInterfaceType is the GTP-U Path Interface Type IE [C].
 	GTPUPathInterfaceType *IE
-	// QoSReportTrigger: QoS Report Trigger [M]. TS 29.244 V20.1.0 Table 7.4.5.1.5-1. Context: GTP-U Path QoS Report IE within PFCP Node Report Request.
+	// QoSReportTrigger is the QoS Report Trigger IE [M].
 	QoSReportTrigger *IE
-	// TimeStamp: Time Stamp [M]. TS 29.244 V20.1.0 Table 7.4.5.1.5-1. Context: GTP-U Path QoS Report IE within PFCP Node Report Request.
+	// TimeStamp is the Time Stamp IE [M].
 	TimeStamp *IE
-	// StartTime: Start Time [C]. TS 29.244 V20.1.0 Table 7.4.5.1.5-1. Context: GTP-U Path QoS Report IE within PFCP Node Report Request.
+	// StartTime is the Start Time IE [C].
 	StartTime *IE
-	// QoSInformation: QoS Information [M]. TS 29.244 V20.1.0 Table 7.4.5.1.5-1. Context: GTP-U Path QoS Report IE within PFCP Node Report Request.
+	// QoSInformation is the QoS Information IE [M].
 	QoSInformation []*IE
 	// OtherIEs retains unknown types and repetitions beyond a singular field's
 	// first occurrence. TS 29.244 V20.1.0 clauses 7.6.9 and 7.6.10.
