@@ -6,8 +6,8 @@ package ie
 
 import "github.com/gomaja-labs/go-pfcp/internal/utils"
 
-// TS 29.244 V20.1.0 clause 8.2.4: no text repertoire is specified for this identifier.
 // NewNetworkInstance creates a new NetworkInstance IE.
+// TS 29.244 V20.1.0 clause 8.2.4: no text repertoire is specified for this identifier.
 func NewNetworkInstance(instance []byte) *IE {
 	return New(NetworkInstance, instance)
 }

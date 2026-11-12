@@ -4,8 +4,8 @@
 
 package ie
 
-// TS 29.244 V20.1.0 clause 8.2.161: no text repertoire is specified for this identifier.
 // NewDataNetworkAccessIdentifier creates a new DataNetworkAccessIdentifier IE.
+// TS 29.244 V20.1.0 clause 8.2.161: no text repertoire is specified for this identifier.
 func NewDataNetworkAccessIdentifier(id []byte) *IE {
 	return New(DataNetworkAccessIdentifier, id)
 }
