@@ -60,6 +60,8 @@ func TestAPIRegistry(t *testing.T) {
 
 func constructorArgument(typ reflect.Type, name string) reflect.Value {
 	switch typ {
+	case reflect.TypeFor[netip.Addr]():
+		return reflect.ValueOf(netip.MustParseAddr("192.0.2.1"))
 	case reflect.TypeFor[time.Time]():
 		return reflect.ValueOf(time.Unix(1700000000, 0).UTC())
 	case reflect.TypeFor[time.Duration]():

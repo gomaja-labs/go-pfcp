@@ -2,6 +2,7 @@ package message_test
 
 import (
 	"bytes"
+	"net/netip"
 	"reflect"
 	"sync"
 	"testing"
@@ -11,7 +12,7 @@ import (
 )
 
 func TestMarshalDoesNotMutate(t *testing.T) {
-	m := message.NewSessionDeletionRequest(1, 2, ie.NewNodeID("192.0.2.1", "", ""))
+	m := message.NewSessionDeletionRequest(1, 2, ie.NewNodeIDAddress(netip.MustParseAddr("192.0.2.1")))
 	before := *m.Header
 	out, err := m.Marshal()
 	if err != nil {

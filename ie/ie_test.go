@@ -8,6 +8,7 @@ import (
 	"errors"
 	"io"
 	"net"
+	"net/netip"
 	"testing"
 	"time"
 
@@ -1233,19 +1234,19 @@ func ieVectors() []ieVector {
 			},
 		}, {
 			"NodeID/IPv4", // TODO: add IPv6
-			ie.NewNodeID("127.0.0.1", "", ""),
+			ie.NewNodeIDAddress(netip.MustParseAddr("127.0.0.1")),
 			[]byte{0x00, 0x3c, 0x00, 0x05, 0x00, 0x7f, 0x00, 0x00, 0x01},
 		}, {
 			"NodeID/FQDN", // TODO: add IPv6
-			ie.NewNodeID("", "", "go-pfcp.epc.3gppnetwork.org"),
+			ie.NewNodeIDFQDN("go-pfcp.epc.3gppnetwork.org"),
 			[]byte{0x00, 0x3c, 0x00, 0x1d, 0x02, 0x07, 0x67, 0x6f, 0x2d, 0x70, 0x66, 0x63, 0x70, 0x03, 0x65, 0x70, 0x63, 0x0b, 0x33, 0x67, 0x70, 0x70, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x03, 0x6f, 0x72, 0x67},
 		}, {
 			"NodeIDHeuristic/IPv4", // TODO: add IPv6
-			ie.NewNodeIDHeuristic("127.0.0.1"),
+			ie.NewNodeIDAddress(netip.MustParseAddr("127.0.0.1")),
 			[]byte{0x00, 0x3c, 0x00, 0x05, 0x00, 0x7f, 0x00, 0x00, 0x01},
 		}, {
 			"NodeIDHeuristic/FQDN", // TODO: add IPv6
-			ie.NewNodeIDHeuristic("go-pfcp.epc.3gppnetwork.org"),
+			ie.NewNodeIDFQDN("go-pfcp.epc.3gppnetwork.org"),
 			[]byte{0x00, 0x3c, 0x00, 0x1d, 0x02, 0x07, 0x67, 0x6f, 0x2d, 0x70, 0x66, 0x63, 0x70, 0x03, 0x65, 0x70, 0x63, 0x0b, 0x33, 0x67, 0x70, 0x70, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x03, 0x6f, 0x72, 0x67},
 		}, {
 			"PFDContents",
@@ -3618,7 +3619,7 @@ func TestIEs(t *testing.T) {
 
 func TestIEAddRemove(t *testing.T) {
 	i := ie.NewCreatePDR(
-		ie.NewNodeID("127.0.0.1", "", ""),
+		ie.NewNodeIDAddress(netip.MustParseAddr("127.0.0.1")),
 		ie.NewPDRID(1),
 	)
 	if err := i.Add(ie.NewAPNDNN("foo.example")); err != nil {
@@ -3626,7 +3627,7 @@ func TestIEAddRemove(t *testing.T) {
 	}
 
 	added := ie.NewCreatePDR(
-		ie.NewNodeID("127.0.0.1", "", ""),
+		ie.NewNodeIDAddress(netip.MustParseAddr("127.0.0.1")),
 		ie.NewPDRID(1),
 		ie.NewAPNDNN("foo.example"),
 	)

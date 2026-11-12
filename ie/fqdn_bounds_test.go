@@ -2,6 +2,7 @@ package ie_test
 
 import (
 	"errors"
+	"net/netip"
 	"strings"
 	"testing"
 
@@ -16,12 +17,9 @@ func TestNodeIDBounds(t *testing.T) {
 	}
 	long := strings.Repeat("x", 64)
 	for name, i := range map[string]*ie.IE{
-		"overlong label":           ie.NewNodeID("", "", long),
-		"heuristic overlong label": ie.NewNodeIDHeuristic(long),
-		"no value":                 ie.NewNodeID("", "", ""),
-		"heuristic no value":       ie.NewNodeIDHeuristic(""),
-		"bad IPv4":                 ie.NewNodeID("192.0.2", "", ""),
-		"bad IPv6":                 ie.NewNodeID("", "2001:db8::zz", ""),
+		"overlong label":  ie.NewNodeIDFQDN(long),
+		"no value":        ie.NewNodeIDFQDN(""),
+		"invalid address": ie.NewNodeIDAddress(netip.Addr{}),
 	} {
 		requireInvalidValue(t, name, ie.NodeID, i)
 	}

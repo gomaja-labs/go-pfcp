@@ -5,6 +5,7 @@
 package message_test
 
 import (
+	"net/netip"
 	"testing"
 
 	"github.com/gomaja-labs/go-pfcp/ie"
@@ -51,7 +52,7 @@ func TestPFDManagementRequest(t *testing.T) {
 						ie.NewPFDContents("", "", "", "", "", []string{}, []string{}, []string{}),
 					),
 				),
-				ie.NewNodeID("172.16.41.51", "", ""),
+				ie.NewNodeIDAddress(netip.MustParseAddr("172.16.41.51")),
 			),
 			Serialized: []byte{
 				0x20, 0x03, // Flag + MsgType: PFCP PFD Mgmt Req
@@ -162,7 +163,7 @@ func TestPFDManagementRequest(t *testing.T) {
 							[]string{}, nil),
 					),
 				),
-				ie.NewNodeID("172.16.41.51", "", ""),
+				ie.NewNodeIDAddress(netip.MustParseAddr("172.16.41.51")),
 			),
 			Serialized: []byte{
 				0x20, 0x03, // Flag + MsgType: PFCP PFD Mgmt Req

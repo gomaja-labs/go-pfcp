@@ -21,7 +21,7 @@ func TestAssociationSetupResponse(t *testing.T) {
 			Description: "Single IE",
 			Structured: message.NewAssociationSetupResponse(
 				seq,
-				ie.NewNodeID("", "", "go-pfcp.epc.3gppnetwork.org"),
+				ie.NewNodeIDFQDN("go-pfcp.epc.3gppnetwork.org"),
 				ie.NewCause(ie.CauseRequestAccepted),
 				ie.NewRecoveryTimeStamp(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
 				ie.NewUPFunctionFeatures(0x01, 0x02),
@@ -98,7 +98,7 @@ func TestAssociationSetupResponse(t *testing.T) {
 			Description: "Multiple IEs",
 			Structured: message.NewAssociationSetupResponse(
 				seq,
-				ie.NewNodeID("", "", "go-pfcp.epc.3gppnetwork.org"),
+				ie.NewNodeIDFQDN("go-pfcp.epc.3gppnetwork.org"),
 				ie.NewCause(ie.CauseRequestAccepted),
 				ie.NewRecoveryTimeStamp(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
 				ie.NewUPFunctionFeatures(0x01, 0x02),
