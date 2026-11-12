@@ -75,7 +75,7 @@ func TestPFDContentsFlagRoundTrip(t *testing.T) {
 					lists[k] = nil
 				}
 			}
-			want := ie.NewPFDContentsFields(values[0], values[1], values[2], values[3], values[4], lists[0], lists[1], lists[2])
+			want := ie.NewPFDContentsFields(values[0], values[1], values[2], []byte(values[3]), values[4], lists[0], lists[1], lists[2])
 			if p := panicOf(func() {
 				b, e := want.Marshal()
 				if e != nil {
