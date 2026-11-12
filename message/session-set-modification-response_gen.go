@@ -4,7 +4,7 @@ package message
 
 import "github.com/gomaja-labs/go-pfcp/ie"
 
-// SessionSetModificationResponse represents PFCP Session Set Modifcation Response.
+// SessionSetModificationResponse represents PFCP Session Set Modification Response.
 // TS 29.244 V20.1.0 Table 7.4.2.2-1 (clause 7.4.7.2).
 type SessionSetModificationResponse struct {
 	// Header holds the PFCP framing and received IE ordering template.
@@ -20,7 +20,7 @@ type SessionSetModificationResponse struct {
 	OtherIEs []*ie.IE
 }
 
-// NewSessionSetModificationResponse creates PFCP Session Set Modifcation Response. Nil IEs are ignored.
+// NewSessionSetModificationResponse creates PFCP Session Set Modification Response. Nil IEs are ignored.
 func NewSessionSetModificationResponse(seq uint32, ies ...*ie.IE) *SessionSetModificationResponse {
 	m := &SessionSetModificationResponse{Header: NewHeader(MsgTypeSessionSetModificationResponse, 0, seq, nil)}
 	m.addIEs(ies)
@@ -39,7 +39,7 @@ func (m *SessionSetModificationResponse) MarshalTo(b []byte) error {
 	return marshalMessageTo(m.Header, m.messageIEs(), b)
 }
 
-// ParseSessionSetModificationResponse decodes one complete PFCP Session Set Modifcation Response frame.
+// ParseSessionSetModificationResponse decodes one complete PFCP Session Set Modification Response frame.
 // Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseSessionSetModificationResponse(b []byte) (*SessionSetModificationResponse, error) {
 	m := &SessionSetModificationResponse{}

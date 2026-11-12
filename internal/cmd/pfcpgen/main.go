@@ -79,6 +79,13 @@ func fileName(name string) string {
 	words = append(words, strings.ToLower(name[start:]))
 	return strings.Join(words, "-") + "_gen.go"
 }
+
+// messageName corrects the spelling in TS 29.244 V20.1.0 Table 7.3-1
+// for generated API documentation and names; the catalogue stays verbatim.
+func messageName(m spec.Container) string {
+	return strings.ReplaceAll(m.Name, "Modifcation", "Modification")
+}
+
 func generate(c *spec.Catalogue) (map[string][]byte, error) {
 	if err := spec.Validate(c); err != nil {
 		return nil, err
@@ -158,11 +165,11 @@ func TestTypeNamesCatalogue(t *testing.T) {
 	b.Reset()
 	b.WriteString(banner + "\npackage message\n\nimport \"fmt\"\n\n// Message types from TS 29.244 V20.1.0 Table 7.3-1.\nconst (\n")
 	for _, m := range c.Messages {
-		fmt.Fprintf(&b, "// MsgType%s identifies %s (TS 29.244 V20.1.0 Table 7.3-1).\nMsgType%s uint8 = %d\n", m.GoName, m.Name, m.GoName, m.Type)
+		fmt.Fprintf(&b, "// MsgType%s identifies %s (TS 29.244 V20.1.0 Table 7.3-1).\nMsgType%s uint8 = %d\n", m.GoName, messageName(m), m.GoName, m.Type)
 	}
 	b.WriteString(")\n\n// MessageTypeName returns the name from TS 29.244 V20.1.0 Table 7.3-1.\nfunc MessageTypeName(t uint8) string {switch t {\n")
 	for _, m := range c.Messages {
-		fmt.Fprintf(&b, "case MsgType%s: return %q\n", m.GoName, strings.ReplaceAll(strings.TrimPrefix(m.Name, "PFCP "), "Modifcation", "Modification"))
+		fmt.Fprintf(&b, "case MsgType%s: return %q\n", m.GoName, strings.TrimPrefix(messageName(m), "PFCP "))
 	}
 	b.WriteString("default: return fmt.Sprintf(\"Unknown (%d)\",t)\n}}\n\nfunc newMessage(t uint8) Message {switch t {\n")
 	for _, m := range c.Messages {
@@ -188,7 +195,7 @@ func TestTypeNamesCatalogue(t *testing.T) {
 		if m.Table != nil {
 			table = *m.Table
 		}
-		data := messageData{Name: m.GoName, WireName: m.Name, Table: table, Clause: m.Clause, Session: m.Category == "session", Request: strings.HasSuffix(m.GoName, "Request"), Fields: fields(m, types)}
+		data := messageData{Name: m.GoName, WireName: messageName(m), Table: table, Clause: m.Clause, Session: m.Category == "session", Request: strings.HasSuffix(m.GoName, "Request"), Fields: fields(m, types)}
 		b.Reset()
 		b.WriteString(banner)
 		if err := tmpl.Execute(&b, data); err != nil {

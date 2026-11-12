@@ -38,7 +38,7 @@ const (
 	MsgTypeSessionSetDeletionResponse uint8 = 15
 	// MsgTypeSessionSetModificationRequest identifies PFCP Session Set Modification Request (TS 29.244 V20.1.0 Table 7.3-1).
 	MsgTypeSessionSetModificationRequest uint8 = 16
-	// MsgTypeSessionSetModificationResponse identifies PFCP Session Set Modifcation Response (TS 29.244 V20.1.0 Table 7.3-1).
+	// MsgTypeSessionSetModificationResponse identifies PFCP Session Set Modification Response (TS 29.244 V20.1.0 Table 7.3-1).
 	MsgTypeSessionSetModificationResponse uint8 = 17
 	// MsgTypeSessionEstablishmentRequest identifies PFCP Session Establishment Request (TS 29.244 V20.1.0 Table 7.3-1).
 	MsgTypeSessionEstablishmentRequest uint8 = 50
