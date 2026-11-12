@@ -50,7 +50,7 @@ func (i *IE) N6DelayMeasurementControlInformation() (*N6DelayMeasurementControlI
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &N6DelayMeasurementControlInformationFields{}
 	f.addIEs(children)
@@ -83,7 +83,7 @@ func (f *N6DelayMeasurementControlInformationFields) UnmarshalBinary(b []byte) e
 	}
 	children, err := parseGroupedFields(N6DelayMeasurementControlInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(N6DelayMeasurementControlInformation, err)
 	}
 	*f = N6DelayMeasurementControlInformationFields{}
 	f.addIEs(children)

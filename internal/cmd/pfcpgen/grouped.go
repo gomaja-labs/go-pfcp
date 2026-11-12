@@ -170,7 +170,7 @@ func New{{.Name}}(ies ...*IE) *IE {return newGroupedIE({{.Name}},0,ies...)}
 func (i *IE) {{.Name}}() (*{{.Name}}Fields,error) {
  if i==nil {return nil,ErrIENotFound}
  if i.Type!={{.Name}} {return nil,&InvalidTypeError{Type:i.Type}}
- children,err:=groupedChildren(i);if err!=nil {return nil,err}
+ children,err:=groupedChildren(i);if err!=nil {return nil,withDecodePath(i.Type,err)}
  f:=&{{.Name}}Fields{};f.addIEs(children);return f,nil
 }
 
@@ -190,7 +190,7 @@ func Parse{{.Name}}Fields(b []byte) (*{{.Name}}Fields,error) {
 // A decoding error leaves the receiver unchanged.
 func (f *{{.Name}}Fields) UnmarshalBinary(b []byte) error {
  if f==nil {return ErrIENotFound}
- children,err:=parseGroupedFields({{.Name}},b);if err!=nil {return err}
+ children,err:=parseGroupedFields({{.Name}},b);if err!=nil {return withDecodePath({{.Name}},err)}
  *f={{.Name}}Fields{};f.addIEs(children);return nil
 }
 

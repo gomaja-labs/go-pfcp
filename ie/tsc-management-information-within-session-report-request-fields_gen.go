@@ -34,7 +34,7 @@ func (i *IE) TSCManagementInformationWithinSessionReportRequest() (*TSCManagemen
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &TSCManagementInformationWithinSessionReportRequestFields{}
 	f.addIEs(children)
@@ -67,7 +67,7 @@ func (f *TSCManagementInformationWithinSessionReportRequestFields) UnmarshalBina
 	}
 	children, err := parseGroupedFields(TSCManagementInformationWithinSessionReportRequest, b)
 	if err != nil {
-		return err
+		return withDecodePath(TSCManagementInformationWithinSessionReportRequest, err)
 	}
 	*f = TSCManagementInformationWithinSessionReportRequestFields{}
 	f.addIEs(children)

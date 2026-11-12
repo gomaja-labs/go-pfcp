@@ -30,7 +30,7 @@ func (i *IE) AccessAvailabilityControlInformation() (*AccessAvailabilityControlI
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &AccessAvailabilityControlInformationFields{}
 	f.addIEs(children)
@@ -63,7 +63,7 @@ func (f *AccessAvailabilityControlInformationFields) UnmarshalBinary(b []byte) e
 	}
 	children, err := parseGroupedFields(AccessAvailabilityControlInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(AccessAvailabilityControlInformation, err)
 	}
 	*f = AccessAvailabilityControlInformationFields{}
 	f.addIEs(children)

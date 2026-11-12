@@ -28,7 +28,7 @@ func (i *IE) RemoveFAR() (*RemoveFARFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &RemoveFARFields{}
 	f.addIEs(children)
@@ -61,7 +61,7 @@ func (f *RemoveFARFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(RemoveFAR, b)
 	if err != nil {
-		return err
+		return withDecodePath(RemoveFAR, err)
 	}
 	*f = RemoveFARFields{}
 	f.addIEs(children)

@@ -28,7 +28,7 @@ func (i *IE) RemoveSRR() (*RemoveSRRFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &RemoveSRRFields{}
 	f.addIEs(children)
@@ -61,7 +61,7 @@ func (f *RemoveSRRFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(RemoveSRR, b)
 	if err != nil {
-		return err
+		return withDecodePath(RemoveSRR, err)
 	}
 	*f = RemoveSRRFields{}
 	f.addIEs(children)

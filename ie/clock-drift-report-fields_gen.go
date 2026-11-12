@@ -40,7 +40,7 @@ func (i *IE) ClockDriftReport() (*ClockDriftReportFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &ClockDriftReportFields{}
 	f.addIEs(children)
@@ -73,7 +73,7 @@ func (f *ClockDriftReportFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(ClockDriftReport, b)
 	if err != nil {
-		return err
+		return withDecodePath(ClockDriftReport, err)
 	}
 	*f = ClockDriftReportFields{}
 	f.addIEs(children)

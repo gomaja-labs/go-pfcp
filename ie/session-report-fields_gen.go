@@ -34,7 +34,7 @@ func (i *IE) SessionReport() (*SessionReportFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &SessionReportFields{}
 	f.addIEs(children)
@@ -67,7 +67,7 @@ func (f *SessionReportFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(SessionReport, b)
 	if err != nil {
-		return err
+		return withDecodePath(SessionReport, err)
 	}
 	*f = SessionReportFields{}
 	f.addIEs(children)

@@ -28,7 +28,7 @@ func (i *IE) MoQInformation() (*MoQInformationFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &MoQInformationFields{}
 	f.addIEs(children)
@@ -61,7 +61,7 @@ func (f *MoQInformationFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(MoQInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(MoQInformation, err)
 	}
 	*f = MoQInformationFields{}
 	f.addIEs(children)

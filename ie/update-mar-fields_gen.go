@@ -46,7 +46,7 @@ func (i *IE) UpdateMAR() (*UpdateMARFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &UpdateMARFields{}
 	f.addIEs(children)
@@ -79,7 +79,7 @@ func (f *UpdateMARFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(UpdateMAR, b)
 	if err != nil {
-		return err
+		return withDecodePath(UpdateMAR, err)
 	}
 	*f = UpdateMARFields{}
 	f.addIEs(children)

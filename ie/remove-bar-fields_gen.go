@@ -28,7 +28,7 @@ func (i *IE) RemoveBAR() (*RemoveBARFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &RemoveBARFields{}
 	f.addIEs(children)
@@ -61,7 +61,7 @@ func (f *RemoveBARFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(RemoveBAR, b)
 	if err != nil {
-		return err
+		return withDecodePath(RemoveBAR, err)
 	}
 	*f = RemoveBARFields{}
 	f.addIEs(children)

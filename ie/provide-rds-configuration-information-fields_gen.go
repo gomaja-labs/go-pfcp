@@ -30,7 +30,7 @@ func (i *IE) ProvideRDSConfigurationInformation() (*ProvideRDSConfigurationInfor
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &ProvideRDSConfigurationInformationFields{}
 	f.addIEs(children)
@@ -63,7 +63,7 @@ func (f *ProvideRDSConfigurationInformationFields) UnmarshalBinary(b []byte) err
 	}
 	children, err := parseGroupedFields(ProvideRDSConfigurationInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(ProvideRDSConfigurationInformation, err)
 	}
 	*f = ProvideRDSConfigurationInformationFields{}
 	f.addIEs(children)

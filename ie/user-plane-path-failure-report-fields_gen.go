@@ -30,7 +30,7 @@ func (i *IE) UserPlanePathFailureReport() (*UserPlanePathFailureReportFields, er
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &UserPlanePathFailureReportFields{}
 	f.addIEs(children)
@@ -63,7 +63,7 @@ func (f *UserPlanePathFailureReportFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(UserPlanePathFailureReport, b)
 	if err != nil {
-		return err
+		return withDecodePath(UserPlanePathFailureReport, err)
 	}
 	*f = UserPlanePathFailureReportFields{}
 	f.addIEs(children)

@@ -42,7 +42,7 @@ func (i *IE) UEIPAddressUsageInformation() (*UEIPAddressUsageInformationFields, 
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &UEIPAddressUsageInformationFields{}
 	f.addIEs(children)
@@ -75,7 +75,7 @@ func (f *UEIPAddressUsageInformationFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(UEIPAddressUsageInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(UEIPAddressUsageInformation, err)
 	}
 	*f = UEIPAddressUsageInformationFields{}
 	f.addIEs(children)

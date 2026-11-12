@@ -253,7 +253,11 @@ func (i *IE) ValueAsGrouped() ([]*IE, error) {
 		}
 		return i.ChildIEs, nil
 	}
-	return ParseMultiIEs(i.Payload)
+	children, err := decodeIEs(i.Payload, 1)
+	if err != nil {
+		return nil, withDecodePath(i.Type, err)
+	}
+	return children, nil
 }
 
 // valueAs3GPPTimestamp uses era 1 for wire seconds below 2208988800, and
@@ -310,12 +314,31 @@ func ParseMultiIEs(b []byte) ([]*IE, error) {
 	return decodeIEs(b, 0)
 }
 
+// ParseMessageIEs strictly frames the top-level IEs of a message. A grouped
+// value that cannot be decoded is retained as raw Payload with nil ChildIEs.
+// ValueAsGrouped and the typed accessor report that failure on access. Explicit
+// Parse and ParseMultiIEs calls remain strict. The returned IEs borrow b.
+// TS 29.244 V20.1.0 clauses 7.6.7-7.6.10 let applications handle erroneous
+// mandatory IEs while ignoring erroneous optional, unexpected or repeated IEs.
+func ParseMessageIEs(b []byte) ([]*IE, error) {
+	var ies []*IE
+	for len(b) > 0 {
+		i, n, err := decodeIE(b, 0, true)
+		if err != nil {
+			return nil, err
+		}
+		ies = append(ies, i)
+		b = b[n:]
+	}
+	return ies, nil
+}
+
 // decodeIEs decodes the IEs filling b. depth counts the grouped IEs that
 // enclose them.
 func decodeIEs(b []byte, depth int) ([]*IE, error) {
 	var ies []*IE
 	for len(b) > 0 {
-		i, n, err := decodeIE(b, depth)
+		i, n, err := decodeIE(b, depth, false)
 		if err != nil {
 			return nil, err
 		}
@@ -330,7 +353,7 @@ func decodeIEs(b []byte, depth int) ([]*IE, error) {
 // than by re-measuring the decoded IE.
 // TS 29.244 V20.1.0 clause 8.1.1: Length excludes the four-octet header,
 // but includes the Enterprise ID of a vendor-specific IE.
-func decodeIE(b []byte, depth int) (*IE, int, error) {
+func decodeIE(b []byte, depth int, opaqueOnError bool) (*IE, int, error) {
 	if len(b) < 4 {
 		return nil, 0, io.ErrUnexpectedEOF
 	}
@@ -357,7 +380,11 @@ func decodeIE(b []byte, depth int) (*IE, int, error) {
 		}
 		children, err := decodeIEs(payload, depth+1)
 		if err != nil {
-			return nil, 0, &DecodeError{Type: typ, Err: err}
+			if !opaqueOnError {
+				return nil, 0, withDecodePath(typ, err)
+			}
+			v.Payload = payload
+			return v, end, nil
 		}
 		if children == nil {
 			children = make([]*IE, 0)
@@ -376,7 +403,7 @@ func (i *IE) UnmarshalBinary(b []byte) error {
 	if i == nil {
 		return ErrIENotFound
 	}
-	v, n, err := decodeIE(b, 0)
+	v, n, err := decodeIE(b, 0, false)
 	if err != nil {
 		return err
 	}
@@ -525,12 +552,12 @@ func newGroupedIE(itype IEType, eid uint16, ies ...*IE) *IE {
 // TS 29.244 V20.1.0 clause 8.2.65 and RFC 5905 section 6 specify seconds
 // since 1900 modulo 2^32. With no era carried on the wire, this package chooses
 // the Unix window [1970-01-01, 2106-02-07T06:28:15Z]. A time outside that
-// window, or a time with fractional seconds, gives an IE whose Marshal reports
-// ErrInvalidValue. Rejecting fractions prevents silently changing the input instant.
+// window gives an IE whose Marshal reports ErrInvalidValue. The IE carries
+// whole seconds; the fractional part is discarded.
 func new3GPPTimestampIE(typ IEType, ts time.Time) *IE {
 	seconds := ts.Unix()
-	if seconds < 0 || seconds > 1<<32-1 || ts.Nanosecond() != 0 {
-		return newInvalidIE(typ, fmt.Errorf("%w: %s is not a whole second within 1970-01-01T00:00:00Z to 2106-02-07T06:28:15Z",
+	if seconds < 0 || seconds > 1<<32-1 || seconds == 1<<32-1 && ts.Nanosecond() != 0 {
+		return newInvalidIE(typ, fmt.Errorf("%w: %s is outside 1970-01-01T00:00:00Z to 2106-02-07T06:28:15Z",
 			ErrInvalidValue, ts.UTC().Format(time.RFC3339)))
 	}
 	return newUint32ValIE(typ, uint32(seconds+2208988800))

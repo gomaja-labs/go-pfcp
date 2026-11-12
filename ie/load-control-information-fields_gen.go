@@ -32,7 +32,7 @@ func (i *IE) LoadControlInformation() (*LoadControlInformationFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &LoadControlInformationFields{}
 	f.addIEs(children)
@@ -65,7 +65,7 @@ func (f *LoadControlInformationFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(LoadControlInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(LoadControlInformation, err)
 	}
 	*f = LoadControlInformationFields{}
 	f.addIEs(children)

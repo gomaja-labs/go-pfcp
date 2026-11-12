@@ -28,7 +28,7 @@ func (i *IE) PeerUPRestartReport() (*PeerUPRestartReportFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &PeerUPRestartReportFields{}
 	f.addIEs(children)
@@ -61,7 +61,7 @@ func (f *PeerUPRestartReportFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(PeerUPRestartReport, b)
 	if err != nil {
-		return err
+		return withDecodePath(PeerUPRestartReport, err)
 	}
 	*f = PeerUPRestartReportFields{}
 	f.addIEs(children)

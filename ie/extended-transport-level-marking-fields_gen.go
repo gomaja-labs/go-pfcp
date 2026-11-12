@@ -32,7 +32,7 @@ func (i *IE) ExtendedTransportLevelMarking() (*ExtendedTransportLevelMarkingFiel
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &ExtendedTransportLevelMarkingFields{}
 	f.addIEs(children)
@@ -65,7 +65,7 @@ func (f *ExtendedTransportLevelMarkingFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(ExtendedTransportLevelMarking, b)
 	if err != nil {
-		return err
+		return withDecodePath(ExtendedTransportLevelMarking, err)
 	}
 	*f = ExtendedTransportLevelMarkingFields{}
 	f.addIEs(children)

@@ -38,7 +38,7 @@ func (i *IE) UpdateTGPPAccessForwardingActionInformation() (*UpdateTGPPAccessFor
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &UpdateTGPPAccessForwardingActionInformationFields{}
 	f.addIEs(children)
@@ -71,7 +71,7 @@ func (f *UpdateTGPPAccessForwardingActionInformationFields) UnmarshalBinary(b []
 	}
 	children, err := parseGroupedFields(UpdateTGPPAccessForwardingActionInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(UpdateTGPPAccessForwardingActionInformation, err)
 	}
 	*f = UpdateTGPPAccessForwardingActionInformationFields{}
 	f.addIEs(children)

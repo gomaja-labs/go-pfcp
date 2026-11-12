@@ -32,7 +32,7 @@ func (i *IE) L2TPTunnelInformation() (*L2TPTunnelInformationFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &L2TPTunnelInformationFields{}
 	f.addIEs(children)
@@ -65,7 +65,7 @@ func (f *L2TPTunnelInformationFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(L2TPTunnelInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(L2TPTunnelInformation, err)
 	}
 	*f = L2TPTunnelInformationFields{}
 	f.addIEs(children)

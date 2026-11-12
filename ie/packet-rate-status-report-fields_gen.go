@@ -32,7 +32,7 @@ func (i *IE) PacketRateStatusReport() (*PacketRateStatusReportFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &PacketRateStatusReportFields{}
 	f.addIEs(children)
@@ -65,7 +65,7 @@ func (f *PacketRateStatusReportFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(PacketRateStatusReport, b)
 	if err != nil {
-		return err
+		return withDecodePath(PacketRateStatusReport, err)
 	}
 	*f = PacketRateStatusReportFields{}
 	f.addIEs(children)

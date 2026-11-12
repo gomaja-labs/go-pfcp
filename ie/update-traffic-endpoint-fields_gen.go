@@ -48,7 +48,7 @@ func (i *IE) UpdateTrafficEndpoint() (*UpdateTrafficEndpointFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &UpdateTrafficEndpointFields{}
 	f.addIEs(children)
@@ -81,7 +81,7 @@ func (f *UpdateTrafficEndpointFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(UpdateTrafficEndpoint, b)
 	if err != nil {
-		return err
+		return withDecodePath(UpdateTrafficEndpoint, err)
 	}
 	*f = UpdateTrafficEndpointFields{}
 	f.addIEs(children)

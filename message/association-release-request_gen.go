@@ -53,7 +53,7 @@ func (m *AssociationReleaseRequest) UnmarshalBinary(b []byte) error {
 	if err != nil {
 		return err
 	}
-	ies, err := ie.ParseMultiIEs(h.Payload)
+	ies, err := ie.ParseMessageIEs(h.Payload)
 	if err != nil {
 		return err
 	}
@@ -72,6 +72,9 @@ func (m *AssociationReleaseRequest) MarshalLen() int {
 
 // MessageTypeName returns the message's specification name.
 func (m *AssociationReleaseRequest) MessageTypeName() string {
+	if m == nil {
+		return ""
+	}
 	return MessageTypeName(MsgTypeAssociationReleaseRequest)
 }
 
@@ -84,7 +87,93 @@ func (m *AssociationReleaseRequest) SEID() uint64 {
 }
 
 // IsRequest reports whether this message is a request.
-func (m *AssociationReleaseRequest) IsRequest() bool { return true }
+func (m *AssociationReleaseRequest) IsRequest() bool { return m != nil && true }
+
+// Version returns the received version, or zero for nil.
+func (m *AssociationReleaseRequest) Version() int {
+	if m == nil {
+		return 0
+	}
+	return m.Header.Version()
+}
+
+// MessageType returns the received type, or zero for nil.
+func (m *AssociationReleaseRequest) MessageType() uint8 {
+	if m == nil {
+		return 0
+	}
+	return m.Header.MessageType()
+}
+
+// Sequence returns the sequence number, or zero for nil.
+func (m *AssociationReleaseRequest) Sequence() uint32 {
+	if m == nil {
+		return 0
+	}
+	return m.Header.Sequence()
+}
+
+// SetSequenceNumber assigns the sequence number unless m is nil.
+func (m *AssociationReleaseRequest) SetSequenceNumber(seq uint32) {
+	if m != nil {
+		m.Header.SetSequenceNumber(seq)
+	}
+}
+
+// HasFO reports whether another frame follows, or false for nil.
+func (m *AssociationReleaseRequest) HasFO() bool { return m != nil && m.Header.HasFO() }
+
+// HasMP reports whether priority is present, or false for nil.
+func (m *AssociationReleaseRequest) HasMP() bool { return m != nil && m.Header.HasMP() }
+
+// HasSEID reports whether the SEID is present, or false for nil.
+func (m *AssociationReleaseRequest) HasSEID() bool { return m != nil && m.Header.HasSEID() }
+
+// SetFO changes the follow-on bit unless m is nil.
+func (m *AssociationReleaseRequest) SetFO(on bool) {
+	if m != nil {
+		m.Header.SetFO(on)
+	}
+}
+
+// SetSEID assigns the endpoint identifier, or returns ErrNilMessage for nil.
+func (m *AssociationReleaseRequest) SetSEID(seid uint64) error {
+	if m == nil {
+		return ErrNilMessage
+	}
+	return m.Header.SetSEID(seid)
+}
+
+// SetMP sets priority, or returns ErrNilMessage for nil.
+func (m *AssociationReleaseRequest) SetMP(priority uint8) error {
+	if m == nil {
+		return ErrNilMessage
+	}
+	return m.Header.SetMP(priority)
+}
+
+// ClearMP removes priority unless m is nil.
+func (m *AssociationReleaseRequest) ClearMP() {
+	if m != nil {
+		m.Header.ClearMP()
+	}
+}
+
+// MP returns priority, or zero for nil.
+func (m *AssociationReleaseRequest) MP() uint8 {
+	if m == nil {
+		return 0
+	}
+	return m.Header.MP()
+}
+
+// String summarizes the header, or returns an empty string for nil.
+func (m *AssociationReleaseRequest) String() string {
+	if m == nil {
+		return ""
+	}
+	return m.Header.String()
+}
 
 func (m *AssociationReleaseRequest) messageIEs() []*ie.IE {
 	if m == nil {

@@ -38,7 +38,7 @@ func (i *IE) TrafficParameterMeasurementReport() (*TrafficParameterMeasurementRe
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &TrafficParameterMeasurementReportFields{}
 	f.addIEs(children)
@@ -71,7 +71,7 @@ func (f *TrafficParameterMeasurementReportFields) UnmarshalBinary(b []byte) erro
 	}
 	children, err := parseGroupedFields(TrafficParameterMeasurementReport, b)
 	if err != nil {
-		return err
+		return withDecodePath(TrafficParameterMeasurementReport, err)
 	}
 	*f = TrafficParameterMeasurementReportFields{}
 	f.addIEs(children)

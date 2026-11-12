@@ -32,7 +32,7 @@ func (i *IE) TransportDelayReporting() (*TransportDelayReportingFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &TransportDelayReportingFields{}
 	f.addIEs(children)
@@ -65,7 +65,7 @@ func (f *TransportDelayReportingFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(TransportDelayReporting, b)
 	if err != nil {
-		return err
+		return withDecodePath(TransportDelayReporting, err)
 	}
 	*f = TransportDelayReportingFields{}
 	f.addIEs(children)

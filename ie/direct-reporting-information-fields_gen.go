@@ -36,7 +36,7 @@ func (i *IE) DirectReportingInformation() (*DirectReportingInformationFields, er
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &DirectReportingInformationFields{}
 	f.addIEs(children)
@@ -69,7 +69,7 @@ func (f *DirectReportingInformationFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(DirectReportingInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(DirectReportingInformation, err)
 	}
 	*f = DirectReportingInformationFields{}
 	f.addIEs(children)

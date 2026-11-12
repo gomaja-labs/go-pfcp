@@ -36,7 +36,7 @@ func (i *IE) UpdateSRR() (*UpdateSRRFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &UpdateSRRFields{}
 	f.addIEs(children)
@@ -69,7 +69,7 @@ func (f *UpdateSRRFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(UpdateSRR, b)
 	if err != nil {
-		return err
+		return withDecodePath(UpdateSRR, err)
 	}
 	*f = UpdateSRRFields{}
 	f.addIEs(children)

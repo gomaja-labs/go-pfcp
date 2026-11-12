@@ -74,7 +74,7 @@ func (i *IE) PDI() (*PDIFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &PDIFields{}
 	f.addIEs(children)
@@ -107,7 +107,7 @@ func (f *PDIFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(PDI, b)
 	if err != nil {
-		return err
+		return withDecodePath(PDI, err)
 	}
 	*f = PDIFields{}
 	f.addIEs(children)

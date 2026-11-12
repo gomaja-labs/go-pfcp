@@ -38,7 +38,7 @@ func (i *IE) TrafficParameterMeasurementControlInformation() (*TrafficParameterM
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &TrafficParameterMeasurementControlInformationFields{}
 	f.addIEs(children)
@@ -71,7 +71,7 @@ func (f *TrafficParameterMeasurementControlInformationFields) UnmarshalBinary(b 
 	}
 	children, err := parseGroupedFields(TrafficParameterMeasurementControlInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(TrafficParameterMeasurementControlInformation, err)
 	}
 	*f = TrafficParameterMeasurementControlInformationFields{}
 	f.addIEs(children)

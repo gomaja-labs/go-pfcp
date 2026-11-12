@@ -28,7 +28,7 @@ func (i *IE) RemoveQER() (*RemoveQERFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &RemoveQERFields{}
 	f.addIEs(children)
@@ -61,7 +61,7 @@ func (f *RemoveQERFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(RemoveQER, b)
 	if err != nil {
-		return err
+		return withDecodePath(RemoveQER, err)
 	}
 	*f = RemoveQERFields{}
 	f.addIEs(children)

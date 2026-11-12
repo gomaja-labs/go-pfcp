@@ -34,7 +34,7 @@ func (i *IE) PFCPSessionChangeInfo() (*PFCPSessionChangeInfoFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &PFCPSessionChangeInfoFields{}
 	f.addIEs(children)
@@ -67,7 +67,7 @@ func (f *PFCPSessionChangeInfoFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(PFCPSessionChangeInfo, b)
 	if err != nil {
-		return err
+		return withDecodePath(PFCPSessionChangeInfo, err)
 	}
 	*f = PFCPSessionChangeInfoFields{}
 	f.addIEs(children)

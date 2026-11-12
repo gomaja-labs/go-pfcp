@@ -42,7 +42,7 @@ func (i *IE) HeaderHandlingControlInformation() (*HeaderHandlingControlInformati
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &HeaderHandlingControlInformationFields{}
 	f.addIEs(children)
@@ -75,7 +75,7 @@ func (f *HeaderHandlingControlInformationFields) UnmarshalBinary(b []byte) error
 	}
 	children, err := parseGroupedFields(HeaderHandlingControlInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(HeaderHandlingControlInformation, err)
 	}
 	*f = HeaderHandlingControlInformationFields{}
 	f.addIEs(children)

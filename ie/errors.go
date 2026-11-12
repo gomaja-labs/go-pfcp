@@ -35,12 +35,21 @@ var (
 // TS 29.244 V20.1.0 clauses 7.6.3 and 7.6.7 require the offending IE type
 // when an invalid IE length is reported.
 type DecodeError struct {
+	// Type is the innermost IE whose header or value could not be decoded.
+	// When a child header is incomplete, Type identifies its enclosing group
+	// because the child type and length cannot both be read.
 	Type IEType
-	Err  error
+	// Path lists enclosing grouped types, outermost first; it excludes Type.
+	Path []IEType
+	// Err is the underlying failure, never another DecodeError.
+	Err error
 }
 
 // Error describes the IE and the underlying decoding failure.
 func (e *DecodeError) Error() string {
+	if len(e.Path) != 0 {
+		return fmt.Sprintf("decode IE %d in groups %v: %v", e.Type, e.Path, e.Err)
+	}
 	return fmt.Sprintf("decode IE %d: %v", e.Type, e.Err)
 }
 
@@ -87,4 +96,17 @@ type InvalidNodeIDError struct {
 // Error returns message with the invalid NodeID given.
 func (e *InvalidNodeIDError) Error() string {
 	return fmt.Sprintf("got invalid NodeID: %d", e.ID)
+}
+
+// withDecodePath preserves one offending IE, adding its enclosing group.
+// TS 29.244 V20.1.0 clause 7.6.7 requires the offending type, not a parent.
+func withDecodePath(parent IEType, err error) error {
+	var leaf *DecodeError
+	if errors.As(err, &leaf) {
+		path := make([]IEType, 1, len(leaf.Path)+1)
+		path[0] = parent
+		path = append(path, leaf.Path...)
+		return &DecodeError{Type: leaf.Type, Path: path, Err: leaf.Err}
+	}
+	return &DecodeError{Type: parent, Err: err}
 }

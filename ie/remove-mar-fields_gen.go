@@ -28,7 +28,7 @@ func (i *IE) RemoveMAR() (*RemoveMARFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &RemoveMARFields{}
 	f.addIEs(children)
@@ -61,7 +61,7 @@ func (f *RemoveMARFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(RemoveMAR, b)
 	if err != nil {
-		return err
+		return withDecodePath(RemoveMAR, err)
 	}
 	*f = RemoveMARFields{}
 	f.addIEs(children)

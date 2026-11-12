@@ -32,7 +32,7 @@ func (i *IE) RedundantTransmissionParameters() (*RedundantTransmissionParameters
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &RedundantTransmissionParametersFields{}
 	f.addIEs(children)
@@ -65,7 +65,7 @@ func (f *RedundantTransmissionParametersFields) UnmarshalBinary(b []byte) error 
 	}
 	children, err := parseGroupedFields(RedundantTransmissionParameters, b)
 	if err != nil {
-		return err
+		return withDecodePath(RedundantTransmissionParameters, err)
 	}
 	*f = RedundantTransmissionParametersFields{}
 	f.addIEs(children)

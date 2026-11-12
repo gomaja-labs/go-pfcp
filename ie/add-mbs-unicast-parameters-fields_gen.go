@@ -40,7 +40,7 @@ func (i *IE) AddMBSUnicastParameters() (*AddMBSUnicastParametersFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &AddMBSUnicastParametersFields{}
 	f.addIEs(children)
@@ -73,7 +73,7 @@ func (f *AddMBSUnicastParametersFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(AddMBSUnicastParameters, b)
 	if err != nil {
-		return err
+		return withDecodePath(AddMBSUnicastParameters, err)
 	}
 	*f = AddMBSUnicastParametersFields{}
 	f.addIEs(children)

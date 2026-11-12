@@ -32,7 +32,7 @@ func (i *IE) DSCPToPPIControlInformation() (*DSCPToPPIControlInformationFields, 
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &DSCPToPPIControlInformationFields{}
 	f.addIEs(children)
@@ -65,7 +65,7 @@ func (f *DSCPToPPIControlInformationFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(DSCPToPPIControlInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(DSCPToPPIControlInformation, err)
 	}
 	*f = DSCPToPPIControlInformationFields{}
 	f.addIEs(children)

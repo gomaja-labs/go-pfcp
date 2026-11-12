@@ -32,7 +32,7 @@ func (i *IE) EthernetTrafficInformation() (*EthernetTrafficInformationFields, er
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &EthernetTrafficInformationFields{}
 	f.addIEs(children)
@@ -65,7 +65,7 @@ func (f *EthernetTrafficInformationFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(EthernetTrafficInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(EthernetTrafficInformation, err)
 	}
 	*f = EthernetTrafficInformationFields{}
 	f.addIEs(children)

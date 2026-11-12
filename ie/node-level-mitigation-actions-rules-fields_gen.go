@@ -40,7 +40,7 @@ func (i *IE) NodeLevelMitigationActionsRules() (*NodeLevelMitigationActionsRules
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &NodeLevelMitigationActionsRulesFields{}
 	f.addIEs(children)
@@ -73,7 +73,7 @@ func (f *NodeLevelMitigationActionsRulesFields) UnmarshalBinary(b []byte) error 
 	}
 	children, err := parseGroupedFields(NodeLevelMitigationActionsRules, b)
 	if err != nil {
-		return err
+		return withDecodePath(NodeLevelMitigationActionsRules, err)
 	}
 	*f = NodeLevelMitigationActionsRulesFields{}
 	f.addIEs(children)

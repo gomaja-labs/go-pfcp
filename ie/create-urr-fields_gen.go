@@ -90,7 +90,7 @@ func (i *IE) CreateURR() (*CreateURRFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &CreateURRFields{}
 	f.addIEs(children)
@@ -123,7 +123,7 @@ func (f *CreateURRFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(CreateURR, b)
 	if err != nil {
-		return err
+		return withDecodePath(CreateURR, err)
 	}
 	*f = CreateURRFields{}
 	f.addIEs(children)

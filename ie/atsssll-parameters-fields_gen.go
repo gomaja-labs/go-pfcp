@@ -28,7 +28,7 @@ func (i *IE) ATSSSLLParameters() (*ATSSSLLParametersFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &ATSSSLLParametersFields{}
 	f.addIEs(children)
@@ -61,7 +61,7 @@ func (f *ATSSSLLParametersFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(ATSSSLLParameters, b)
 	if err != nil {
-		return err
+		return withDecodePath(ATSSSLLParameters, err)
 	}
 	*f = ATSSSLLParametersFields{}
 	f.addIEs(children)

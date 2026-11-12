@@ -30,7 +30,7 @@ func (i *IE) MPQUICParameters() (*MPQUICParametersFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &MPQUICParametersFields{}
 	f.addIEs(children)
@@ -63,7 +63,7 @@ func (f *MPQUICParametersFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(MPQUICParameters, b)
 	if err != nil {
-		return err
+		return withDecodePath(MPQUICParameters, err)
 	}
 	*f = MPQUICParametersFields{}
 	f.addIEs(children)

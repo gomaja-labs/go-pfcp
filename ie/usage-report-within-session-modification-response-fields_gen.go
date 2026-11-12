@@ -52,7 +52,7 @@ func (i *IE) UsageReportWithinSessionModificationResponse() (*UsageReportWithinS
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &UsageReportWithinSessionModificationResponseFields{}
 	f.addIEs(children)
@@ -85,7 +85,7 @@ func (f *UsageReportWithinSessionModificationResponseFields) UnmarshalBinary(b [
 	}
 	children, err := parseGroupedFields(UsageReportWithinSessionModificationResponse, b)
 	if err != nil {
-		return err
+		return withDecodePath(UsageReportWithinSessionModificationResponse, err)
 	}
 	*f = UsageReportWithinSessionModificationResponseFields{}
 	f.addIEs(children)

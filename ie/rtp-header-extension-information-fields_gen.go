@@ -34,7 +34,7 @@ func (i *IE) RTPHeaderExtensionInformation() (*RTPHeaderExtensionInformationFiel
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &RTPHeaderExtensionInformationFields{}
 	f.addIEs(children)
@@ -67,7 +67,7 @@ func (f *RTPHeaderExtensionInformationFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(RTPHeaderExtensionInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(RTPHeaderExtensionInformation, err)
 	}
 	*f = RTPHeaderExtensionInformationFields{}
 	f.addIEs(children)

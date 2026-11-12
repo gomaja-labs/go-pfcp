@@ -42,7 +42,7 @@ func (i *IE) CreateFAR() (*CreateFARFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &CreateFARFields{}
 	f.addIEs(children)
@@ -75,7 +75,7 @@ func (f *CreateFARFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(CreateFAR, b)
 	if err != nil {
-		return err
+		return withDecodePath(CreateFAR, err)
 	}
 	*f = CreateFARFields{}
 	f.addIEs(children)

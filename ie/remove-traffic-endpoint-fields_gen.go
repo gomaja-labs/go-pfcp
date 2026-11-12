@@ -28,7 +28,7 @@ func (i *IE) RemoveTrafficEndpoint() (*RemoveTrafficEndpointFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &RemoveTrafficEndpointFields{}
 	f.addIEs(children)
@@ -61,7 +61,7 @@ func (f *RemoveTrafficEndpointFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(RemoveTrafficEndpoint, b)
 	if err != nil {
-		return err
+		return withDecodePath(RemoveTrafficEndpoint, err)
 	}
 	*f = RemoveTrafficEndpointFields{}
 	f.addIEs(children)

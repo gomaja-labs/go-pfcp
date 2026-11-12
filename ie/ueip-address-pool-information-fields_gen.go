@@ -36,7 +36,7 @@ func (i *IE) UEIPAddressPoolInformation() (*UEIPAddressPoolInformationFields, er
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &UEIPAddressPoolInformationFields{}
 	f.addIEs(children)
@@ -69,7 +69,7 @@ func (f *UEIPAddressPoolInformationFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(UEIPAddressPoolInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(UEIPAddressPoolInformation, err)
 	}
 	*f = UEIPAddressPoolInformationFields{}
 	f.addIEs(children)

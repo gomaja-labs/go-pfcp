@@ -30,7 +30,7 @@ func (i *IE) PMFParameters() (*PMFParametersFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &PMFParametersFields{}
 	f.addIEs(children)
@@ -63,7 +63,7 @@ func (f *PMFParametersFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(PMFParameters, b)
 	if err != nil {
-		return err
+		return withDecodePath(PMFParameters, err)
 	}
 	*f = PMFParametersFields{}
 	f.addIEs(children)

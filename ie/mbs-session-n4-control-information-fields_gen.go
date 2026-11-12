@@ -34,7 +34,7 @@ func (i *IE) MBSSessionN4ControlInformation() (*MBSSessionN4ControlInformationFi
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &MBSSessionN4ControlInformationFields{}
 	f.addIEs(children)
@@ -67,7 +67,7 @@ func (f *MBSSessionN4ControlInformationFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(MBSSessionN4ControlInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(MBSSessionN4ControlInformation, err)
 	}
 	*f = MBSSessionN4ControlInformationFields{}
 	f.addIEs(children)

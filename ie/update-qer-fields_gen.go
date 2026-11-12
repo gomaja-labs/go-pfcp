@@ -56,7 +56,7 @@ func (i *IE) UpdateQER() (*UpdateQERFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &UpdateQERFields{}
 	f.addIEs(children)
@@ -89,7 +89,7 @@ func (f *UpdateQERFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(UpdateQER, b)
 	if err != nil {
-		return err
+		return withDecodePath(UpdateQER, err)
 	}
 	*f = UpdateQERFields{}
 	f.addIEs(children)

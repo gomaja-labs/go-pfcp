@@ -30,7 +30,7 @@ func (i *IE) ApplicationIDsPFDs() (*ApplicationIDsPFDsFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &ApplicationIDsPFDsFields{}
 	f.addIEs(children)
@@ -63,7 +63,7 @@ func (f *ApplicationIDsPFDsFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(ApplicationIDsPFDs, b)
 	if err != nil {
-		return err
+		return withDecodePath(ApplicationIDsPFDs, err)
 	}
 	*f = ApplicationIDsPFDsFields{}
 	f.addIEs(children)

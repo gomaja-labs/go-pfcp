@@ -38,7 +38,7 @@ func (i *IE) NonTGPPAccessForwardingActionInformation() (*NonTGPPAccessForwardin
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &NonTGPPAccessForwardingActionInformationFields{}
 	f.addIEs(children)
@@ -71,7 +71,7 @@ func (f *NonTGPPAccessForwardingActionInformationFields) UnmarshalBinary(b []byt
 	}
 	children, err := parseGroupedFields(NonTGPPAccessForwardingActionInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(NonTGPPAccessForwardingActionInformation, err)
 	}
 	*f = NonTGPPAccessForwardingActionInformationFields{}
 	f.addIEs(children)

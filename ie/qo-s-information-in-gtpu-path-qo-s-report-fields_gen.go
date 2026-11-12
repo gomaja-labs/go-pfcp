@@ -36,7 +36,7 @@ func (i *IE) QoSInformationInGTPUPathQoSReport() (*QoSInformationInGTPUPathQoSRe
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &QoSInformationInGTPUPathQoSReportFields{}
 	f.addIEs(children)
@@ -69,7 +69,7 @@ func (f *QoSInformationInGTPUPathQoSReportFields) UnmarshalBinary(b []byte) erro
 	}
 	children, err := parseGroupedFields(QoSInformationInGTPUPathQoSReport, b)
 	if err != nil {
-		return err
+		return withDecodePath(QoSInformationInGTPUPathQoSReport, err)
 	}
 	*f = QoSInformationInGTPUPathQoSReportFields{}
 	f.addIEs(children)
