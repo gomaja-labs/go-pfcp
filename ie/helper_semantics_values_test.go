@@ -29,7 +29,7 @@ func helperSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.91.
 		{name: "AdditionalUsageReportsInformation", input: ie.NewAdditionalUsageReportsInformation(0x00ff), want: 0x00ff},
 		// TS 29.244 V20.1.0 clause 8.2.85.
-		{name: "AggregatedURRID", input: ie.NewAggregatedURRID(0xffffffff), want: 0xffffffff},
+		{name: "AggregatedURRID", input: ie.NewAggregatedURRID(0xffffffff), want: uint32(0xffffffff)},
 		// TS 29.244 V20.1.0 clause 8.2.6.
 		{name: "ApplicationID", input: ie.NewApplicationID("https://example.com/apps/go-pfcp/"), want: "https://example.com/apps/go-pfcp/"},
 		// TS 29.244 V20.1.0 clause 8.2.60.
@@ -41,7 +41,7 @@ func helperSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.162.
 		{name: "AveragePacketDelay", input: ie.NewAveragePacketDelay(10 * time.Second), want: 10 * time.Second},
 		// TS 29.244 V20.1.0 clause 8.2.115.
-		{name: "AveragingWindow", input: ie.NewAveragingWindow(0xffffffff), want: 0xffffffff},
+		{name: "AveragingWindow", input: ie.NewAveragingWindow(0xffffffff), want: uint32(0xffffffff)},
 		// TS 29.244 V20.1.0 clause 8.2.57.
 		{name: "BARID", input: ie.NewBARID(0xff), want: 0xff},
 		// TS 29.244 V20.1.0 clause 8.2.58.
@@ -51,7 +51,7 @@ func helperSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.140.
 		{name: "CreateBridgeRouterInfo", input: ie.NewCreateBridgeRouterInfo(1), want: 1},
 		// TS 29.244 V20.1.0 clause 8.2.148.
-		{name: "CumulativeRateRatioThreshold", input: ie.NewCumulativeRateRatioThreshold(0xffffffff), want: 0xffffffff},
+		{name: "CumulativeRateRatioThreshold", input: ie.NewCumulativeRateRatioThreshold(0xffffffff), want: uint32(0xffffffff)},
 		// TS 29.244 V20.1.0 clause 8.2.29.
 		{name: "DLBufferingDuration", input: ie.NewDLBufferingDuration(20 * time.Hour), want: 20 * time.Hour},
 		// TS 29.244 V20.1.0 clause 8.2.30.
@@ -75,7 +75,7 @@ func helperSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.53.
 		{name: "EndTime", input: ie.NewEndTime(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)), want: time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)},
 		// TS 29.244 V20.1.0 clause 8.2.98.
-		{name: "EthernetFilterID", input: ie.NewEthernetFilterID(0xffffffff), want: 0xffffffff},
+		{name: "EthernetFilterID", input: ie.NewEthernetFilterID(0xffffffff), want: uint32(0xffffffff)},
 		// TS 29.244 V20.1.0 clause 8.2.99.
 		{name: "EthernetFilterProperties", input: ie.NewEthernetFilterProperties(0x01), want: 0x01},
 		// TS 29.244 V20.1.0 clause 8.2.105.
@@ -85,9 +85,9 @@ func helperSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.96.
 		{name: "Ethertype", input: ie.NewEthertype(0xffff), want: 0xffff},
 		// TS 29.244 V20.1.0 clause 8.2.112.
-		{name: "EventQuota", input: ie.NewEventQuota(0xffffffff), want: 0xffffffff},
+		{name: "EventQuota", input: ie.NewEventQuota(0xffffffff), want: uint32(0xffffffff)},
 		// TS 29.244 V20.1.0 clause 8.2.113.
-		{name: "EventThreshold", input: ie.NewEventThreshold(0xffffffff), want: 0xffffffff},
+		{name: "EventThreshold", input: ie.NewEventThreshold(0xffffffff), want: uint32(0xffffffff)},
 		// TS 29.244 V20.1.0 clause 8.2.114.
 		{name: "EventTimeStamp", input: ie.NewEventTimeStamp(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)), want: time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)},
 		// TS 29.244 V20.1.0 clause 8.2.84.
@@ -182,7 +182,7 @@ func helperSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.144.
 		{name: "PortManagementInformationContainer", input: ie.NewPortManagementInformationContainer([]byte("go-pfcp")), want: []byte("go-pfcp")},
 		// TS 29.244 V20.1.0 clause 8.2.141.
-		{name: "PortNumber", input: ie.NewPortNumber(0xffffffff), want: 0xffffffff},
+		{name: "PortNumber", input: ie.NewPortNumber(0xffffffff), want: uint32(0xffffffff)},
 		// TS 29.244 V20.1.0 clause 8.2.127.
 		{name: "Priority", input: ie.NewPriority(ie.PriorityActive), want: ie.PriorityActive},
 		// TS 29.244 V20.1.0 clause 8.2.97.
