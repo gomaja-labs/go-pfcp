@@ -13,7 +13,9 @@ import (
 
 // Errors returned for invalid PFCP header values or framing.
 var (
-	// ErrInvalidLength reports a message length inconsistent with the datagram or encoding limit.
+	// ErrInvalidLength reports a message length inconsistent with the input or
+	// encoding limit. Received complete headers are exposed by InvalidLengthError.
+	// TS 29.244 V20.1.0 clause 7.6.3.
 	ErrInvalidLength = errors.New("invalid PFCP message length")
 	// ErrInvalidHeader reports invalid PFCP header flags or framing.
 	ErrInvalidHeader = errors.New("invalid PFCP header")
@@ -50,6 +52,45 @@ func (e *UnsupportedVersionError) Error() string {
 	}
 	return fmt.Sprintf("unsupported PFCP version %d", e.Header.Version())
 }
+
+// InvalidLengthError reports a received message whose Length field disagrees
+// with the octets received, although its complete header was received. The
+// message body is not decoded. errors.Is(err, ErrInvalidLength) reports true.
+// If Header.IsRequest reports true, answer with Cause "Invalid Length"
+// (ie.CauseInvalidLength) and the received SequenceNumber; a session response
+// carries the peer's SEID, or 0 (clause 7.2.2.4.2). Discard an unknown message
+// type (clause 7.6.4). For a response, stop retransmitting the outstanding
+// request with the same sequence number and notify the application.
+// TS 29.244 V20.1.0 clause 7.6.3.
+type InvalidLengthError struct {
+	// Header contains the received Flags with spare bits cleared, Type,
+	// SequenceNumber, SEID when S=1, and MessagePriority when S=1 and MP=1.
+	// Payload is always nil: a message of invalid length is not processed further.
+	Header *Header
+	// Length is the received Length field: octets after the first four.
+	Length int
+	// Received counts octets after the first four up to the end of the input;
+	// for ParseDatagram, this is the end of the datagram.
+	Received int
+}
+
+// Error describes the inconsistent received length, or ErrInvalidLength for nil.
+func (e *InvalidLengthError) Error() string {
+	if e == nil {
+		return ErrInvalidLength.Error()
+	}
+	minimum := 4
+	if e.Header.HasSEID() {
+		minimum = 12
+	}
+	if e.Length < minimum {
+		return fmt.Sprintf("%s: Length field %d does not cover the header", ErrInvalidLength, e.Length)
+	}
+	return fmt.Sprintf("%s: Length field %d but %d octets follow it", ErrInvalidLength, e.Length, e.Received)
+}
+
+// Unwrap returns ErrInvalidLength.
+func (e *InvalidLengthError) Unwrap() error { return ErrInvalidLength }
 
 // Header represents a PFCP header. The wire length is always derived from the
 // encoded content. MessagePriority is a value from 0 to 15,
@@ -183,6 +224,8 @@ func (h *Header) MarshalTo(b []byte) error {
 // ParseHeader decodes exactly one framed message, including its payload. FO may
 // be set; this low-level API does not validate the surrounding datagram.
 // Unsupported versions return UnsupportedVersionError as soon as octet 1 exists.
+// A complete header with inconsistent Length returns InvalidLengthError;
+// an incomplete header returns io.ErrUnexpectedEOF (TS 29.244 V20.1.0 clause 7.6.3).
 // Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseHeader(b []byte) (*Header, error) {
 	h := &Header{}
@@ -228,19 +271,44 @@ func frameSize(b []byte) (int, error) {
 	}
 	length := int(binary.BigEndian.Uint16(b[2:4]))
 	if length < minimum-4 {
-		return 0, ErrInvalidLength
+		return 0, invalidLength(b)
 	}
 	n := length + 4
 	if len(b) < n {
-		return 0, ErrInvalidLength
+		return 0, invalidLength(b)
 	}
 	return n, nil
+}
+
+// decodeHeaderFields reads a complete version-1 header, without its payload.
+// Callers must first check the respective header size (8 or 16 octets).
+// TS 29.244 V20.1.0 clause 7.2.2.4.1.
+func decodeHeaderFields(b []byte) Header {
+	h := Header{Flags: b[0] &^ 0x18, Type: b[1]}
+	offset := 4
+	if h.HasSEID() {
+		h.SEID = binary.BigEndian.Uint64(b[offset : offset+8])
+		offset += 8
+	}
+	h.SequenceNumber = uint24To32(b[offset : offset+3])
+	if h.HasSEID() && h.HasMP() {
+		h.MessagePriority = b[offset+3] >> 4
+	}
+	return h
+}
+
+// invalidLength requires a complete header and never retains a message body.
+func invalidLength(b []byte) *InvalidLengthError {
+	h := decodeHeaderFields(b)
+	return &InvalidLengthError{Header: &h, Length: int(binary.BigEndian.Uint16(b[2:4])), Received: len(b) - 4}
 }
 
 // UnmarshalBinary decodes exactly one frame. Unsupported versions return
 // UnsupportedVersionError before any framing check. Payload
 // borrows b; keep b unchanged while using decoded data. Spare bits
 // are ignored. A failed decode leaves the receiver unchanged.
+// A complete header with inconsistent Length returns InvalidLengthError;
+// an incomplete header returns io.ErrUnexpectedEOF (TS 29.244 V20.1.0 clause 7.6.3).
 func (h *Header) UnmarshalBinary(b []byte) error {
 	if h == nil {
 		return ErrNilMessage
@@ -250,19 +318,10 @@ func (h *Header) UnmarshalBinary(b []byte) error {
 		return err
 	}
 	if n != len(b) {
-		return ErrInvalidLength
+		return invalidLength(b)
 	}
-	v := Header{Flags: b[0] &^ 0x18, Type: b[1]}
-	offset := 4
-	if v.HasSEID() {
-		v.SEID = binary.BigEndian.Uint64(b[offset : offset+8])
-		offset += 8
-	}
-	v.SequenceNumber = uint24To32(b[offset : offset+3])
-	if v.HasSEID() && v.HasMP() {
-		v.MessagePriority = b[offset+3] >> 4
-	}
-	v.Payload = b[offset+4 : n : n]
+	v := decodeHeaderFields(b)
+	v.Payload = b[v.MarshalLen():n:n]
 	*h = v
 	return nil
 }

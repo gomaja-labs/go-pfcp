@@ -46,8 +46,10 @@ func parseMessage(b []byte) (Message, error) {
 }
 
 // Parse decodes exactly one standalone PFCP message. FO=1 is rejected with
-// ErrBundledMessage; trailing bytes with FO=0 are an invalid length. Use
+// ErrBundledMessage; trailing bytes with FO=0 return InvalidLengthError. Use
 // ParseDatagram for UDP payloads that may contain bundles.
+// A complete header with inconsistent Length returns InvalidLengthError;
+// an incomplete header returns io.ErrUnexpectedEOF (TS 29.244 V20.1.0 clause 7.6.3).
 // Decoding may borrow b; keep b unchanged while the result is in use.
 func Parse(b []byte) (Message, error) {
 	if _, err := frameSize(b); err != nil {

@@ -42,6 +42,8 @@ func (m *Generic) MarshalTo(b []byte) error {
 }
 
 // ParseGeneric decodes a given byte sequence as a Generic.
+// Complete headers with inconsistent Length return InvalidLengthError
+// (TS 29.244 V20.1.0 clause 7.6.3).
 // Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseGeneric(b []byte) (*Generic, error) {
 	m := &Generic{}
@@ -52,6 +54,8 @@ func ParseGeneric(b []byte) (*Generic, error) {
 }
 
 // UnmarshalBinary decodes a given byte sequence as a Generic.
+// Complete headers with inconsistent Length return InvalidLengthError;
+// a failed decode leaves the receiver unchanged (TS 29.244 V20.1.0 clause 7.6.3).
 // Decoding may borrow b; keep b unchanged while the result is in use.
 func (m *Generic) UnmarshalBinary(b []byte) error {
 	if m == nil {
