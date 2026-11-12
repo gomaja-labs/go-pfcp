@@ -6,15 +6,18 @@ package ie
 
 import (
 	"encoding/binary"
+	"fmt"
 	"io"
 )
 
+// TS 29.244 V20.1.0 clause 8.2.39 defines the length-delimited content;
+// clause 5.2.1A.4 note 2 leaves Custom PFD Content interpretation implementation specific.
 // NewPFDContents creates a new PFDContents IE.
-func NewPFDContents(fd, url, dn, cp, dnp string, afd, aurl, adnp []string) *IE {
+func NewPFDContents(fd, url, dn string, cp []byte, dnp string, afd, aurl, adnp []string) *IE {
 	f := NewPFDContentsFields(fd, url, dn, cp, dnp, afd, aurl, adnp)
 	b, err := f.Marshal()
 	if err != nil {
-		return nil
+		return newInvalidIE(PFDContents, fmt.Errorf("%w: %w", ErrInvalidValue, err))
 	}
 
 	return New(PFDContents, b)
@@ -50,7 +53,7 @@ type PFDContentsFields struct {
 	DNLength                        uint16
 	DomainName                      string
 	CPLength                        uint16
-	CustomPFDContent                string
+	CustomPFDContent                []byte
 	DNPLength                       uint16
 	DomainNameProtocol              string
 	AFDLength                       uint16
@@ -62,7 +65,7 @@ type PFDContentsFields struct {
 }
 
 // NewPFDContentsFields creates a new NewPFDContentsFields.
-func NewPFDContentsFields(fd, url, dn, cp, dnp string, afd, aurl, adnp []string) *PFDContentsFields {
+func NewPFDContentsFields(fd, url, dn string, cp []byte, dnp string, afd, aurl, adnp []string) *PFDContentsFields {
 	f := &PFDContentsFields{}
 	if fd != "" {
 		f.FlowDescription = fd
@@ -82,9 +85,9 @@ func NewPFDContentsFields(fd, url, dn, cp, dnp string, afd, aurl, adnp []string)
 		f.SetDNFlag()
 	}
 
-	if cp != "" {
+	if len(cp) != 0 {
 		f.CustomPFDContent = cp
-		f.CPLength = uint16(len([]byte(cp)))
+		f.CPLength = uint16(len(cp))
 		f.SetCPFlag()
 	}
 
@@ -302,15 +305,16 @@ func (f *PFDContentsFields) UnmarshalBinary(b []byte) error {
 		length *uint16
 		value  *string
 		list   *[]string
+		octets *[]byte
 	}{
-		{1, &f.FDLength, &f.FlowDescription, nil},
-		{2, &f.URLLength, &f.URL, nil},
-		{4, &f.DNLength, &f.DomainName, nil},
-		{8, &f.CPLength, &f.CustomPFDContent, nil},
-		{16, &f.DNPLength, &f.DomainNameProtocol, nil},
-		{32, &f.AFDLength, nil, &f.AdditionalFlowDescription},
-		{64, &f.AURLLength, nil, &f.AdditionalURL},
-		{128, &f.ADNPLength, nil, &f.AdditionalDomainNameAndProtocol},
+		{1, &f.FDLength, &f.FlowDescription, nil, nil},
+		{2, &f.URLLength, &f.URL, nil, nil},
+		{4, &f.DNLength, &f.DomainName, nil, nil},
+		{8, &f.CPLength, nil, nil, &f.CustomPFDContent},
+		{16, &f.DNPLength, &f.DomainNameProtocol, nil, nil},
+		{32, &f.AFDLength, nil, &f.AdditionalFlowDescription, nil},
+		{64, &f.AURLLength, nil, &f.AdditionalURL, nil},
+		{128, &f.ADNPLength, nil, &f.AdditionalDomainNameAndProtocol, nil},
 	}
 	for _, field := range fields {
 		if f.Flags&field.bit == 0 {
@@ -321,6 +325,10 @@ func (f *PFDContentsFields) UnmarshalBinary(b []byte) error {
 			return err
 		}
 		*field.length = uint16(len(value))
+		if field.octets != nil {
+			*field.octets = append([]byte(nil), value...)
+			continue
+		}
 		if field.value != nil {
 			*field.value = string(value)
 			continue
@@ -488,15 +496,15 @@ func (f *PFDContentsFields) validLengths() bool {
 	for _, field := range []struct {
 		present bool
 		length  uint16
-		value   string
+		size    int
 	}{
-		{f.HasFD(), f.FDLength, f.FlowDescription},
-		{f.HasURL(), f.URLLength, f.URL},
-		{f.HasDN(), f.DNLength, f.DomainName},
-		{f.HasCP(), f.CPLength, f.CustomPFDContent},
-		{f.HasDNP(), f.DNPLength, f.DomainNameProtocol},
+		{f.HasFD(), f.FDLength, len(f.FlowDescription)},
+		{f.HasURL(), f.URLLength, len(f.URL)},
+		{f.HasDN(), f.DNLength, len(f.DomainName)},
+		{f.HasCP(), f.CPLength, len(f.CustomPFDContent)},
+		{f.HasDNP(), f.DNPLength, len(f.DomainNameProtocol)},
 	} {
-		if field.present && len(field.value) != int(field.length) {
+		if field.present && field.size != int(field.length) {
 			return false
 		}
 	}
