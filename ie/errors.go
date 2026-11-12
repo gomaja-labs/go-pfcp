@@ -43,8 +43,11 @@ var (
 type DecodeError struct {
 	// Type is the innermost IE whose header or value could not be decoded.
 	// An incomplete header carries its type when two octets are available;
-	// otherwise Type is zero, with enclosing groups retained in Path.
+	// otherwise TypeUnknown is true, with enclosing groups retained in Path.
 	Type IEType
+	// TypeUnknown reports that fewer than two type octets were available.
+	// Type has no meaning when TypeUnknown is true.
+	TypeUnknown bool
 	// Path lists enclosing grouped types, outermost first; it excludes Type.
 	Path []IEType
 	// Err is the underlying failure, never another DecodeError.
@@ -53,6 +56,12 @@ type DecodeError struct {
 
 // Error describes the IE and the underlying decoding failure.
 func (e *DecodeError) Error() string {
+	if e.TypeUnknown {
+		if len(e.Path) != 0 {
+			return fmt.Sprintf("decode IE (type unknown) in groups %v: %v", e.Path, e.Err)
+		}
+		return fmt.Sprintf("decode IE (type unknown): %v", e.Err)
+	}
 	if len(e.Path) != 0 {
 		return fmt.Sprintf("decode IE %d in groups %v: %v", e.Type, e.Path, e.Err)
 	}
@@ -62,7 +71,7 @@ func (e *DecodeError) Error() string {
 // Unwrap returns the underlying decoding failure.
 func (e *DecodeError) Unwrap() error { return e.Err }
 
-// IEType returns the offending IE type.
+// IEType returns the offending IE type, or zero when TypeUnknown is true.
 func (e *DecodeError) IEType() IEType { return e.Type }
 
 // EncodeError identifies the IE that could not be encoded. It unwraps to the
@@ -116,7 +125,7 @@ func withDecodePath(parent IEType, err error) error {
 		path := make([]IEType, 1, len(leaf.Path)+1)
 		path[0] = parent
 		path = append(path, leaf.Path...)
-		return &DecodeError{Type: leaf.Type, Path: path, Err: leaf.Err}
+		return &DecodeError{Type: leaf.Type, TypeUnknown: leaf.TypeUnknown, Path: path, Err: leaf.Err}
 	}
 	return &DecodeError{Type: parent, Err: err}
 }

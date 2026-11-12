@@ -103,6 +103,11 @@ func FuzzParseDatagram(f *testing.F) {
 		}
 		f.Add(b)
 	}
+	// Exercise chain failures and the diagnostic cap from the seed corpus.
+	f.Add(wireHeader(0x25, 54, nil))
+	f.Add(append(wireHeader(0x21, 54, nil), 0))
+	manyBad := bytes.Repeat(wireHeader(0x25, 54, []byte{0, 19, 0, 2, 1}), 17)
+	f.Add(append(manyBad, wireHeader(0x21, 54, nil)...))
 	f.Fuzz(func(t *testing.T, b []byte) {
 		ms, err := message.ParseDatagram(b)
 		if err != nil {

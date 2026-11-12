@@ -399,7 +399,7 @@ func decodeIE(b []byte, depth int, opaqueOnError bool) (*IE, int, error) {
 		if len(b) >= 2 {
 			typ = IEType(binary.BigEndian.Uint16(b[:2]))
 		}
-		return nil, 0, &DecodeError{Type: typ, Err: fmt.Errorf("%w: %w", ErrInvalidLength, io.ErrUnexpectedEOF)}
+		return nil, 0, &DecodeError{Type: typ, TypeUnknown: len(b) < 2, Err: fmt.Errorf("%w: %w", ErrInvalidLength, io.ErrUnexpectedEOF)}
 	}
 	typ := IEType(binary.BigEndian.Uint16(b[:2]))
 	length := int(binary.BigEndian.Uint16(b[2:4]))

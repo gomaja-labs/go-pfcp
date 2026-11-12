@@ -179,7 +179,11 @@ func TestDatagramFramingFailureKeepsPrefix(t *testing.T) {
 			wire[len(good)+3]++
 		}
 		got, err := message.ParseDatagram(wire)
-		if err == nil || len(got) != 1 || !got[0].(interface{ HasFO() bool }).HasFO() {
+		want := 1
+		if len(bad) == 16 && bad[0]&4 != 0 {
+			want = 2 // The last complete frame survives its missing follow-on.
+		}
+		if err == nil || len(got) != want || !got[0].(interface{ HasFO() bool }).HasFO() {
 			t.Fatalf("lost valid prefix: %d %v", len(got), err)
 		}
 	}
