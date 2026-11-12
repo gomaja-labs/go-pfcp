@@ -404,11 +404,7 @@ type helperCoverageRow struct {
 }
 
 func helperCoverageExclusions() map[string]string {
-	return map[string]string{
-		"HasMODE":  "TS 29.244 V20.1.0 clause 8.2.174 makes the old MODE bit spare; obsolete API retained pending an explicit API decision.",
-		"HasNORD":  "TS 29.244 V20.1.0 clause 8.2.174 makes the old NORD bit spare; obsolete API retained pending an explicit API decision.",
-		"HasSESRL": "TS 29.244 V20.1.0 clause 8.2.168 reserves the former SESRL bit; obsolete API retained pending an explicit API decision.",
-	}
+	return map[string]string{}
 }
 
 // PFCP_HELPER_COVERAGE_JSON writes an optional machine-readable inventory.

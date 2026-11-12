@@ -5,14 +5,15 @@
 package ie
 
 import (
+	"fmt"
 	"io"
 )
 
-// NewNFInstanceID creates a new NFInstanceID IE, or nil unless id is 16 octets.
+// NewNFInstanceID creates a new NFInstanceID IE; id must contain 16 octets.
 func NewNFInstanceID(id []byte) *IE {
 	// TS 29.244 V20.1.0 clause 8.2.175: exactly sixteen octets.
 	if len(id) != 16 {
-		return nil
+		return newInvalidIE(NFInstanceID, fmt.Errorf("%w: NF Instance ID requires 16 octets", ErrInvalidValue))
 	}
 	return New(NFInstanceID, id[:16:16])
 }

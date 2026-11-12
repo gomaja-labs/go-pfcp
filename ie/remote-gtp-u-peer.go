@@ -5,6 +5,7 @@
 package ie
 
 import (
+	"bytes"
 	"encoding/binary"
 	"io"
 	"net"
@@ -12,8 +13,8 @@ import (
 )
 
 // NewRemoteGTPUPeer creates a new RemoteGTPUPeer IE.
-func NewRemoteGTPUPeer(flags uint8, v4, v6 string, di uint8, ni string) *IE {
-	fields := NewRemoteGTPUPeerFields(flags, v4, v6, di, ni)
+func NewRemoteGTPUPeer(flags uint8, v4, v6 string, di uint8, ni []byte, recoveryTimestamp time.Time) *IE {
+	fields := NewRemoteGTPUPeerFields(flags, v4, v6, di, ni, recoveryTimestamp)
 	b, err := fields.Marshal()
 	if err != nil {
 		return newInvalidIE(RemoteGTPUPeer, ErrInvalidValue)
@@ -81,14 +82,14 @@ type RemoteGTPUPeerFields struct {
 	DILength             uint16
 	DestinationInterface uint8
 	NILength             uint16
-	NetworkInstance      string
+	NetworkInstance      []byte
 	RecoveryTimestamp    time.Time
 	invalidArgument      bool
 }
 
 // NewRemoteGTPUPeerFields creates a new RemoteGTPUPeerFields.
-func NewRemoteGTPUPeerFields(flags uint8, v4, v6 string, di uint8, ni string) *RemoteGTPUPeerFields {
-	f := &RemoteGTPUPeerFields{Flags: flags}
+func NewRemoteGTPUPeerFields(flags uint8, v4, v6 string, di uint8, ni []byte, recoveryTimestamp time.Time) *RemoteGTPUPeerFields {
+	f := &RemoteGTPUPeerFields{Flags: flags, RecoveryTimestamp: recoveryTimestamp}
 
 	f.IPv4Address = net.ParseIP(v4).To4()
 	f.IPv6Address = net.ParseIP(v6).To16()
@@ -173,7 +174,7 @@ func (f *RemoteGTPUPeerFields) UnmarshalBinary(b []byte) error {
 		if l < offset+int(f.NILength) {
 			return io.ErrUnexpectedEOF
 		}
-		f.NetworkInstance = string(b[offset : offset+int(f.NILength)])
+		f.NetworkInstance = b[offset : offset+int(f.NILength)]
 		offset += int(f.NILength)
 	}
 
@@ -209,7 +210,7 @@ func (f *RemoteGTPUPeerFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
 	}
-	if f.invalidArgument || f.Flags&3 == 0 || f.Flags&^uint8(31) != 0 || f.Flags&2 == 0 && len(f.IPv4Address) != 0 || f.Flags&1 == 0 && len(f.IPv6Address) != 0 || f.Flags&4 == 0 && (f.DILength != 0 || f.DestinationInterface != 0) || f.Flags&8 == 0 && (f.NILength != 0 || f.NetworkInstance != "") || f.Flags&16 == 0 && !f.RecoveryTimestamp.IsZero() || f.DestinationInterface > 15 {
+	if f.invalidArgument || f.Flags&3 == 0 || f.Flags&^uint8(31) != 0 || f.Flags&2 == 0 && len(f.IPv4Address) != 0 || f.Flags&1 == 0 && len(f.IPv6Address) != 0 || f.Flags&4 == 0 && (f.DILength != 0 || f.DestinationInterface != 0) || f.Flags&8 == 0 && (f.NILength != 0 || len(f.NetworkInstance) != 0) || f.Flags&16 == 0 && !f.RecoveryTimestamp.IsZero() || f.DestinationInterface > 15 {
 		return ErrInvalidValue
 	}
 	if f.MarshalLen() > 65535 {
@@ -253,6 +254,8 @@ func (f *RemoteGTPUPeerFields) MarshalTo(b []byte) error {
 	if has3rdBit(f.Flags) {
 		binary.BigEndian.PutUint16(b[offset:offset+2], f.DILength)
 		offset += 2
+		// TS 29.244 V20.1.0 clauses 8.1.2 and 8.2.24: zero spare extension octets.
+		clear(b[offset : offset+int(f.DILength)])
 		b[offset] = f.DestinationInterface
 		offset += int(f.DILength)
 	}
@@ -314,5 +317,5 @@ func (f *RemoteGTPUPeerFields) Equal(other *RemoteGTPUPeerFields) bool {
 	if f == nil || other == nil {
 		return f == other
 	}
-	return f.Flags == other.Flags && f.IPv4Address.Equal(other.IPv4Address) && f.IPv6Address.Equal(other.IPv6Address) && f.DILength == other.DILength && f.DestinationInterface == other.DestinationInterface && f.NILength == other.NILength && f.NetworkInstance == other.NetworkInstance && f.RecoveryTimestamp.Equal(other.RecoveryTimestamp) && f.invalidArgument == other.invalidArgument
+	return f.Flags == other.Flags && f.IPv4Address.Equal(other.IPv4Address) && f.IPv6Address.Equal(other.IPv6Address) && f.DILength == other.DILength && f.DestinationInterface == other.DestinationInterface && f.NILength == other.NILength && bytes.Equal(f.NetworkInstance, other.NetworkInstance) && f.RecoveryTimestamp.Equal(other.RecoveryTimestamp) && f.invalidArgument == other.invalidArgument
 }

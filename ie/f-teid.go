@@ -6,6 +6,7 @@ package ie
 
 import (
 	"encoding/binary"
+	"fmt"
 	"io"
 	"net"
 )
@@ -16,7 +17,7 @@ func NewFTEID(flags uint8, teid uint32, v4, v6 net.IP, chid uint8) *IE {
 
 	b, err := fields.Marshal()
 	if err != nil {
-		return nil
+		return newInvalidIE(FTEID, fmt.Errorf("%w: %w", ErrInvalidValue, err))
 	}
 
 	return New(FTEID, b)
@@ -154,7 +155,8 @@ func (f *FTEIDFields) UnmarshalBinary(b []byte) error {
 		return io.ErrUnexpectedEOF
 	}
 
-	f.Flags = b[0]
+	// TS 29.244 V20.1.0 clauses 8.1.2 and 8.2.3: ignore received spare bits.
+	f.Flags = b[0] & 15
 	offset := 1
 
 	if f.HasCh() {
@@ -207,6 +209,15 @@ func (f *FTEIDFields) Marshal() ([]byte, error) {
 func (f *FTEIDFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
+	}
+	// TS 29.244 V20.1.0 clause 8.2.3: require an address-family flag,
+	// reserve CHID for CH, and send the spare bits as zero.
+	if f.Flags&^uint8(15) != 0 || f.Flags&3 == 0 || f.HasChID() && !f.HasCh() {
+		return ErrInvalidValue
+	}
+	// With CH clear each flagged address is mandatory.
+	if !f.HasCh() && (f.HasIPv4() && f.IPv4Address.To4() == nil || f.HasIPv6() && (f.IPv6Address.To16() == nil || f.IPv6Address.To4() != nil)) {
+		return ErrInvalidValue
 	}
 	if f.MarshalLen() > 65535 {
 		return ErrInvalidLength

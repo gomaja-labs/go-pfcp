@@ -6,6 +6,7 @@ package ie
 
 import (
 	"encoding/binary"
+	"fmt"
 	"io"
 	"net"
 )
@@ -21,7 +22,7 @@ func NewMPTCPAddressInformation(ptype uint8, port uint16, v4, v6 net.IP) *IE {
 
 	b, err := fields.Marshal()
 	if err != nil {
-		return nil
+		return newInvalidIE(MPTCPAddressInformation, fmt.Errorf("%w: %w", ErrInvalidValue, err))
 	}
 
 	return New(MPTCPAddressInformation, b)

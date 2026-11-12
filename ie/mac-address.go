@@ -5,6 +5,7 @@
 package ie
 
 import (
+	"fmt"
 	"io"
 	"net"
 )
@@ -15,7 +16,7 @@ func NewMACAddress(src, dst, upperSrc, upperDst net.HardwareAddr) *IE {
 
 	b, err := fields.Marshal()
 	if err != nil {
-		return nil
+		return newInvalidIE(MACAddress, fmt.Errorf("%w: %w", ErrInvalidValue, err))
 	}
 
 	return New(MACAddress, b)
@@ -227,6 +228,12 @@ func (f *MACAddressFields) Marshal() ([]byte, error) {
 func (f *MACAddressFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
+	}
+	// TS 29.244 V20.1.0 clause 8.2.93: each present MAC address occupies six octets.
+	for _, addr := range []net.HardwareAddr{f.SourceMACAddress, f.DestinationMACAddress, f.UpperSourceMACAddress, f.UpperDestinationMACAddress} {
+		if addr != nil && len(addr) != 6 {
+			return ErrInvalidValue
+		}
 	}
 	if f.MarshalLen() > 65535 {
 		return ErrInvalidLength

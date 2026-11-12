@@ -22,10 +22,10 @@ func TestNodeReportRequest(t *testing.T) {
 				ie.NewNodeIDFQDN("go-pfcp.epc.3gppnetwork.org"),
 				ie.NewNodeReportType(0x01),
 				ie.NewUserPlanePathFailureReport(
-					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example"),
+					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
 				),
 				ie.NewUserPlanePathRecoveryReport(
-					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example"),
+					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
 				),
 				ie.NewClockDriftReport(
 					ie.NewTimeDomainNumber(255),
@@ -34,7 +34,7 @@ func TestNodeReportRequest(t *testing.T) {
 					ie.NewEventTimeStamp(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
 				),
 				ie.NewGTPUPathQoSReport(
-					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example"),
+					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
 					ie.NewGTPUPathInterfaceType(1, 1),
 					ie.NewQoSReportTrigger(1, 1, 1),
 					ie.NewEventTimeStamp(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
@@ -43,7 +43,7 @@ func TestNodeReportRequest(t *testing.T) {
 						ie.NewAveragePacketDelay(10*time.Second),
 						ie.NewMinimumPacketDelay(10*time.Second),
 						ie.NewMaximumPacketDelay(10*time.Second),
-						ie.NewTransportLevelMarking(0x1111),
+						ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
 					),
 				),
 			),
@@ -90,10 +90,10 @@ func TestNodeReportRequest(t *testing.T) {
 				ie.NewNodeIDFQDN("go-pfcp.epc.3gppnetwork.org"),
 				ie.NewNodeReportType(0x01),
 				ie.NewUserPlanePathFailureReport(
-					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example"),
+					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
 				),
 				ie.NewUserPlanePathRecoveryReport(
-					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example"),
+					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
 				),
 				ie.NewClockDriftReport(
 					ie.NewTimeDomainNumber(255),
@@ -108,7 +108,7 @@ func TestNodeReportRequest(t *testing.T) {
 					ie.NewEventTimeStamp(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
 				),
 				ie.NewGTPUPathQoSReport(
-					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example"),
+					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
 					ie.NewGTPUPathInterfaceType(1, 1),
 					ie.NewQoSReportTrigger(1, 1, 1),
 					ie.NewEventTimeStamp(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
@@ -117,11 +117,11 @@ func TestNodeReportRequest(t *testing.T) {
 						ie.NewAveragePacketDelay(10*time.Second),
 						ie.NewMinimumPacketDelay(10*time.Second),
 						ie.NewMaximumPacketDelay(10*time.Second),
-						ie.NewTransportLevelMarking(0x1111),
+						ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
 					),
 				),
 				ie.NewGTPUPathQoSReport(
-					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.2", "", ie.DstInterfaceAccess, "some.instance.example"),
+					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.2", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
 					ie.NewGTPUPathInterfaceType(1, 1),
 					ie.NewQoSReportTrigger(1, 1, 1),
 					ie.NewEventTimeStamp(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
@@ -130,7 +130,7 @@ func TestNodeReportRequest(t *testing.T) {
 						ie.NewAveragePacketDelay(10*time.Second),
 						ie.NewMinimumPacketDelay(10*time.Second),
 						ie.NewMaximumPacketDelay(10*time.Second),
-						ie.NewTransportLevelMarking(0x1111),
+						ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
 					),
 				),
 			),

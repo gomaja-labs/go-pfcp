@@ -379,6 +379,8 @@ func (f *PFDContentsFields) MarshalTo(b []byte) error {
 	}
 
 	b[0] = f.Flags
+	// TS 29.244 V20.1.0 clauses 8.1.2 and 8.2.39.
+	b[1] = 0
 	offset := 2 // 2nd octet is spare
 
 	if f.HasFD() {

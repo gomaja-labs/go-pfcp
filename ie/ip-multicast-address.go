@@ -5,6 +5,7 @@
 package ie
 
 import (
+	"fmt"
 	"io"
 	"net"
 )
@@ -15,7 +16,7 @@ func NewIPMulticastAddress(sv4, sv6, ev4, ev6 net.IP) *IE {
 
 	b, err := fields.Marshal()
 	if err != nil {
-		return nil
+		return newInvalidIE(IPMulticastAddress, fmt.Errorf("%w: %w", ErrInvalidValue, err))
 	}
 
 	return New(IPMulticastAddress, b)

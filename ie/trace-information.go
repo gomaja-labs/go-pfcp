@@ -5,6 +5,7 @@
 package ie
 
 import (
+	"fmt"
 	"io"
 	"net"
 
@@ -17,7 +18,7 @@ func NewTraceInformation(mcc, mnc, id string, events []byte, depth uint8, interf
 
 	b, err := fields.Marshal()
 	if err != nil {
-		return nil
+		return newInvalidIE(TraceInformation, fmt.Errorf("%w: %w", ErrInvalidValue, err))
 	}
 
 	return New(TraceInformation, b)

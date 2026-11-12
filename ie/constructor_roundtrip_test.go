@@ -142,7 +142,7 @@ func constructorArgument(typ reflect.Type, name string) reflect.Value {
 		if typ == reflect.TypeFor[[]byte]() {
 			n := 16
 			switch name {
-			case "ttc":
+			case "ttc", "sci", "tos":
 				n = 2
 			case "spi":
 				n = 4
@@ -189,22 +189,22 @@ func registerConstructorFixture(fn any, args ...any) bool {
 	return true
 }
 
-func callConstructor(entry constructorEntry) []reflect.Value {
+func constructorArguments(entry constructorEntry) []reflect.Value {
 	fn := reflect.ValueOf(entry.fn)
 	if fixture, ok := constructorFixtures[fn.Pointer()]; ok {
 		args := make([]reflect.Value, len(fixture))
 		for k, arg := range fixture {
 			args[k] = reflect.ValueOf(arg)
 		}
-		if fn.Type().IsVariadic() {
-			return fn.CallSlice(args)
-		}
-		return fn.Call(args)
+		return args
 	}
 	args := make([]reflect.Value, fn.Type().NumIn())
 	for k := range args {
 		args[k] = constructorArgument(fn.Type().In(k), entry.params[k])
 		name := entry.params[k]
+		if name == "recoveryTimestamp" {
+			args[k] = reflect.Zero(args[k].Type())
+		}
 		if name == "chid" {
 			args[k].SetUint(0)
 		}
@@ -233,10 +233,19 @@ func callConstructor(entry constructorEntry) []reflect.Value {
 		if name == "flags" && (fn.Pointer() == reflect.ValueOf(ie.NewPacketRateStatus).Pointer() || fn.Pointer() == reflect.ValueOf(ie.NewPacketRateStatusFields).Pointer()) {
 			args[k].SetUint(7)
 		}
+		if name == "flags" && (fn.Pointer() == reflect.ValueOf(ie.NewDLFlowLevelMarking).Pointer() || fn.Pointer() == reflect.ValueOf(ie.NewDLFlowLevelMarkingFields).Pointer()) {
+			args[k].SetUint(3)
+		}
 		if name == "flags" && (fn.Pointer() == reflect.ValueOf(ie.NewFTEID).Pointer() || fn.Pointer() == reflect.ValueOf(ie.NewFTEIDFields).Pointer()) {
 			args[k].SetUint(3)
 		}
 	}
+	return args
+}
+
+func callConstructor(entry constructorEntry) []reflect.Value {
+	fn := reflect.ValueOf(entry.fn)
+	args := constructorArguments(entry)
 	if fn.Type().IsVariadic() {
 		return fn.CallSlice(args)
 	}
@@ -370,6 +379,16 @@ func TestFlagDrivenConstructorRoundTrips(t *testing.T) {
 						excluded++
 						continue
 					}
+				case "NewFTEIDFields":
+					if flags&^15 != 0 || flags&3 == 0 || flags&8 != 0 && flags&4 == 0 {
+						excluded++
+						continue
+					}
+				case "NewDLFlowLevelMarkingFields":
+					if flags&^3 != 0 {
+						excluded++
+						continue
+					}
 				case "NewPacketRateStatusFields":
 					if flags&^7 != 0 {
 						excluded++
@@ -387,8 +406,8 @@ func TestFlagDrivenConstructorRoundTrips(t *testing.T) {
 						continue
 					}
 				case "NewRemoteGTPUPeerFields":
-					// Recovery Timestamp is supplied explicitly with FromFields.
-					if flags&^15 != 0 || flags&3 == 0 {
+					// All current Remote Peer flags, including RTS.
+					if flags&^31 != 0 || flags&3 == 0 {
 						excluded++
 						continue
 					}
@@ -421,7 +440,7 @@ func TestFlagDrivenConstructorRoundTrips(t *testing.T) {
 				case "NewUserIDFields":
 					conditional = map[string]int{"imsi": 1, "imei": 2, "msisdn": 4, "nai": 8}
 				case "NewRemoteGTPUPeerFields":
-					conditional = map[string]int{"v4": 2, "v6": 1, "di": 4, "ni": 8}
+					conditional = map[string]int{"v4": 2, "v6": 1, "di": 4, "ni": 8, "recoveryTimestamp": 16}
 				case "NewPacketRateFields":
 					conditional = map[string]int{"ulunit": 1, "ulpackets": 1, "dlunit": 2, "dlpackets": 2}
 				}
@@ -435,6 +454,8 @@ func TestFlagDrivenConstructorRoundTrips(t *testing.T) {
 				// to the wire encoding. Keep them zero when comparing fields.
 				var masks map[string]int
 				switch name {
+				case "NewDLFlowLevelMarkingFields":
+					masks = map[string]int{"ttc": 1, "sci": 2}
 				case "NewCTAGFields", "NewSTAGFields":
 					masks = map[string]int{"pcp": 1, "deiFlag": 2, "cvid": 4}
 				case "NewNumberOfUEIPAddressesFields":
@@ -444,7 +465,7 @@ func TestFlagDrivenConstructorRoundTrips(t *testing.T) {
 				}
 				for n, param := range entry.params {
 					if mask, ok := masks[param]; ok && flags&mask == 0 {
-						args[n].SetUint(0)
+						args[n] = reflect.Zero(args[n].Type())
 					}
 				}
 

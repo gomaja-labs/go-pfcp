@@ -4,21 +4,22 @@
 
 package ie
 
+// TS 29.244 V20.1.0 clause 8.2.73: no text repertoire is specified for this identifier.
 // NewDeactivatePredefinedRules creates a new DeactivatePredefinedRules IE.
-func NewDeactivatePredefinedRules(name string) *IE {
-	return newStringIE(DeactivatePredefinedRules, name)
+func NewDeactivatePredefinedRules(name []byte) *IE {
+	return New(DeactivatePredefinedRules, name)
 }
 
-// DeactivatePredefinedRules returns DeactivatePredefinedRules in string if the type of IE matches.
-func (i *IE) DeactivatePredefinedRules() (string, error) {
+// DeactivatePredefinedRules returns DeactivatePredefinedRules as opaque octets if the type of IE matches.
+func (i *IE) DeactivatePredefinedRules() ([]byte, error) {
 	if i == nil {
-		return "", ErrIENotFound
+		return nil, ErrIENotFound
 	}
 
 	switch i.Type {
 	case DeactivatePredefinedRules:
-		return i.ValueAsString()
+		return i.payloadAtLeast(1)
 	default:
-		return "", &InvalidTypeError{Type: i.Type}
+		return nil, &InvalidTypeError{Type: i.Type}
 	}
 }

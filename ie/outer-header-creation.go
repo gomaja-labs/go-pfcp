@@ -6,6 +6,7 @@ package ie
 
 import (
 	"encoding/binary"
+	"fmt"
 	"io"
 	"net"
 )
@@ -15,7 +16,7 @@ func NewOuterHeaderCreation(desc uint16, teid uint32, v4, v6 string, port uint16
 	fields := NewOuterHeaderCreationFields(desc, teid, v4, v6, port, ctag, stag)
 	b, err := fields.Marshal()
 	if err != nil {
-		return nil
+		return newInvalidIE(OuterHeaderCreation, fmt.Errorf("%w: %w", ErrInvalidValue, err))
 	}
 
 	return New(OuterHeaderCreation, b)

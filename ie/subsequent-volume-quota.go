@@ -6,6 +6,7 @@ package ie
 
 import (
 	"encoding/binary"
+	"fmt"
 	"io"
 )
 
@@ -15,7 +16,7 @@ func NewSubsequentVolumeQuota(flags uint8, tvol, uvol, dvol uint64) *IE {
 
 	b, err := fields.Marshal()
 	if err != nil {
-		return nil
+		return newInvalidIE(SubsequentVolumeQuota, fmt.Errorf("%w: %w", ErrInvalidValue, err))
 	}
 
 	return New(SubsequentVolumeQuota, b)

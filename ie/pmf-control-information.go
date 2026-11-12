@@ -63,9 +63,7 @@ func (f *PMFControlInformationFields) UnmarshalBinary(b []byte) error {
 		if len(b) < 2+n {
 			return io.ErrUnexpectedEOF
 		}
-		if n == 0 {
-			return ErrInvalidLength
-		}
+		// TS 29.244 V20.1.0 clause 8.2.156: accept a received zero count.
 		f.QFIs = make([]uint8, n)
 		for k := range f.QFIs {
 			f.QFIs[k] = b[2+k] & 0x3f

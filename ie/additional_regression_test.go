@@ -4,6 +4,7 @@ import (
 	"net"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/gomaja-labs/go-pfcp/ie"
 )
@@ -11,7 +12,7 @@ import (
 func TestNFInstanceIDShortInput(t *testing.T) {
 	for n := 0; n < 16; n++ {
 		if p := panicOf(func() {
-			if ie.NewNFInstanceID(make([]byte, n)) != nil {
+			if _, err := ie.NewNFInstanceID(make([]byte, n)).Marshal(); err == nil {
 				t.Error("accepted short UUID")
 			}
 		}); p != nil {
@@ -89,7 +90,7 @@ func TestPMFOptionalAddresses(t *testing.T) {
 }
 
 func TestRemoteZeroDestinationLength(t *testing.T) {
-	f := ie.NewRemoteGTPUPeerFields(6, "192.0.2.1", "", 0, "")
+	f := ie.NewRemoteGTPUPeerFields(6, "192.0.2.1", "", 0, []byte(""), time.Time{})
 	f.DILength = 0
 	if p := panicOf(func() {
 		if _, err := f.Marshal(); err == nil {

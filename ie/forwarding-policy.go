@@ -4,15 +4,18 @@
 
 package ie
 
-import "io"
+import (
+	"fmt"
+	"io"
+)
 
 // NewForwardingPolicy creates a new ForwardingPolicy IE.
-// It returns nil if id exceeds the 255-octet limit.
-func NewForwardingPolicy(id string) *IE {
+// An identifier exceeding 255 octets produces an IE that fails to marshal.
+func NewForwardingPolicy(id []byte) *IE {
 	// TS 29.244 V20.1.0 clause 8.2.23.
 	l := len(id)
 	if l > 255 {
-		return nil
+		return newInvalidIE(ForwardingPolicy, fmt.Errorf("%w: policy identifier exceeds 255 octets", ErrInvalidValue))
 	}
 	i := New(ForwardingPolicy, make([]byte, 1+l))
 
@@ -40,26 +43,26 @@ func (i *IE) ForwardingPolicy() ([]byte, error) {
 	}
 }
 
-// ForwardingPolicyIdentifier returns ForwardingPolicyIdentifier in string if the type of IE matches.
-func (i *IE) ForwardingPolicyIdentifier() (string, error) {
+// ForwardingPolicyIdentifier returns the opaque ForwardingPolicyIdentifier if the type of IE matches.
+func (i *IE) ForwardingPolicyIdentifier() ([]byte, error) {
 	if i == nil {
-		return "", ErrIENotFound
+		return nil, ErrIENotFound
 	}
 
 	v, err := i.ForwardingPolicy()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
 	l := len(v)
 	if l < 1 {
-		return "", io.ErrUnexpectedEOF
+		return nil, io.ErrUnexpectedEOF
 	}
 
 	idlen := int(v[0])
 	if l < idlen+1 {
-		return "", io.ErrUnexpectedEOF
+		return nil, io.ErrUnexpectedEOF
 	}
 
-	return string(v[1 : idlen+1]), nil
+	return v[1 : idlen+1], nil
 }

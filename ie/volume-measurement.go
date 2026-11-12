@@ -6,6 +6,7 @@ package ie
 
 import (
 	"encoding/binary"
+	"fmt"
 	"io"
 )
 
@@ -15,7 +16,7 @@ func NewVolumeMeasurement(flags uint8, tvol, uvol, dvol, tpkt, upkt, dpkt uint64
 
 	b, err := fields.Marshal()
 	if err != nil {
-		return nil
+		return newInvalidIE(VolumeMeasurement, fmt.Errorf("%w: %w", ErrInvalidValue, err))
 	}
 
 	return New(VolumeMeasurement, b)

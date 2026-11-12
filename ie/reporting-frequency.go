@@ -5,8 +5,19 @@
 package ie
 
 // NewReportingFrequency creates a new ReportingFrequency IE.
-func NewReportingFrequency(sesrl, perio, evett int) *IE {
-	return newUint8ValIE(ReportingFrequency, uint8((sesrl<<2)|(perio<<1)|(evett)))
+func NewReportingFrequency(perio, evett bool) *IE {
+	// TS 29.244 V20.1.0 clause 8.2.168: the former SESRL bit is reserved.
+	var flags uint8
+	if perio {
+		flags |= 2
+	}
+	if evett {
+		flags |= 1
+	}
+	if flags == 0 {
+		return newInvalidIE(ReportingFrequency, ErrInvalidValue)
+	}
+	return newUint8ValIE(ReportingFrequency, flags)
 }
 
 // ReportingFrequency returns ReportingFrequency in uint8 if the type of IE matches.
@@ -17,25 +28,13 @@ func (i *IE) ReportingFrequency() (uint8, error) {
 
 	switch i.Type {
 	case ReportingFrequency:
-		return i.ValueAsUint8()
+		// TS 29.244 V20.1.0 clause 8.2.168: ignore received spare/reserved bits.
+		v, err := i.ValueAsUint8()
+		return v & 3, err
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
 
-}
-
-// HasSESRL reports whether an IE has SESRL bit.
-func (i *IE) HasSESRL() bool {
-	if i == nil {
-		return false
-	}
-
-	v, err := i.ReportingFrequency()
-	if err != nil {
-		return false
-	}
-
-	return has3rdBit(v)
 }
 
 // HasEVETT reports whether an IE has EVETT bit.

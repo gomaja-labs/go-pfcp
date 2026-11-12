@@ -42,7 +42,7 @@ func run() error {
 
 	defer func() { _ = conn.Close() }()
 
-	started := time.Now() // Recovery time is when this entity started.
+	started := time.Now().Truncate(time.Second) // Recovery time is when this entity started.
 	buf := make([]byte, 65535)
 	for {
 		log.Printf("waiting for messages to come on: %s", laddr)

@@ -45,7 +45,7 @@ func run() error {
 	var seq uint32 = 0x112233
 	hbreq, err := message.NewHeartbeatRequest(
 		seq,
-		ie.NewRecoveryTimeStamp(time.Now()),
+		ie.NewRecoveryTimeStamp(time.Now().Truncate(time.Second)),
 		ie.NewSourceIPAddress(net.ParseIP("127.0.0.1"), net.ParseIP("2001::1"), 0),
 	).Marshal()
 	if err != nil {
