@@ -104,6 +104,7 @@ func (m *SessionEstablishmentRequest) MarshalTo(b []byte) error {
 }
 
 // ParseSessionEstablishmentRequest decodes one complete PFCP Session Establishment Request frame.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseSessionEstablishmentRequest(b []byte) (*SessionEstablishmentRequest, error) {
 	m := &SessionEstablishmentRequest{}
 	if err := m.UnmarshalBinary(b); err != nil {
@@ -114,6 +115,7 @@ func ParseSessionEstablishmentRequest(b []byte) (*SessionEstablishmentRequest, e
 
 // UnmarshalBinary replaces the message with one decoded frame. IE presence and
 // conditional applicability remain the application's responsibility.
+// Decoding borrows b; keep b unchanged while the message is in use.
 func (m *SessionEstablishmentRequest) UnmarshalBinary(b []byte) error {
 	if m == nil {
 		return ErrNilMessage
@@ -197,13 +199,6 @@ func (m *SessionEstablishmentRequest) HasMP() bool { return m != nil && m.Header
 
 // HasSEID reports whether the SEID is present, or false for nil.
 func (m *SessionEstablishmentRequest) HasSEID() bool { return m != nil && m.Header.HasSEID() }
-
-// SetFO changes the follow-on bit unless m is nil.
-func (m *SessionEstablishmentRequest) SetFO(on bool) {
-	if m != nil {
-		m.Header.SetFO(on)
-	}
-}
 
 // SetSEID assigns the endpoint identifier, or returns ErrNilMessage for nil.
 func (m *SessionEstablishmentRequest) SetSEID(seid uint64) error {

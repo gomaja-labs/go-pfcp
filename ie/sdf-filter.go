@@ -184,6 +184,7 @@ func (f *SDFFilterFields) SetFDFlag() {
 }
 
 // ParseSDFFilterFields parses b into SDFFilterFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseSDFFilterFields(b []byte) (*SDFFilterFields, error) {
 	f := &SDFFilterFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -193,6 +194,7 @@ func ParseSDFFilterFields(b []byte) (*SDFFilterFields, error) {
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *SDFFilterFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

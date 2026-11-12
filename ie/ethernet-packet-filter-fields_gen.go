@@ -57,6 +57,7 @@ func (f *EthernetPacketFilterFields) IE() *IE {
 }
 
 // ParseEthernetPacketFilterFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseEthernetPacketFilterFields(b []byte) (*EthernetPacketFilterFields, error) {
 	f := &EthernetPacketFilterFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -67,6 +68,7 @@ func ParseEthernetPacketFilterFields(b []byte) (*EthernetPacketFilterFields, err
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *EthernetPacketFilterFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

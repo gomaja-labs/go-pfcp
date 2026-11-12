@@ -47,6 +47,7 @@ func (f *EthernetContextInformationFields) IE() *IE {
 }
 
 // ParseEthernetContextInformationFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseEthernetContextInformationFields(b []byte) (*EthernetContextInformationFields, error) {
 	f := &EthernetContextInformationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -57,6 +58,7 @@ func ParseEthernetContextInformationFields(b []byte) (*EthernetContextInformatio
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *EthernetContextInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

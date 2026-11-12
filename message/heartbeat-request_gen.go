@@ -38,6 +38,7 @@ func (m *HeartbeatRequest) MarshalTo(b []byte) error {
 }
 
 // ParseHeartbeatRequest decodes one complete PFCP Heartbeat Request frame.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseHeartbeatRequest(b []byte) (*HeartbeatRequest, error) {
 	m := &HeartbeatRequest{}
 	if err := m.UnmarshalBinary(b); err != nil {
@@ -48,6 +49,7 @@ func ParseHeartbeatRequest(b []byte) (*HeartbeatRequest, error) {
 
 // UnmarshalBinary replaces the message with one decoded frame. IE presence and
 // conditional applicability remain the application's responsibility.
+// Decoding borrows b; keep b unchanged while the message is in use.
 func (m *HeartbeatRequest) UnmarshalBinary(b []byte) error {
 	if m == nil {
 		return ErrNilMessage
@@ -131,13 +133,6 @@ func (m *HeartbeatRequest) HasMP() bool { return m != nil && m.Header.HasMP() }
 
 // HasSEID reports whether the SEID is present, or false for nil.
 func (m *HeartbeatRequest) HasSEID() bool { return m != nil && m.Header.HasSEID() }
-
-// SetFO changes the follow-on bit unless m is nil.
-func (m *HeartbeatRequest) SetFO(on bool) {
-	if m != nil {
-		m.Header.SetFO(on)
-	}
-}
 
 // SetSEID assigns the endpoint identifier, or returns ErrNilMessage for nil.
 func (m *HeartbeatRequest) SetSEID(seid uint64) error {

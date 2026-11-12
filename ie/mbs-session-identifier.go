@@ -56,6 +56,7 @@ func (i *IE) MBSSessionIdentifier() (*MBSSessionIdentifierFields, error) {
 
 // ParseMBSSessionIdentifierFields decodes the known fields; unknown extension octets are ignored.
 // TS 29.244 V20.1.0 clauses 8.2.206 and 8.1.2.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseMBSSessionIdentifierFields(b []byte) (*MBSSessionIdentifierFields, error) {
 	f := &MBSSessionIdentifierFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -65,6 +66,7 @@ func ParseMBSSessionIdentifierFields(b []byte) (*MBSSessionIdentifierFields, err
 }
 
 // UnmarshalBinary decodes MBS Session Identifier and resets previously decoded fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *MBSSessionIdentifierFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

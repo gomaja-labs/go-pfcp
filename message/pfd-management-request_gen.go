@@ -38,6 +38,7 @@ func (m *PFDManagementRequest) MarshalTo(b []byte) error {
 }
 
 // ParsePFDManagementRequest decodes one complete PFCP PFD Management Request frame.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParsePFDManagementRequest(b []byte) (*PFDManagementRequest, error) {
 	m := &PFDManagementRequest{}
 	if err := m.UnmarshalBinary(b); err != nil {
@@ -48,6 +49,7 @@ func ParsePFDManagementRequest(b []byte) (*PFDManagementRequest, error) {
 
 // UnmarshalBinary replaces the message with one decoded frame. IE presence and
 // conditional applicability remain the application's responsibility.
+// Decoding borrows b; keep b unchanged while the message is in use.
 func (m *PFDManagementRequest) UnmarshalBinary(b []byte) error {
 	if m == nil {
 		return ErrNilMessage
@@ -131,13 +133,6 @@ func (m *PFDManagementRequest) HasMP() bool { return m != nil && m.Header.HasMP(
 
 // HasSEID reports whether the SEID is present, or false for nil.
 func (m *PFDManagementRequest) HasSEID() bool { return m != nil && m.Header.HasSEID() }
-
-// SetFO changes the follow-on bit unless m is nil.
-func (m *PFDManagementRequest) SetFO(on bool) {
-	if m != nil {
-		m.Header.SetFO(on)
-	}
-}
 
 // SetSEID assigns the endpoint identifier, or returns ErrNilMessage for nil.
 func (m *PFDManagementRequest) SetSEID(seid uint64) error {

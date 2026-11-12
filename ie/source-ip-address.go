@@ -129,6 +129,7 @@ func (f *SourceIPAddressFields) SetIPv6Flag() {
 }
 
 // ParseSourceIPAddressFields parses b into SourceIPAddressFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseSourceIPAddressFields(b []byte) (*SourceIPAddressFields, error) {
 	f := &SourceIPAddressFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -139,6 +140,7 @@ func ParseSourceIPAddressFields(b []byte) (*SourceIPAddressFields, error) {
 
 // UnmarshalBinary parses b into IE.
 // TS 29.244 V20.1.0 clause 8.2.138: MPL is a single optional octet.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *SourceIPAddressFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

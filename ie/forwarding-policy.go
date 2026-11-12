@@ -10,8 +10,10 @@ import (
 )
 
 // NewForwardingPolicy creates a new ForwardingPolicy IE.
+// TS 29.244 V20.1.0 clause 8.2.23: the octet string is carried unchanged;
+// no character set is imposed or checked.
 // An identifier exceeding 255 octets produces an IE that fails to marshal.
-func NewForwardingPolicy(id []byte) *IE {
+func NewForwardingPolicy(id string) *IE {
 	// TS 29.244 V20.1.0 clause 8.2.23.
 	l := len(id)
 	if l > 255 {
@@ -44,25 +46,25 @@ func (i *IE) ForwardingPolicy() ([]byte, error) {
 }
 
 // ForwardingPolicyIdentifier returns the opaque ForwardingPolicyIdentifier if the type of IE matches.
-func (i *IE) ForwardingPolicyIdentifier() ([]byte, error) {
+func (i *IE) ForwardingPolicyIdentifier() (string, error) {
 	if i == nil {
-		return nil, ErrIENotFound
+		return "", ErrIENotFound
 	}
 
 	v, err := i.ForwardingPolicy()
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	l := len(v)
 	if l < 1 {
-		return nil, io.ErrUnexpectedEOF
+		return "", io.ErrUnexpectedEOF
 	}
 
 	idlen := int(v[0])
 	if l < idlen+1 {
-		return nil, io.ErrUnexpectedEOF
+		return "", io.ErrUnexpectedEOF
 	}
 
-	return v[1 : idlen+1], nil
+	return string(v[1 : idlen+1]), nil
 }

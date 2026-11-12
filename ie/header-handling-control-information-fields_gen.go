@@ -59,6 +59,7 @@ func (f *HeaderHandlingControlInformationFields) IE() *IE {
 }
 
 // ParseHeaderHandlingControlInformationFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseHeaderHandlingControlInformationFields(b []byte) (*HeaderHandlingControlInformationFields, error) {
 	f := &HeaderHandlingControlInformationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -69,6 +70,7 @@ func ParseHeaderHandlingControlInformationFields(b []byte) (*HeaderHandlingContr
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *HeaderHandlingControlInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

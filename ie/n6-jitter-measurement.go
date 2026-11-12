@@ -46,6 +46,7 @@ func (i *IE) N6JitterMeasurement() (*N6JitterMeasurementFields, error) {
 
 // ParseN6JitterMeasurementFields decodes the known fields; unknown extension octets are ignored.
 // TS 29.244 V20.1.0 clauses 8.2.222 and 8.1.2.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseN6JitterMeasurementFields(b []byte) (*N6JitterMeasurementFields, error) {
 	f := &N6JitterMeasurementFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -55,6 +56,7 @@ func ParseN6JitterMeasurementFields(b []byte) (*N6JitterMeasurementFields, error
 }
 
 // UnmarshalBinary decodes N6 Jitter Measurement and resets previously decoded fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *N6JitterMeasurementFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

@@ -68,6 +68,7 @@ func (m *AssociationUpdateRequest) MarshalTo(b []byte) error {
 }
 
 // ParseAssociationUpdateRequest decodes one complete PFCP Association Update Request frame.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseAssociationUpdateRequest(b []byte) (*AssociationUpdateRequest, error) {
 	m := &AssociationUpdateRequest{}
 	if err := m.UnmarshalBinary(b); err != nil {
@@ -78,6 +79,7 @@ func ParseAssociationUpdateRequest(b []byte) (*AssociationUpdateRequest, error) 
 
 // UnmarshalBinary replaces the message with one decoded frame. IE presence and
 // conditional applicability remain the application's responsibility.
+// Decoding borrows b; keep b unchanged while the message is in use.
 func (m *AssociationUpdateRequest) UnmarshalBinary(b []byte) error {
 	if m == nil {
 		return ErrNilMessage
@@ -161,13 +163,6 @@ func (m *AssociationUpdateRequest) HasMP() bool { return m != nil && m.Header.Ha
 
 // HasSEID reports whether the SEID is present, or false for nil.
 func (m *AssociationUpdateRequest) HasSEID() bool { return m != nil && m.Header.HasSEID() }
-
-// SetFO changes the follow-on bit unless m is nil.
-func (m *AssociationUpdateRequest) SetFO(on bool) {
-	if m != nil {
-		m.Header.SetFO(on)
-	}
-}
 
 // SetSEID assigns the endpoint identifier, or returns ErrNilMessage for nil.
 func (m *AssociationUpdateRequest) SetSEID(seid uint64) error {

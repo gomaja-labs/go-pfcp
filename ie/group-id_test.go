@@ -9,12 +9,12 @@ import (
 
 func TestGroupIDCurrent(t *testing.T) {
 	for _, v := range [][]byte{{1}, {0, 255, 128}} {
-		assertAddedVector(t, ie.NewGroupID(v), v, "GroupID", false)
+		assertAddedVector(t, ie.NewGroupID(string(v)), v, "GroupID", false)
 	}
-	assertAddedNull(t, ie.NewGroupID(nil), "GroupID")
-	assertAddedVector(t, ie.NewGroupID((bytes.Repeat([]byte{65}, 65535))), bytes.Repeat([]byte{65}, 65535), "GroupID", false)
-	assertAddedInvalid(t, ie.NewGroupID((bytes.Repeat([]byte{65}, 65536))))
+	assertAddedNull(t, ie.NewGroupID(""), "GroupID")
+	assertAddedVector(t, ie.NewGroupID(string((bytes.Repeat([]byte{65}, 65535)))), bytes.Repeat([]byte{65}, 65535), "GroupID", false)
+	assertAddedInvalid(t, ie.NewGroupID(string((bytes.Repeat([]byte{65}, 65536)))))
 
 }
 
-var _ = registerConstructorFixture(ie.NewGroupID, []byte{1})
+var _ = registerConstructorFixture(ie.NewGroupID, string([]byte{1}))

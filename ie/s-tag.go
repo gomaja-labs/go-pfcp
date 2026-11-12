@@ -131,6 +131,7 @@ func (f *STAGFields) SetPCPFlag() {
 }
 
 // ParseSTAGFields parses b into STAGFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseSTAGFields(b []byte) (*STAGFields, error) {
 	f := &STAGFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -140,6 +141,7 @@ func ParseSTAGFields(b []byte) (*STAGFields, error) {
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *STAGFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

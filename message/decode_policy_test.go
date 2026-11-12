@@ -78,7 +78,7 @@ func TestMessageGroupedDecodePolicy(t *testing.T) {
 		{"unexpected", MsgTypeHeartbeatRequest, nil, ie.CreatePDR, malformed, io.ErrUnexpectedEOF, ie.FTEID, []ie.IEType{ie.CreatePDR}},
 		{"repeated", MsgTypeSessionReportRequest, policyIE(ie.DownlinkDataReport, nil), ie.DownlinkDataReport, malformed, io.ErrUnexpectedEOF, ie.FTEID, []ie.IEType{ie.DownlinkDataReport}},
 		{"nested", MsgTypeHeartbeatRequest, nil, ie.CreatePDR, policyIE(ie.PDI, malformed), io.ErrUnexpectedEOF, ie.FTEID, []ie.IEType{ie.CreatePDR, ie.PDI}},
-		{"short_child_header", MsgTypeHeartbeatRequest, nil, ie.CreatePDR, []byte{1, 2, 3}, io.ErrUnexpectedEOF, ie.CreatePDR, nil},
+		{"short_child_header", MsgTypeHeartbeatRequest, nil, ie.CreatePDR, []byte{1, 2, 3}, io.ErrUnexpectedEOF, 258, []ie.IEType{ie.CreatePDR}},
 		{"depth", MsgTypeHeartbeatRequest, nil, ie.CreatePDR, deep, ie.ErrNestingTooDeep, ie.CreatePDR, repeatPolicyType(ie.CreatePDR, 16)},
 	}
 	for _, tt := range tests {

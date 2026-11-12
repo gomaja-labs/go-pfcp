@@ -104,6 +104,7 @@ func marshalMessageTo(h *Header, ies []*ie.IE, b []byte) error {
 	// Validate before encoding any IEs and do not trust the stale payload length.
 	frame := *h
 	frame.Payload = nil
+	frame.Flags &^= 4
 	if err := frame.validate(); err != nil {
 		return err
 	}

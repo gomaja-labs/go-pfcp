@@ -118,6 +118,7 @@ func (f *PacketDelayThresholdsFields) SetDLFlag() {
 }
 
 // ParsePacketDelayThresholdsFields parses b into PacketDelayThresholdsFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParsePacketDelayThresholdsFields(b []byte) (*PacketDelayThresholdsFields, error) {
 	f := &PacketDelayThresholdsFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -127,6 +128,7 @@ func ParsePacketDelayThresholdsFields(b []byte) (*PacketDelayThresholdsFields, e
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *PacketDelayThresholdsFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

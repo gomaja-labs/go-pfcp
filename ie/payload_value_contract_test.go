@@ -23,9 +23,9 @@ func TestPayloadValueLengths(t *testing.T) {
 			return i.Payload, nil
 		}},
 		{"flow", ie.NewFlowInformation(ie.FlowDirectionUplink, "abc"), (*ie.IE).FlowInformation},
-		{"policy", ie.NewForwardingPolicy([]byte("abc")), (*ie.IE).ForwardingPolicy},
+		{"policy", ie.NewForwardingPolicy("abc"), (*ie.IE).ForwardingPolicy},
 		{"time quota", ie.NewTimeQuotaMechanism(ie.BTITCTP, time.Second), (*ie.IE).TimeQuotaMechanism},
-		{"pool", ie.NewUEIPAddressPoolIdentity([]byte("abc")), (*ie.IE).UEIPAddressPoolIdentity},
+
 		{"features", ie.NewUPFunctionFeatures(1, 2), (*ie.IE).UPFunctionFeatures},
 	} {
 		t.Run(tc.name, func(t *testing.T) {

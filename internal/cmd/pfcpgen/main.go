@@ -245,12 +245,14 @@ func (m *{{.Name}}) MarshalTo(b []byte) error {
 }
 
 // Parse{{.Name}} decodes one complete {{.WireName}} frame.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func Parse{{.Name}}(b []byte) (*{{.Name}},error) {
  m:=&{{.Name}}{};if err:=m.UnmarshalBinary(b);err!=nil {return nil,err};return m,nil
 }
 
 // UnmarshalBinary replaces the message with one decoded frame. IE presence and
 // conditional applicability remain the application's responsibility.
+// Decoding borrows b; keep b unchanged while the message is in use.
 func (m *{{.Name}}) UnmarshalBinary(b []byte) error {
  if m==nil {return ErrNilMessage}
  h,err:=parseMessageHeader(b,MsgType{{.Name}});if err!=nil {return err}
@@ -287,8 +289,6 @@ func (m *{{.Name}}) HasFO() bool {return m!=nil && m.Header.HasFO()}
 func (m *{{.Name}}) HasMP() bool {return m!=nil && m.Header.HasMP()}
 // HasSEID reports whether the SEID is present, or false for nil.
 func (m *{{.Name}}) HasSEID() bool {return m!=nil && m.Header.HasSEID()}
-// SetFO changes the follow-on bit unless m is nil.
-func (m *{{.Name}}) SetFO(on bool) {if m!=nil {m.Header.SetFO(on)}}
 // SetSEID assigns the endpoint identifier, or returns ErrNilMessage for nil.
 func (m *{{.Name}}) SetSEID(seid uint64) error {if m==nil {return ErrNilMessage};return m.Header.SetSEID(seid)}
 // SetMP sets priority, or returns ErrNilMessage for nil.

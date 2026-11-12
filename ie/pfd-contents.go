@@ -295,6 +295,7 @@ func (f *PFDContentsFields) SetFDFlag() {
 }
 
 // ParsePFDContentsFields parses b into PFDContentsFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParsePFDContentsFields(b []byte) (*PFDContentsFields, error) {
 	f := &PFDContentsFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -306,6 +307,7 @@ func ParsePFDContentsFields(b []byte) (*PFDContentsFields, error) {
 // UnmarshalBinary parses b into IE.
 // TS 29.244 V20.1.0 clause 8.2.39: each present value, including each
 // instance in an additional-values field, is preceded by a two-octet length.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *PFDContentsFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

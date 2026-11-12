@@ -38,6 +38,7 @@ func (i *IE) MulticastTransportInformation() (*MulticastTransportInformationFiel
 
 // ParseMulticastTransportInformationFields decodes the known fields; unknown extension octets are ignored.
 // TS 29.244 V20.1.0 clauses 8.2.207 and 8.1.2.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseMulticastTransportInformationFields(b []byte) (*MulticastTransportInformationFields, error) {
 	f := &MulticastTransportInformationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -47,6 +48,7 @@ func ParseMulticastTransportInformationFields(b []byte) (*MulticastTransportInfo
 }
 
 // UnmarshalBinary decodes Multicast Transport Information and resets previously decoded fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *MulticastTransportInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

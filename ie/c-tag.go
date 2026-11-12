@@ -131,6 +131,7 @@ func (f *CTAGFields) SetPCPFlag() {
 }
 
 // ParseCTAGFields parses b into CTAGFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseCTAGFields(b []byte) (*CTAGFields, error) {
 	f := &CTAGFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -140,6 +141,7 @@ func ParseCTAGFields(b []byte) (*CTAGFields, error) {
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *CTAGFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

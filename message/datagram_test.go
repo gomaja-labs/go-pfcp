@@ -42,7 +42,7 @@ func TestEveryMessageEncodeSafety(t *testing.T) {
 			for n := 1; n < v.NumField(); n++ {
 				f := v.Field(n)
 				if f.Type() == reflect.TypeOf([]*ie.IE{}) {
-					f.Set(reflect.ValueOf([]*ie.IE{nil, ie.NewApplicationID([]byte("x")), nil}))
+					f.Set(reflect.ValueOf([]*ie.IE{nil, ie.NewApplicationID("x"), nil}))
 				}
 			}
 			size := m.MarshalLen()
@@ -98,7 +98,7 @@ func TestConstructorFraming(t *testing.T) {
 func TestPriorityValues(t *testing.T) {
 	for pri := uint8(0); pri < 16; pri++ {
 		h := message.NewHeader(54, 42, 0xffffff, nil)
-		h.SetFO(true)
+		h.Flags |= 4
 		if err := h.SetMP(pri); err != nil {
 			t.Fatal(err)
 		}
@@ -106,7 +106,7 @@ func TestPriorityValues(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		if b[0] != 0x27 || b[15] != pri<<4 {
+		if b[0] != 0x23 || b[15] != pri<<4 {
 			t.Fatalf("bad priority %d encoding", pri)
 		}
 		decoded, err := message.ParseHeader(b)
@@ -116,6 +116,7 @@ func TestPriorityValues(t *testing.T) {
 		if decoded.MP() != pri || !decoded.HasMP() {
 			t.Fatal("priority decode mismatch")
 		}
+		decoded.Flags |= 4
 		decoded.ClearMP()
 		if decoded.HasMP() || decoded.MP() != 0 || !decoded.HasFO() || !decoded.HasSEID() {
 			t.Fatal("clear priority corrupted flags")
@@ -171,7 +172,7 @@ func TestSequenceAndLengthLimits(t *testing.T) {
 			t.Fatal("accepted overflowing length")
 		}
 	}
-	m := message.NewGeneric(200, 0, 1, ie.NewApplicationID([]byte(string(make([]byte, 65535)))))
+	m := message.NewGeneric(200, 0, 1, ie.NewApplicationID(string(make([]byte, 65535))))
 	if err := m.MarshalTo(nil); !errors.Is(err, message.ErrInvalidLength) {
 		t.Fatal("oversized message accepted")
 	}
@@ -181,7 +182,7 @@ func TestDatagramFraming(t *testing.T) {
 	for count := 1; count <= 32; count++ {
 		ms := make([]message.Message, count)
 		for n := range ms {
-			ms[n] = message.NewSessionDeletionRequest(uint64(n), uint32(n), ie.NewApplicationID([]byte("x")))
+			ms[n] = message.NewSessionDeletionRequest(uint64(n), uint32(n), ie.NewApplicationID("x"))
 		}
 		b, err := message.MarshalDatagram(ms...)
 		if err != nil {
@@ -360,6 +361,13 @@ func TestHeaderAllFlagAndTypeCombinations(t *testing.T) {
 			b := wireHeader(byte(flags), byte(typ), nil)
 			b[len(b)-1] = 0xff
 			h, err := message.ParseHeader(b)
+			if flags>>5 != 1 {
+				var v *message.UnsupportedVersionError
+				if !errors.As(err, &v) || v.Header.Version() != flags>>5 {
+					t.Fatal("version not reported", err)
+				}
+				continue
+			}
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -370,7 +378,7 @@ func TestHeaderAllFlagAndTypeCombinations(t *testing.T) {
 			if err != nil {
 				continue
 			} // Invalid versions and contradictory flags cannot be sent.
-			if out[0] != byte(flags)&^0x18 {
+			if out[0] != byte(flags)&^0x1c {
 				t.Fatal("encoder changed defined flags")
 			}
 			if out[len(out)-1]&15 != 0 {
@@ -379,6 +387,7 @@ func TestHeaderAllFlagAndTypeCombinations(t *testing.T) {
 			if flags&3 != 3 && out[len(out)-1] != 0 {
 				t.Fatal("encoder retained absent priority")
 			}
+			h.Flags &^= 4
 			d, err := message.ParseHeader(out)
 			if err != nil || !reflect.DeepEqual(h, d) {
 				t.Fatal("header round trip changed value")
@@ -423,7 +432,6 @@ func TestNilAndZeroMessageEncoding(t *testing.T) {
 	if err := h.SetSEID(0); !errors.Is(err, message.ErrNilMessage) {
 		t.Fatal(err)
 	}
-	h.SetFO(true)
 	h.ClearMP()
 	h.SetSequenceNumber(0)
 	if h.HasFO() || h.HasMP() || h.HasSEID() || h.Sequence() != 0 || h.MessageType() != 0 || h.Version() != 0 || h.MP() != 0 || h.MarshalLen() != 0 || h.String() != "<nil>" {

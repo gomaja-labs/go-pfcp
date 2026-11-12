@@ -1,7 +1,6 @@
 package ie
 
 import (
-	"bytes"
 	"net/netip"
 	"strings"
 )
@@ -10,23 +9,23 @@ import (
 // TS 29.244 V20.1.0 clause 8.2.244; RFC 3986 sections 2–3 and appendix A.
 // Generic URI syntax is validated without imposing scheme-specific structure
 // (RFC 8820 sections 2–3). No normalization or percent-decoding is performed.
-func NewURI(v []byte) *IE {
-	if len(v) > 65535 || (len(v) > 0 && !validPFCPURI(string(v))) {
+func NewURI(v string) *IE {
+	if len(v) > 65535 || (len(v) > 0 && !validPFCPURI(v)) {
 		return invalidRecentIE(URI, "URI syntax")
 	}
-	return New(URI, bytes.Clone(v))
+	return New(URI, []byte(v))
 }
 
 // URI returns the URI octet string defined in TS 29.244 V20.1.0 clause 8.2.244.
-func (i *IE) URI() ([]byte, error) {
+func (i *IE) URI() (string, error) {
 	b, err := recentIEPayload(i, URI, 1, false)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	if !validPFCPURI(string(b)) {
-		return nil, &DecodeError{Type: URI, Err: ErrInvalidValue}
+		return "", &DecodeError{Type: URI, Err: ErrInvalidValue}
 	}
-	return b, nil
+	return string(b), nil
 }
 
 // RFC 3986 appendix A: URI = scheme ":" hier-part [ "?" query ] [ "#" fragment ].

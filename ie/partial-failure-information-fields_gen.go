@@ -51,6 +51,7 @@ func (f *PartialFailureInformationFields) IE() *IE {
 }
 
 // ParsePartialFailureInformationFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParsePartialFailureInformationFields(b []byte) (*PartialFailureInformationFields, error) {
 	f := &PartialFailureInformationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -61,6 +62,7 @@ func ParsePartialFailureInformationFields(b []byte) (*PartialFailureInformationF
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *PartialFailureInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

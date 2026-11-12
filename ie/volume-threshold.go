@@ -127,6 +127,7 @@ func (f *VolumeThresholdFields) SetTOVOLFlag() {
 }
 
 // ParseVolumeThresholdFields parses b into VolumeThresholdFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseVolumeThresholdFields(b []byte) (*VolumeThresholdFields, error) {
 	f := &VolumeThresholdFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -136,6 +137,7 @@ func ParseVolumeThresholdFields(b []byte) (*VolumeThresholdFields, error) {
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *VolumeThresholdFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

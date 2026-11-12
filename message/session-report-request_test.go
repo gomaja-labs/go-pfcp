@@ -36,8 +36,8 @@ func TestSessionReportRequest(t *testing.T) {
 					ie.NewVolumeMeasurement(0x3f, 0x1111111111111111, 0x2222222222222222, 0x3333333333333333, 0x4444444444444444, 0x5555555555555555, 0x6666666666666666),
 					ie.NewDurationMeasurement(10*time.Second),
 					ie.NewApplicationDetectionInformation(
-						ie.NewApplicationID([]byte("https://example.com/apps/go-pfcp/")),
-						ie.NewApplicationInstanceID([]byte("go-pfcp")),
+						ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
+						ie.NewApplicationInstanceID("go-pfcp"),
 						ie.NewFlowInformation(ie.FlowDirectionDownlink, "go-pfcp"),
 						ie.NewPDRID(0xffff),
 					),
@@ -214,8 +214,8 @@ func TestSessionReportRequest(t *testing.T) {
 					ie.NewVolumeMeasurement(0x3f, 0x1111111111111111, 0x2222222222222222, 0x3333333333333333, 0x4444444444444444, 0x5555555555555555, 0x6666666666666666),
 					ie.NewDurationMeasurement(10*time.Second),
 					ie.NewApplicationDetectionInformation(
-						ie.NewApplicationID([]byte("https://example.com/apps/go-pfcp/")),
-						ie.NewApplicationInstanceID([]byte("go-pfcp")),
+						ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
+						ie.NewApplicationInstanceID("go-pfcp"),
 						ie.NewFlowInformation(ie.FlowDirectionDownlink, "go-pfcp"),
 						ie.NewPDRID(0xffff),
 					),

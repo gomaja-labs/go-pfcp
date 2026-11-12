@@ -155,6 +155,7 @@ func (f *LinkSpecificMultipathIPAddressFields) SetIPv4Flag() {
 }
 
 // ParseLinkSpecificMultipathIPAddressFields parses b into LinkSpecificMultipathIPAddressFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseLinkSpecificMultipathIPAddressFields(b []byte) (*LinkSpecificMultipathIPAddressFields, error) {
 	f := &LinkSpecificMultipathIPAddressFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -164,6 +165,7 @@ func ParseLinkSpecificMultipathIPAddressFields(b []byte) (*LinkSpecificMultipath
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *LinkSpecificMultipathIPAddressFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

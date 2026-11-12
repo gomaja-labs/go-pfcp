@@ -25,7 +25,7 @@ func ExampleEncodeError() {
 }
 
 func ExampleIE_ValueAsGrouped() {
-	vendor := ie.NewVendorSpecificGroupedIE(0x8001, 10415, ie.NewPDRID(7))
+	vendor := ie.NewVendorSpecificGroupedIE(0x8001, 32473, ie.NewPDRID(7))
 	wire, err := vendor.Marshal()
 	if err != nil {
 		fmt.Println(err)
@@ -47,5 +47,5 @@ func ExampleIE_ValueAsGrouped() {
 		return
 	}
 	fmt.Println("enterprise:", decoded.EnterpriseID, "PDR:", id)
-	// Output: enterprise: 10415 PDR: 7
+	// Output: enterprise: 32473 PDR: 7
 }

@@ -327,6 +327,7 @@ func NewOuterHeaderCreationFields(desc uint16, teid uint32, v4, v6 string, port 
 }
 
 // ParseOuterHeaderCreationFields parses b into OuterHeaderCreationFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseOuterHeaderCreationFields(b []byte) (*OuterHeaderCreationFields, error) {
 	f := &OuterHeaderCreationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -336,6 +337,7 @@ func ParseOuterHeaderCreationFields(b []byte) (*OuterHeaderCreationFields, error
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *OuterHeaderCreationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

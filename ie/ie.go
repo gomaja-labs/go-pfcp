@@ -26,9 +26,11 @@ type IE struct {
 	Type IEType
 	// EnterpriseID is the vendor enterprise identifier.
 	EnterpriseID uint16
-	// Payload contains the raw value octets.
+	// Payload contains the raw value octets. Encoding ignores it whenever
+	// ChildIEs is non-nil, even if ChildIEs is empty or Type is not grouped.
 	Payload []byte
-	// ChildIEs contains the decoded or explicitly constructed grouped children.
+	// ChildIEs contains decoded or explicitly constructed grouped children.
+	// A non-nil slice takes precedence over Payload during encoding.
 	ChildIEs []*IE
 
 	// err is set by a constructor whose arguments cannot be encoded. Marshal
@@ -42,26 +44,44 @@ func newInvalidIE(t IEType, err error) *IE {
 	return &IE{Type: t, err: err}
 }
 
-// Equal reports whether i and o encode to the same octets. Two IEs that
-// cannot be encoded are equal when their errors read the same. A nil IE is
-// equal only to another nil IE. Equal makes IEs comparable with go-cmp
+// Equal reports whether i and o encode to the same octets. The same pointer
+// is always equal to itself. If either encoding fails, equality instead requires
+// the same type, Enterprise ID, constructor error text, payload and child list.
+// A nil IE is equal only to another nil IE. Equal makes IEs comparable with go-cmp
 // despite the unexported constructor error.
 func (i *IE) Equal(o *IE) bool {
-	if i == nil || o == nil {
-		return i == o
+	if i == o {
+		return true
 	}
-	if i.err != nil || o.err != nil {
-		return i.err != nil && o.err != nil && i.Type == o.Type && i.err.Error() == o.err.Error()
+	if i == nil || o == nil {
+		return false
 	}
 	a, errA := i.Marshal()
 	b, errB := o.Marshal()
-	if errA != nil || errB != nil {
+	if errA == nil && errB == nil {
+		return bytes.Equal(a, b)
+	}
+	if errA == nil || errB == nil {
 		return false
 	}
-	return bytes.Equal(a, b)
+	if i.Type != o.Type || i.EnterpriseID != o.EnterpriseID || !bytes.Equal(i.Payload, o.Payload) || len(i.ChildIEs) != len(o.ChildIEs) {
+		return false
+	}
+	if (i.err == nil) != (o.err == nil) || i.err != nil && i.err.Error() != o.err.Error() {
+		return false
+	}
+	for n, child := range i.ChildIEs {
+		if !child.Equal(o.ChildIEs[n]) {
+			return false
+		}
+	}
+	return true
 }
 
-// New creates a new IE.
+// New creates an IE retaining data without copying it. For a vendor type
+// (high bit set), encoding includes the struct's EnterpriseID, initially zero.
+// New retains raw values without semantic validation; prefer the vendor-specific
+// constructors to validate their arguments (TS 29.244 V20.1.0 clause 8.1.1).
 func New(itype IEType, data []byte) *IE {
 	i := &IE{
 		Type:    itype,
@@ -71,8 +91,14 @@ func New(itype IEType, data []byte) *IE {
 	return i
 }
 
-// NewVendorSpecificIE creates a new vendor-specific IE.
+// NewVendorSpecificIE creates a vendor-specific IE. The type must have its
+// high bit set, and eid must not be 10415 (TS 29.244 V20.1.0 clause 8.1.1).
+// An invalid argument creates an IE whose encoding reports ErrInvalidValue.
 func NewVendorSpecificIE(itype IEType, eid uint16, data []byte) *IE {
+	if err := validateVendorType(itype, eid); err != nil {
+		return newInvalidIE(itype, err)
+	}
+
 	i := &IE{
 		Type:         itype,
 		EnterpriseID: eid,
@@ -87,8 +113,13 @@ func NewGroupedIE(itype IEType, ies ...*IE) *IE {
 	return newGroupedIE(itype, 0, ies...)
 }
 
-// NewVendorSpecificGroupedIE creates a new grouped IE.
+// NewVendorSpecificGroupedIE creates a vendor-specific grouped IE. The type
+// must have its high bit set and eid must not be 10415; otherwise encoding
+// reports ErrInvalidValue (TS 29.244 V20.1.0 clause 8.1.1).
 func NewVendorSpecificGroupedIE(itype IEType, eid uint16, ies ...*IE) *IE {
+	if err := validateVendorType(itype, eid); err != nil {
+		return newInvalidIE(itype, err)
+	}
 	return newGroupedIE(itype, eid, ies...)
 }
 
@@ -296,6 +327,7 @@ func (i *IE) valueAs3GPPTimestamp() (time.Time, error) {
 // Note that this function uses the given bytes directly, so not safe to use
 // the buffer after calling this function. When you use the buffer somewhere
 // else, copy it before calling this function.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func Parse(b []byte) (*IE, error) {
 	i := &IE{}
 	if err := i.UnmarshalBinary(b); err != nil {
@@ -316,6 +348,7 @@ const maxGroupedDepth = 16
 //
 // The returned IEs reference b: modifying b afterwards changes them. Copy b
 // first if it is reused.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseMultiIEs(b []byte) ([]*IE, error) {
 	return decodeIEs(b, 0)
 }
@@ -360,18 +393,23 @@ func decodeIEs(b []byte, depth int) ([]*IE, error) {
 // TS 29.244 V20.1.0 clause 8.1.1: Length excludes the four-octet header,
 // but includes the Enterprise ID of a vendor-specific IE.
 func decodeIE(b []byte, depth int, opaqueOnError bool) (*IE, int, error) {
+	// TS 29.244 V20.1.0 clause 7.6.7: truncated IE framing is invalid length.
 	if len(b) < 4 {
-		return nil, 0, io.ErrUnexpectedEOF
+		var typ IEType
+		if len(b) >= 2 {
+			typ = IEType(binary.BigEndian.Uint16(b[:2]))
+		}
+		return nil, 0, &DecodeError{Type: typ, Err: fmt.Errorf("%w: %w", ErrInvalidLength, io.ErrUnexpectedEOF)}
 	}
 	typ := IEType(binary.BigEndian.Uint16(b[:2]))
 	length := int(binary.BigEndian.Uint16(b[2:4]))
 	vendor := typ&0x8000 != 0
-	if vendor && length < 2 {
-		return nil, 0, &DecodeError{Type: typ, Err: ErrInvalidLength}
-	}
 	end := 4 + length
 	if len(b) < end {
-		return nil, 0, &DecodeError{Type: typ, Err: io.ErrUnexpectedEOF}
+		return nil, 0, &DecodeError{Type: typ, Err: fmt.Errorf("%w: %w", ErrInvalidLength, io.ErrUnexpectedEOF)}
+	}
+	if vendor && length < 2 {
+		return nil, 0, &DecodeError{Type: typ, Err: ErrInvalidLength}
 	}
 	v := &IE{Type: typ}
 	offset := 4
@@ -405,6 +443,7 @@ func decodeIE(b []byte, depth int, opaqueOnError bool) (*IE, int, error) {
 // UnmarshalBinary parses b, which must hold exactly one IE, into i.
 // Octets after the IE's declared length are an error (ErrInvalidLength):
 // use ParseMultiIEs for a sequence of IEs.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (i *IE) UnmarshalBinary(b []byte) error {
 	if i == nil {
 		return ErrIENotFound
@@ -437,7 +476,8 @@ func (i *IE) Marshal() ([]byte, error) {
 }
 
 // MarshalTo writes an IE to b. It returns ErrInvalidLength for a value exceeding
-// the 16-bit Length field or for a buffer shorter than MarshalLen().
+// the 16-bit Length field or for a buffer shorter than MarshalLen(). A child
+// encoding error can leave a partial encoding in b; discard b on any error.
 func (i *IE) MarshalTo(b []byte) error {
 	if i == nil {
 		return ErrIENotFound
@@ -562,7 +602,7 @@ func newGroupedIE(itype IEType, eid uint16, ies ...*IE) *IE {
 // whole seconds; the fractional part is discarded.
 func new3GPPTimestampIE(typ IEType, ts time.Time) *IE {
 	seconds := ts.Unix()
-	if seconds < 0 || seconds > 1<<32-1 || seconds == 1<<32-1 && ts.Nanosecond() != 0 {
+	if seconds < 0 || seconds > 1<<32-1 {
 		return newInvalidIE(typ, fmt.Errorf("%w: %s is outside 1970-01-01T00:00:00Z to 2106-02-07T06:28:15Z",
 			ErrInvalidValue, ts.UTC().Format(time.RFC3339)))
 	}
@@ -584,4 +624,12 @@ func (i *IE) payloadAtLeast(length int) ([]byte, error) {
 		return nil, io.ErrUnexpectedEOF
 	}
 	return i.Payload, nil
+}
+
+// validateVendorType follows TS 29.244 V20.1.0 clause 8.1.1.
+func validateVendorType(typ IEType, eid uint16) error {
+	if typ&0x8000 == 0 || eid == 10415 {
+		return fmt.Errorf("%w: vendor IE requires a high-bit type and an Enterprise ID other than 10415", ErrInvalidValue)
+	}
+	return nil
 }

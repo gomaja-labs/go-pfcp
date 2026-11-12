@@ -127,6 +127,7 @@ func (f *SubsequentVolumeQuotaFields) SetTOVOLFlag() {
 }
 
 // ParseSubsequentVolumeQuotaFields parses b into SubsequentVolumeQuotaFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseSubsequentVolumeQuotaFields(b []byte) (*SubsequentVolumeQuotaFields, error) {
 	f := &SubsequentVolumeQuotaFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -136,6 +137,7 @@ func ParseSubsequentVolumeQuotaFields(b []byte) (*SubsequentVolumeQuotaFields, e
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *SubsequentVolumeQuotaFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

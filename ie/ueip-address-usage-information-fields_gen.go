@@ -59,6 +59,7 @@ func (f *UEIPAddressUsageInformationFields) IE() *IE {
 }
 
 // ParseUEIPAddressUsageInformationFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseUEIPAddressUsageInformationFields(b []byte) (*UEIPAddressUsageInformationFields, error) {
 	f := &UEIPAddressUsageInformationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -69,6 +70,7 @@ func ParseUEIPAddressUsageInformationFields(b []byte) (*UEIPAddressUsageInformat
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *UEIPAddressUsageInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

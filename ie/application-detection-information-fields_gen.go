@@ -53,6 +53,7 @@ func (f *ApplicationDetectionInformationFields) IE() *IE {
 }
 
 // ParseApplicationDetectionInformationFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseApplicationDetectionInformationFields(b []byte) (*ApplicationDetectionInformationFields, error) {
 	f := &ApplicationDetectionInformationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -63,6 +64,7 @@ func ParseApplicationDetectionInformationFields(b []byte) (*ApplicationDetection
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *ApplicationDetectionInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

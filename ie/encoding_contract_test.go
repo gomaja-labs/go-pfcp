@@ -176,7 +176,7 @@ func TestRemotePeerTimestampConstructor(t *testing.T) {
 			if ctor.Type().NumIn() != 6 {
 				t.Fatal("constructor cannot accept Recovery Timestamp")
 			}
-			got := ctor.Call([]reflect.Value{reflect.ValueOf(uint8(0x1e)), reflect.ValueOf("192.0.2.1"), reflect.ValueOf(""), reflect.ValueOf(uint8(1)), reflect.ValueOf([]byte("net")), reflect.ValueOf(ts)})[0].Interface().(interface{ Marshal() ([]byte, error) })
+			got := ctor.Call([]reflect.Value{reflect.ValueOf(uint8(0x1e)), reflect.ValueOf("192.0.2.1"), reflect.ValueOf(""), reflect.ValueOf(uint8(1)), reflect.ValueOf("net"), reflect.ValueOf(ts)})[0].Interface().(interface{ Marshal() ([]byte, error) })
 			wire, err := got.Marshal()
 			if err != nil {
 				t.Fatal(err)

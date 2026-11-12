@@ -48,6 +48,7 @@ func NewMappedN6IPAddressFields(flags uint8, ipv4Address netip.Addr) *MappedN6IP
 }
 
 // ParseMappedN6IPAddressFields decodes fields, ignoring spare bits and trailing extension octets.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseMappedN6IPAddressFields(b []byte) (*MappedN6IPAddressFields, error) {
 	f := &MappedN6IPAddressFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -112,6 +113,7 @@ func (f *MappedN6IPAddressFields) MarshalTo(b []byte) error {
 }
 
 // UnmarshalBinary replaces the receiver with the decoded known fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *MappedN6IPAddressFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

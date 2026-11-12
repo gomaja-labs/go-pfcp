@@ -61,12 +61,12 @@ func swap(raw []byte) []byte {
 }
 
 // Uint24To32 converts 24bits-length []byte value into the uint32 with 8bits of zeros as prefix.
-// This function is used for the fields with 3 octets.
-func Uint24To32(b []byte) uint32 {
+// A slice whose length is not three returns an error.
+func Uint24To32(b []byte) (uint32, error) {
 	if len(b) != 3 {
-		return 0
+		return 0, fmt.Errorf("24-bit integer requires 3 octets")
 	}
-	return uint32(b[0])<<16 | uint32(b[1])<<8 | uint32(b[2])
+	return uint32(b[0])<<16 | uint32(b[1])<<8 | uint32(b[2]), nil
 }
 
 // Uint32To24 converts the uint32 value into 24bits-length []byte. The values in 25-32 bit are cut off.
@@ -76,12 +76,12 @@ func Uint32To24(n uint32) []byte {
 }
 
 // Uint40To64 converts 40bits-length []byte value into the uint64 with 8bits of zeros as prefix.
-// This function is used for the fields with 3 octets.
-func Uint40To64(b []byte) uint64 {
+// A slice whose length is not five returns an error.
+func Uint40To64(b []byte) (uint64, error) {
 	if len(b) != 5 {
-		return 0
+		return 0, fmt.Errorf("40-bit integer requires 5 octets")
 	}
-	return uint64(b[0])<<32 | uint64(b[1])<<24 | uint64(b[2])<<16 | uint64(b[3])<<8 | uint64(b[4])
+	return uint64(b[0])<<32 | uint64(b[1])<<24 | uint64(b[2])<<16 | uint64(b[3])<<8 | uint64(b[4]), nil
 }
 
 // Uint64To40 converts the uint64 value into 40bits-length []byte. The values in 25-64 bit are cut off.
@@ -128,6 +128,17 @@ func EncodePLMN(mcc, mnc string) ([]byte, error) {
 func DecodePLMN(b []byte) (mcc, mnc string, err error) {
 	if len(b) < 3 {
 		return "", "", io.ErrUnexpectedEOF
+	}
+	if len(b) != 3 {
+		return "", "", fmt.Errorf("PLMN requires 3 octets")
+	}
+	// TS 29.244 V20.1.0 clause 8.2.108: decimal MCC/MNC digits;
+	// only the third MNC digit may use the two-digit-MNC filler F.
+	for pos := 0; pos < 6; pos++ {
+		digit := b[pos/2] >> (4 * (pos % 2)) & 15
+		if digit > 9 && (pos != 3 || digit != 15) {
+			return "", "", fmt.Errorf("invalid PLMN digit")
+		}
 	}
 
 	raw := hex.EncodeToString(b)

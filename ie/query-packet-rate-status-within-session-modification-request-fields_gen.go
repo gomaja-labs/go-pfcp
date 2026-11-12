@@ -47,6 +47,7 @@ func (f *QueryPacketRateStatusWithinSessionModificationRequestFields) IE() *IE {
 }
 
 // ParseQueryPacketRateStatusWithinSessionModificationRequestFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseQueryPacketRateStatusWithinSessionModificationRequestFields(b []byte) (*QueryPacketRateStatusWithinSessionModificationRequestFields, error) {
 	f := &QueryPacketRateStatusWithinSessionModificationRequestFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -57,6 +58,7 @@ func ParseQueryPacketRateStatusWithinSessionModificationRequestFields(b []byte) 
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *QueryPacketRateStatusWithinSessionModificationRequestFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

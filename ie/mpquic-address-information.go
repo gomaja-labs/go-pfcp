@@ -69,6 +69,7 @@ func (i *IE) MPQUICAddressInformation() (*MPQUICAddressInformationFields, error)
 
 // ParseMPQUICAddressInformationFields decodes the known fields; unknown extension octets are ignored.
 // TS 29.244 V20.1.0 clauses 8.2.226 and 8.1.2.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseMPQUICAddressInformationFields(b []byte) (*MPQUICAddressInformationFields, error) {
 	f := &MPQUICAddressInformationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -78,6 +79,7 @@ func ParseMPQUICAddressInformationFields(b []byte) (*MPQUICAddressInformationFie
 }
 
 // UnmarshalBinary decodes MPQUIC Address Information and resets previously decoded fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *MPQUICAddressInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

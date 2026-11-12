@@ -50,6 +50,7 @@ func NewMeasurementEndpointAddressFields(flags uint8, ipv4Address netip.Addr, ip
 }
 
 // ParseMeasurementEndpointAddressFields decodes fields, ignoring spare bits and trailing extension octets.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseMeasurementEndpointAddressFields(b []byte) (*MeasurementEndpointAddressFields, error) {
 	f := &MeasurementEndpointAddressFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -127,6 +128,7 @@ func (f *MeasurementEndpointAddressFields) MarshalTo(b []byte) error {
 }
 
 // UnmarshalBinary replaces the receiver with the decoded known fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *MeasurementEndpointAddressFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

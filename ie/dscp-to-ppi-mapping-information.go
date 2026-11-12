@@ -36,6 +36,7 @@ func (i *IE) DSCPToPPIMappingInformation() (*DSCPToPPIMappingInformationFields, 
 }
 
 // ParseDSCPToPPIMappingInformationFields decodes fields according to clause 8.2.214.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseDSCPToPPIMappingInformationFields(b []byte) (*DSCPToPPIMappingInformationFields, error) {
 	f := &DSCPToPPIMappingInformationFields{}
 	if e := f.UnmarshalBinary(b); e != nil {
@@ -45,6 +46,7 @@ func ParseDSCPToPPIMappingInformationFields(b []byte) (*DSCPToPPIMappingInformat
 }
 
 // UnmarshalBinary resets the value and decodes the known fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *DSCPToPPIMappingInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

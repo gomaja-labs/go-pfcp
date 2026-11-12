@@ -16,8 +16,8 @@ var (
 
 	// ErrInvalidType reports an inappropriate IE type.
 	ErrInvalidType = errors.New("invalid type")
-	// ErrIENotFound reports a nil IE receiver or a missing requested child.
-	ErrIENotFound = errors.New("could not find the specified IE in a grouped IE")
+	// ErrIENotFound reports an absent IE, including a nil receiver.
+	ErrIENotFound = errors.New("IE not found")
 
 	// ErrMalformed reports a malformed IE value.
 	ErrMalformed = errors.New("malformed IE")
@@ -34,14 +34,16 @@ var (
 
 // DecodeError identifies the IE whose declared value could not be decoded.
 // It unwraps to the underlying error, including io.ErrUnexpectedEOF and
-// ErrInvalidLength. An incomplete four-octet header has no DecodeError because
-// its type and length cannot yet be read together.
+// ErrInvalidLength. Incomplete headers and declared values beyond the available
+// octets wrap both ErrInvalidLength and io.ErrUnexpectedEOF (clause 7.6.7).
+// A value helper requiring more value octets returns io.ErrUnexpectedEOF without
+// ErrInvalidLength (clause 7.6.8).
 // TS 29.244 V20.1.0 clauses 7.6.3 and 7.6.7 require the offending IE type
 // when an invalid IE length is reported.
 type DecodeError struct {
 	// Type is the innermost IE whose header or value could not be decoded.
-	// When a child header is incomplete, Type identifies its enclosing group
-	// because the child type and length cannot both be read.
+	// An incomplete header carries its type when two octets are available;
+	// otherwise Type is zero, with enclosing groups retained in Path.
 	Type IEType
 	// Path lists enclosing grouped types, outermost first; it excludes Type.
 	Path []IEType

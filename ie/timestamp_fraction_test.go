@@ -14,7 +14,7 @@ func TestTimestampFractionDiscarded(t *testing.T) {
 	for _, ctor := range constructors {
 		typ := ctor(time.Unix(0, 0)).Type
 		t.Run(typ.String(), func(t *testing.T) {
-			for _, sec := range []int64{0, 1700000000, 2085978495, 2085978496, 4294967294} {
+			for _, sec := range []int64{0, 1700000000, 2085978495, 2085978496, 4294967294, 4294967295} {
 				for _, ns := range []int64{1, 500000000, 999999999} {
 					i := ctor(time.Unix(sec, ns))
 					b, e := i.Marshal()
@@ -31,7 +31,7 @@ func TestTimestampFractionDiscarded(t *testing.T) {
 					}
 				}
 			}
-			for _, ts := range []time.Time{time.Unix(-1, 999999999), time.Unix(4294967295, 1), time.Unix(4294967296, 0)} {
+			for _, ts := range []time.Time{time.Unix(-1, 999999999), time.Unix(4294967296, 0)} {
 				_, e := ctor(ts).Marshal()
 				if !errors.Is(e, ie.ErrInvalidValue) {
 					t.Fatalf("out-of-window time accepted: %v", ts)

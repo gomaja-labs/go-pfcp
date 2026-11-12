@@ -119,6 +119,7 @@ func (f *MPTCPAddressInformationFields) SetIPv4Flag() {
 }
 
 // ParseMPTCPAddressInformationFields parses b into MPTCPAddressInformationFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseMPTCPAddressInformationFields(b []byte) (*MPTCPAddressInformationFields, error) {
 	f := &MPTCPAddressInformationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -128,6 +129,7 @@ func ParseMPTCPAddressInformationFields(b []byte) (*MPTCPAddressInformationField
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *MPTCPAddressInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

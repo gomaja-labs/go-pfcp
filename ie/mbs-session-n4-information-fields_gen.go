@@ -53,6 +53,7 @@ func (f *MBSSessionN4InformationFields) IE() *IE {
 }
 
 // ParseMBSSessionN4InformationFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseMBSSessionN4InformationFields(b []byte) (*MBSSessionN4InformationFields, error) {
 	f := &MBSSessionN4InformationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -63,6 +64,7 @@ func ParseMBSSessionN4InformationFields(b []byte) (*MBSSessionN4InformationField
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *MBSSessionN4InformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

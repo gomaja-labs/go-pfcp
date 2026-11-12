@@ -188,12 +188,14 @@ func (f *{{.Name}}Fields) IE() *IE {
 }
 
 // Parse{{.Name}}Fields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func Parse{{.Name}}Fields(b []byte) (*{{.Name}}Fields,error) {
  f:=&{{.Name}}Fields{};if err:=f.UnmarshalBinary(b);err!=nil {return nil,err};return f,nil
 }
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *{{.Name}}Fields) UnmarshalBinary(b []byte) error {
  if f==nil {return ErrIENotFound}
  children,err:=parseGroupedFields({{.Name}},b);if err!=nil {return withDecodePath({{.Name}},err)}

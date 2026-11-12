@@ -77,6 +77,7 @@ func NewMACAddressesRemovedFields(ctag, stag *IE, macs ...net.HardwareAddr) *MAC
 }
 
 // ParseMACAddressesRemovedFields parses b into MACAddressesRemovedFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseMACAddressesRemovedFields(b []byte) (*MACAddressesRemovedFields, error) {
 	f := &MACAddressesRemovedFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -88,6 +89,7 @@ func ParseMACAddressesRemovedFields(b []byte) (*MACAddressesRemovedFields, error
 // UnmarshalBinary parses b into IE.
 // TS 29.244 V20.1.0 clause 8.2.104: exactly count MAC addresses,
 // followed by independently length-prefixed C-TAG and S-TAG values.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *MACAddressesRemovedFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

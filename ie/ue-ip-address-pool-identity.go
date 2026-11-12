@@ -10,7 +10,8 @@ import (
 )
 
 // NewUEIPAddressPoolIdentity creates a new UEIPAddressPoolIdentity IE.
-func NewUEIPAddressPoolIdentity(id []byte) *IE {
+// The octet string is carried unchanged; no character set is imposed or checked.
+func NewUEIPAddressPoolIdentity(id string) *IE {
 	// TS 29.244 V20.1.0 clause 8.2.128: an opaque length-delimited pool identity.
 	l := len(id)
 	if l > 65533 {
@@ -24,43 +25,29 @@ func NewUEIPAddressPoolIdentity(id []byte) *IE {
 	return i
 }
 
-// UEIPAddressPoolIdentity returns UEIPAddressPoolIdentity in []byte if the type of IE matches.
-func (i *IE) UEIPAddressPoolIdentity() ([]byte, error) {
-	if i == nil {
-		return nil, ErrIENotFound
-	}
-
-	switch i.Type {
-	case UEIPAddressPoolIdentity:
-		// TS 29.244 V20.1.0 clause 8.2.128: two-octet length and identifier.
-		if len(i.Payload) < 2 {
-			return nil, io.ErrUnexpectedEOF
-		}
-		return i.payloadAtLeast(2 + int(binary.BigEndian.Uint16(i.Payload[:2])))
-	default:
-		return nil, &InvalidTypeError{Type: i.Type}
-	}
-}
-
-// UEIPAddressPoolIdentityString returns an explicit string view of the opaque pool identity.
-func (i *IE) UEIPAddressPoolIdentityString() (string, error) {
+// UEIPAddressPoolIdentity returns the pool identifier octet string unchanged.
+// No character set is imposed or checked. TS 29.244 V20.1.0 clause 8.2.128.
+func (i *IE) UEIPAddressPoolIdentity() (string, error) {
 	if i == nil {
 		return "", ErrIENotFound
 	}
-
-	v, err := i.UEIPAddressPoolIdentity()
+	if i.Type != UEIPAddressPoolIdentity {
+		return "", &InvalidTypeError{Type: i.Type}
+	}
+	if len(i.Payload) < 2 {
+		return "", io.ErrUnexpectedEOF
+	}
+	n := int(binary.BigEndian.Uint16(i.Payload[:2]))
+	b, err := i.payloadAtLeast(2 + n)
 	if err != nil {
 		return "", err
 	}
+	return string(b[2 : 2+n]), nil
+}
 
-	if len(v) < 2 {
-		return "", io.ErrUnexpectedEOF
-	}
-
-	idlen := int(binary.BigEndian.Uint16(v[0:2]))
-	if len(v) < idlen+2 {
-		return "", io.ErrUnexpectedEOF
-	}
-
-	return string(v[2 : idlen+2]), nil
+// UEIPAddressPoolIdentityString returns the explicit string view of the pool identifier.
+// The octet string is unchanged; no character set is imposed or checked.
+// TS 29.244 V20.1.0 clause 8.2.128.
+func (i *IE) UEIPAddressPoolIdentityString() (string, error) {
+	return i.UEIPAddressPoolIdentity()
 }

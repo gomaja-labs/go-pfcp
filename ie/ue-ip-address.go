@@ -167,6 +167,7 @@ func NewUEIPAddressFields(flags uint8, v4, v6 string, v6d, v6pl uint8) *UEIPAddr
 }
 
 // ParseUEIPAddressFields parses b into UEIPAddressFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseUEIPAddressFields(b []byte) (*UEIPAddressFields, error) {
 	f := &UEIPAddressFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -176,6 +177,7 @@ func ParseUEIPAddressFields(b []byte) (*UEIPAddressFields, error) {
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *UEIPAddressFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

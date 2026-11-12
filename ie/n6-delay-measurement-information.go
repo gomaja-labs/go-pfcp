@@ -53,6 +53,7 @@ func NewN6DelayMeasurementInformationFields(flags uint8, averagePacketDelay time
 }
 
 // ParseN6DelayMeasurementInformationFields decodes fields, ignoring spare bits and trailing extension octets.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseN6DelayMeasurementInformationFields(b []byte) (*N6DelayMeasurementInformationFields, error) {
 	f := &N6DelayMeasurementInformationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -136,6 +137,7 @@ func (f *N6DelayMeasurementInformationFields) MarshalTo(b []byte) error {
 }
 
 // UnmarshalBinary replaces the receiver with the decoded known fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *N6DelayMeasurementInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

@@ -100,6 +100,7 @@ func NewRedirectInformationFields(addrType uint8, addrs ...string) *RedirectInfo
 }
 
 // ParseRedirectInformationFields decodes all current address types.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseRedirectInformationFields(b []byte) (*RedirectInformationFields, error) {
 	f := &RedirectInformationFields{}
 	if e := f.UnmarshalBinary(b); e != nil {
@@ -109,6 +110,7 @@ func ParseRedirectInformationFields(b []byte) (*RedirectInformationFields, error
 }
 
 // UnmarshalBinary decodes addresses and port and ignores extension octets.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *RedirectInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

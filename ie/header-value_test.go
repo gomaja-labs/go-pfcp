@@ -10,7 +10,7 @@ import (
 func TestHeaderValue(t *testing.T) {
 	for _, n := range []int{0, 1, 255, 256, 65535, 65536} {
 		payload := bytes.Repeat([]byte{0x61}, n)
-		i := ie.NewHeaderValue(payload)
+		i := ie.NewHeaderValue(string(payload))
 		if n > 65535 {
 			assertNewIEInvalid(t, i, ie.HeaderValue)
 			continue
@@ -23,7 +23,7 @@ func TestHeaderValue(t *testing.T) {
 			}
 			continue
 		}
-		if err != nil || !bytes.Equal(got, payload) {
+		if err != nil || got != string(payload) {
 			t.Fatal("value", err)
 		}
 	}
@@ -32,6 +32,6 @@ func TestHeaderValue(t *testing.T) {
 
 func TestHeaderValueBinary(t *testing.T) {
 	p := []byte{0, 1, 255, 128}
-	i := ie.NewHeaderValue(p)
+	i := ie.NewHeaderValue(string(p))
 	checkNewIEWire(t, i, p)
 }

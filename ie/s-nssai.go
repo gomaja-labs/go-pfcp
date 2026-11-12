@@ -64,5 +64,5 @@ func (i *IE) SD() (uint32, error) {
 		return 0, err
 	}
 
-	return utils.Uint24To32(v[1:4]), nil
+	return utils.Uint24To32(v[1:4])
 }

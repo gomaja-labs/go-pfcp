@@ -20,9 +20,9 @@ func TestStringIEs(t *testing.T) {
 	}{
 		{
 			description: "ActivatePredefinedRules",
-			structured:  ie.NewActivatePredefinedRules([]byte("go-pfcp")),
+			structured:  ie.NewActivatePredefinedRules("go-pfcp"),
 			decoded:     "go-pfcp",
-			decoderFunc: func(i *ie.IE) (string, error) { v, e := i.ActivatePredefinedRules(); return string(v), e },
+			decoderFunc: func(i *ie.IE) (string, error) { v, e := i.ActivatePredefinedRules(); return v, e },
 		}, {
 			description: "APNDNN",
 			structured:  ie.NewAPNDNN("some.apn.example"),
@@ -30,14 +30,14 @@ func TestStringIEs(t *testing.T) {
 			decoderFunc: func(i *ie.IE) (string, error) { return i.APNDNN() },
 		}, {
 			description: "ApplicationID",
-			structured:  ie.NewApplicationID([]byte("https://example.com/apps/go-pfcp/")),
+			structured:  ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
 			decoded:     "https://example.com/apps/go-pfcp/",
-			decoderFunc: func(i *ie.IE) (string, error) { v, e := i.ApplicationID(); return string(v), e },
+			decoderFunc: func(i *ie.IE) (string, error) { v, e := i.ApplicationID(); return v, e },
 		}, {
 			description: "ApplicationInstanceID",
-			structured:  ie.NewApplicationInstanceID([]byte("go-pfcp")),
+			structured:  ie.NewApplicationInstanceID("go-pfcp"),
 			decoded:     "go-pfcp",
-			decoderFunc: func(i *ie.IE) (string, error) { v, e := i.ApplicationInstanceID(); return string(v), e },
+			decoderFunc: func(i *ie.IE) (string, error) { v, e := i.ApplicationInstanceID(); return v, e },
 		}, {
 			description: "UserPlaneNodeManagementInformationContainer",
 			structured:  ie.NewUserPlaneNodeManagementInformationContainer([]byte("go-pfcp")),
@@ -93,14 +93,14 @@ func TestStringIEs(t *testing.T) {
 			},
 		}, {
 			description: "DataNetworkAccessIdentifier",
-			structured:  ie.NewDataNetworkAccessIdentifier([]byte("go-pfcp")),
+			structured:  ie.NewDataNetworkAccessIdentifier("go-pfcp"),
 			decoded:     "go-pfcp",
-			decoderFunc: func(i *ie.IE) (string, error) { v, e := i.DataNetworkAccessIdentifier(); return string(v), e },
+			decoderFunc: func(i *ie.IE) (string, error) { v, e := i.DataNetworkAccessIdentifier(); return v, e },
 		}, {
 			description: "DeactivatePredefinedRules",
-			structured:  ie.NewDeactivatePredefinedRules([]byte("go-pfcp")),
+			structured:  ie.NewDeactivatePredefinedRules("go-pfcp"),
 			decoded:     "go-pfcp",
-			decoderFunc: func(i *ie.IE) (string, error) { v, e := i.DeactivatePredefinedRules(); return string(v), e },
+			decoderFunc: func(i *ie.IE) (string, error) { v, e := i.DeactivatePredefinedRules(); return v, e },
 		}, {
 			description: "FlowInformation/FlowDescription",
 			structured:  ie.NewFlowInformation(ie.FlowDirectionDownlink, "go-pfcp"),
@@ -108,9 +108,9 @@ func TestStringIEs(t *testing.T) {
 			decoderFunc: func(i *ie.IE) (string, error) { return i.FlowDescription() },
 		}, {
 			description: "ForwardingPolicyIdentifier",
-			structured:  ie.NewForwardingPolicy([]byte("go-pfcp")),
+			structured:  ie.NewForwardingPolicy("go-pfcp"),
 			decoded:     "go-pfcp",
-			decoderFunc: func(i *ie.IE) (string, error) { v, e := i.ForwardingPolicyIdentifier(); return string(v), e },
+			decoderFunc: func(i *ie.IE) (string, error) { v, e := i.ForwardingPolicyIdentifier(); return v, e },
 		}, {
 			description: "FramedIPv6Route",
 			structured:  ie.NewFramedIPv6Route("go-pfcp"),
@@ -123,12 +123,12 @@ func TestStringIEs(t *testing.T) {
 			decoderFunc: func(i *ie.IE) (string, error) { return i.FramedRoute() },
 		}, {
 			description: "NetworkInstance",
-			structured:  ie.NewNetworkInstance([]byte("go-pfcp")),
+			structured:  ie.NewNetworkInstance("go-pfcp"),
 			decoded:     "go-pfcp",
-			decoderFunc: func(i *ie.IE) (string, error) { v, e := i.NetworkInstance(); return string(v), e },
+			decoderFunc: func(i *ie.IE) (string, error) { v, e := i.NetworkInstance(); return v, e },
 		}, {
 			description: "NetworkInstance/Heuristic",
-			structured:  ie.NewNetworkInstance([]byte("go-pfcp")),
+			structured:  ie.NewNetworkInstance("go-pfcp"),
 			decoded:     "go-pfcp",
 			decoderFunc: func(i *ie.IE) (string, error) { return i.NetworkInstanceHeuristic() },
 		}, {
@@ -201,9 +201,9 @@ func TestStringIEs(t *testing.T) {
 			decoderFunc: func(i *ie.IE) (string, error) { return i.SMFSetID() },
 		}, {
 			description: "UEIPAddressPoolIdentity",
-			structured:  ie.NewUEIPAddressPoolIdentity([]byte("go-pfcp")),
+			structured:  ie.NewUEIPAddressPoolIdentity("go-pfcp"),
 			decoded:     "go-pfcp",
-			decoderFunc: func(i *ie.IE) (string, error) { return i.UEIPAddressPoolIdentityString() },
+			decoderFunc: func(i *ie.IE) (string, error) { return i.UEIPAddressPoolIdentity() },
 		},
 	}
 

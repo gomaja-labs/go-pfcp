@@ -61,6 +61,7 @@ func (f *N6DelayMeasurementReportPFCPNodeReportRequestFields) IE() *IE {
 }
 
 // ParseN6DelayMeasurementReportPFCPNodeReportRequestFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseN6DelayMeasurementReportPFCPNodeReportRequestFields(b []byte) (*N6DelayMeasurementReportPFCPNodeReportRequestFields, error) {
 	f := &N6DelayMeasurementReportPFCPNodeReportRequestFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -71,6 +72,7 @@ func ParseN6DelayMeasurementReportPFCPNodeReportRequestFields(b []byte) (*N6Dela
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *N6DelayMeasurementReportPFCPNodeReportRequestFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

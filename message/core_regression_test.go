@@ -82,7 +82,13 @@ func TestHeaderFlagIsolation(t *testing.T) {
 func TestHeaderDecodedVersion(t *testing.T) {
 	for version := 0; version < 8; version++ {
 		h, err := message.ParseHeader(wireHeader(byte(version<<5), 200, nil))
-		if err != nil {
+		if version != 1 {
+			var v *message.UnsupportedVersionError
+			if !errors.As(err, &v) {
+				t.Fatal("missing version error", err)
+			}
+			h = v.Header
+		} else if err != nil {
 			t.Fatal(err)
 		}
 		if h.Version() != version {

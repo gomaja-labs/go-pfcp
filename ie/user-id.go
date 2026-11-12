@@ -88,6 +88,7 @@ func NewUserIDFields(flags uint8, imsi, imei, msisdn, nai string) *UserIDFields 
 }
 
 // ParseUserIDFields parses b into UserIDFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseUserIDFields(b []byte) (*UserIDFields, error) {
 	f := &UserIDFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -97,6 +98,7 @@ func ParseUserIDFields(b []byte) (*UserIDFields, error) {
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *UserIDFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

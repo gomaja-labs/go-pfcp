@@ -55,6 +55,7 @@ func (f *MBSMulticastParametersFields) IE() *IE {
 }
 
 // ParseMBSMulticastParametersFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseMBSMulticastParametersFields(b []byte) (*MBSMulticastParametersFields, error) {
 	f := &MBSMulticastParametersFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -65,6 +66,7 @@ func ParseMBSMulticastParametersFields(b []byte) (*MBSMulticastParametersFields,
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *MBSMulticastParametersFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

@@ -7,9 +7,10 @@ package ie
 import "github.com/gomaja-labs/go-pfcp/internal/utils"
 
 // NewNetworkInstance creates a new NetworkInstance IE.
+// The value is an octet string carried unchanged; no character set is imposed or checked.
 // TS 29.244 V20.1.0 clause 8.2.4: no text repertoire is specified for this identifier.
-func NewNetworkInstance(instance []byte) *IE {
-	return New(NetworkInstance, instance)
+func NewNetworkInstance(instance string) *IE {
+	return newStringIE(NetworkInstance, instance)
 }
 
 // NewNetworkInstanceFQDN creates a new NetworkInstance IE from the given
@@ -18,18 +19,16 @@ func NewNetworkInstanceFQDN(fqdn string) *IE {
 	return newFQDNIE(NetworkInstance, fqdn)
 }
 
-// NetworkInstance returns NetworkInstance as opaque octets if the type of IE matches.
-func (i *IE) NetworkInstance() ([]byte, error) {
+// NetworkInstance returns the unchanged octet string.
+func (i *IE) NetworkInstance() (string, error) {
 	if i == nil {
-		return nil, ErrIENotFound
+		return "", ErrIENotFound
 	}
-
-	switch i.Type {
-	case NetworkInstance:
-		return i.payloadAtLeast(1)
-	default:
-		return nil, &InvalidTypeError{Type: i.Type}
+	if i.Type != NetworkInstance {
+		return "", &InvalidTypeError{Type: i.Type}
 	}
+	b, err := i.payloadAtLeast(1)
+	return string(b), err
 }
 
 // NetworkInstanceFQDN returns NetworkInstance as a decoded domain name.
@@ -45,7 +44,7 @@ func (i *IE) NetworkInstanceFQDN() (string, error) {
 		return "", err
 	}
 
-	return decodeFQDNValue(value)
+	return decodeFQDNValue([]byte(value))
 }
 
 // NetworkInstanceHeuristic assumes that the payload is encoded in Name Syntax
@@ -60,8 +59,8 @@ func (i *IE) NetworkInstanceHeuristic() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	if name := utils.DecodeFQDN(value); name != "" {
+	if name := utils.DecodeFQDN([]byte(value)); name != "" {
 		return name, nil
 	}
-	return string(value), nil
+	return value, nil
 }

@@ -256,7 +256,7 @@ func TestUint16IEs(t *testing.T) {
 		}, {
 			description: "PDRID/ApplicationDetectionInformation",
 			structured: ie.NewApplicationDetectionInformation(
-				ie.NewApplicationID([]byte("https://example.com/apps/go-pfcp/")),
+				ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
 				ie.NewPDRID(0xffff),
 			),
 			decoded: 0xffff,
@@ -272,7 +272,7 @@ func TestUint16IEs(t *testing.T) {
 			structured: ie.NewUsageReportWithinSessionReportRequest(
 				ie.NewURRID(0xffffffff),
 				ie.NewApplicationDetectionInformation(
-					ie.NewApplicationID([]byte("https://example.com/apps/go-pfcp/")),
+					ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
 					ie.NewPDRID(0xffff),
 				),
 			),
@@ -402,7 +402,7 @@ func TestUint16IEs(t *testing.T) {
 		}, {
 			description: "TransportLevelMarking/GTPUPathQoSControlInformation",
 			structured: ie.NewGTPUPathQoSControlInformation(
-				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example", time.Time{}),
 				ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
 			),
 			decoded: 0x1111,
@@ -420,7 +420,7 @@ func TestUint16IEs(t *testing.T) {
 		}, {
 			description: "TransportLevelMarking/GTPUPathQoSReport",
 			structured: ie.NewGTPUPathQoSReport(
-				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example", time.Time{}),
 				ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
 			),
 			decoded: 0x1111,

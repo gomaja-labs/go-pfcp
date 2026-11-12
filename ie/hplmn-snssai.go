@@ -32,6 +32,7 @@ func (i *IE) HPLMNSNSSAI() (*HPLMNSNSSAIFields, error) {
 
 // ParseHPLMNSNSSAIFields decodes exactly four value octets.
 // TS 29.244 V20.1.0 clauses 8.2.232 and 8.1.2.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseHPLMNSNSSAIFields(b []byte) (*HPLMNSNSSAIFields, error) {
 	f := &HPLMNSNSSAIFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -41,6 +42,7 @@ func ParseHPLMNSNSSAIFields(b []byte) (*HPLMNSNSSAIFields, error) {
 }
 
 // UnmarshalBinary decodes HPLMN S-NSSAI and resets previously decoded fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *HPLMNSNSSAIFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

@@ -95,6 +95,7 @@ func NewDLFlowLevelMarkingFields(flags uint8, ttc, sci []byte) *DLFlowLevelMarki
 }
 
 // ParseDLFlowLevelMarkingFields parses b into DLFlowLevelMarkingFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseDLFlowLevelMarkingFields(b []byte) (*DLFlowLevelMarkingFields, error) {
 	f := &DLFlowLevelMarkingFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -104,6 +105,7 @@ func ParseDLFlowLevelMarkingFields(b []byte) (*DLFlowLevelMarkingFields, error) 
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *DLFlowLevelMarkingFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

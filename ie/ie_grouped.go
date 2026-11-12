@@ -12,6 +12,7 @@ func (i *IE) IsGrouped() bool {
 
 // Add appends non-nil children to a grouped IE. A raw payload is parsed first.
 // If that payload is malformed, it returns an error and leaves the IE unchanged.
+// Appending does not overwrite a backing array shared with a copied IE.
 func (i *IE) Add(ies ...*IE) error {
 	if i == nil {
 		return ErrIENotFound
@@ -24,9 +25,7 @@ func (i *IE) Add(ies ...*IE) error {
 	if err != nil {
 		return err
 	}
-	if children == nil {
-		children = make([]*IE, 0)
-	}
+	children = children[:len(children):len(children)]
 	for _, child := range ies {
 		if child != nil {
 			children = append(children, child)

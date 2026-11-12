@@ -48,6 +48,7 @@ func (i *IE) DroppedDLTrafficThreshold() (*DroppedDLTrafficThresholdFields, erro
 }
 
 // ParseDroppedDLTrafficThresholdFields decodes the thresholds.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseDroppedDLTrafficThresholdFields(b []byte) (*DroppedDLTrafficThresholdFields, error) {
 	f := &DroppedDLTrafficThresholdFields{}
 	if e := f.UnmarshalBinary(b); e != nil {
@@ -57,6 +58,7 @@ func ParseDroppedDLTrafficThresholdFields(b []byte) (*DroppedDLTrafficThresholdF
 }
 
 // UnmarshalBinary decodes thresholds and ignores trailing extension octets.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *DroppedDLTrafficThresholdFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

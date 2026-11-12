@@ -53,6 +53,7 @@ func (f *OverloadControlInformationFields) IE() *IE {
 }
 
 // ParseOverloadControlInformationFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseOverloadControlInformationFields(b []byte) (*OverloadControlInformationFields, error) {
 	f := &OverloadControlInformationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -63,6 +64,7 @@ func ParseOverloadControlInformationFields(b []byte) (*OverloadControlInformatio
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *OverloadControlInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

@@ -5,21 +5,20 @@
 package ie
 
 // NewDeactivatePredefinedRules creates a new DeactivatePredefinedRules IE.
+// The value is an octet string carried unchanged; no character set is imposed or checked.
 // TS 29.244 V20.1.0 clause 8.2.73: no text repertoire is specified for this identifier.
-func NewDeactivatePredefinedRules(name []byte) *IE {
-	return New(DeactivatePredefinedRules, name)
+func NewDeactivatePredefinedRules(name string) *IE {
+	return newStringIE(DeactivatePredefinedRules, name)
 }
 
-// DeactivatePredefinedRules returns DeactivatePredefinedRules as opaque octets if the type of IE matches.
-func (i *IE) DeactivatePredefinedRules() ([]byte, error) {
+// DeactivatePredefinedRules returns the unchanged octet string.
+func (i *IE) DeactivatePredefinedRules() (string, error) {
 	if i == nil {
-		return nil, ErrIENotFound
+		return "", ErrIENotFound
 	}
-
-	switch i.Type {
-	case DeactivatePredefinedRules:
-		return i.payloadAtLeast(1)
-	default:
-		return nil, &InvalidTypeError{Type: i.Type}
+	if i.Type != DeactivatePredefinedRules {
+		return "", &InvalidTypeError{Type: i.Type}
 	}
+	b, err := i.payloadAtLeast(1)
+	return string(b), err
 }

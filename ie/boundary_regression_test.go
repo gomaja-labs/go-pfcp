@@ -51,7 +51,7 @@ func TestRedirectAddressLengthOverflow(t *testing.T) {
 func TestForwardingPolicyLengthBoundary(t *testing.T) {
 	for _, n := range []int{0, 1, 255, 256, 65536} {
 		input := strings.Repeat("x", n)
-		i := ie.NewForwardingPolicy([]byte(input))
+		i := ie.NewForwardingPolicy(input)
 		if n > 255 {
 			if _, e := i.Marshal(); e == nil {
 				t.Errorf("accepted identifier length %d", n)
@@ -67,7 +67,7 @@ func TestForwardingPolicyLengthBoundary(t *testing.T) {
 			t.Fatal(err)
 		}
 		got, err := parsed.ForwardingPolicyIdentifier()
-		if err != nil || string(got) != input {
+		if err != nil || got != input {
 			t.Errorf("identifier length %d changed, error %v", n, err)
 		}
 	}

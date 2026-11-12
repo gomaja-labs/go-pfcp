@@ -144,6 +144,7 @@ func (f *PMFAddressInformationFields) SetIPv4Flag() {
 }
 
 // ParsePMFAddressInformationFields parses b into PMFAddressInformationFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParsePMFAddressInformationFields(b []byte) (*PMFAddressInformationFields, error) {
 	f := &PMFAddressInformationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -153,6 +154,7 @@ func ParsePMFAddressInformationFields(b []byte) (*PMFAddressInformationFields, e
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *PMFAddressInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

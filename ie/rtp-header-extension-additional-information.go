@@ -59,6 +59,7 @@ func NewRTPHeaderExtensionAdditionalInformationFields(flags, format uint8, pssa,
 }
 
 // ParseRTPHeaderExtensionAdditionalInformationFields parses the known fields and ignores trailing extension octets.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseRTPHeaderExtensionAdditionalInformationFields(b []byte) (*RTPHeaderExtensionAdditionalInformationFields, error) {
 	f := &RTPHeaderExtensionAdditionalInformationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -116,6 +117,7 @@ func (f *RTPHeaderExtensionAdditionalInformationFields) MarshalTo(b []byte) erro
 }
 
 // UnmarshalBinary replaces the receiver with the decoded fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *RTPHeaderExtensionAdditionalInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

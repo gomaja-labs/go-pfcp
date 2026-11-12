@@ -45,6 +45,7 @@ func (f *PFDContextFields) IE() *IE {
 }
 
 // ParsePFDContextFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParsePFDContextFields(b []byte) (*PFDContextFields, error) {
 	f := &PFDContextFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -55,6 +56,7 @@ func ParsePFDContextFields(b []byte) (*PFDContextFields, error) {
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *PFDContextFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

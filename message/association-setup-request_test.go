@@ -30,11 +30,11 @@ func TestAssociationSetupRequest(t *testing.T) {
 					ie.NewCPPFCPEntityIPAddress(net.ParseIP("127.0.0.1"), nil),
 				),
 				ie.NewUEIPAddressPoolInformation(
-					ie.NewUEIPAddressPoolIdentity([]byte("go-pfcp")),
-					ie.NewNetworkInstance([]byte("some.instance.example")),
+					ie.NewUEIPAddressPoolIdentity("go-pfcp"),
+					ie.NewNetworkInstance("some.instance.example"),
 				),
 				ie.NewGTPUPathQoSControlInformation(
-					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example", time.Time{}),
 					ie.NewGTPUPathInterfaceType(1, 1),
 					ie.NewQoSReportTrigger(1, 1, 1),
 					ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
@@ -102,15 +102,15 @@ func TestAssociationSetupRequest(t *testing.T) {
 					ie.NewCPPFCPEntityIPAddress(net.ParseIP("127.0.0.1"), nil),
 				),
 				ie.NewUEIPAddressPoolInformation(
-					ie.NewUEIPAddressPoolIdentity([]byte("go-pfcp-1")),
-					ie.NewNetworkInstance([]byte("some.instance-1.example")),
+					ie.NewUEIPAddressPoolIdentity("go-pfcp-1"),
+					ie.NewNetworkInstance("some.instance-1.example"),
 				),
 				ie.NewUEIPAddressPoolInformation(
-					ie.NewUEIPAddressPoolIdentity([]byte("go-pfcp-2")),
-					ie.NewNetworkInstance([]byte("some.instance-2.example")),
+					ie.NewUEIPAddressPoolIdentity("go-pfcp-2"),
+					ie.NewNetworkInstance("some.instance-2.example"),
 				),
 				ie.NewGTPUPathQoSControlInformation(
-					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example", time.Time{}),
 					ie.NewGTPUPathInterfaceType(1, 1),
 					ie.NewQoSReportTrigger(1, 1, 1),
 					ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
@@ -121,7 +121,7 @@ func TestAssociationSetupRequest(t *testing.T) {
 					ie.NewTimer(20*time.Hour),
 				),
 				ie.NewGTPUPathQoSControlInformation(
-					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.2", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.2", "", ie.DstInterfaceAccess, "some.instance.example", time.Time{}),
 					ie.NewGTPUPathInterfaceType(1, 1),
 					ie.NewQoSReportTrigger(1, 1, 1),
 					ie.NewTransportLevelMarking([]byte{0x11, 0x11}),

@@ -45,6 +45,7 @@ func (f *RemoveFARFields) IE() *IE {
 }
 
 // ParseRemoveFARFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseRemoveFARFields(b []byte) (*RemoveFARFields, error) {
 	f := &RemoveFARFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -55,6 +56,7 @@ func ParseRemoveFARFields(b []byte) (*RemoveFARFields, error) {
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *RemoveFARFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

@@ -154,7 +154,7 @@ func TestTimeIEs(t *testing.T) {
 		}, {
 			description: "EventTimeStamp/GTPUPathQoSReport",
 			structured: ie.NewGTPUPathQoSReport(
-				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example", time.Time{}),
 				ie.NewEventTimeStamp(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
 			),
 			decoded: time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC),
@@ -295,7 +295,7 @@ func TestTimeIEs(t *testing.T) {
 		}, {
 			description: "StartTime/GTPUPathQoSReport",
 			structured: ie.NewGTPUPathQoSReport(
-				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example", time.Time{}),
 				ie.NewStartTime(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
 			),
 			decoded: time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC),

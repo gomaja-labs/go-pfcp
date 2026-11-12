@@ -10,7 +10,7 @@ import (
 func TestHeaderDetectionSupportInformation(t *testing.T) {
 	for _, n := range []int{0, 1, 255, 256, 65535, 65536} {
 		payload := bytes.Repeat([]byte{0x61}, n)
-		i := ie.NewHeaderDetectionSupportInformation(payload)
+		i := ie.NewHeaderDetectionSupportInformation(string(payload))
 		if n > 65535 {
 			assertNewIEInvalid(t, i, ie.HeaderDetectionSupportInformation)
 			continue
@@ -23,7 +23,7 @@ func TestHeaderDetectionSupportInformation(t *testing.T) {
 			}
 			continue
 		}
-		if err != nil || !bytes.Equal(got, payload) {
+		if err != nil || got != string(payload) {
 			t.Fatal("value", err)
 		}
 	}
@@ -32,6 +32,6 @@ func TestHeaderDetectionSupportInformation(t *testing.T) {
 
 func TestHeaderDetectionSupportInformationBinary(t *testing.T) {
 	p := []byte{0, 1, 255, 128}
-	i := ie.NewHeaderDetectionSupportInformation(p)
+	i := ie.NewHeaderDetectionSupportInformation(string(p))
 	checkNewIEWire(t, i, p)
 }

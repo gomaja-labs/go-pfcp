@@ -59,6 +59,7 @@ func NewReportingThresholdsFields(flags uint8, downlinkCongestion uint16, uplink
 }
 
 // ParseReportingThresholdsFields decodes fields, ignoring spare bits and trailing extension octets.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseReportingThresholdsFields(b []byte) (*ReportingThresholdsFields, error) {
 	f := &ReportingThresholdsFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -162,6 +163,7 @@ func (f *ReportingThresholdsFields) MarshalTo(b []byte) error {
 }
 
 // UnmarshalBinary replaces the receiver with the decoded known fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *ReportingThresholdsFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

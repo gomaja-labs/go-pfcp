@@ -199,6 +199,7 @@ func (f *VolumeMeasurementFields) SetTOVOLFlag() {
 }
 
 // ParseVolumeMeasurementFields parses b into VolumeMeasurementFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseVolumeMeasurementFields(b []byte) (*VolumeMeasurementFields, error) {
 	f := &VolumeMeasurementFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -208,6 +209,7 @@ func ParseVolumeMeasurementFields(b []byte) (*VolumeMeasurementFields, error) {
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *VolumeMeasurementFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

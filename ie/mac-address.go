@@ -155,6 +155,7 @@ func (f *MACAddressFields) SetSOURFlag() {
 }
 
 // ParseMACAddressFields parses b into MACAddressFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseMACAddressFields(b []byte) (*MACAddressFields, error) {
 	f := &MACAddressFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -164,6 +165,7 @@ func ParseMACAddressFields(b []byte) (*MACAddressFields, error) {
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *MACAddressFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
