@@ -83,6 +83,7 @@ type RemoteGTPUPeerFields struct {
 	NILength             uint16
 	NetworkInstance      string
 	RecoveryTimestamp    time.Time
+	invalidArgument      bool
 }
 
 // NewRemoteGTPUPeerFields creates a new RemoteGTPUPeerFields.
@@ -90,13 +91,9 @@ func NewRemoteGTPUPeerFields(flags uint8, v4, v6 string, di uint8, ni string) *R
 	f := &RemoteGTPUPeerFields{Flags: flags}
 
 	f.IPv4Address = net.ParseIP(v4).To4()
-	if v4 != "" && f.IPv4Address == nil {
-		f.IPv4Address = net.IP([]byte(v4))
-	}
 	f.IPv6Address = net.ParseIP(v6).To16()
-	if v6 != "" && f.IPv6Address == nil {
-		f.IPv6Address = net.IP([]byte(v6))
-	}
+	f.invalidArgument = v4 != "" && f.IPv4Address == nil || v6 != "" && f.IPv6Address == nil
+
 	f.DestinationInterface = di
 	if flags&4 != 0 {
 		f.DILength = 1
@@ -212,7 +209,7 @@ func (f *RemoteGTPUPeerFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
 	}
-	if f.Flags&^uint8(31) != 0 || f.Flags&2 == 0 && len(f.IPv4Address) != 0 || f.Flags&1 == 0 && len(f.IPv6Address) != 0 || f.Flags&4 == 0 && (f.DILength != 0 || f.DestinationInterface != 0) || f.Flags&8 == 0 && (f.NILength != 0 || f.NetworkInstance != "") || f.Flags&16 == 0 && !f.RecoveryTimestamp.IsZero() || f.DestinationInterface > 15 {
+	if f.invalidArgument || f.Flags&3 == 0 || f.Flags&^uint8(31) != 0 || f.Flags&2 == 0 && len(f.IPv4Address) != 0 || f.Flags&1 == 0 && len(f.IPv6Address) != 0 || f.Flags&4 == 0 && (f.DILength != 0 || f.DestinationInterface != 0) || f.Flags&8 == 0 && (f.NILength != 0 || f.NetworkInstance != "") || f.Flags&16 == 0 && !f.RecoveryTimestamp.IsZero() || f.DestinationInterface > 15 {
 		return ErrInvalidValue
 	}
 	if f.MarshalLen() > 65535 {
@@ -310,4 +307,12 @@ func NewRemoteGTPUPeerFromFields(fields *RemoteGTPUPeerFields) *IE {
 		return newInvalidIE(RemoteGTPUPeer, ErrInvalidValue)
 	}
 	return New(RemoteGTPUPeer, b)
+}
+
+// Equal compares the complete peer fields, including invalid constructor state.
+func (f *RemoteGTPUPeerFields) Equal(other *RemoteGTPUPeerFields) bool {
+	if f == nil || other == nil {
+		return f == other
+	}
+	return f.Flags == other.Flags && f.IPv4Address.Equal(other.IPv4Address) && f.IPv6Address.Equal(other.IPv6Address) && f.DILength == other.DILength && f.DestinationInterface == other.DestinationInterface && f.NILength == other.NILength && f.NetworkInstance == other.NetworkInstance && f.RecoveryTimestamp.Equal(other.RecoveryTimestamp) && f.invalidArgument == other.invalidArgument
 }

@@ -7,6 +7,8 @@ package ie
 import (
 	"encoding/binary"
 	"io"
+	"net/netip"
+	"unicode/utf8"
 )
 
 // NewRedirectInformation creates a new RedirectInformation IE.
@@ -127,7 +129,7 @@ func (f *RedirectInformationFields) UnmarshalBinary(b []byte) error {
 		}
 		f.RedirectPort = binary.BigEndian.Uint16(b[o : o+2])
 	}
-	return nil
+	return f.validateAddresses(false)
 }
 func (f *RedirectInformationFields) hasOtherAddress() bool {
 	return f.RedirectAddressType == RedirectAddrIPv4AndIPv6 || f.RedirectAddressType == RedirectAddrIPv4AndIPv6AndPort
@@ -174,6 +176,9 @@ func (f *RedirectInformationFields) MarshalTo(b []byte) error {
 	if len(f.RedirectServerAddress) != int(f.ServerAddrLength) || len(f.OtherRedirectServerAddress) != int(f.OtherServerAddrLength) || f.MarshalLen() > 65535 {
 		return ErrInvalidLength
 	}
+	if err := f.validateAddresses(true); err != nil {
+		return err
+	}
 	if f.RedirectAddressType == RedirectAddrPort && f.RedirectServerAddress != "" || !f.hasOtherAddress() && f.OtherRedirectServerAddress != "" || f.RedirectAddressType < RedirectAddrPort && f.RedirectPort != 0 {
 		return ErrInvalidValue
 	}
@@ -207,4 +212,48 @@ func NewRedirectInformationFromFields(fields *RedirectInformationFields) *IE {
 		return newInvalidIE(RedirectInformation, ErrInvalidValue)
 	}
 	return New(RedirectInformation, b)
+}
+
+// TS 29.244 V20.1.0 clause 8.2.20 and RFC 8506 section 8.38:
+// addresses are nonempty UTF-8 and use the specified IP family. Send IPv6
+// in RFC 5952 canonical form; receive other valid spellings without changing them.
+func (f *RedirectInformationFields) validateAddresses(sending bool) error {
+	if f.RedirectAddressType > 8 {
+		return ErrInvalidValue
+	}
+	if f.RedirectAddressType == RedirectAddrPort {
+		return nil
+	}
+	values := []struct {
+		value  string
+		family uint8
+	}{{f.RedirectServerAddress, 0}}
+	switch f.RedirectAddressType {
+	case RedirectAddrIPv4, RedirectAddrIPv4AndPort:
+		values[0].family = 4
+	case RedirectAddrIPv6, RedirectAddrIPv6AndPort:
+		values[0].family = 6
+	case RedirectAddrIPv4AndIPv6, RedirectAddrIPv4AndIPv6AndPort:
+		values[0].family = 4
+		values = append(values, struct {
+			value  string
+			family uint8
+		}{f.OtherRedirectServerAddress, 6})
+	}
+	for _, v := range values {
+		if v.value == "" || !utf8.ValidString(v.value) {
+			return ErrInvalidValue
+		}
+		if v.family == 0 {
+			continue
+		}
+		addr, err := netip.ParseAddr(v.value)
+		if err != nil || addr.Zone() != "" || v.family == 4 && !addr.Is4() || v.family == 6 && !addr.Is6() {
+			return ErrInvalidValue
+		}
+		if sending && v.family == 6 && addr.String() != v.value {
+			return ErrInvalidValue
+		}
+	}
+	return nil
 }

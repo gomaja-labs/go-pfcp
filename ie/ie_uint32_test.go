@@ -155,7 +155,7 @@ func TestUint32IEs(t *testing.T) {
 				),
 				ie.NewUEIPAddress(0x02, "127.0.0.1", "", 0, 0),
 				ie.NewTrafficEndpointID(0x01),
-				ie.NewSDFFilter("aaaaaaaa", []byte("bb"), []byte("cccc"), []byte("ddd"), 0xffffffff),
+				ie.NewSDFFilter("aaaaaaaa", []byte("bb"), []byte("cccc"), []byte{0x04, 0x64, 0x64}, 0xffffffff),
 				ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
 				ie.NewEthernetPDUSessionInformation(0x01),
 				ie.NewEthernetPacketFilter(
@@ -165,7 +165,7 @@ func TestUint32IEs(t *testing.T) {
 					ie.NewEthertype(0xffff),
 					ie.NewCTAG(0x07, 1, 1, 4095),
 					ie.NewSTAG(0x07, 1, 1, 4095),
-					ie.NewSDFFilter("aaaaaaaa", []byte("bb"), []byte("cccc"), []byte("ddd"), 0xffffffff),
+					ie.NewSDFFilter("aaaaaaaa", []byte("bb"), []byte("cccc"), []byte{0x04, 0x64, 0x64}, 0xffffffff),
 				),
 			),
 			decoded: 0xffffffff,
@@ -189,7 +189,7 @@ func TestUint32IEs(t *testing.T) {
 				ie.NewEthertype(0xffff),
 				ie.NewCTAG(0x07, 1, 1, 4095),
 				ie.NewSTAG(0x07, 1, 1, 4095),
-				ie.NewSDFFilter("aaaaaaaa", []byte("bb"), []byte("cccc"), []byte("ddd"), 0xffffffff),
+				ie.NewSDFFilter("aaaaaaaa", []byte("bb"), []byte("cccc"), []byte{0x04, 0x64, 0x64}, 0xffffffff),
 			),
 			decoded: 0xffffffff,
 			decoderFunc: func(i *ie.IE) (uint32, error) {
