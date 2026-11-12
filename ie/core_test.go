@@ -80,6 +80,14 @@ func TestVendorConstructorRejectsStandardType(t *testing.T) {
 
 func TestEqualInvalidStructure(t *testing.T) {
 	bad := func() *ie.IE { return ie.NewRecoveryTimeStamp(time.Unix(-1, 0)) }
+	if bad().Equal(ie.NewRecoveryTimeStamp(time.Unix(-2, 0))) {
+		t.Fatal("different constructor error text ignored")
+	}
+	nestedA, nestedB := ie.NewCreatePDR(bad()), ie.NewCreatePDR(bad())
+	nestedB.ChildIEs[0].Payload = []byte{42}
+	if nestedA.Equal(nestedB) {
+		t.Fatal("invalid child structure ignored")
+	}
 	g := ie.NewCreatePDR(bad())
 	h := ie.NewCreatePDR(bad())
 	if !g.Equal(g) || !g.Equal(h) || !h.Equal(g) {
