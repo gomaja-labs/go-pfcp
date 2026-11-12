@@ -6,6 +6,7 @@ package ie
 
 import (
 	"encoding/binary"
+	"fmt"
 	"io"
 )
 
@@ -15,7 +16,7 @@ func NewSTAG(flags, pcp, deiFlag uint8, cvid uint16) *IE {
 
 	b, err := fields.Marshal()
 	if err != nil {
-		return nil
+		return newInvalidIE(STAG, fmt.Errorf("%w: %w", ErrInvalidValue, err))
 	}
 
 	return New(STAG, b)

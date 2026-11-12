@@ -237,7 +237,7 @@ func TestUint8IEs(t *testing.T) {
 			description: "DestinationInterface/ForwardingParameters",
 			structured: ie.NewForwardingParameters(
 				ie.NewDestinationInterface(0xff),
-				ie.NewNetworkInstance("some.instance.example"),
+				ie.NewNetworkInstance([]byte("some.instance.example")),
 			),
 			decoded: 0x0f,
 			decoderFunc: func(i *ie.IE) (uint8, error) {
@@ -251,7 +251,7 @@ func TestUint8IEs(t *testing.T) {
 			description: "DestinationInterface/UpdateForwardingParameters",
 			structured: ie.NewUpdateForwardingParameters(
 				ie.NewDestinationInterface(0xff),
-				ie.NewNetworkInstance("some.instance.example"),
+				ie.NewNetworkInstance([]byte("some.instance.example")),
 			),
 			decoded: 0x0f,
 			decoderFunc: func(i *ie.IE) (uint8, error) {
@@ -265,7 +265,7 @@ func TestUint8IEs(t *testing.T) {
 			description: "DestinationInterface/DuplicatingParameters",
 			structured: ie.NewDuplicatingParameters(
 				ie.NewDestinationInterface(0xff),
-				ie.NewNetworkInstance("some.instance.example"),
+				ie.NewNetworkInstance([]byte("some.instance.example")),
 			),
 			decoded: 0x0f,
 			decoderFunc: func(i *ie.IE) (uint8, error) {
@@ -279,7 +279,7 @@ func TestUint8IEs(t *testing.T) {
 			description: "DestinationInterface/UpdateDuplicatingParameters",
 			structured: ie.NewUpdateDuplicatingParameters(
 				ie.NewDestinationInterface(0xff),
-				ie.NewNetworkInstance("some.instance.example"),
+				ie.NewNetworkInstance([]byte("some.instance.example")),
 			),
 			decoded: 0x0f,
 			decoderFunc: func(i *ie.IE) (uint8, error) {
@@ -503,7 +503,7 @@ func TestUint8IEs(t *testing.T) {
 		}, {
 			description: "GTPUPathInterfaceType/GTPUPathQoSControlInformation",
 			structured: ie.NewGTPUPathQoSControlInformation(
-				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example"),
+				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
 				ie.NewGTPUPathInterfaceType(1, 1),
 			),
 			decoded: 3,
@@ -517,7 +517,7 @@ func TestUint8IEs(t *testing.T) {
 		}, {
 			description: "GTPUPathInterfaceType/GTPUPathQoSReport",
 			structured: ie.NewGTPUPathQoSReport(
-				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example"),
+				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
 				ie.NewGTPUPathInterfaceType(1, 1),
 			),
 			decoded: 3,
@@ -536,8 +536,8 @@ func TestUint8IEs(t *testing.T) {
 		}, {
 			description: "IPVersion/UEIPAddressPoolInformation",
 			structured: ie.NewUEIPAddressPoolInformation(
-				ie.NewUEIPAddressPoolIdentity("go-pfcp"),
-				ie.NewNetworkInstance("some.instance.example"),
+				ie.NewUEIPAddressPoolIdentity([]byte("go-pfcp")),
+				ie.NewNetworkInstance([]byte("some.instance.example")),
 				ie.NewSNSSAI(0x11, 0x223344),
 				ie.NewIPVersion(true, false),
 			),
@@ -966,16 +966,16 @@ func TestUint8IEs(t *testing.T) {
 			},
 		}, {
 			description: "QERControlIndications",
-			structured:  ie.NewQERControlIndications(1, 1, 1),
-			decoded:     0x07,
+			structured:  ie.NewQERControlIndications(true),
+			decoded:     0x01,
 			decoderFunc: func(i *ie.IE) (uint8, error) { return i.QERControlIndications() },
 		}, {
 			description: "QERControlIndications/CreateQER",
 			structured: ie.NewCreateQER(
 				ie.NewQERID(0xffffffff),
-				ie.NewQERControlIndications(1, 1, 1),
+				ie.NewQERControlIndications(true),
 			),
-			decoded: 0x07,
+			decoded: 0x01,
 			decoderFunc: func(i *ie.IE) (uint8, error) {
 				f0, err := i.CreateQER()
 				if err != nil {
@@ -987,9 +987,9 @@ func TestUint8IEs(t *testing.T) {
 			description: "QERControlIndications/UpdateQER",
 			structured: ie.NewUpdateQER(
 				ie.NewQERID(0xffffffff),
-				ie.NewQERControlIndications(1, 1, 1),
+				ie.NewQERControlIndications(true),
 			),
-			decoded: 0x07,
+			decoded: 0x01,
 			decoderFunc: func(i *ie.IE) (uint8, error) {
 				f0, err := i.UpdateQER()
 				if err != nil {
@@ -1116,16 +1116,16 @@ func TestUint8IEs(t *testing.T) {
 			decoderFunc: func(i *ie.IE) (uint8, error) { return i.ReportType() },
 		}, {
 			description: "ReportingFrequency",
-			structured:  ie.NewReportingFrequency(1, 1, 1),
-			decoded:     0x07,
+			structured:  ie.NewReportingFrequency(true, true),
+			decoded:     0x03,
 			decoderFunc: func(i *ie.IE) (uint8, error) { return i.ReportingFrequency() },
 		}, {
 			description: "ReportingFrequency/QoSMonitoringPerQoSFlowControlInformation",
 			structured: ie.NewQoSMonitoringPerQoSFlowControlInformation(
 				ie.NewRequestedQoSMonitoring(1, 1, 1),
-				ie.NewReportingFrequency(1, 1, 1),
+				ie.NewReportingFrequency(true, true),
 			),
-			decoded: 0x07,
+			decoded: 0x03,
 			decoderFunc: func(i *ie.IE) (uint8, error) {
 				f0, err := i.QoSMonitoringPerQoSFlowControlInformation()
 				if err != nil {
@@ -1231,8 +1231,8 @@ func TestUint8IEs(t *testing.T) {
 		}, {
 			description: "SNSSAI/UEIPAddressPoolInformation/SST",
 			structured: ie.NewUEIPAddressPoolInformation(
-				ie.NewUEIPAddressPoolIdentity("go-pfcp"),
-				ie.NewNetworkInstance("some.instance.example"),
+				ie.NewUEIPAddressPoolIdentity([]byte("go-pfcp")),
+				ie.NewNetworkInstance([]byte("some.instance.example")),
 				ie.NewSNSSAI(0x11, 0x223344),
 				ie.NewIPVersion(true, false),
 			),

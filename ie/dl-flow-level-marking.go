@@ -5,16 +5,16 @@
 package ie
 
 import (
-	"encoding/binary"
+	"fmt"
 	"io"
 )
 
 // NewDLFlowLevelMarking creates a new DLFlowLevelMarking IE.
-func NewDLFlowLevelMarking(flags uint8, ttc, sci uint16) *IE {
+func NewDLFlowLevelMarking(flags uint8, ttc, sci []byte) *IE {
 	f := NewDLFlowLevelMarkingFields(flags, ttc, sci)
 	b, err := f.Marshal()
 	if err != nil {
-		return nil
+		return newInvalidIE(DLFlowLevelMarking, fmt.Errorf("%w: %w", ErrInvalidValue, err))
 	}
 
 	return New(DLFlowLevelMarking, b)
@@ -76,21 +76,17 @@ func (i *IE) HasSCI() bool {
 // DLFlowLevelMarkingFields represents a f contained in DLFlowLevelMarking IE.
 type DLFlowLevelMarkingFields struct {
 	Flags                  uint8
-	ToSTrafficClass        uint16
-	ServiceClassIdentifier uint16
+	ToSTrafficClass        []byte
+	ServiceClassIdentifier []byte
 }
 
 // NewDLFlowLevelMarkingFields creates a new DLFlowLevelMarkingFields.
-func NewDLFlowLevelMarkingFields(flags uint8, ttc, sci uint16) *DLFlowLevelMarkingFields {
+func NewDLFlowLevelMarkingFields(flags uint8, ttc, sci []byte) *DLFlowLevelMarkingFields {
 	f := &DLFlowLevelMarkingFields{Flags: flags}
 
-	if has1stBit(flags) {
-		f.ToSTrafficClass = ttc
-	}
+	f.ToSTrafficClass = ttc
 
-	if has2ndBit(flags) {
-		f.ServiceClassIdentifier = sci
-	}
+	f.ServiceClassIdentifier = sci
 
 	return f
 }
@@ -116,14 +112,15 @@ func (f *DLFlowLevelMarkingFields) UnmarshalBinary(b []byte) error {
 		return io.ErrUnexpectedEOF
 	}
 
-	f.Flags = b[0]
+	// TS 29.244 V20.1.0 clauses 8.1.2 and 8.2.66: ignore spare bits.
+	f.Flags = b[0] & 3
 	offset := 1
 
 	if has1stBit(f.Flags) {
 		if l < offset+2 {
 			return io.ErrUnexpectedEOF
 		}
-		f.ToSTrafficClass = binary.BigEndian.Uint16(b[offset : offset+2])
+		f.ToSTrafficClass = b[offset : offset+2]
 		offset += 2
 	}
 
@@ -131,7 +128,7 @@ func (f *DLFlowLevelMarkingFields) UnmarshalBinary(b []byte) error {
 		if l < offset+2 {
 			return io.ErrUnexpectedEOF
 		}
-		f.ServiceClassIdentifier = binary.BigEndian.Uint16(b[offset : offset+2])
+		f.ServiceClassIdentifier = b[offset : offset+2]
 	}
 
 	return nil
@@ -155,6 +152,10 @@ func (f *DLFlowLevelMarkingFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
 	}
+	// TS 29.244 V20.1.0 clause 8.2.66: each binary marking is exactly two octets.
+	if f.Flags&^uint8(3) != 0 || f.Flags&1 != 0 && len(f.ToSTrafficClass) != 2 || f.Flags&2 != 0 && len(f.ServiceClassIdentifier) != 2 || f.Flags&1 == 0 && len(f.ToSTrafficClass) != 0 || f.Flags&2 == 0 && len(f.ServiceClassIdentifier) != 0 {
+		return ErrInvalidValue
+	}
 	if f.MarshalLen() > 65535 {
 		return ErrInvalidLength
 	}
@@ -172,12 +173,12 @@ func (f *DLFlowLevelMarkingFields) MarshalTo(b []byte) error {
 	offset := 1
 
 	if has1stBit(f.Flags) {
-		binary.BigEndian.PutUint16(b[offset:offset+2], f.ToSTrafficClass)
+		copy(b[offset:offset+2], f.ToSTrafficClass)
 		offset += 2
 	}
 
 	if has2ndBit(f.Flags) {
-		binary.BigEndian.PutUint16(b[offset:offset+2], f.ServiceClassIdentifier)
+		copy(b[offset:offset+2], f.ServiceClassIdentifier)
 	}
 
 	return nil

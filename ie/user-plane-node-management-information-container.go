@@ -8,8 +8,9 @@ import "io"
 
 // TS 29.244 V20.1.0 clause 8.2.182.
 
-// TS 29.244 V20.1.0 clause 8.2.182: the content is a management
-// message defined by TS 24.539 clause 9.
+// TS 29.244 V20.1.0 clause 8.2.182 refers to TS 24.539 clause 9;
+// in TS 24.539 V19.3.0 the management messages are defined in clauses
+// 8.7–8.10 and their information elements in clause 9.
 // NewUserPlaneNodeManagementInformationContainer creates a new UserPlaneNodeManagementInformationContainer IE.
 func NewUserPlaneNodeManagementInformationContainer(info []byte) *IE {
 	return New(UserPlaneNodeManagementInformationContainer, info)

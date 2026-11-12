@@ -4,21 +4,22 @@
 
 package ie
 
+// TS 29.244 V20.1.0 clause 8.2.161: no text repertoire is specified for this identifier.
 // NewDataNetworkAccessIdentifier creates a new DataNetworkAccessIdentifier IE.
-func NewDataNetworkAccessIdentifier(id string) *IE {
-	return newStringIE(DataNetworkAccessIdentifier, id)
+func NewDataNetworkAccessIdentifier(id []byte) *IE {
+	return New(DataNetworkAccessIdentifier, id)
 }
 
-// DataNetworkAccessIdentifier returns DataNetworkAccessIdentifier in string if the type of IE matches.
-func (i *IE) DataNetworkAccessIdentifier() (string, error) {
+// DataNetworkAccessIdentifier returns DataNetworkAccessIdentifier as opaque octets if the type of IE matches.
+func (i *IE) DataNetworkAccessIdentifier() ([]byte, error) {
 	if i == nil {
-		return "", ErrIENotFound
+		return nil, ErrIENotFound
 	}
 
 	switch i.Type {
 	case DataNetworkAccessIdentifier:
-		return i.ValueAsString()
+		return i.payloadAtLeast(1)
 	default:
-		return "", &InvalidTypeError{Type: i.Type}
+		return nil, &InvalidTypeError{Type: i.Type}
 	}
 }

@@ -4,21 +4,22 @@
 
 package ie
 
+// TS 29.244 V20.1.0 clause 8.2.6: no text repertoire is specified for this identifier.
 // NewApplicationID creates a new ApplicationID IE.
-func NewApplicationID(instance string) *IE {
-	return newStringIE(ApplicationID, instance)
+func NewApplicationID(instance []byte) *IE {
+	return New(ApplicationID, instance)
 }
 
-// ApplicationID returns ApplicationID in string if the type of IE matches.
-func (i *IE) ApplicationID() (string, error) {
+// ApplicationID returns ApplicationID as opaque octets if the type of IE matches.
+func (i *IE) ApplicationID() ([]byte, error) {
 	if i == nil {
-		return "", ErrIENotFound
+		return nil, ErrIENotFound
 	}
 
 	switch i.Type {
 	case ApplicationID:
-		return i.ValueAsString()
+		return i.payloadAtLeast(1)
 	default:
-		return "", &InvalidTypeError{Type: i.Type}
+		return nil, &InvalidTypeError{Type: i.Type}
 	}
 }

@@ -42,7 +42,7 @@ func TestEveryMessageEncodeSafety(t *testing.T) {
 			for n := 1; n < v.NumField(); n++ {
 				f := v.Field(n)
 				if f.Type() == reflect.TypeOf([]*ie.IE{}) {
-					f.Set(reflect.ValueOf([]*ie.IE{nil, ie.NewApplicationID("x"), nil}))
+					f.Set(reflect.ValueOf([]*ie.IE{nil, ie.NewApplicationID([]byte("x")), nil}))
 				}
 			}
 			size := m.MarshalLen()
@@ -171,7 +171,7 @@ func TestSequenceAndLengthLimits(t *testing.T) {
 			t.Fatal("accepted overflowing length")
 		}
 	}
-	m := message.NewGeneric(200, 0, 1, ie.NewApplicationID(string(make([]byte, 65535))))
+	m := message.NewGeneric(200, 0, 1, ie.NewApplicationID([]byte(string(make([]byte, 65535)))))
 	if err := m.MarshalTo(nil); !errors.Is(err, message.ErrInvalidLength) {
 		t.Fatal("oversized message accepted")
 	}
@@ -181,7 +181,7 @@ func TestDatagramFraming(t *testing.T) {
 	for count := 1; count <= 32; count++ {
 		ms := make([]message.Message, count)
 		for n := range ms {
-			ms[n] = message.NewSessionDeletionRequest(uint64(n), uint32(n), ie.NewApplicationID("x"))
+			ms[n] = message.NewSessionDeletionRequest(uint64(n), uint32(n), ie.NewApplicationID([]byte("x")))
 		}
 		b, err := message.MarshalDatagram(ms...)
 		if err != nil {

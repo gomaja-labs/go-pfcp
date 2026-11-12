@@ -10,8 +10,12 @@ import (
 )
 
 // NewUEIPAddressPoolIdentity creates a new UEIPAddressPoolIdentity IE.
-func NewUEIPAddressPoolIdentity(id string) *IE {
-	l := len([]byte(id))
+func NewUEIPAddressPoolIdentity(id []byte) *IE {
+	// TS 29.244 V20.1.0 clause 8.2.128: an opaque length-delimited pool identity.
+	l := len(id)
+	if l > 65533 {
+		return newInvalidIE(UEIPAddressPoolIdentity, ErrInvalidValue)
+	}
 	i := New(UEIPAddressPoolIdentity, make([]byte, 2+l))
 
 	binary.BigEndian.PutUint16(i.Payload[0:2], uint16(l))
@@ -38,7 +42,7 @@ func (i *IE) UEIPAddressPoolIdentity() ([]byte, error) {
 	}
 }
 
-// UEIPAddressPoolIdentityString returns UEIPAddressPoolIdentity in string if the type of IE matches.
+// UEIPAddressPoolIdentityString returns an explicit string view of the opaque pool identity.
 func (i *IE) UEIPAddressPoolIdentityString() (string, error) {
 	if i == nil {
 		return "", ErrIENotFound

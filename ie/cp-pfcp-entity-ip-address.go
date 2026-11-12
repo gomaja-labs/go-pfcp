@@ -5,6 +5,7 @@
 package ie
 
 import (
+	"fmt"
 	"io"
 	"net"
 )
@@ -15,7 +16,7 @@ func NewCPPFCPEntityIPAddress(v4, v6 net.IP) *IE {
 
 	b, err := fields.Marshal()
 	if err != nil {
-		return nil
+		return newInvalidIE(CPPFCPEntityIPAddress, fmt.Errorf("%w: %w", ErrInvalidValue, err))
 	}
 
 	return New(CPPFCPEntityIPAddress, b)

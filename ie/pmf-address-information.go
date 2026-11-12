@@ -6,6 +6,7 @@ package ie
 
 import (
 	"encoding/binary"
+	"fmt"
 	"io"
 	"net"
 )
@@ -16,7 +17,7 @@ func NewPMFAddressInformation(v4, v6 net.IP, port1, port2 uint16, mac1, mac2 net
 
 	b, err := fields.Marshal()
 	if err != nil {
-		return nil
+		return newInvalidIE(PMFAddressInformation, fmt.Errorf("%w: %w", ErrInvalidValue, err))
 	}
 
 	return New(PMFAddressInformation, b)

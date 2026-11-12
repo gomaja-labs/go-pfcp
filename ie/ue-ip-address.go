@@ -5,6 +5,7 @@
 package ie
 
 import (
+	"fmt"
 	"io"
 	"net"
 )
@@ -14,7 +15,7 @@ func NewUEIPAddress(flags uint8, v4, v6 string, v6d, v6pl uint8) *IE {
 	fields := NewUEIPAddressFields(flags, v4, v6, v6d, v6pl)
 	b, err := fields.Marshal()
 	if err != nil {
-		return nil
+		return newInvalidIE(UEIPAddress, fmt.Errorf("%w: %w", ErrInvalidValue, err))
 	}
 
 	return New(UEIPAddress, b)

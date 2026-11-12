@@ -5,6 +5,7 @@
 package ie_test
 
 import (
+	"encoding/binary"
 	"net"
 	"testing"
 	"time"
@@ -255,7 +256,7 @@ func TestUint16IEs(t *testing.T) {
 		}, {
 			description: "PDRID/ApplicationDetectionInformation",
 			structured: ie.NewApplicationDetectionInformation(
-				ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
+				ie.NewApplicationID([]byte("https://example.com/apps/go-pfcp/")),
 				ie.NewPDRID(0xffff),
 			),
 			decoded: 0xffff,
@@ -271,7 +272,7 @@ func TestUint16IEs(t *testing.T) {
 			structured: ie.NewUsageReportWithinSessionReportRequest(
 				ie.NewURRID(0xffffffff),
 				ie.NewApplicationDetectionInformation(
-					ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
+					ie.NewApplicationID([]byte("https://example.com/apps/go-pfcp/")),
 					ie.NewPDRID(0xffff),
 				),
 			),
@@ -317,14 +318,20 @@ func TestUint16IEs(t *testing.T) {
 			},
 		}, {
 			description: "TransportLevelMarking",
-			structured:  ie.NewTransportLevelMarking(0x1111),
+			structured:  ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
 			decoded:     0x1111,
-			decoderFunc: func(i *ie.IE) (uint16, error) { return i.TransportLevelMarking() },
+			decoderFunc: func(i *ie.IE) (uint16, error) {
+				v, e := i.TransportLevelMarking()
+				if e != nil {
+					return 0, e
+				}
+				return binary.BigEndian.Uint16(v), nil
+			},
 		}, {
 			description: "TransportLevelMarking/ForwardingParameters",
 			structured: ie.NewForwardingParameters(
 				ie.NewDestinationInterface(ie.DstInterfaceAccess),
-				ie.NewTransportLevelMarking(0x1111),
+				ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
 			),
 			decoded: 0x1111,
 			decoderFunc: func(i *ie.IE) (uint16, error) {
@@ -332,13 +339,17 @@ func TestUint16IEs(t *testing.T) {
 				if err != nil {
 					return 0, err
 				}
-				return f0.TransportLevelMarking.TransportLevelMarking()
+				v, e := f0.TransportLevelMarking.TransportLevelMarking()
+				if e != nil {
+					return 0, e
+				}
+				return binary.BigEndian.Uint16(v), nil
 			},
 		}, {
 			description: "TransportLevelMarking/UpdateForwardingParameters",
 			structured: ie.NewUpdateForwardingParameters(
 				ie.NewDestinationInterface(ie.DstInterfaceAccess),
-				ie.NewTransportLevelMarking(0x1111),
+				ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
 			),
 			decoded: 0x1111,
 			decoderFunc: func(i *ie.IE) (uint16, error) {
@@ -346,13 +357,17 @@ func TestUint16IEs(t *testing.T) {
 				if err != nil {
 					return 0, err
 				}
-				return f0.TransportLevelMarking.TransportLevelMarking()
+				v, e := f0.TransportLevelMarking.TransportLevelMarking()
+				if e != nil {
+					return 0, e
+				}
+				return binary.BigEndian.Uint16(v), nil
 			},
 		}, {
 			description: "TransportLevelMarking/DuplicatingParameters",
 			structured: ie.NewDuplicatingParameters(
 				ie.NewDestinationInterface(ie.DstInterfaceAccess),
-				ie.NewTransportLevelMarking(0x1111),
+				ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
 			),
 			decoded: 0x1111,
 			decoderFunc: func(i *ie.IE) (uint16, error) {
@@ -360,13 +375,17 @@ func TestUint16IEs(t *testing.T) {
 				if err != nil {
 					return 0, err
 				}
-				return f0.TransportLevelMarking.TransportLevelMarking()
+				v, e := f0.TransportLevelMarking.TransportLevelMarking()
+				if e != nil {
+					return 0, e
+				}
+				return binary.BigEndian.Uint16(v), nil
 			},
 		}, {
 			description: "TransportLevelMarking/UpdateDuplicatingParameters",
 			structured: ie.NewUpdateDuplicatingParameters(
 				ie.NewDestinationInterface(ie.DstInterfaceAccess),
-				ie.NewTransportLevelMarking(0x1111),
+				ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
 			),
 			decoded: 0x1111,
 			decoderFunc: func(i *ie.IE) (uint16, error) {
@@ -374,13 +393,17 @@ func TestUint16IEs(t *testing.T) {
 				if err != nil {
 					return 0, err
 				}
-				return f0.TransportLevelMarking.TransportLevelMarking()
+				v, e := f0.TransportLevelMarking.TransportLevelMarking()
+				if e != nil {
+					return 0, e
+				}
+				return binary.BigEndian.Uint16(v), nil
 			},
 		}, {
 			description: "TransportLevelMarking/GTPUPathQoSControlInformation",
 			structured: ie.NewGTPUPathQoSControlInformation(
-				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example"),
-				ie.NewTransportLevelMarking(0x1111),
+				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+				ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
 			),
 			decoded: 0x1111,
 			decoderFunc: func(i *ie.IE) (uint16, error) {
@@ -388,13 +411,17 @@ func TestUint16IEs(t *testing.T) {
 				if err != nil {
 					return 0, err
 				}
-				return f0.DSCP[0].TransportLevelMarking()
+				v, e := f0.DSCP[0].TransportLevelMarking()
+				if e != nil {
+					return 0, e
+				}
+				return binary.BigEndian.Uint16(v), nil
 			},
 		}, {
 			description: "TransportLevelMarking/GTPUPathQoSReport",
 			structured: ie.NewGTPUPathQoSReport(
-				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example"),
-				ie.NewTransportLevelMarking(0x1111),
+				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+				ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
 			),
 			decoded: 0x1111,
 			decoderFunc: func(i *ie.IE) (uint16, error) {
@@ -402,13 +429,17 @@ func TestUint16IEs(t *testing.T) {
 				if err != nil {
 					return 0, err
 				}
-				return f0.OtherIEs[0].TransportLevelMarking()
+				v, e := f0.OtherIEs[0].TransportLevelMarking()
+				if e != nil {
+					return 0, e
+				}
+				return binary.BigEndian.Uint16(v), nil
 			},
 		}, {
 			description: "TransportLevelMarking/QoSInformationInGTPUPathQoSReport",
 			structured: ie.NewQoSInformationInGTPUPathQoSReport(
 				ie.NewAveragePacketDelay(10*time.Second),
-				ie.NewTransportLevelMarking(0x1111),
+				ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
 			),
 			decoded: 0x1111,
 			decoderFunc: func(i *ie.IE) (uint16, error) {
@@ -416,7 +447,11 @@ func TestUint16IEs(t *testing.T) {
 				if err != nil {
 					return 0, err
 				}
-				return f0.DSCP.TransportLevelMarking()
+				v, e := f0.DSCP.TransportLevelMarking()
+				if e != nil {
+					return 0, e
+				}
+				return binary.BigEndian.Uint16(v), nil
 			},
 		},
 	}

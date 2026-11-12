@@ -6,6 +6,7 @@ package ie
 
 import (
 	"encoding/binary"
+	"fmt"
 	"io"
 )
 
@@ -15,7 +16,7 @@ func NewNumberOfUEIPAddresses(flags uint8, v4, v6 uint32) *IE {
 
 	b, err := fields.Marshal()
 	if err != nil {
-		return nil
+		return newInvalidIE(NumberOfUEIPAddresses, fmt.Errorf("%w: %w", ErrInvalidValue, err))
 	}
 
 	return New(NumberOfUEIPAddresses, b)

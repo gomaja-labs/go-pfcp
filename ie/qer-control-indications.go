@@ -5,8 +5,13 @@
 package ie
 
 // NewQERControlIndications creates a new QERControlIndications IE.
-func NewQERControlIndications(nord, mode, rcsr int) *IE {
-	return newUint8ValIE(QERControlIndications, uint8((nord<<2)|(mode<<1)|(rcsr)))
+func NewQERControlIndications(rcsr bool) *IE {
+	// TS 29.244 V20.1.0 clause 8.2.174: only RCSR remains allocated.
+	var flags uint8
+	if rcsr {
+		flags = 1
+	}
+	return newUint8ValIE(QERControlIndications, flags)
 }
 
 // QERControlIndications returns QERControlIndications in uint8 if the type of IE matches.
@@ -17,39 +22,13 @@ func (i *IE) QERControlIndications() (uint8, error) {
 
 	switch i.Type {
 	case QERControlIndications:
-		return i.ValueAsUint8()
+		// TS 29.244 V20.1.0 clause 8.2.174: ignore received spare/reserved bits.
+		v, err := i.ValueAsUint8()
+		return v & 1, err
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}
 
-}
-
-// HasNORD reports whether an IE has NORD bit.
-func (i *IE) HasNORD() bool {
-	if i == nil {
-		return false
-	}
-
-	v, err := i.QERControlIndications()
-	if err != nil {
-		return false
-	}
-
-	return has3rdBit(v)
-}
-
-// HasMODE reports whether an IE has MODE bit.
-func (i *IE) HasMODE() bool {
-	if i == nil {
-		return false
-	}
-
-	v, err := i.QERControlIndications()
-	if err != nil {
-		return false
-	}
-
-	return has2ndBit(v)
 }
 
 // HasRCSR reports whether an IE has RCSR bit.

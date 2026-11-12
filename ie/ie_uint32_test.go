@@ -61,12 +61,12 @@ func TestUint32IEs(t *testing.T) {
 				ie.NewGBR(0x11111111, 0x22222222),
 				ie.NewPacketRate(0x03, ie.TimeUnitMinute, 0x1122, ie.TimeUnitMinute, 0x3344),
 				ie.NewPacketRateStatus(0x07, 0x1111, 0x2222, 0x3333, 0x4444, time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
-				ie.NewDLFlowLevelMarking(0x03, 0x1122, 0x3344),
+				ie.NewDLFlowLevelMarking(0x03, []byte{0x11, 0x22}, []byte{0x33, 0x44}),
 				ie.NewQFI(0x01),
 				ie.NewRQI(0x01),
 				ie.NewPagingPolicyIndicator(1),
 				ie.NewAveragingWindow(0xffffffff),
-				ie.NewQERControlIndications(1, 1, 1),
+				ie.NewQERControlIndications(true),
 			),
 			decoded: 0xffffffff,
 			decoderFunc: func(i *ie.IE) (uint32, error) {
@@ -148,15 +148,15 @@ func TestUint32IEs(t *testing.T) {
 			structured: ie.NewPDI(
 				ie.NewSourceInterface(ie.SrcInterfaceAccess),
 				ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
-				ie.NewNetworkInstance("some.instance.example"),
+				ie.NewNetworkInstance([]byte("some.instance.example")),
 				ie.NewRedundantTransmissionParameters(
 					ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
-					ie.NewNetworkInstance("some.instance.example"),
+					ie.NewNetworkInstance([]byte("some.instance.example")),
 				),
 				ie.NewUEIPAddress(0x02, "127.0.0.1", "", 0, 0),
 				ie.NewTrafficEndpointID(0x01),
 				ie.NewSDFFilter("aaaaaaaa", []byte("bb"), []byte("cccc"), []byte{0x04, 0x64, 0x64}, 0xffffffff),
-				ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
+				ie.NewApplicationID([]byte("https://example.com/apps/go-pfcp/")),
 				ie.NewEthernetPDUSessionInformation(0x01),
 				ie.NewEthernetPacketFilter(
 					ie.NewEthernetFilterID(0xffffffff),
@@ -468,8 +468,8 @@ func TestUint32IEs(t *testing.T) {
 		}, {
 			description: "SNSSAI/UEIPAddressPoolInformation/SD",
 			structured: ie.NewUEIPAddressPoolInformation(
-				ie.NewUEIPAddressPoolIdentity("go-pfcp"),
-				ie.NewNetworkInstance("some.instance.example"),
+				ie.NewUEIPAddressPoolIdentity([]byte("go-pfcp")),
+				ie.NewNetworkInstance([]byte("some.instance.example")),
 				ie.NewSNSSAI(0x11, 0x223344),
 				ie.NewIPVersion(true, false),
 			),

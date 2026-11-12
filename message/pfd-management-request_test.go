@@ -20,7 +20,7 @@ func TestPFDManagementRequest(t *testing.T) {
 			Description: "Empty PFDContent",
 			Structured: message.NewPFDManagementRequest(seq,
 				ie.NewApplicationIDsPFDs(
-					ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
+					ie.NewApplicationID([]byte("https://example.com/apps/go-pfcp/")),
 					ie.NewPFDContext(
 						ie.NewPFDContents("", "", "", []byte(""), "", []string{}, []string{}, []string{}),
 					),
@@ -47,7 +47,7 @@ func TestPFDManagementRequest(t *testing.T) {
 			Description: "Empty PFDContent + NodeID",
 			Structured: message.NewPFDManagementRequest(seq,
 				ie.NewApplicationIDsPFDs(
-					ie.NewApplicationID("te5t@pp"),
+					ie.NewApplicationID([]byte("te5t@pp")),
 					ie.NewPFDContext(
 						ie.NewPFDContents("", "", "", []byte(""), "", []string{}, []string{}, []string{}),
 					),
@@ -78,7 +78,7 @@ func TestPFDManagementRequest(t *testing.T) {
 			Description: "Single IE",
 			Structured: message.NewPFDManagementRequest(seq,
 				ie.NewApplicationIDsPFDs(
-					ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
+					ie.NewApplicationID([]byte("https://example.com/apps/go-pfcp/")),
 					ie.NewPFDContext(
 						ie.NewPFDContents("aa", "bb", "cc", []byte("dd"), "ee", []string{"11", "22"}, []string{"33", "44"}, []string{"55", "66"}),
 					),
@@ -106,13 +106,13 @@ func TestPFDManagementRequest(t *testing.T) {
 			Description: "Multiple IEs",
 			Structured: message.NewPFDManagementRequest(seq,
 				ie.NewApplicationIDsPFDs(
-					ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
+					ie.NewApplicationID([]byte("https://example.com/apps/go-pfcp/")),
 					ie.NewPFDContext(
 						ie.NewPFDContents("aa", "bb", "cc", []byte("dd"), "ee", []string{"11", "22"}, []string{"33", "44"}, []string{"55", "66"}),
 					),
 				),
 				ie.NewApplicationIDsPFDs(
-					ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
+					ie.NewApplicationID([]byte("https://example.com/apps/go-pfcp/")),
 					ie.NewPFDContext(
 						ie.NewPFDContents("aa", "bb", "cc", []byte("dd"), "ee", []string{"11", "22"}, []string{"33", "44"}, []string{"55", "66"}),
 					),
@@ -155,7 +155,7 @@ func TestPFDManagementRequest(t *testing.T) {
 			Description: "PFDContent(FD + AFD) + NodeID",
 			Structured: message.NewPFDManagementRequest(seq,
 				ie.NewApplicationIDsPFDs(
-					ie.NewApplicationID("te5t@pp"),
+					ie.NewApplicationID([]byte("te5t@pp")),
 					ie.NewPFDContext(
 						ie.NewPFDContents("permit out ip from 172.16.61.0/24 to 10.62.0.7",
 							"", "", []byte(""), "",

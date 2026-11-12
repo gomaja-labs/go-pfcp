@@ -6,6 +6,7 @@ package ie
 
 import (
 	"encoding/binary"
+	"fmt"
 	"io"
 )
 
@@ -15,7 +16,7 @@ func NewPacketDelayThresholds(flags uint8, dl, ul, rp uint32) *IE {
 
 	b, err := fields.Marshal()
 	if err != nil {
-		return nil
+		return newInvalidIE(PacketDelayThresholds, fmt.Errorf("%w: %w", ErrInvalidValue, err))
 	}
 
 	return New(PacketDelayThresholds, b)
