@@ -32,9 +32,17 @@ func TestHeaderLengthBoundaries(t *testing.T) {
 	for _, flags := range []byte{0x20, 0x21} {
 		valid := wireHeader(flags, 200, []byte{0, 24, 0, 1, 42})
 		t.Run(string(rune(flags)), func(t *testing.T) {
+			headerLen := 8
+			if flags&1 != 0 {
+				headerLen = 16
+			}
 			for n := 0; n < len(valid); n++ {
-				if _, err := message.ParseHeader(valid[:n]); !errors.Is(err, io.ErrUnexpectedEOF) {
-					t.Errorf("truncation at %d of %d returned %v, want unexpected EOF", n, len(valid), err)
+				want := io.ErrUnexpectedEOF
+				if n >= headerLen {
+					want = message.ErrInvalidLength
+				}
+				if _, err := message.ParseHeader(valid[:n]); !errors.Is(err, want) {
+					t.Errorf("truncation at %d of %d returned %v, want %v", n, len(valid), err, want)
 				}
 			}
 			minimum := 4
@@ -45,8 +53,8 @@ func TestHeaderLengthBoundaries(t *testing.T) {
 				b := make([]byte, 4+length)
 				b[0] = flags
 				binary.BigEndian.PutUint16(b[2:4], uint16(length))
-				if _, err := message.ParseHeader(b); !errors.Is(err, message.ErrInvalidLength) {
-					t.Fatalf("length below minimum: %v", err)
+				if _, err := message.ParseHeader(b); !errors.Is(err, io.ErrUnexpectedEOF) {
+					t.Fatalf("short respective header: %v", err)
 				}
 			}
 			short := append([]byte(nil), valid...)

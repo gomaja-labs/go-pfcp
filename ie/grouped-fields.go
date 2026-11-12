@@ -11,9 +11,9 @@ func groupedChildren(i *IE) ([]*IE, error) {
 
 // parseGroupedFields starts at the same nesting depth as parsing a parent IE.
 // TS 29.244 V20.1.0 clause 8.1.2 permits an empty grouped value.
-func parseGroupedFields(typ IEType, b []byte) ([]*IE, error) {
+func parseGroupedFields(_ IEType, b []byte) ([]*IE, error) {
 	if len(b) > 65535 {
-		return nil, &DecodeError{Type: typ, Err: ErrInvalidLength}
+		return nil, ErrInvalidLength
 	}
 	return decodeIEs(b, 1)
 }

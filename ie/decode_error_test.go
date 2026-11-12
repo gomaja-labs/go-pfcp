@@ -18,7 +18,7 @@ func TestDecodeErrorContext(t *testing.T) {
 		{"short_header", []byte{0, 19, 0}, 0, io.ErrUnexpectedEOF},
 		{"short_value", []byte{0, 19, 0, 1}, ie.Cause, io.ErrUnexpectedEOF},
 		{"vendor_length", []byte{128, 1, 0, 1, 0}, 0x8001, ie.ErrInvalidLength},
-		{"grouped_child", []byte{0, 1, 0, 4, 0, 19, 0, 1}, ie.CreatePDR, io.ErrUnexpectedEOF},
+		{"grouped_child", []byte{0, 1, 0, 4, 0, 19, 0, 1}, ie.Cause, io.ErrUnexpectedEOF},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			_, err := ie.Parse(tc.wire)
