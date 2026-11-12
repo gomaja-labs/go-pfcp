@@ -376,7 +376,7 @@ func TestFlagDrivenConstructorRoundTrips(t *testing.T) {
 						continue
 					}
 				case "NewPacketRateFields":
-					if flags&7 == 0 || flags&^7 != 0 {
+					if flags&3 == 0 || flags&^7 != 0 {
 						excluded++
 						continue
 					}
@@ -388,7 +388,7 @@ func TestFlagDrivenConstructorRoundTrips(t *testing.T) {
 					}
 				case "NewRemoteGTPUPeerFields":
 					// Recovery Timestamp is supplied explicitly with FromFields.
-					if flags&^15 != 0 {
+					if flags&^15 != 0 || flags&3 == 0 {
 						excluded++
 						continue
 					}

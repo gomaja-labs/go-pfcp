@@ -129,7 +129,7 @@ func (f *PacketRateFields) UnmarshalBinary(b []byte) error {
 		if l < offset+3 {
 			return io.ErrUnexpectedEOF
 		}
-		f.UplinkTimeUnit = b[offset] & 7
+		f.UplinkTimeUnit = packetRateTimeUnit(b[offset])
 		f.UplinkPacketRate = binary.BigEndian.Uint16(b[offset+1 : offset+3])
 		offset += 3
 	}
@@ -138,7 +138,7 @@ func (f *PacketRateFields) UnmarshalBinary(b []byte) error {
 		if l < offset+3 {
 			return io.ErrUnexpectedEOF
 		}
-		f.DownlinkTimeUnit = b[offset] & 7
+		f.DownlinkTimeUnit = packetRateTimeUnit(b[offset])
 		f.DownlinkPacketRate = binary.BigEndian.Uint16(b[offset+1 : offset+3])
 		offset += 3
 	}
@@ -153,7 +153,7 @@ func (f *PacketRateFields) UnmarshalBinary(b []byte) error {
 			if l < offset+3 {
 				return io.ErrUnexpectedEOF
 			}
-			*v.unit = b[offset] & 7
+			*v.unit = packetRateTimeUnit(b[offset])
 			*v.rate = binary.BigEndian.Uint16(b[offset+1 : offset+3])
 			offset += 3
 		}
@@ -179,7 +179,7 @@ func (f *PacketRateFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
 	}
-	if f.Flags&^uint8(7) != 0 || f.Flags&1 == 0 && (f.UplinkTimeUnit != 0 || f.UplinkPacketRate != 0) || f.Flags&2 == 0 && (f.DownlinkTimeUnit != 0 || f.DownlinkPacketRate != 0) || f.Flags&5 != 5 && (f.AdditionalUplinkTimeUnit != 0 || f.AdditionalUplinkPacketRate != 0) || f.Flags&6 != 6 && (f.AdditionalDownlinkTimeUnit != 0 || f.AdditionalDownlinkPacketRate != 0) {
+	if f.Flags&3 == 0 || f.Flags&^uint8(7) != 0 || f.Flags&1 == 0 && (f.UplinkTimeUnit != 0 || f.UplinkPacketRate != 0) || f.Flags&2 == 0 && (f.DownlinkTimeUnit != 0 || f.DownlinkPacketRate != 0) || f.Flags&5 != 5 && (f.AdditionalUplinkTimeUnit != 0 || f.AdditionalUplinkPacketRate != 0) || f.Flags&6 != 6 && (f.AdditionalDownlinkTimeUnit != 0 || f.AdditionalDownlinkPacketRate != 0) {
 		return ErrInvalidValue
 	}
 	if f.UplinkTimeUnit > 4 || f.DownlinkTimeUnit > 4 || f.AdditionalUplinkTimeUnit > 4 || f.AdditionalDownlinkTimeUnit > 4 {
@@ -259,4 +259,13 @@ func NewPacketRateFromFields(fields *PacketRateFields) *IE {
 		return newInvalidIE(PacketRate, ErrInvalidValue)
 	}
 	return New(PacketRate, b)
+}
+
+// TS 29.244 V20.1.0 Table 8.2.63.1 interprets reserved time units as minutes.
+func packetRateTimeUnit(v uint8) uint8 {
+	v &= 7
+	if v > 4 {
+		return 0
+	}
+	return v
 }

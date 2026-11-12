@@ -352,6 +352,10 @@ func TestCurrentAdditionalValues(t *testing.T) {
 			if typ != 5 {
 				f.RedirectServerAddress = "192.0.2.1"
 				f.ServerAddrLength = 9
+				if typ == 1 || typ == 7 {
+					f.RedirectServerAddress = "2001:db8::1"
+					f.ServerAddrLength = 11
+				}
 			}
 			if typ == 4 || typ == 8 {
 				f.OtherRedirectServerAddress = "2001:db8::1"
@@ -405,5 +409,86 @@ func TestCurrentLeafRejectsUnflaggedValues(t *testing.T) {
 				t.Fatal("unflagged constructor input accepted", e)
 			}
 		})
+	}
+}
+
+func TestCurrentLeafReviewBoundaries(t *testing.T) {
+	t.Run("RemoteMalformed", func(t *testing.T) {
+		for _, i := range []*ie.IE{ie.NewRemoteGTPUPeer(2, "junk", "", 0, ""), ie.NewRemoteGTPUPeer(1, "", "abcdefghijklmnop", 0, "")} {
+			if _, e := i.Marshal(); !errors.Is(e, ie.ErrInvalidValue) {
+				t.Fatal("malformed address accepted", e)
+			}
+		}
+	})
+	t.Run("RemotePresence", func(t *testing.T) {
+		if _, e := ie.NewRemoteGTPUPeer(0, "", "", 0, "").Marshal(); !errors.Is(e, ie.ErrInvalidValue) {
+			t.Fatal("missing peer address accepted", e)
+		}
+	})
+	t.Run("PacketRatePresence", func(t *testing.T) {
+		for _, flags := range []uint8{0, 4} {
+			if _, e := ie.NewPacketRate(flags, 0, 0, 0, 0).Marshal(); !errors.Is(e, ie.ErrInvalidValue) {
+				t.Fatal("missing packet rate direction accepted", e)
+			}
+		}
+	})
+	t.Run("PacketRateReservedUnits", func(t *testing.T) {
+		for unit := uint8(5); unit <= 7; unit++ {
+			f, e := ie.ParsePacketRateFields([]byte{7, unit | 0xf8, 0, 1, unit, 0, 2, unit, 0, 3, unit, 0, 4})
+			if e != nil || f.UplinkTimeUnit != 0 || f.DownlinkTimeUnit != 0 || f.AdditionalUplinkTimeUnit != 0 || f.AdditionalDownlinkTimeUnit != 0 {
+				t.Fatal("reserved unit not interpreted as minute", e)
+			}
+			for k := 0; k < 4; k++ {
+				f := &ie.PacketRateFields{Flags: 7}
+				switch k {
+				case 0:
+					f.UplinkTimeUnit = unit
+				case 1:
+					f.DownlinkTimeUnit = unit
+				case 2:
+					f.AdditionalUplinkTimeUnit = unit
+				case 3:
+					f.AdditionalDownlinkTimeUnit = unit
+				}
+				if _, e := ie.NewPacketRateFromFields(f).Marshal(); !errors.Is(e, ie.ErrInvalidValue) {
+					t.Fatal("constructor accepted reserved unit", unit, k, e)
+				}
+			}
+		}
+	})
+	t.Run("SDFFlowLabelSpare", func(t *testing.T) {
+		if _, e := ie.NewSDFFilter("", nil, nil, []byte{0xf1, 2, 3}, 0).Marshal(); !errors.Is(e, ie.ErrInvalidValue) {
+			t.Fatal("constructor accepted spare bits", e)
+		}
+		i := ie.New(ie.SDFFilter, []byte{8, 0, 0xf1, 2, 3})
+		before := append([]byte(nil), i.Payload...)
+		f, e := i.SDFFilter()
+		if e != nil || !bytes.Equal(f.FlowLabel, []byte{1, 2, 3}) || !bytes.Equal(i.Payload, before) {
+			t.Fatal("spares evaluated or original payload mutated", e)
+		}
+	})
+}
+
+func TestCurrentRedirectAddressValidation(t *testing.T) {
+	for _, tt := range []struct {
+		typ  uint8
+		addr string
+	}{{0, ""}, {0, "not-an-ip"}, {0, string([]byte{255})}, {0, "2001:db8::1"}, {1, "192.0.2.1"}, {1, "2001:0db8:0:0:0:0:0:1"}, {2, ""}, {3, string([]byte{255})}} {
+		if _, e := ie.NewRedirectInformation(tt.typ, tt.addr).Marshal(); !errors.Is(e, ie.ErrInvalidValue) {
+			t.Fatal("invalid sender address accepted", tt.typ, e)
+		}
+	}
+	for _, addr := range []string{"", "junk", string([]byte{255}), "2001:db8::1"} {
+		b := append([]byte{0, 0, byte(len(addr))}, []byte(addr)...)
+		if _, e := ie.ParseRedirectInformationFields(b); e == nil {
+			t.Fatal("invalid received IPv4 address accepted")
+		}
+	}
+	f := &ie.RedirectInformationFields{RedirectAddressType: 1, ServerAddrLength: 23, RedirectServerAddress: "2001:0db8:0:0:0:0:0:1"}
+	f.ServerAddrLength = uint16(len(f.RedirectServerAddress))
+	b := append([]byte{1, 0, byte(f.ServerAddrLength)}, []byte(f.RedirectServerAddress)...)
+	got, e := ie.ParseRedirectInformationFields(b)
+	if e != nil || got.RedirectServerAddress != f.RedirectServerAddress {
+		t.Fatal("legitimate received IPv6 spelling rejected/changed", e)
 	}
 }

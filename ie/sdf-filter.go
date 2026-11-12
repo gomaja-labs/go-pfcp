@@ -230,6 +230,7 @@ func (f *SDFFilterFields) UnmarshalBinary(b []byte) error {
 			return io.ErrUnexpectedEOF
 		}
 		f.FlowLabel = append([]byte(nil), b[offset:offset+3]...)
+		f.FlowLabel[0] &= 0x0f // TS 29.244 V20.1.0 clauses 8.2.5 and 8.1.2.
 		offset += 3
 	}
 
@@ -298,6 +299,9 @@ func (f *SDFFilterFields) MarshalTo(b []byte) error {
 	}
 	if f.HasFD() && len(f.FlowDescription) != int(f.FDLength) || f.HasTTC() && len(f.ToSTrafficClass) != 2 || f.HasSPI() && len(f.SecurityParameterIndex) != 4 || f.HasFL() && len(f.FlowLabel) != 3 {
 		return ErrInvalidLength
+	}
+	if f.HasFL() && f.FlowLabel[0]&0xf0 != 0 {
+		return ErrInvalidValue
 	}
 	if len(b) < f.MarshalLen() {
 		return io.ErrUnexpectedEOF
