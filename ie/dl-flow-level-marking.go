@@ -52,7 +52,8 @@ func (i *IE) HasTTC() bool {
 		return false
 	}
 
-	return has2ndBit(i.Payload[0])
+	// TS 29.244 V20.1.0 clause 8.2.66: TTC is bit 1.
+	return has1stBit(i.Payload[0])
 }
 
 // HasSCI reports whether an IE has SCI bit.
@@ -68,7 +69,8 @@ func (i *IE) HasSCI() bool {
 		return false
 	}
 
-	return has1stBit(i.Payload[0])
+	// TS 29.244 V20.1.0 clause 8.2.66: SCI is bit 2.
+	return has2ndBit(i.Payload[0])
 }
 
 // DLFlowLevelMarkingFields represents a f contained in DLFlowLevelMarking IE.

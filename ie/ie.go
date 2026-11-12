@@ -543,3 +543,12 @@ func decodeFQDNValue(payload []byte) (string, error) {
 	}
 	return name, nil
 }
+
+// payloadAtLeast enforces a value format's known minimum while retaining
+// extension octets (TS 29.244 V20.1.0 clause 8.1.2).
+func (i *IE) payloadAtLeast(length int) ([]byte, error) {
+	if len(i.Payload) < length {
+		return nil, io.ErrUnexpectedEOF
+	}
+	return i.Payload, nil
+}

@@ -31,7 +31,18 @@ func (i *IE) DownlinkDataServiceInformation() ([]byte, error) {
 
 	switch i.Type {
 	case DownlinkDataServiceInformation:
-		return i.Payload, nil
+		// TS 29.244 V20.1.0 clause 8.2.27: flags and present PPI/QFI.
+		if len(i.Payload) < 1 {
+			return nil, io.ErrUnexpectedEOF
+		}
+		length := 1
+		if i.HasPPI() {
+			length++
+		}
+		if i.HasQFI() {
+			length++
+		}
+		return i.payloadAtLeast(length)
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

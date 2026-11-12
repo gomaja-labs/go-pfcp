@@ -89,3 +89,19 @@ func TestNodeIDTypedValue(t *testing.T) {
 		requireInvalidValue(t, name, ie.NodeID, value)
 	}
 }
+
+func TestNodeIDDomainOmitsRootOctet(t *testing.T) {
+	// TS 29.244 V20.1.0 clause 8.2.38 explicitly excludes the trailing zero.
+	for _, payload := range [][]byte{{2, 0}, {2, 1, 'a', 0}} {
+		if _, err := ie.New(ie.NodeID, payload).NodeID(); err == nil {
+			t.Error("accepted DNS root octet")
+		}
+	}
+	// RFC 2181 section 11 permits arbitrary label octets: zero inside a
+	// length-delimited label is not a root terminator.
+	value := ie.NewNodeIDFQDN("a\x00")
+	got, err := value.NodeID()
+	if err != nil || got.FQDN != "a\x00" {
+		t.Fatalf("binary label: %+v, %v", got, err)
+	}
+}
