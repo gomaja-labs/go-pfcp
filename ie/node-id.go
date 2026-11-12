@@ -84,6 +84,15 @@ func (i *IE) NodeID() (NodeIDValue, error) {
 		}
 		return NodeIDValue{Type: kind, Address: netip.AddrFrom16([16]byte(i.Payload[1:17]))}, nil
 	case NodeIDFQDN:
+		// TS 29.244 V20.1.0 clause 8.2.38 excludes a trailing DNS root
+		// label. Inspect label boundaries; a zero inside a label is data.
+		for offset := 1; offset < len(i.Payload); {
+			length := int(i.Payload[offset])
+			if length == 0 {
+				return NodeIDValue{}, ErrMalformed
+			}
+			offset += 1 + length
+		}
 		name, err := decodeFQDNValue(i.Payload[1:])
 		if err != nil {
 			return NodeIDValue{}, err

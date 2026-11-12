@@ -32,11 +32,12 @@ func (i *IE) IsAllocatedByCPFunction() bool {
 	if i.Type != URRID {
 		return false
 	}
-	if len(i.Payload) < 1 {
+	if len(i.Payload) < 4 {
 		return false
 	}
 
-	return (i.Payload[0]>>7)&0x01 == 1
+	// TS 29.244 V20.1.0 clause 8.2.54: zero marks a CP allocation.
+	return (i.Payload[0]>>7)&0x01 == 0
 }
 
 // IsAllocatedByUPFunction reports whether URRID is allocated by UP Function.
@@ -48,9 +49,10 @@ func (i *IE) IsAllocatedByUPFunction() bool {
 	if i.Type != URRID {
 		return false
 	}
-	if len(i.Payload) < 1 {
+	if len(i.Payload) < 4 {
 		return false
 	}
 
-	return (i.Payload[0]>>7)&0x01 != 1
+	// TS 29.244 V20.1.0 clause 8.2.54: one marks a predefined UP allocation.
+	return (i.Payload[0]>>7)&0x01 == 1
 }

@@ -30,7 +30,11 @@ func (i *IE) ForwardingPolicy() ([]byte, error) {
 
 	switch i.Type {
 	case ForwardingPolicy:
-		return i.Payload, nil
+		// TS 29.244 V20.1.0 clause 8.2.23: length and policy identifier.
+		if len(i.Payload) < 1 {
+			return nil, io.ErrUnexpectedEOF
+		}
+		return i.payloadAtLeast(1 + int(i.Payload[0]))
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

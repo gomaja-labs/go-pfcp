@@ -28,11 +28,11 @@ func (i *IE) UEIPAddressPoolIdentity() ([]byte, error) {
 
 	switch i.Type {
 	case UEIPAddressPoolIdentity:
-		if len(i.Payload) < 1 {
+		// TS 29.244 V20.1.0 clause 8.2.128: two-octet length and identifier.
+		if len(i.Payload) < 2 {
 			return nil, io.ErrUnexpectedEOF
 		}
-
-		return i.Payload, nil
+		return i.payloadAtLeast(2 + int(binary.BigEndian.Uint16(i.Payload[:2])))
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

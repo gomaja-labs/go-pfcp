@@ -32,7 +32,8 @@ func (i *IE) TimeQuotaMechanism() ([]byte, error) {
 
 	switch i.Type {
 	case TimeQuotaMechanism:
-		return i.Payload, nil
+		// TS 29.244 V20.1.0 clause 8.2.81: type and four-octet interval.
+		return i.payloadAtLeast(5)
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}

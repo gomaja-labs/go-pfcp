@@ -115,11 +115,12 @@ func (i *IE) HasIPv4() bool {
 		}
 		return v.HasIPv4()
 	case IPVersion:
+		// TS 29.244 V20.1.0 clause 8.2.177: V4 bit 1, V6 bit 2.
 		v, err := i.IPVersion()
 		if err != nil {
 			return false
 		}
-		return has2ndBit(v)
+		return has1stBit(v)
 	default:
 		return false
 	}
@@ -162,11 +163,12 @@ func (i *IE) HasIPv6() bool {
 		}
 		return v.HasIPv6()
 	case IPVersion:
+		// TS 29.244 V20.1.0 clause 8.2.177: V4 bit 1, V6 bit 2.
 		v, err := i.IPVersion()
 		if err != nil {
 			return false
 		}
-		return has1stBit(v)
+		return has2ndBit(v)
 	default:
 		return false
 	}

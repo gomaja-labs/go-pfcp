@@ -38,7 +38,11 @@ func (i *IE) FlowInformation() ([]byte, error) {
 
 	switch i.Type {
 	case FlowInformation:
-		return i.Payload, nil
+		// TS 29.244 V20.1.0 clause 8.2.61: direction, length, description.
+		if len(i.Payload) < 3 {
+			return nil, io.ErrUnexpectedEOF
+		}
+		return i.payloadAtLeast(3 + int(binary.BigEndian.Uint16(i.Payload[1:3])))
 	default:
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
@@ -55,7 +59,13 @@ func (i *IE) FlowDirection() (uint8, error) {
 		if len(i.Payload) < 1 {
 			return 0, io.ErrUnexpectedEOF
 		}
-		return i.Payload[0] & 0x07, nil
+		// TS 29.244 V20.1.0 Table 8.2.61-1: received spare values
+		// 4..7 are interpreted as unspecified; spare high bits are ignored.
+		direction := i.Payload[0] & 0x07
+		if direction > FlowDirectionBidirectional {
+			direction = FlowDirectionUnspecified
+		}
+		return direction, nil
 	default:
 		return 0, &InvalidTypeError{Type: i.Type}
 	}

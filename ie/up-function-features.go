@@ -26,7 +26,8 @@ func (i *IE) UPFunctionFeatures() ([]byte, error) {
 		return nil, &InvalidTypeError{Type: i.Type}
 	}
 
-	if len(i.Payload) == 0 {
+	// TS 29.244 V20.1.0 clause 8.2.25: first two-octet feature group.
+	if len(i.Payload) < 2 {
 		return nil, io.ErrUnexpectedEOF
 	}
 	return i.Payload, nil
