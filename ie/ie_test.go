@@ -1165,7 +1165,7 @@ func ieVectors() []ieVector {
 			ie.NewApplicationIDsPFDs(
 				ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
 				ie.NewPFDContext(
-					ie.NewPFDContents("aa", "bb", "cc", "dd", "ee", []string{"11", "22"}, []string{"33", "44"}, []string{"55", "66"}),
+					ie.NewPFDContents("aa", "bb", "cc", []byte("dd"), "ee", []string{"11", "22"}, []string{"33", "44"}, []string{"55", "66"}),
 				),
 			),
 			[]byte{
@@ -1188,7 +1188,7 @@ func ieVectors() []ieVector {
 		}, {
 			"PFDContext",
 			ie.NewPFDContext(
-				ie.NewPFDContents("aa", "bb", "cc", "dd", "ee", []string{"11", "22"}, []string{"33", "44"}, []string{"55", "66"}),
+				ie.NewPFDContents("aa", "bb", "cc", []byte("dd"), "ee", []string{"11", "22"}, []string{"33", "44"}, []string{"55", "66"}),
 			),
 			[]byte{
 				0x00, 0x3b, 0x00, 0x38,
@@ -1206,8 +1206,8 @@ func ieVectors() []ieVector {
 		}, {
 			"PFDContext/MultiContents",
 			ie.NewPFDContext(
-				ie.NewPFDContents("aa", "bb", "cc", "dd", "ee", []string{"11", "22"}, []string{"33", "44"}, []string{"55", "66"}),
-				ie.NewPFDContents("aa", "bb", "cc", "dd", "ee", []string{"11", "22"}, []string{"33", "44"}, []string{"55", "66"}),
+				ie.NewPFDContents("aa", "bb", "cc", []byte("dd"), "ee", []string{"11", "22"}, []string{"33", "44"}, []string{"55", "66"}),
+				ie.NewPFDContents("aa", "bb", "cc", []byte("dd"), "ee", []string{"11", "22"}, []string{"33", "44"}, []string{"55", "66"}),
 			),
 			[]byte{
 				0x00, 0x3b, 0x00, 0x70,
@@ -1250,7 +1250,7 @@ func ieVectors() []ieVector {
 			[]byte{0x00, 0x3c, 0x00, 0x1d, 0x02, 0x07, 0x67, 0x6f, 0x2d, 0x70, 0x66, 0x63, 0x70, 0x03, 0x65, 0x70, 0x63, 0x0b, 0x33, 0x67, 0x70, 0x70, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x03, 0x6f, 0x72, 0x67},
 		}, {
 			"PFDContents",
-			ie.NewPFDContents("aa", "bb", "cc", "dd", "ee", []string{"11", "22"}, []string{"33", "44"}, []string{"55", "66"}),
+			ie.NewPFDContents("aa", "bb", "cc", []byte("dd"), "ee", []string{"11", "22"}, []string{"33", "44"}, []string{"55", "66"}),
 			[]byte{
 				0x00, 0x3d, 0x00, 0x34,
 				0xff, 0x00, // Flags & Spare octet
@@ -2718,7 +2718,7 @@ func ieVectors() []ieVector {
 		}, {
 			"TSCManagementInformationWithinSessionModificationRequest",
 			ie.NewTSCManagementInformationWithinSessionModificationRequest(
-				ie.NewPortManagementInformationContainer("go-pfcp"),
+				ie.NewPortManagementInformationContainer([]byte("go-pfcp")),
 			),
 			[]byte{
 				0x00, 0xc7, 0x00, 0x0b,
@@ -2727,7 +2727,7 @@ func ieVectors() []ieVector {
 		}, {
 			"TSCManagementInformationWithinSessionModificationResponse",
 			ie.NewTSCManagementInformationWithinSessionModificationResponse(
-				ie.NewPortManagementInformationContainer("go-pfcp"),
+				ie.NewPortManagementInformationContainer([]byte("go-pfcp")),
 			),
 			[]byte{
 				0x00, 0xc8, 0x00, 0x0b,
@@ -2736,7 +2736,7 @@ func ieVectors() []ieVector {
 		}, {
 			"TSCManagementInformationWithinSessionReportRequest",
 			ie.NewTSCManagementInformationWithinSessionReportRequest(
-				ie.NewPortManagementInformationContainer("go-pfcp"),
+				ie.NewPortManagementInformationContainer([]byte("go-pfcp")),
 			),
 			[]byte{
 				0x00, 0xc9, 0x00, 0x0b,
@@ -2744,7 +2744,7 @@ func ieVectors() []ieVector {
 			},
 		}, {
 			"PortManagementInformationContainer",
-			ie.NewPortManagementInformationContainer("go-pfcp"),
+			ie.NewPortManagementInformationContainer([]byte("go-pfcp")),
 			[]byte{0x00, 0xca, 0x00, 0x07, 0x67, 0x6f, 0x2d, 0x70, 0x66, 0x63, 0x70},
 		}, {
 			"ClockDriftControlInformation",
@@ -3509,7 +3509,7 @@ func ieVectors() []ieVector {
 			[]byte{0x01, 0x09, 0x00, 0x01, 0x01},
 		}, {
 			"UserPlaneNodeManagementInformationContainer",
-			ie.NewUserPlaneNodeManagementInformationContainer("go-pfcp"),
+			ie.NewUserPlaneNodeManagementInformationContainer([]byte("go-pfcp")),
 			[]byte{0x01, 0x0a, 0x00, 0x07, 0x67, 0x6f, 0x2d, 0x70, 0x66, 0x63, 0x70},
 		}, {
 			"UEIPAddressUsageInformation",

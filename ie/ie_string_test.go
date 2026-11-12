@@ -40,14 +40,17 @@ func TestStringIEs(t *testing.T) {
 			decoderFunc: func(i *ie.IE) (string, error) { return i.ApplicationInstanceID() },
 		}, {
 			description: "UserPlaneNodeManagementInformationContainer",
-			structured:  ie.NewUserPlaneNodeManagementInformationContainer("go-pfcp"),
+			structured:  ie.NewUserPlaneNodeManagementInformationContainer([]byte("go-pfcp")),
 			decoded:     "go-pfcp",
-			decoderFunc: func(i *ie.IE) (string, error) { return i.UserPlaneNodeManagementInformationContainer() },
+			decoderFunc: func(i *ie.IE) (string, error) {
+				value, err := i.UserPlaneNodeManagementInformationContainer()
+				return string(value), err
+			},
 		}, {
 			description: "UserPlaneNodeManagementInformationContainer/TSCManagementInformationWithinSessionModificationRequest",
 			structured: ie.NewTSCManagementInformationWithinSessionModificationRequest(
-				ie.NewPortManagementInformationContainer("go-pfcp"),
-				ie.NewUserPlaneNodeManagementInformationContainer("go-pfcp"),
+				ie.NewPortManagementInformationContainer([]byte("go-pfcp")),
+				ie.NewUserPlaneNodeManagementInformationContainer([]byte("go-pfcp")),
 			),
 			decoded: "go-pfcp",
 			decoderFunc: func(i *ie.IE) (string, error) {
@@ -55,13 +58,14 @@ func TestStringIEs(t *testing.T) {
 				if err != nil {
 					return "", err
 				}
-				return f0.UserPlaneNodeManagementInformationContainer.UserPlaneNodeManagementInformationContainer()
+				value, err := f0.UserPlaneNodeManagementInformationContainer.UserPlaneNodeManagementInformationContainer()
+				return string(value), err
 			},
 		}, {
 			description: "UserPlaneNodeManagementInformationContainer/TSCManagementInformationWithinSessionModificationResponse",
 			structured: ie.NewTSCManagementInformationWithinSessionModificationResponse(
-				ie.NewPortManagementInformationContainer("go-pfcp"),
-				ie.NewUserPlaneNodeManagementInformationContainer("go-pfcp"),
+				ie.NewPortManagementInformationContainer([]byte("go-pfcp")),
+				ie.NewUserPlaneNodeManagementInformationContainer([]byte("go-pfcp")),
 			),
 			decoded: "go-pfcp",
 			decoderFunc: func(i *ie.IE) (string, error) {
@@ -69,13 +73,14 @@ func TestStringIEs(t *testing.T) {
 				if err != nil {
 					return "", err
 				}
-				return f0.UserPlaneNodeManagementInformationContainer.UserPlaneNodeManagementInformationContainer()
+				value, err := f0.UserPlaneNodeManagementInformationContainer.UserPlaneNodeManagementInformationContainer()
+				return string(value), err
 			},
 		}, {
 			description: "UserPlaneNodeManagementInformationContainer/TSCManagementInformationWithinSessionReportRequest",
 			structured: ie.NewTSCManagementInformationWithinSessionReportRequest(
-				ie.NewPortManagementInformationContainer("go-pfcp"),
-				ie.NewUserPlaneNodeManagementInformationContainer("go-pfcp"),
+				ie.NewPortManagementInformationContainer([]byte("go-pfcp")),
+				ie.NewUserPlaneNodeManagementInformationContainer([]byte("go-pfcp")),
 			),
 			decoded: "go-pfcp",
 			decoderFunc: func(i *ie.IE) (string, error) {
@@ -83,7 +88,8 @@ func TestStringIEs(t *testing.T) {
 				if err != nil {
 					return "", err
 				}
-				return f0.UserPlaneNodeManagementInformationContainer.UserPlaneNodeManagementInformationContainer()
+				value, err := f0.UserPlaneNodeManagementInformationContainer.UserPlaneNodeManagementInformationContainer()
+				return string(value), err
 			},
 		}, {
 			description: "DataNetworkAccessIdentifier",
@@ -137,14 +143,17 @@ func TestStringIEs(t *testing.T) {
 			decoderFunc: func(i *ie.IE) (string, error) { return i.NetworkInstanceHeuristic() },
 		}, {
 			description: "PortManagementInformationContainer",
-			structured:  ie.NewPortManagementInformationContainer("go-pfcp"),
+			structured:  ie.NewPortManagementInformationContainer([]byte("go-pfcp")),
 			decoded:     "go-pfcp",
-			decoderFunc: func(i *ie.IE) (string, error) { return i.PortManagementInformationContainer() },
+			decoderFunc: func(i *ie.IE) (string, error) {
+				value, err := i.PortManagementInformationContainer()
+				return string(value), err
+			},
 		}, {
 			description: "PortManagementInformationContainer/TSCManagementInformationWithinSessionModificationRequest",
 			structured: ie.NewTSCManagementInformationWithinSessionModificationRequest(
-				ie.NewPortManagementInformationContainer("go-pfcp"),
-				ie.NewUserPlaneNodeManagementInformationContainer("go-pfcp"),
+				ie.NewPortManagementInformationContainer([]byte("go-pfcp")),
+				ie.NewUserPlaneNodeManagementInformationContainer([]byte("go-pfcp")),
 			),
 			decoded: "go-pfcp",
 			decoderFunc: func(i *ie.IE) (string, error) {
@@ -152,13 +161,14 @@ func TestStringIEs(t *testing.T) {
 				if err != nil {
 					return "", err
 				}
-				return f0.PortManagementInformationContainer.PortManagementInformationContainer()
+				value, err := f0.PortManagementInformationContainer.PortManagementInformationContainer()
+				return string(value), err
 			},
 		}, {
 			description: "PortManagementInformationContainer/TSCManagementInformationWithinSessionModificationResponse",
 			structured: ie.NewTSCManagementInformationWithinSessionModificationResponse(
-				ie.NewPortManagementInformationContainer("go-pfcp"),
-				ie.NewUserPlaneNodeManagementInformationContainer("go-pfcp"),
+				ie.NewPortManagementInformationContainer([]byte("go-pfcp")),
+				ie.NewUserPlaneNodeManagementInformationContainer([]byte("go-pfcp")),
 			),
 			decoded: "go-pfcp",
 			decoderFunc: func(i *ie.IE) (string, error) {
@@ -166,13 +176,14 @@ func TestStringIEs(t *testing.T) {
 				if err != nil {
 					return "", err
 				}
-				return f0.PortManagementInformationContainer.PortManagementInformationContainer()
+				value, err := f0.PortManagementInformationContainer.PortManagementInformationContainer()
+				return string(value), err
 			},
 		}, {
 			description: "PortManagementInformationContainer/TSCManagementInformationWithinSessionReportRequest",
 			structured: ie.NewTSCManagementInformationWithinSessionReportRequest(
-				ie.NewPortManagementInformationContainer("go-pfcp"),
-				ie.NewUserPlaneNodeManagementInformationContainer("go-pfcp"),
+				ie.NewPortManagementInformationContainer([]byte("go-pfcp")),
+				ie.NewUserPlaneNodeManagementInformationContainer([]byte("go-pfcp")),
 			),
 			decoded: "go-pfcp",
 			decoderFunc: func(i *ie.IE) (string, error) {
@@ -180,7 +191,8 @@ func TestStringIEs(t *testing.T) {
 				if err != nil {
 					return "", err
 				}
-				return f0.PortManagementInformationContainer.PortManagementInformationContainer()
+				value, err := f0.PortManagementInformationContainer.PortManagementInformationContainer()
+				return string(value), err
 			},
 		}, {
 			description: "SMFSetID",
