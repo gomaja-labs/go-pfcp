@@ -93,6 +93,10 @@ func NewHeader(mtype uint8, seid uint64, seq uint32, payload []byte) *Header {
 func isNodeType(t uint8) bool       { return t >= 1 && t <= 17 }
 func knownSessionType(t uint8) bool { return t >= 50 && t <= 57 }
 
+// IsRequest classifies the wire Type field using TS 29.244 V20.1.0 Table 7.3-1.
+// It returns false for responses, unknown types and a nil header.
+func (h *Header) IsRequest() bool { return h != nil && isRequestType(h.Type) }
+
 // HasFO reports whether another message follows in the datagram.
 func (h *Header) HasFO() bool { return h != nil && h.Flags&4 != 0 }
 

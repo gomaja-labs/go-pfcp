@@ -172,3 +172,35 @@ func newMessage(t uint8) Message {
 		return &Generic{}
 	}
 }
+
+// isRequestType classifies requests from TS 29.244 V20.1.0 Table 7.3-1.
+func isRequestType(t uint8) bool {
+	switch t {
+	case MsgTypeHeartbeatRequest:
+		return true
+	case MsgTypePFDManagementRequest:
+		return true
+	case MsgTypeAssociationSetupRequest:
+		return true
+	case MsgTypeAssociationUpdateRequest:
+		return true
+	case MsgTypeAssociationReleaseRequest:
+		return true
+	case MsgTypeNodeReportRequest:
+		return true
+	case MsgTypeSessionSetDeletionRequest:
+		return true
+	case MsgTypeSessionSetModificationRequest:
+		return true
+	case MsgTypeSessionEstablishmentRequest:
+		return true
+	case MsgTypeSessionModificationRequest:
+		return true
+	case MsgTypeSessionDeletionRequest:
+		return true
+	case MsgTypeSessionReportRequest:
+		return true
+	default:
+		return false
+	}
+}
