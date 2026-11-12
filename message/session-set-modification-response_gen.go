@@ -40,6 +40,7 @@ func (m *SessionSetModificationResponse) MarshalTo(b []byte) error {
 }
 
 // ParseSessionSetModificationResponse decodes one complete PFCP Session Set Modifcation Response frame.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseSessionSetModificationResponse(b []byte) (*SessionSetModificationResponse, error) {
 	m := &SessionSetModificationResponse{}
 	if err := m.UnmarshalBinary(b); err != nil {
@@ -50,6 +51,7 @@ func ParseSessionSetModificationResponse(b []byte) (*SessionSetModificationRespo
 
 // UnmarshalBinary replaces the message with one decoded frame. IE presence and
 // conditional applicability remain the application's responsibility.
+// Decoding borrows b; keep b unchanged while the message is in use.
 func (m *SessionSetModificationResponse) UnmarshalBinary(b []byte) error {
 	if m == nil {
 		return ErrNilMessage
@@ -133,13 +135,6 @@ func (m *SessionSetModificationResponse) HasMP() bool { return m != nil && m.Hea
 
 // HasSEID reports whether the SEID is present, or false for nil.
 func (m *SessionSetModificationResponse) HasSEID() bool { return m != nil && m.Header.HasSEID() }
-
-// SetFO changes the follow-on bit unless m is nil.
-func (m *SessionSetModificationResponse) SetFO(on bool) {
-	if m != nil {
-		m.Header.SetFO(on)
-	}
-}
 
 // SetSEID assigns the endpoint identifier, or returns ErrNilMessage for nil.
 func (m *SessionSetModificationResponse) SetSEID(seid uint64) error {

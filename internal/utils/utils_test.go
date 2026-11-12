@@ -61,7 +61,10 @@ func TestUint32And24(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run("24To32"+c.description, func(t *testing.T) {
-			converted := utils.Uint24To32(c.u24)
+			converted, err := utils.Uint24To32(c.u24)
+			if err != nil {
+				t.Fatal(err)
+			}
 
 			if diff := cmp.Diff(converted, c.u32); diff != "" {
 				t.Error(diff)
@@ -93,7 +96,10 @@ func TestUint64And40(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run("40To64/"+c.description, func(t *testing.T) {
-			converted := utils.Uint40To64(c.u40)
+			converted, err := utils.Uint40To64(c.u40)
+			if err != nil {
+				t.Fatal(err)
+			}
 
 			if diff := cmp.Diff(converted, c.u64); diff != "" {
 				t.Error(diff)

@@ -127,6 +127,7 @@ func (f *SubsequentVolumeThresholdFields) SetTOVOLFlag() {
 }
 
 // ParseSubsequentVolumeThresholdFields parses b into SubsequentVolumeThresholdFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseSubsequentVolumeThresholdFields(b []byte) (*SubsequentVolumeThresholdFields, error) {
 	f := &SubsequentVolumeThresholdFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -136,6 +137,7 @@ func ParseSubsequentVolumeThresholdFields(b []byte) (*SubsequentVolumeThresholdF
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *SubsequentVolumeThresholdFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

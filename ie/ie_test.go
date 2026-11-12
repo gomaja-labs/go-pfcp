@@ -39,15 +39,15 @@ func ieVectors() []ieVector {
 				ie.NewPDI(
 					ie.NewSourceInterface(ie.SrcInterfaceAccess),
 					ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
-					ie.NewNetworkInstance([]byte("some.instance.example")),
+					ie.NewNetworkInstance("some.instance.example"),
 					ie.NewRedundantTransmissionParameters(
 						ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
-						ie.NewNetworkInstance([]byte("some.instance.example")),
+						ie.NewNetworkInstance("some.instance.example"),
 					),
 					ie.NewUEIPAddress(0x02, "127.0.0.1", "", 0, 0),
 					ie.NewTrafficEndpointID(0x01),
 					ie.NewSDFFilter("aaaaaaaa", []byte("bb"), []byte("cccc"), []byte{0x04, 0x64, 0x64}, 0xffffffff),
-					ie.NewApplicationID([]byte("https://example.com/apps/go-pfcp/")),
+					ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
 					ie.NewEthernetPDUSessionInformation(0x01),
 					ie.NewEthernetPacketFilter(
 						ie.NewEthernetFilterID(0xffffffff),
@@ -63,7 +63,7 @@ func ieVectors() []ieVector {
 				ie.NewFARID(0xffffffff),
 				ie.NewURRID(0xffffffff),
 				ie.NewQERID(0xffffffff),
-				ie.NewActivatePredefinedRules([]byte("go-pfcp")),
+				ie.NewActivatePredefinedRules("go-pfcp"),
 				ie.NewActivationTime(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
 				ie.NewDeactivationTime(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
 				ie.NewMARID(0x1111),
@@ -72,10 +72,10 @@ func ieVectors() []ieVector {
 					ie.NewIPMulticastAddress(net.ParseIP("127.0.0.1"), nil, net.ParseIP("127.0.0.1"), nil),
 					ie.NewSourceIPAddress(net.ParseIP("127.0.0.1"), nil, 24),
 				),
-				ie.NewUEIPAddressPoolIdentity([]byte("go-pfcp")),
+				ie.NewUEIPAddressPoolIdentity("go-pfcp"),
 				ie.NewMultipathApplicableIndication(0x01),
 				ie.NewTransportDelayReporting(
-					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example", time.Time{}),
 					ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
 				),
 			),
@@ -85,15 +85,15 @@ func ieVectors() []ieVector {
 			ie.NewPDI(
 				ie.NewSourceInterface(ie.SrcInterfaceAccess),
 				ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
-				ie.NewNetworkInstance([]byte("some.instance.example")),
+				ie.NewNetworkInstance("some.instance.example"),
 				ie.NewRedundantTransmissionParameters(
 					ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
-					ie.NewNetworkInstance([]byte("some.instance.example")),
+					ie.NewNetworkInstance("some.instance.example"),
 				),
 				ie.NewUEIPAddress(0x02, "127.0.0.1", "", 0, 0),
 				ie.NewTrafficEndpointID(0x01),
 				ie.NewSDFFilter("aaaaaaaa", []byte("bb"), []byte("cccc"), []byte{0x04, 0x64, 0x64}, 0xffffffff),
-				ie.NewApplicationID([]byte("https://example.com/apps/go-pfcp/")),
+				ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
 				ie.NewEthernetPDUSessionInformation(0x01),
 				ie.NewEthernetPacketFilter(
 					ie.NewEthernetFilterID(0xffffffff),
@@ -111,15 +111,15 @@ func ieVectors() []ieVector {
 			ie.NewPDI(
 				ie.NewSourceInterface(ie.SrcInterfaceAccess),
 				ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
-				ie.NewNetworkInstance([]byte("some.instance.example")),
+				ie.NewNetworkInstance("some.instance.example"),
 				ie.NewRedundantTransmissionParameters(
 					ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
-					ie.NewNetworkInstance([]byte("some.instance.example")),
+					ie.NewNetworkInstance("some.instance.example"),
 				),
 				ie.NewUEIPAddress(0x02, "127.0.0.1", "", 0, 0),
 				ie.NewTrafficEndpointID(0x01),
 				nil,
-				ie.NewApplicationID([]byte("https://example.com/apps/go-pfcp/")),
+				ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
 				ie.NewEthernetPDUSessionInformation(0x01),
 				ie.NewEthernetPacketFilter(
 					ie.NewEthernetFilterID(0xffffffff),
@@ -139,31 +139,31 @@ func ieVectors() []ieVector {
 				ie.NewApplyAction(0x04, 0x00),
 				ie.NewForwardingParameters(
 					ie.NewDestinationInterface(ie.DstInterfaceAccess),
-					ie.NewNetworkInstance([]byte("some.instance.example")),
+					ie.NewNetworkInstance("some.instance.example"),
 					ie.NewRedirectInformation(ie.RedirectAddrIPv4AndIPv6, "127.0.0.1", "2001::1"),
 					ie.NewOuterHeaderCreation(0x0100, 0x11223344, "127.0.0.1", "", 0, 0, 0),
 					ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
-					ie.NewForwardingPolicy([]byte("go-pfcp")),
+					ie.NewForwardingPolicy("go-pfcp"),
 					ie.NewHeaderEnrichment(ie.HeaderTypeHTTP, "name", "value"),
 					ie.NewTrafficEndpointID(0x01),
 					ie.NewProxying(1, 1),
 					ie.NewTGPPInterfaceType(ie.TGPPInterfaceTypeS1U),
-					ie.NewDataNetworkAccessIdentifier([]byte("go-pfcp")),
+					ie.NewDataNetworkAccessIdentifier("go-pfcp"),
 				),
 				ie.NewDuplicatingParameters(
 					ie.NewDestinationInterface(ie.DstInterfaceAccess),
 					ie.NewOuterHeaderCreation(0x0100, 0x11223344, "127.0.0.1", "", 0, 0, 0),
 					ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
-					ie.NewForwardingPolicy([]byte("go-pfcp")),
+					ie.NewForwardingPolicy("go-pfcp"),
 				),
 				ie.NewBARID(0xff),
 				ie.NewRedundantTransmissionParameters(
 					ie.NewOuterHeaderCreation(0x0100, 0x11223344, "127.0.0.1", "", 0, 0, 0),
-					ie.NewNetworkInstance([]byte("some.instance.example")),
+					ie.NewNetworkInstance("some.instance.example"),
 				),
 				ie.NewRedundantTransmissionForwardingParameters(
 					ie.NewOuterHeaderCreation(0x0100, 0x11223344, "127.0.0.1", "", 0, 0, 0),
-					ie.NewNetworkInstance([]byte("some.instance.example")),
+					ie.NewNetworkInstance("some.instance.example"),
 				),
 			),
 			[]byte{
@@ -199,16 +199,16 @@ func ieVectors() []ieVector {
 			"ForwardingParameters",
 			ie.NewForwardingParameters(
 				ie.NewDestinationInterface(ie.DstInterfaceAccess),
-				ie.NewNetworkInstance([]byte("some.instance.example")),
+				ie.NewNetworkInstance("some.instance.example"),
 				ie.NewRedirectInformation(ie.RedirectAddrIPv4AndIPv6, "127.0.0.1", "2001::1"),
 				ie.NewOuterHeaderCreation(0x0100, 0x11223344, "127.0.0.1", "", 0, 0, 0),
 				ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
-				ie.NewForwardingPolicy([]byte("go-pfcp")),
+				ie.NewForwardingPolicy("go-pfcp"),
 				ie.NewHeaderEnrichment(ie.HeaderTypeHTTP, "name", "value"),
 				ie.NewTrafficEndpointID(0x01),
 				ie.NewProxying(1, 1),
 				ie.NewTGPPInterfaceType(ie.TGPPInterfaceTypeS1U),
-				ie.NewDataNetworkAccessIdentifier([]byte("go-pfcp")),
+				ie.NewDataNetworkAccessIdentifier("go-pfcp"),
 			),
 			[]byte{
 				0x00, 0x04, 0x00, 0x81,
@@ -230,7 +230,7 @@ func ieVectors() []ieVector {
 				ie.NewDestinationInterface(ie.DstInterfaceAccess),
 				ie.NewOuterHeaderCreation(0x0100, 0x11223344, "127.0.0.1", "", 0, 0, 0),
 				ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
-				ie.NewForwardingPolicy([]byte("go-pfcp")),
+				ie.NewForwardingPolicy("go-pfcp"),
 			),
 			[]byte{
 				0x00, 0x05, 0x00, 0x25,
@@ -387,15 +387,15 @@ func ieVectors() []ieVector {
 				ie.NewPDI(
 					ie.NewSourceInterface(ie.SrcInterfaceAccess),
 					ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
-					ie.NewNetworkInstance([]byte("some.instance.example")),
+					ie.NewNetworkInstance("some.instance.example"),
 					ie.NewRedundantTransmissionParameters(
 						ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
-						ie.NewNetworkInstance([]byte("some.instance.example")),
+						ie.NewNetworkInstance("some.instance.example"),
 					),
 					ie.NewUEIPAddress(0x02, "127.0.0.1", "", 0, 0),
 					ie.NewTrafficEndpointID(0x01),
 					ie.NewSDFFilter("aaaaaaaa", []byte("bb"), []byte("cccc"), []byte{0x04, 0x64, 0x64}, 0xffffffff),
-					ie.NewApplicationID([]byte("https://example.com/apps/go-pfcp/")),
+					ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
 					ie.NewEthernetPDUSessionInformation(0x01),
 					ie.NewEthernetPacketFilter(
 						ie.NewEthernetFilterID(0xffffffff),
@@ -410,8 +410,8 @@ func ieVectors() []ieVector {
 				ie.NewFARID(0xffffffff),
 				ie.NewURRID(0xffffffff),
 				ie.NewQERID(0xffffffff),
-				ie.NewActivatePredefinedRules([]byte("go-pfcp")),
-				ie.NewDeactivatePredefinedRules([]byte("go-pfcp")),
+				ie.NewActivatePredefinedRules("go-pfcp"),
+				ie.NewDeactivatePredefinedRules("go-pfcp"),
 				ie.NewActivationTime(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
 				ie.NewDeactivationTime(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
 				ie.NewIPMulticastAddressingInfo(
@@ -419,7 +419,7 @@ func ieVectors() []ieVector {
 					ie.NewSourceIPAddress(net.ParseIP("127.0.0.1"), nil, 24),
 				),
 				ie.NewTransportDelayReporting(
-					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+					ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example", time.Time{}),
 					ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
 				),
 			),
@@ -431,27 +431,27 @@ func ieVectors() []ieVector {
 				ie.NewApplyAction(0x04, 0x00),
 				ie.NewUpdateForwardingParameters(
 					ie.NewDestinationInterface(ie.DstInterfaceAccess),
-					ie.NewNetworkInstance([]byte("some.instance.example")),
+					ie.NewNetworkInstance("some.instance.example"),
 					ie.NewRedirectInformation(ie.RedirectAddrIPv4AndIPv6, "127.0.0.1", "2001::1"),
 					ie.NewOuterHeaderCreation(0x0100, 0x11223344, "127.0.0.1", "", 0, 0, 0),
 					ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
-					ie.NewForwardingPolicy([]byte("go-pfcp")),
+					ie.NewForwardingPolicy("go-pfcp"),
 					ie.NewHeaderEnrichment(ie.HeaderTypeHTTP, "name", "value"),
 					ie.NewPFCPSMReqFlags(0x03),
 					ie.NewTrafficEndpointID(0x01),
 					ie.NewTGPPInterfaceType(ie.TGPPInterfaceTypeS1U),
-					ie.NewDataNetworkAccessIdentifier([]byte("go-pfcp")),
+					ie.NewDataNetworkAccessIdentifier("go-pfcp"),
 				),
 				ie.NewUpdateDuplicatingParameters(
 					ie.NewDestinationInterface(ie.DstInterfaceAccess),
 					ie.NewOuterHeaderCreation(0x0100, 0x11223344, "127.0.0.1", "", 0, 0, 0),
 					ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
-					ie.NewForwardingPolicy([]byte("go-pfcp")),
+					ie.NewForwardingPolicy("go-pfcp"),
 				),
 				ie.NewBARID(0xff),
 				ie.NewRedundantTransmissionParameters(
 					ie.NewOuterHeaderCreation(0x0100, 0x11223344, "127.0.0.1", "", 0, 0, 0),
-					ie.NewNetworkInstance([]byte("some.instance.example")),
+					ie.NewNetworkInstance("some.instance.example"),
 				),
 			),
 			[]byte{
@@ -484,16 +484,16 @@ func ieVectors() []ieVector {
 			"UpdateForwardingParameters",
 			ie.NewUpdateForwardingParameters(
 				ie.NewDestinationInterface(ie.DstInterfaceAccess),
-				ie.NewNetworkInstance([]byte("some.instance.example")),
+				ie.NewNetworkInstance("some.instance.example"),
 				ie.NewRedirectInformation(ie.RedirectAddrIPv4AndIPv6, "127.0.0.1", "2001::1"),
 				ie.NewOuterHeaderCreation(0x0100, 0x11223344, "127.0.0.1", "", 0, 0, 0),
 				ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
-				ie.NewForwardingPolicy([]byte("go-pfcp")),
+				ie.NewForwardingPolicy("go-pfcp"),
 				ie.NewHeaderEnrichment(ie.HeaderTypeHTTP, "name", "value"),
 				ie.NewPFCPSMReqFlags(0x03),
 				ie.NewTrafficEndpointID(0x01),
 				ie.NewTGPPInterfaceType(ie.TGPPInterfaceTypeS1U),
-				ie.NewDataNetworkAccessIdentifier([]byte("go-pfcp")),
+				ie.NewDataNetworkAccessIdentifier("go-pfcp"),
 			),
 			[]byte{
 				0x00, 0x0b, 0x00, 0x81,
@@ -716,7 +716,7 @@ func ieVectors() []ieVector {
 			[]byte{0x00, 0x15, 0x00, 0x02, 0x0d, 0xff},
 		}, {
 			"NetworkInstance/string",
-			ie.NewNetworkInstance([]byte("some.instance.example")),
+			ie.NewNetworkInstance("some.instance.example"),
 			[]byte{0x00, 0x16, 0x00, 0x15, 0x73, 0x6f, 0x6d, 0x65, 0x2e, 0x69, 0x6e, 0x73, 0x74, 0x61, 0x6e, 0x63, 0x65, 0x2e, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65},
 		}, {
 			"NetworkInstance/FQDN",
@@ -731,7 +731,7 @@ func ieVectors() []ieVector {
 			[]byte{0x00, 0x17, 0x00, 0x19, 0x1f, 0x00, 0x00, 0x08, 0x61, 0x61, 0x61, 0x61, 0x61, 0x61, 0x61, 0x61, 0x62, 0x62, 0x63, 0x63, 0x63, 0x63, 0x04, 0x64, 0x64, 0xff, 0xff, 0xff, 0xff},
 		}, {
 			"ApplicationID",
-			ie.NewApplicationID([]byte("https://example.com/apps/go-pfcp/")),
+			ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
 			[]byte{0x00, 0x18, 0x00, 0x21, 0x68, 0x74, 0x74, 0x70, 0x73, 0x3a, 0x2f, 0x2f, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x61, 0x70, 0x70, 0x73, 0x2f, 0x67, 0x6f, 0x2d, 0x70, 0x66, 0x63, 0x70, 0x2f},
 		}, {
 			"GateStatus/OpenOpen",
@@ -835,7 +835,7 @@ func ieVectors() []ieVector {
 			[]byte{0x00, 0x28, 0x00, 0x02, 0x00, 0x13},
 		}, {
 			"ForwardingPolicy",
-			ie.NewForwardingPolicy([]byte("go-pfcp")),
+			ie.NewForwardingPolicy("go-pfcp"),
 			[]byte{0x00, 0x29, 0x00, 0x08, 0x07, 0x67, 0x6f, 0x2d, 0x70, 0x66, 0x63, 0x70},
 		}, {
 			"DestinationInterface",
@@ -959,7 +959,7 @@ func ieVectors() []ieVector {
 		}, {
 			"ApplicationIDsPFDs",
 			ie.NewApplicationIDsPFDs(
-				ie.NewApplicationID([]byte("https://example.com/apps/go-pfcp/")),
+				ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
 				ie.NewPFDContext(
 					ie.NewPFDContents("aa", "bb", "cc", []byte("dd"), "ee", []string{"11", "22"}, []string{"33", "44"}, []string{"55", "66"}),
 				),
@@ -1107,8 +1107,8 @@ func ieVectors() []ieVector {
 		}, {
 			"ApplicationDetectionInformation",
 			ie.NewApplicationDetectionInformation(
-				ie.NewApplicationID([]byte("https://example.com/apps/go-pfcp/")),
-				ie.NewApplicationInstanceID([]byte("go-pfcp")),
+				ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
+				ie.NewApplicationInstanceID("go-pfcp"),
 				ie.NewFlowInformation(ie.FlowDirectionDownlink, "go-pfcp"),
 				ie.NewPDRID(0xffff),
 			),
@@ -1303,8 +1303,8 @@ func ieVectors() []ieVector {
 				ie.NewVolumeMeasurement(0x3f, 0x1111111111111111, 0x2222222222222222, 0x3333333333333333, 0x4444444444444444, 0x5555555555555555, 0x6666666666666666),
 				ie.NewDurationMeasurement(10*time.Second),
 				ie.NewApplicationDetectionInformation(
-					ie.NewApplicationID([]byte("https://example.com/apps/go-pfcp/")),
-					ie.NewApplicationInstanceID([]byte("go-pfcp")),
+					ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
+					ie.NewApplicationInstanceID("go-pfcp"),
 					ie.NewFlowInformation(ie.FlowDirectionDownlink, "go-pfcp"),
 					ie.NewPDRID(0xffff),
 				),
@@ -1470,7 +1470,7 @@ func ieVectors() []ieVector {
 			[]byte{0x00, 0x5a, 0x00, 0x01, 0x0f},
 		}, {
 			"ApplicationInstanceID",
-			ie.NewApplicationInstanceID([]byte("go-pfcp")),
+			ie.NewApplicationInstanceID("go-pfcp"),
 			[]byte{0x00, 0x5b, 0x00, 0x07, 0x67, 0x6f, 0x2d, 0x70, 0x66, 0x63, 0x70},
 		}, {
 			"FlowInformation",
@@ -1540,7 +1540,7 @@ func ieVectors() []ieVector {
 		}, {
 			"UserPlanePathFailureReport",
 			ie.NewUserPlanePathFailureReport(
-				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example", time.Time{}),
 			),
 			[]byte{
 				0x00, 0x66, 0x00, 0x23,
@@ -1552,7 +1552,7 @@ func ieVectors() []ieVector {
 			},
 		}, {
 			"RemoteGTPUPeer/IPv4/DI/NI", // TODO: add other types
-			ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+			ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example", time.Time{}),
 			[]byte{
 				0x00, 0x67, 0x00, 0x1f,
 				0x0e,
@@ -1570,7 +1570,7 @@ func ieVectors() []ieVector {
 				ie.NewDestinationInterface(ie.DstInterfaceAccess),
 				ie.NewOuterHeaderCreation(0x0100, 0x11223344, "127.0.0.1", "", 0, 0, 0),
 				ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
-				ie.NewForwardingPolicy([]byte("go-pfcp")),
+				ie.NewForwardingPolicy("go-pfcp"),
 			),
 			[]byte{
 				0x00, 0x69, 0x00, 0x25,
@@ -1581,11 +1581,11 @@ func ieVectors() []ieVector {
 			},
 		}, {
 			"ActivatePredefinedRules",
-			ie.NewActivatePredefinedRules([]byte("go-pfcp")),
+			ie.NewActivatePredefinedRules("go-pfcp"),
 			[]byte{0x00, 0x6a, 0x00, 0x07, 0x67, 0x6f, 0x2d, 0x70, 0x66, 0x63, 0x70},
 		}, {
 			"DeactivatePredefinedRules",
-			ie.NewDeactivatePredefinedRules([]byte("go-pfcp")),
+			ie.NewDeactivatePredefinedRules("go-pfcp"),
 			[]byte{0x00, 0x6b, 0x00, 0x07, 0x67, 0x6f, 0x2d, 0x70, 0x66, 0x63, 0x70},
 		}, {
 			"FARID",
@@ -1695,10 +1695,10 @@ func ieVectors() []ieVector {
 			ie.NewCreateTrafficEndpoint(
 				ie.NewTrafficEndpointID(0x01),
 				ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
-				ie.NewNetworkInstance([]byte("some.instance.example")),
+				ie.NewNetworkInstance("some.instance.example"),
 				ie.NewRedundantTransmissionParameters(
 					ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
-					ie.NewNetworkInstance([]byte("some.instance.example")),
+					ie.NewNetworkInstance("some.instance.example"),
 				),
 				ie.NewUEIPAddress(0x02, "127.0.0.1", "", 0, 0),
 				ie.NewEthernetPDUSessionInformation(0x01),
@@ -1742,10 +1742,10 @@ func ieVectors() []ieVector {
 			ie.NewUpdateTrafficEndpoint(
 				ie.NewTrafficEndpointID(0x01),
 				ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
-				ie.NewNetworkInstance([]byte("some.instance.example")),
+				ie.NewNetworkInstance("some.instance.example"),
 				ie.NewRedundantTransmissionParameters(
 					ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
-					ie.NewNetworkInstance([]byte("some.instance.example")),
+					ie.NewNetworkInstance("some.instance.example"),
 				),
 				ie.NewUEIPAddress(0x02, "127.0.0.1", "", 0, 0),
 				ie.NewFramedRoute("go-pfcp"),
@@ -2190,7 +2190,7 @@ func ieVectors() []ieVector {
 			},
 		}, {
 			"UEIPAddressPoolIdentity",
-			ie.NewUEIPAddressPoolIdentity([]byte("go-pfcp")),
+			ie.NewUEIPAddressPoolIdentity("go-pfcp"),
 			[]byte{0x00, 0xb1, 0x00, 0x09, 0x00, 0x07, 0x67, 0x6f, 0x2d, 0x70, 0x66, 0x63, 0x70},
 		}, {
 			"AlternativeSMFIPAddress/IPv4",
@@ -2252,7 +2252,7 @@ func ieVectors() []ieVector {
 		}, {
 			"UserPlanePathRecoveryReport",
 			ie.NewUserPlanePathRecoveryReport(
-				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example", time.Time{}),
 			),
 			[]byte{
 				0x00, 0xbb, 0x00, 0x23,
@@ -2897,13 +2897,13 @@ func ieVectors() []ieVector {
 			[]byte{0x00, 0xe7, 0x00, 0x01, 0x01},
 		}, {
 			"DataNetworkAccessIdentifier",
-			ie.NewDataNetworkAccessIdentifier([]byte("go-pfcp")),
+			ie.NewDataNetworkAccessIdentifier("go-pfcp"),
 			[]byte{0x00, 0xe8, 0x00, 0x07, 0x67, 0x6f, 0x2d, 0x70, 0x66, 0x63, 0x70},
 		}, {
 			"UEIPAddressPoolInformation",
 			ie.NewUEIPAddressPoolInformation(
-				ie.NewUEIPAddressPoolIdentity([]byte("go-pfcp")),
-				ie.NewNetworkInstance([]byte("some.instance.example")),
+				ie.NewUEIPAddressPoolIdentity("go-pfcp"),
+				ie.NewNetworkInstance("some.instance.example"),
 				ie.NewSNSSAI(0x11, 0x223344),
 				ie.NewIPVersion(true, false),
 			),
@@ -2933,7 +2933,7 @@ func ieVectors() []ieVector {
 		}, {
 			"GTPUPathQoSControlInformation",
 			ie.NewGTPUPathQoSControlInformation(
-				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example", time.Time{}),
 				ie.NewGTPUPathInterfaceType(1, 1),
 				ie.NewQoSReportTrigger(1, 1, 1),
 				ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
@@ -2962,7 +2962,7 @@ func ieVectors() []ieVector {
 		}, {
 			"GTPUPathQoSReport",
 			ie.NewGTPUPathQoSReport(
-				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example", time.Time{}),
 				ie.NewGTPUPathInterfaceType(1, 1),
 				ie.NewQoSReportTrigger(1, 1, 1),
 				ie.NewEventTimeStamp(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)),
@@ -3109,7 +3109,7 @@ func ieVectors() []ieVector {
 			"RedundantTransmissionParameters/PDI",
 			ie.NewRedundantTransmissionParameters(
 				ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
-				ie.NewNetworkInstance([]byte("some.instance.example")),
+				ie.NewNetworkInstance("some.instance.example"),
 			),
 			[]byte{
 				0x00, 0xff, 0x00, 0x26,
@@ -3120,7 +3120,7 @@ func ieVectors() []ieVector {
 			"RedundantTransmissionParameters/FAR",
 			ie.NewRedundantTransmissionParameters(
 				ie.NewOuterHeaderCreation(0x0100, 0x11223344, "127.0.0.1", "", 0, 0, 0),
-				ie.NewNetworkInstance([]byte("some.instance.example")),
+				ie.NewNetworkInstance("some.instance.example"),
 			),
 			[]byte{
 				0x00, 0xff, 0x00, 0x27,
@@ -3210,8 +3210,8 @@ func ieVectors() []ieVector {
 				ie.NewMetric(0x01),
 				ie.NewValidityTimer(10*time.Second),
 				ie.NewNumberOfUEIPAddresses(0x01, 4, 0),
-				ie.NewNetworkInstance([]byte("some.instance.example")),
-				ie.NewUEIPAddressPoolIdentity([]byte("go-pfcp")),
+				ie.NewNetworkInstance("some.instance.example"),
+				ie.NewUEIPAddressPoolIdentity("go-pfcp"),
 			),
 			[]byte{
 				0x01, 0x0b, 0x00, 0x42,
@@ -3242,7 +3242,7 @@ func ieVectors() []ieVector {
 			"RedundantTransmissionForwardingParameters",
 			ie.NewRedundantTransmissionForwardingParameters(
 				ie.NewOuterHeaderCreation(0x0100, 0x11223344, "127.0.0.1", "", 0, 0, 0),
-				ie.NewNetworkInstance([]byte("some.instance.example")),
+				ie.NewNetworkInstance("some.instance.example"),
 			),
 			[]byte{
 				0x01, 0x0e, 0x00, 0x27,
@@ -3252,7 +3252,7 @@ func ieVectors() []ieVector {
 		}, {
 			"TransportDelayReporting",
 			ie.NewTransportDelayReporting(
-				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example", time.Time{}),
 				ie.NewTransportLevelMarking([]byte{0x11, 0x11}),
 			),
 			[]byte{
@@ -3266,8 +3266,8 @@ func ieVectors() []ieVector {
 			},
 		}, {
 			"VendorSpecific",
-			ie.NewVendorSpecificIE(0xffff, 10415, []byte{0xde, 0xad, 0xbe, 0xef}),
-			[]byte{0xff, 0xff, 0x00, 0x06, 0x28, 0xaf, 0xde, 0xad, 0xbe, 0xef},
+			ie.NewVendorSpecificIE(0xffff, 32473, []byte{0xde, 0xad, 0xbe, 0xef}),
+			[]byte{0xff, 0xff, 0x00, 0x06, 0x7e, 0xd9, 0xde, 0xad, 0xbe, 0xef},
 		},
 	}
 

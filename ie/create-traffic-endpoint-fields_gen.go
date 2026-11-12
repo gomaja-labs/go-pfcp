@@ -79,6 +79,7 @@ func (f *CreateTrafficEndpointFields) IE() *IE {
 }
 
 // ParseCreateTrafficEndpointFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseCreateTrafficEndpointFields(b []byte) (*CreateTrafficEndpointFields, error) {
 	f := &CreateTrafficEndpointFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -89,6 +90,7 @@ func ParseCreateTrafficEndpointFields(b []byte) (*CreateTrafficEndpointFields, e
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *CreateTrafficEndpointFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

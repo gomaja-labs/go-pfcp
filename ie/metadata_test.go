@@ -9,18 +9,18 @@ import (
 
 func TestMetadataCurrent(t *testing.T) {
 	for _, v := range []string{"AA==", "AAE=", "AQID", "/+79"} {
-		assertAddedVector(t, ie.NewMetadata([]byte(v)), []byte(v), "Metadata", false)
+		assertAddedVector(t, ie.NewMetadata(v), []byte(v), "Metadata", false)
 	}
 	for _, v := range []string{"%%%", "A", "AB==", "AA=", "AA==\n"} {
-		assertAddedInvalid(t, ie.NewMetadata([]byte(v)))
+		assertAddedInvalid(t, ie.NewMetadata(v))
 	}
-	assertAddedNull(t, ie.NewMetadata(nil), "Metadata")
+	assertAddedNull(t, ie.NewMetadata(""), "Metadata")
 }
 
 func TestMetadataLengthBoundary(t *testing.T) {
 	b := bytes.Repeat([]byte("AAAA"), 16383)
-	assertAddedVector(t, ie.NewMetadata(b), b, "Metadata", false)
-	assertAddedInvalid(t, ie.NewMetadata(append(b, []byte("AAAA")...)))
+	assertAddedVector(t, ie.NewMetadata(string(b)), b, "Metadata", false)
+	assertAddedInvalid(t, ie.NewMetadata(string(append(b, []byte("AAAA")...))))
 }
 
-var _ = registerConstructorFixture(ie.NewMetadata, []byte("YQ=="))
+var _ = registerConstructorFixture(ie.NewMetadata, "YQ==")

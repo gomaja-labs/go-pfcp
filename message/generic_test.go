@@ -20,7 +20,7 @@ func TestGeneric(t *testing.T) {
 			Structured: message.NewGeneric(
 				message.MsgTypeSessionEstablishmentRequest,
 				testutil.TestBearerInfo.SEID, testutil.TestBearerInfo.Seq,
-				ie.NewApplicationID([]byte("go-pfcp")),
+				ie.NewApplicationID("go-pfcp"),
 			),
 			Serialized: []byte{
 				0x21, 0x32, 0x00, 0x17, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88,
@@ -32,7 +32,7 @@ func TestGeneric(t *testing.T) {
 			Structured: message.NewGeneric(
 				message.MsgTypeHeartbeatRequest, 0,
 				testutil.TestBearerInfo.Seq,
-				ie.NewApplicationID([]byte("go-pfcp")),
+				ie.NewApplicationID("go-pfcp"),
 			),
 			Serialized: []byte{
 				0x20, 0x01, 0x00, 0x0f, 0x00, 0x00, 0x01, 0x00,

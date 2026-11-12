@@ -76,6 +76,7 @@ func (i *IE) IPAddressAndPortNumberReplacement() (*IPAddressAndPortNumberReplace
 }
 
 // ParseIPAddressAndPortNumberReplacementFields decodes fields according to clause 8.2.200.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseIPAddressAndPortNumberReplacementFields(b []byte) (*IPAddressAndPortNumberReplacementFields, error) {
 	f := &IPAddressAndPortNumberReplacementFields{}
 	if e := f.UnmarshalBinary(b); e != nil {
@@ -85,6 +86,7 @@ func ParseIPAddressAndPortNumberReplacementFields(b []byte) (*IPAddressAndPortNu
 }
 
 // UnmarshalBinary resets the value and decodes the known fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *IPAddressAndPortNumberReplacementFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

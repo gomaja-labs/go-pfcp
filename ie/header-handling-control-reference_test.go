@@ -10,7 +10,7 @@ import (
 func TestHeaderHandlingControlReference(t *testing.T) {
 	for _, n := range []int{0, 1, 255, 256, 65535, 65536} {
 		payload := bytes.Repeat([]byte{0x61}, n)
-		i := ie.NewHeaderHandlingControlReference(payload)
+		i := ie.NewHeaderHandlingControlReference(string(payload))
 		if n > 65535 {
 			assertNewIEInvalid(t, i, ie.HeaderHandlingControlReference)
 			continue
@@ -23,7 +23,7 @@ func TestHeaderHandlingControlReference(t *testing.T) {
 			}
 			continue
 		}
-		if err != nil || !bytes.Equal(got, payload) {
+		if err != nil || got != string(payload) {
 			t.Fatal("value", err)
 		}
 	}
@@ -32,6 +32,6 @@ func TestHeaderHandlingControlReference(t *testing.T) {
 
 func TestHeaderHandlingControlReferenceBinary(t *testing.T) {
 	p := []byte{0, 1, 255, 128}
-	i := ie.NewHeaderHandlingControlReference(p)
+	i := ie.NewHeaderHandlingControlReference(string(p))
 	checkNewIEWire(t, i, p)
 }

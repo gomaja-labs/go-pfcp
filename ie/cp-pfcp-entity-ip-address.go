@@ -108,6 +108,7 @@ func (f *CPPFCPEntityIPAddressFields) SetIPv6Flag() {
 }
 
 // ParseCPPFCPEntityIPAddressFields parses b into CPPFCPEntityIPAddressFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseCPPFCPEntityIPAddressFields(b []byte) (*CPPFCPEntityIPAddressFields, error) {
 	f := &CPPFCPEntityIPAddressFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -117,6 +118,7 @@ func ParseCPPFCPEntityIPAddressFields(b []byte) (*CPPFCPEntityIPAddressFields, e
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *CPPFCPEntityIPAddressFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

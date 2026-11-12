@@ -7,6 +7,7 @@ package message_test
 import (
 	"bytes"
 	"encoding/binary"
+	"errors"
 	"reflect"
 	"testing"
 
@@ -87,9 +88,38 @@ func FuzzParseDatagram(f *testing.F) {
 		f.Fatal(err)
 	}
 	f.Add(bundle)
+	for bad := 0; bad < 3; bad++ {
+		var b []byte
+		for n := 0; n < 3; n++ {
+			body := []byte(nil)
+			if n == bad {
+				body = []byte{0, 19, 0, 2, 1}
+			}
+			frame := wireHeader(0x21, 54, body)
+			if n < 2 {
+				frame[0] |= 4
+			}
+			b = append(b, frame...)
+		}
+		f.Add(b)
+	}
 	f.Fuzz(func(t *testing.T, b []byte) {
 		ms, err := message.ParseDatagram(b)
 		if err != nil {
+			var frame *message.DatagramError
+			if !errors.As(err, &frame) {
+				t.Fatal("missing frame error context", err)
+			}
+			for _, m := range ms {
+				out := make([]byte, m.MarshalLen())
+				if e := m.MarshalTo(out); e != nil {
+					t.Fatal("retained frame could not encode", e)
+				}
+				decoded, e := message.Parse(out)
+				if e != nil || decoded.MessageType() != m.MessageType() || decoded.Sequence() != m.Sequence() || decoded.SEID() != m.SEID() {
+					t.Fatal("retained frame lost values", e)
+				}
+			}
 			return
 		}
 		out, err := message.MarshalDatagram(ms...)

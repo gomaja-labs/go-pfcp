@@ -38,6 +38,7 @@ func (m *SessionSetDeletionRequest) MarshalTo(b []byte) error {
 }
 
 // ParseSessionSetDeletionRequest decodes one complete PFCP Session Set Deletion Request frame.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseSessionSetDeletionRequest(b []byte) (*SessionSetDeletionRequest, error) {
 	m := &SessionSetDeletionRequest{}
 	if err := m.UnmarshalBinary(b); err != nil {
@@ -48,6 +49,7 @@ func ParseSessionSetDeletionRequest(b []byte) (*SessionSetDeletionRequest, error
 
 // UnmarshalBinary replaces the message with one decoded frame. IE presence and
 // conditional applicability remain the application's responsibility.
+// Decoding borrows b; keep b unchanged while the message is in use.
 func (m *SessionSetDeletionRequest) UnmarshalBinary(b []byte) error {
 	if m == nil {
 		return ErrNilMessage
@@ -131,13 +133,6 @@ func (m *SessionSetDeletionRequest) HasMP() bool { return m != nil && m.Header.H
 
 // HasSEID reports whether the SEID is present, or false for nil.
 func (m *SessionSetDeletionRequest) HasSEID() bool { return m != nil && m.Header.HasSEID() }
-
-// SetFO changes the follow-on bit unless m is nil.
-func (m *SessionSetDeletionRequest) SetFO(on bool) {
-	if m != nil {
-		m.Header.SetFO(on)
-	}
-}
 
 // SetSEID assigns the endpoint identifier, or returns ErrNilMessage for nil.
 func (m *SessionSetDeletionRequest) SetSEID(seid uint64) error {

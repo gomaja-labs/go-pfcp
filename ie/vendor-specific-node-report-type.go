@@ -32,6 +32,7 @@ func (i *IE) VendorSpecificNodeReportType() (*VendorSpecificNodeReportTypeFields
 
 // ParseVendorSpecificNodeReportTypeFields decodes the enterprise ID and the full vendor bitmask.
 // TS 29.244 V20.1.0 clauses 8.2.217 and 8.1.2.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseVendorSpecificNodeReportTypeFields(b []byte) (*VendorSpecificNodeReportTypeFields, error) {
 	f := &VendorSpecificNodeReportTypeFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -41,6 +42,7 @@ func ParseVendorSpecificNodeReportTypeFields(b []byte) (*VendorSpecificNodeRepor
 }
 
 // UnmarshalBinary decodes Vendor-Specific Node Report Type and resets previously decoded fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *VendorSpecificNodeReportTypeFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

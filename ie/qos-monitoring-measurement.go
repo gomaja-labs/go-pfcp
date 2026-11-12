@@ -143,6 +143,7 @@ func (f *QoSMonitoringMeasurementFields) SetDLFlag() {
 }
 
 // ParseQoSMonitoringMeasurementFields parses b into QoSMonitoringMeasurementFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseQoSMonitoringMeasurementFields(b []byte) (*QoSMonitoringMeasurementFields, error) {
 	f := &QoSMonitoringMeasurementFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -152,6 +153,7 @@ func ParseQoSMonitoringMeasurementFields(b []byte) (*QoSMonitoringMeasurementFie
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *QoSMonitoringMeasurementFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

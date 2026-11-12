@@ -90,7 +90,7 @@ func TestPMFOptionalAddresses(t *testing.T) {
 }
 
 func TestRemoteZeroDestinationLength(t *testing.T) {
-	f := ie.NewRemoteGTPUPeerFields(6, "192.0.2.1", "", 0, []byte(""), time.Time{})
+	f := ie.NewRemoteGTPUPeerFields(6, "192.0.2.1", "", 0, "", time.Time{})
 	f.DILength = 0
 	if p := panicOf(func() {
 		if _, err := f.Marshal(); err == nil {

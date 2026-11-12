@@ -139,6 +139,7 @@ func (f *PacketRateStatusFields) SetULFlag() {
 }
 
 // ParsePacketRateStatusFields parses b into PacketRateStatusFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParsePacketRateStatusFields(b []byte) (*PacketRateStatusFields, error) {
 	f := &PacketRateStatusFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -148,6 +149,7 @@ func ParsePacketRateStatusFields(b []byte) (*PacketRateStatusFields, error) {
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *PacketRateStatusFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

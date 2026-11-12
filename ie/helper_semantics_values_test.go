@@ -23,7 +23,7 @@ func helperSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.153.
 		{name: "AccessType", input: ie.NewAccessAvailabilityInformation(3, 3), want: 3},
 		// TS 29.244 V20.1.0 clause 8.2.72.
-		{name: "ActivatePredefinedRules", input: ie.NewActivatePredefinedRules([]byte("go-pfcp")), want: []byte("go-pfcp")},
+		{name: "ActivatePredefinedRules", input: ie.NewActivatePredefinedRules("go-pfcp"), want: "go-pfcp"},
 		// TS 29.244 V20.1.0 clause 8.2.121.
 		{name: "ActivationTime", input: ie.NewActivationTime(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)), want: time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)},
 		// TS 29.244 V20.1.0 clause 8.2.91.
@@ -31,9 +31,9 @@ func helperSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.85.
 		{name: "AggregatedURRID", input: ie.NewAggregatedURRID(0xffffffff), want: uint32(0xffffffff)},
 		// TS 29.244 V20.1.0 clause 8.2.6.
-		{name: "ApplicationID", input: ie.NewApplicationID([]byte("https://example.com/apps/go-pfcp/")), want: []byte("https://example.com/apps/go-pfcp/")},
+		{name: "ApplicationID", input: ie.NewApplicationID("https://example.com/apps/go-pfcp/"), want: "https://example.com/apps/go-pfcp/"},
 		// TS 29.244 V20.1.0 clause 8.2.60.
-		{name: "ApplicationInstanceID", input: ie.NewApplicationInstanceID([]byte("go-pfcp")), want: []byte("go-pfcp")},
+		{name: "ApplicationInstanceID", input: ie.NewApplicationInstanceID("go-pfcp"), want: "go-pfcp"},
 		// TS 29.244 V20.1.0 clause 8.2.26.
 		{name: "ApplyAction", input: ie.NewApplyAction(0x04), want: []byte{0x04}},
 		// TS 29.244 V20.1.0 clause 8.2.153.
@@ -59,11 +59,11 @@ func helperSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.173.
 		{name: "DLDataPacketsSize", input: ie.NewDLDataPacketsSize(0xffff), want: 0xffff},
 		// TS 29.244 V20.1.0 clause 8.2.161.
-		{name: "DataNetworkAccessIdentifier", input: ie.NewDataNetworkAccessIdentifier([]byte("go-pfcp")), want: []byte("go-pfcp")},
+		{name: "DataNetworkAccessIdentifier", input: ie.NewDataNetworkAccessIdentifier("go-pfcp"), want: "go-pfcp"},
 		// TS 29.244 V20.1.0 clause 8.2.179.
 		{name: "DataStatus", input: ie.NewDataStatus(0x03), want: 0x03},
 		// TS 29.244 V20.1.0 clause 8.2.73.
-		{name: "DeactivatePredefinedRules", input: ie.NewDeactivatePredefinedRules([]byte("go-pfcp")), want: []byte("go-pfcp")},
+		{name: "DeactivatePredefinedRules", input: ie.NewDeactivatePredefinedRules("go-pfcp"), want: "go-pfcp"},
 		// TS 29.244 V20.1.0 clause 8.2.122.
 		{name: "DeactivationTime", input: ie.NewDeactivationTime(time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)), want: time.Date(2019, time.January, 1, 0, 0, 0, 0, time.UTC)},
 		// TS 29.244 V20.1.0 clause 8.2.24.
@@ -97,7 +97,7 @@ func helperSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.61.
 		{name: "FlowDirection", input: ie.NewFlowInformation(ie.FlowDirectionDownlink, "go-pfcp"), want: ie.FlowDirectionDownlink},
 		// TS 29.244 V20.1.0 clause 8.2.23.
-		{name: "ForwardingPolicyIdentifier", input: ie.NewForwardingPolicy([]byte("go-pfcp")), want: []byte("go-pfcp")},
+		{name: "ForwardingPolicyIdentifier", input: ie.NewForwardingPolicy("go-pfcp"), want: "go-pfcp"},
 		// TS 29.244 V20.1.0 clause 8.2.111.
 		{name: "FramedIPv6Route", input: ie.NewFramedIPv6Route("go-pfcp"), want: "go-pfcp"},
 		// TS 29.244 V20.1.0 clause 8.2.109.
@@ -139,10 +139,10 @@ func helperSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.181.
 		{name: "MultipathApplicableIndication", input: ie.NewMultipathApplicableIndication(0x01), want: 0x01},
 		// TS 29.244 V20.1.0 clause 8.2.4.
-		{name: "NetworkInstance", input: ie.NewNetworkInstance([]byte("go-pfcp")), want: []byte("go-pfcp")},
+		{name: "NetworkInstance", input: ie.NewNetworkInstance("go-pfcp"), want: "go-pfcp"},
 		{name: "NetworkInstanceFQDN", input: ie.NewNetworkInstanceFQDN("go-pfcp.com"), want: "go-pfcp.com"},
 		// TS 29.244 V20.1.0 clause 8.2.4.
-		{name: "NetworkInstanceHeuristic", input: ie.NewNetworkInstance([]byte("go-pfcp")), want: "go-pfcp"},
+		{name: "NetworkInstanceHeuristic", input: ie.NewNetworkInstance("go-pfcp"), want: "go-pfcp"},
 		// TS 29.244 V20.1.0 clause 8.2.38.
 		{name: "NodeID", input: ie.NewNodeIDAddress(netip.MustParseAddr("192.0.2.1")), want: ie.NodeIDValue{Type: ie.NodeIDIPv4Address, Address: netip.MustParseAddr("192.0.2.1")}},
 		// TS 29.244 V20.1.0 clause 8.2.43.
@@ -260,7 +260,8 @@ func helperSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.12.
 		{name: "TransportLevelMarking", input: ie.NewTransportLevelMarking([]byte{0x11, 0x11}), want: []byte{0x11, 0x11}},
 		// TS 29.244 V20.1.0 clause 8.2.128.
-		{name: "UEIPAddressPoolIdentityString", input: ie.NewUEIPAddressPoolIdentity([]byte("go-pfcp")), want: "go-pfcp"},
+
+		{name: "UEIPAddressPoolIdentityString", input: ie.NewUEIPAddressPoolIdentity("go-pfcp"), want: "go-pfcp", minimum: 9},
 		// TS 29.244 V20.1.0 clause 8.2.59.
 		{name: "UsageInformation", input: ie.NewUsageInformation(1, 1, 1, 1), want: 0x0f},
 		// TS 29.244 V20.1.0 clause 8.2.83.
@@ -286,7 +287,7 @@ func helperSemanticValues() []helperSemanticCase {
 			tc.minimum = len(tc.input.Payload)
 		}
 		switch tc.name {
-		case "SMFSetID", "NodeID", "FlowDescription", "ForwardingPolicyIdentifier", "UEIPAddressPoolIdentityString":
+		case "SMFSetID", "NodeID", "FlowDescription", "ForwardingPolicyIdentifier", "UEIPAddressPoolIdentity", "UEIPAddressPoolIdentityString":
 			tc.minimum = len(tc.input.Payload)
 		case "APNDNN":
 			tc.minimum = 5

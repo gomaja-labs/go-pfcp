@@ -63,6 +63,7 @@ func (f *GTPUPathQoSControlInformationFields) IE() *IE {
 }
 
 // ParseGTPUPathQoSControlInformationFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseGTPUPathQoSControlInformationFields(b []byte) (*GTPUPathQoSControlInformationFields, error) {
 	f := &GTPUPathQoSControlInformationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -73,6 +74,7 @@ func ParseGTPUPathQoSControlInformationFields(b []byte) (*GTPUPathQoSControlInfo
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *GTPUPathQoSControlInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

@@ -140,6 +140,7 @@ func (f *FTEIDFields) SetIPv4Flag() {
 }
 
 // ParseFTEIDFields parses b into FTEIDFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseFTEIDFields(b []byte) (*FTEIDFields, error) {
 	f := &FTEIDFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -149,6 +150,7 @@ func ParseFTEIDFields(b []byte) (*FTEIDFields, error) {
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *FTEIDFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

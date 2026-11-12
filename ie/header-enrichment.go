@@ -72,6 +72,7 @@ func NewHeaderEnrichmentFields(typ uint8, name, value string) *HeaderEnrichmentF
 }
 
 // ParseHeaderEnrichmentFields parses b into HeaderEnrichmentFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseHeaderEnrichmentFields(b []byte) (*HeaderEnrichmentFields, error) {
 	f := &HeaderEnrichmentFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -81,6 +82,7 @@ func ParseHeaderEnrichmentFields(b []byte) (*HeaderEnrichmentFields, error) {
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *HeaderEnrichmentFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

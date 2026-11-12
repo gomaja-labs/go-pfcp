@@ -49,6 +49,7 @@ func (f *CreatedBridgeRouterInfoFields) IE() *IE {
 }
 
 // ParseCreatedBridgeRouterInfoFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseCreatedBridgeRouterInfoFields(b []byte) (*CreatedBridgeRouterInfoFields, error) {
 	f := &CreatedBridgeRouterInfoFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -59,6 +60,7 @@ func ParseCreatedBridgeRouterInfoFields(b []byte) (*CreatedBridgeRouterInfoField
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *CreatedBridgeRouterInfoFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

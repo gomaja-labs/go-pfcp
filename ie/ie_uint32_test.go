@@ -148,15 +148,15 @@ func TestUint32IEs(t *testing.T) {
 			structured: ie.NewPDI(
 				ie.NewSourceInterface(ie.SrcInterfaceAccess),
 				ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
-				ie.NewNetworkInstance([]byte("some.instance.example")),
+				ie.NewNetworkInstance("some.instance.example"),
 				ie.NewRedundantTransmissionParameters(
 					ie.NewFTEID(0x01, 0x11111111, net.ParseIP("127.0.0.1"), nil, 0),
-					ie.NewNetworkInstance([]byte("some.instance.example")),
+					ie.NewNetworkInstance("some.instance.example"),
 				),
 				ie.NewUEIPAddress(0x02, "127.0.0.1", "", 0, 0),
 				ie.NewTrafficEndpointID(0x01),
 				ie.NewSDFFilter("aaaaaaaa", []byte("bb"), []byte("cccc"), []byte{0x04, 0x64, 0x64}, 0xffffffff),
-				ie.NewApplicationID([]byte("https://example.com/apps/go-pfcp/")),
+				ie.NewApplicationID("https://example.com/apps/go-pfcp/"),
 				ie.NewEthernetPDUSessionInformation(0x01),
 				ie.NewEthernetPacketFilter(
 					ie.NewEthernetFilterID(0xffffffff),
@@ -468,8 +468,8 @@ func TestUint32IEs(t *testing.T) {
 		}, {
 			description: "SNSSAI/UEIPAddressPoolInformation/SD",
 			structured: ie.NewUEIPAddressPoolInformation(
-				ie.NewUEIPAddressPoolIdentity([]byte("go-pfcp")),
-				ie.NewNetworkInstance([]byte("some.instance.example")),
+				ie.NewUEIPAddressPoolIdentity("go-pfcp"),
+				ie.NewNetworkInstance("some.instance.example"),
 				ie.NewSNSSAI(0x11, 0x223344),
 				ie.NewIPVersion(true, false),
 			),

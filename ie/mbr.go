@@ -46,7 +46,7 @@ func (i *IE) MBRUL() (uint64, error) {
 	if err != nil {
 		return 0, err
 	}
-	return utils.Uint40To64(v[0:5]), nil
+	return utils.Uint40To64(v[0:5])
 }
 
 // MBRDL returns MBRDL in uint64 if the type of IE matches.
@@ -59,5 +59,5 @@ func (i *IE) MBRDL() (uint64, error) {
 	if err != nil {
 		return 0, err
 	}
-	return utils.Uint40To64(v[5:10]), nil
+	return utils.Uint40To64(v[5:10])
 }

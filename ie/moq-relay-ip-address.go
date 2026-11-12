@@ -50,6 +50,7 @@ func NewMoQRelayIPAddressFields(flags uint8, ipv4Address netip.Addr, ipv6Address
 }
 
 // ParseMoQRelayIPAddressFields decodes fields, ignoring spare bits and trailing extension octets.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseMoQRelayIPAddressFields(b []byte) (*MoQRelayIPAddressFields, error) {
 	f := &MoQRelayIPAddressFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -127,6 +128,7 @@ func (f *MoQRelayIPAddressFields) MarshalTo(b []byte) error {
 }
 
 // UnmarshalBinary replaces the receiver with the decoded known fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *MoQRelayIPAddressFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

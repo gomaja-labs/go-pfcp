@@ -79,7 +79,7 @@ func TestMessagesCatalogue(t *testing.T) {
 					marker := byte(i*3 + n + 1)
 					var v *ie.IE
 					if kinds[e.r.IEType] == "grouped" {
-						v = ie.NewGroupedIE(ie.IEType(e.r.IEType), ie.NewApplicationID([]byte(string([]byte{'x', marker}))))
+						v = ie.NewGroupedIE(ie.IEType(e.r.IEType), ie.NewApplicationID(string([]byte{'x', marker})))
 					} else {
 						v = ie.New(ie.IEType(e.r.IEType), []byte{marker})
 					}

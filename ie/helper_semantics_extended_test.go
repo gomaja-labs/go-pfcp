@@ -59,7 +59,7 @@ func helperExtendedSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.61.
 		{name: "FlowInformation", input: ie.NewFlowInformation(2, "abc"), want: []byte{2, 0, 3, 'a', 'b', 'c'}, minimum: 6},
 		// TS 29.244 V20.1.0 clause 8.2.23.
-		{name: "ForwardingPolicy", input: ie.NewForwardingPolicy([]byte("abc")), want: []byte{3, 'a', 'b', 'c'}, minimum: 4},
+		{name: "ForwardingPolicy", input: ie.NewForwardingPolicy("abc"), want: []byte{3, 'a', 'b', 'c'}, minimum: 4},
 		// TS 29.244 V20.1.0 clause 8.2.110.
 		{name: "FramedRouting", input: ie.NewFramedRouting(3), want: 3, minimum: 4},
 		// TS 29.244 V20.1.0 clause 8.2.9.
@@ -136,7 +136,7 @@ func helperExtendedSemanticValues() []helperSemanticCase {
 		{name: "QueryURRReference", input: ie.NewQueryURRReference(0x12345678), want: 0x12345678, minimum: 4},
 		{name: "RedirectInformation", input: ie.NewRedirectInformation(0, "192.0.2.1"), want: &ie.RedirectInformationFields{RedirectAddressType: 0, ServerAddrLength: 9, RedirectServerAddress: "192.0.2.1"}, minimum: 12},
 		// TS 29.244 V20.1.0 clause 8.2.70.
-		{name: "RemoteGTPUPeer", input: ie.NewRemoteGTPUPeer(2, "192.0.2.1", "", 0, []byte(""), time.Time{}), want: &ie.RemoteGTPUPeerFields{Flags: 2, IPv4Address: v4}, minimum: 5},
+		{name: "RemoteGTPUPeer", input: ie.NewRemoteGTPUPeer(2, "192.0.2.1", "", 0, "", time.Time{}), want: &ie.RemoteGTPUPeerFields{Flags: 2, IPv4Address: v4}, minimum: 5},
 		// TS 29.244 V20.1.0 clause 8.2.19.
 		{name: "ReportingTriggers", input: ie.NewReportingTriggers(1, 2), want: []byte{1, 2}, minimum: 2},
 		// TS 29.244 V20.1.0 clause 8.2.5.
@@ -164,7 +164,7 @@ func helperExtendedSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.62.
 		{name: "UEIPAddress", input: ie.NewUEIPAddress(1, "", "2001:db8::1", 0, 0), want: &ie.UEIPAddressFields{Flags: 1, IPv6Address: v6}, minimum: 17},
 		// TS 29.244 V20.1.0 clause 8.2.128.
-		{name: "UEIPAddressPoolIdentity", input: ie.NewUEIPAddressPoolIdentity([]byte("abc")), want: []byte{0, 3, 'a', 'b', 'c'}, minimum: 5},
+		{name: "UEIPAddressPoolIdentity", input: ie.NewUEIPAddressPoolIdentity("abc"), want: "abc", minimum: 5},
 		// TS 29.244 V20.1.0 clause 8.2.25.
 		{name: "UPFunctionFeatures", input: ie.NewUPFunctionFeatures(1, 2), want: []byte{1, 2}, minimum: 2},
 		// TS 29.244 V20.1.0 clause 8.2.54.

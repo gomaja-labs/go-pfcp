@@ -66,6 +66,7 @@ func NewUELevelMeasurementsConfigurationFields(jobType uint8, measurementTypes [
 }
 
 // ParseUELevelMeasurementsConfigurationFields parses the known fields and ignores trailing extension octets.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseUELevelMeasurementsConfigurationFields(b []byte) (*UELevelMeasurementsConfigurationFields, error) {
 	f := &UELevelMeasurementsConfigurationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -124,6 +125,7 @@ func (f *UELevelMeasurementsConfigurationFields) MarshalTo(b []byte) error {
 }
 
 // UnmarshalBinary replaces the receiver with the decoded fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *UELevelMeasurementsConfigurationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

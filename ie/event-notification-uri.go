@@ -1,7 +1,6 @@
 package ie
 
 import (
-	"bytes"
 	"net/netip"
 	"strings"
 )
@@ -9,24 +8,24 @@ import (
 // NewEventNotificationURI creates an Event Notification URI IE from the exact
 // ASCII URI octets, or a null IE for an empty value.
 // TS 29.244 V20.1.0 clause 8.2.202; RFC 3986 sections 2, 3 and Appendix A.
-func NewEventNotificationURI(value []byte) *IE {
-	if len(value) > 65535 || (len(value) > 0 && !addedURIValid(value)) {
+func NewEventNotificationURI(value string) *IE {
+	if len(value) > 65535 || (len(value) > 0 && !addedURIValid([]byte(value))) {
 		return newInvalidIE(EventNotificationURI, ErrInvalidValue)
 	}
-	return New(EventNotificationURI, bytes.Clone(value))
+	return New(EventNotificationURI, []byte(value))
 }
 
 // EventNotificationURI returns the URI octets without normalizing their spelling.
 // TS 29.244 V20.1.0 clause 8.2.202; RFC 3986 Appendix A.
-func (i *IE) EventNotificationURI() ([]byte, error) {
+func (i *IE) EventNotificationURI() (string, error) {
 	b, err := addedValuePayload(i, EventNotificationURI, 1, false)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	if !addedURIValid(b) {
-		return nil, &DecodeError{Type: EventNotificationURI, Err: ErrInvalidValue}
+		return "", &DecodeError{Type: EventNotificationURI, Err: ErrInvalidValue}
 	}
-	return bytes.Clone(b), nil
+	return string(b), nil
 }
 
 func addedURIAlpha(c byte) bool { return c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z' }

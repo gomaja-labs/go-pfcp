@@ -69,6 +69,7 @@ func (i *IE) L2TPUserAuthentication() (*L2TPUserAuthenticationFields, error) {
 }
 
 // ParseL2TPUserAuthenticationFields decodes fields according to clause 8.2.187.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseL2TPUserAuthenticationFields(b []byte) (*L2TPUserAuthenticationFields, error) {
 	f := &L2TPUserAuthenticationFields{}
 	if e := f.UnmarshalBinary(b); e != nil {
@@ -78,6 +79,7 @@ func ParseL2TPUserAuthenticationFields(b []byte) (*L2TPUserAuthenticationFields,
 }
 
 // UnmarshalBinary resets the value and decodes the known fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *L2TPUserAuthenticationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

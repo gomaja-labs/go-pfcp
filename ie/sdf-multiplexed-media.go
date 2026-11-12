@@ -122,6 +122,7 @@ func (f *SDFMultiplexedMedia) MarshalTo(b []byte) error {
 }
 
 // UnmarshalBinary parses one media identification instance and ignores extensions.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *SDFMultiplexedMedia) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

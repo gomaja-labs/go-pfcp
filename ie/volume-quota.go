@@ -127,6 +127,7 @@ func (f *VolumeQuotaFields) SetTOVOLFlag() {
 }
 
 // ParseVolumeQuotaFields parses b into VolumeQuotaFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseVolumeQuotaFields(b []byte) (*VolumeQuotaFields, error) {
 	f := &VolumeQuotaFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -136,6 +137,7 @@ func ParseVolumeQuotaFields(b []byte) (*VolumeQuotaFields, error) {
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *VolumeQuotaFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

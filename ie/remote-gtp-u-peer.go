@@ -5,7 +5,6 @@
 package ie
 
 import (
-	"bytes"
 	"encoding/binary"
 	"io"
 	"net"
@@ -13,7 +12,7 @@ import (
 )
 
 // NewRemoteGTPUPeer creates a new RemoteGTPUPeer IE.
-func NewRemoteGTPUPeer(flags uint8, v4, v6 string, di uint8, ni []byte, recoveryTimestamp time.Time) *IE {
+func NewRemoteGTPUPeer(flags uint8, v4, v6 string, di uint8, ni string, recoveryTimestamp time.Time) *IE {
 	fields := NewRemoteGTPUPeerFields(flags, v4, v6, di, ni, recoveryTimestamp)
 	b, err := fields.Marshal()
 	if err != nil {
@@ -88,15 +87,16 @@ type RemoteGTPUPeerFields struct {
 	DestinationInterface uint8
 	// NILength is the encoded network instance length in octets.
 	NILength uint16
-	// NetworkInstance is the encoded Network Instance value (clause 8.2.4).
-	NetworkInstance []byte
+	// NetworkInstance is the unchanged octet string (TS 29.244 V20.1.0 clauses
+	// 8.2.70 and 8.2.4); no character set is imposed or checked.
+	NetworkInstance string
 	// RecoveryTimestamp is the recovery timestamp of the peer GTP-U entity.
 	RecoveryTimestamp time.Time
 	invalidArgument   bool
 }
 
 // NewRemoteGTPUPeerFields creates a new RemoteGTPUPeerFields.
-func NewRemoteGTPUPeerFields(flags uint8, v4, v6 string, di uint8, ni []byte, recoveryTimestamp time.Time) *RemoteGTPUPeerFields {
+func NewRemoteGTPUPeerFields(flags uint8, v4, v6 string, di uint8, ni string, recoveryTimestamp time.Time) *RemoteGTPUPeerFields {
 	f := &RemoteGTPUPeerFields{Flags: flags, RecoveryTimestamp: recoveryTimestamp}
 
 	f.IPv4Address = net.ParseIP(v4).To4()
@@ -114,6 +114,7 @@ func NewRemoteGTPUPeerFields(flags uint8, v4, v6 string, di uint8, ni []byte, re
 }
 
 // ParseRemoteGTPUPeerFields parses b into RemoteGTPUPeerFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseRemoteGTPUPeerFields(b []byte) (*RemoteGTPUPeerFields, error) {
 	f := &RemoteGTPUPeerFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -123,6 +124,7 @@ func ParseRemoteGTPUPeerFields(b []byte) (*RemoteGTPUPeerFields, error) {
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *RemoteGTPUPeerFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
@@ -182,7 +184,7 @@ func (f *RemoteGTPUPeerFields) UnmarshalBinary(b []byte) error {
 		if l < offset+int(f.NILength) {
 			return io.ErrUnexpectedEOF
 		}
-		f.NetworkInstance = b[offset : offset+int(f.NILength)]
+		f.NetworkInstance = string(b[offset : offset+int(f.NILength)])
 		offset += int(f.NILength)
 	}
 
@@ -325,5 +327,5 @@ func (f *RemoteGTPUPeerFields) Equal(other *RemoteGTPUPeerFields) bool {
 	if f == nil || other == nil {
 		return f == other
 	}
-	return f.Flags == other.Flags && f.IPv4Address.Equal(other.IPv4Address) && f.IPv6Address.Equal(other.IPv6Address) && f.DILength == other.DILength && f.DestinationInterface == other.DestinationInterface && f.NILength == other.NILength && bytes.Equal(f.NetworkInstance, other.NetworkInstance) && f.RecoveryTimestamp.Equal(other.RecoveryTimestamp) && f.invalidArgument == other.invalidArgument
+	return f.Flags == other.Flags && f.IPv4Address.Equal(other.IPv4Address) && f.IPv6Address.Equal(other.IPv6Address) && f.DILength == other.DILength && f.DestinationInterface == other.DestinationInterface && f.NILength == other.NILength && f.NetworkInstance == other.NetworkInstance && f.RecoveryTimestamp.Equal(other.RecoveryTimestamp) && f.invalidArgument == other.invalidArgument
 }

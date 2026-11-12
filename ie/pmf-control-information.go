@@ -39,6 +39,7 @@ func (i *IE) PMFControlInformation() (*PMFControlInformationFields, error) {
 }
 
 // ParsePMFControlInformationFields decodes PMF control information.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParsePMFControlInformationFields(b []byte) (*PMFControlInformationFields, error) {
 	f := &PMFControlInformationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -48,6 +49,7 @@ func ParsePMFControlInformationFields(b []byte) (*PMFControlInformationFields, e
 }
 
 // UnmarshalBinary decodes the count-delimited QFI list and ignores extension octets.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *PMFControlInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

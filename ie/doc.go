@@ -18,7 +18,16 @@
 // at least MarshalLen bytes. Lengths are calculated, not stored. Parse and
 // UnmarshalBinary require exactly one IE; ParseMultiIEs reads an entire
 // sequence. Parsed leaf values borrow the input, which must remain unchanged.
-// New also retains the supplied value slice without copying it.
+// New also retains the supplied value slice without copying it. Identifier and
+// text APIs use string, which preserves arbitrary octets unchanged without
+// requiring UTF-8. Only fields with an explicit grammar (such as URI, JSON or
+// base64) validate that grammar. Structured binary containers, keys and marking
+// octets use []byte. NetworkInstanceFQDN provides an explicit domain-name view.
+// UEIPAddressPoolIdentity and its explicit String view return only the
+// identifier string, excluding the two-octet length. ForwardingPolicyIdentifier
+// excludes its one-octet length.
+// MarshalTo may partially write before a nested encoding error; discard output
+// after any error.
 //
 // # Grouped IEs
 //
@@ -48,7 +57,9 @@
 //
 // NewVendorSpecificIE accepts a type with the high bit set, an Enterprise ID
 // and raw value octets. The Enterprise ID occupies two octets of its length
-// (clause 8.1.1), so an empty vendor value is not a zero wire length.
+// (clause 8.1.1), so an empty vendor value is not a zero wire length. A type
+// without the high bit or Enterprise ID 10415 creates an unencodable IE.
+// New with a vendor type encodes the struct's EnterpriseID (initially zero).
 // NewVendorSpecificGroupedIE builds vendor children explicitly. Vendor types
 // are not in the static grouped catalogue: ValueAsGrouped can interpret any
 // IE's value as concatenated children without registering its type globally.
@@ -58,15 +69,19 @@
 // DecodeError identifies the offending Type, enclosing Path and underlying
 // error. Use errors.As to obtain it and errors.Is to inspect its cause, such
 // as io.ErrUnexpectedEOF, ErrInvalidLength or ErrNestingTooDeep. A header
-// shorter than four octets returns io.ErrUnexpectedEOF without an offending
-// type. Message decoding uses ParseMessageIEs to retain malformed grouped
+// shorter than four octets or a declared value longer than the available
+// octets wraps both ErrInvalidLength and io.ErrUnexpectedEOF (clause 7.6.7).
+// The type is available after two header octets; otherwise it is zero. A short
+// value reported by a helper keeps io.ErrUnexpectedEOF (clause 7.6.8). Message
+// decoding uses ParseMessageIEs to retain malformed grouped
 // values as raw Payload; their typed helpers report errors on access.
 //
 // Constructors can retain an unencodable argument in an IE. Encoding it, or a
 // group or message containing it, returns EncodeError wrapping ErrInvalidValue.
 // InvalidTypeError means a helper received an inappropriate type. ErrIENotFound
 // reports a nil IE receiver or an absent requested child. Equal compares
-// encoded octets; it also recognizes matching retained constructor errors.
+// encoded octets; identical pointers are equal. Unencodable IEs compare their
+// type, Enterprise ID, error text, raw payload and children structurally.
 //
 // # Timestamps and forward compatibility
 //
@@ -78,12 +93,21 @@
 //
 // Clause 8.1.2 requires receivers to ignore unknown trailing octets of
 // extendable IEs and to ignore spare bits. Value helpers read known fields;
-// raw Payload retains received octets. Callers supplying raw octets or flag
+// raw Payload retains received octets. ChildIEs, when non-nil, takes precedence
+// over Payload when encoding, even for an empty group or a non-grouped type.
+// Callers supplying raw octets or flag
 // masks must send spare bits as zero.
 // Fixed-length helpers reject excess value octets; variable-length helpers
 // follow their IE's length-delimited format. Rebuilding from interpreted values
 // need not preserve unknown extensions or received spare bits.
 //
+// Dotted FQDN views cannot distinguish a dot inside a DNS label from a label
+// separator (RFC 1035 section 3.1; RFC 2181 section 11). Keep the raw IE for a
+// byte-exact round trip of such a name.
+//
+// Decoding allocates linearly in the number of IEs. A four-octet null IE still
+// allocates an IE structure and a list slot, so memory can exceed input size
+// many times. Limit datagram sizes and receive rates at the application layer.
 // IEs and their backing slices are mutable. Concurrent readers and encoders
 // require an unchanged object graph and input; MarshalTo calls need separate
 // output buffers. The package does not log or manage transport state.

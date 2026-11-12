@@ -31,7 +31,9 @@ var (
 // Not Supported Response. No version-specific IEs have been decoded.
 // TS 29.244 V20.1.0 clause 7.6.2.
 type UnsupportedVersionError struct {
-	// Header exposes the common header of the unsupported-version frame.
+	// Header always exposes the version from octet 1. Type is available after
+	// octet 2; SEID and sequence are best-effort values at version-1 offsets
+	// when enough octets exist, without validating length or future layouts.
 	Header *Header
 }
 
@@ -47,17 +49,25 @@ func (e *UnsupportedVersionError) Error() string {
 // encoded content. MessagePriority is a value from 0 to 15,
 // meaningful only when S and MP are set. Payload is the framed message body.
 type Header struct {
-	// Flags contains Version, FO, MP and S; spare bits are ignored on receive.
+	// Flags contains Version, FO, MP and S wire bits; spare bits are ignored
+	// on receive. Encoding clears FO and spare bits. Only MarshalDatagram
+	// writes FO in bundled output. Direct field assignment does not update flags.
 	Flags uint8
-	// Type is the PFCP message type.
+	// Type is the wire message type. Changing it does not change the concrete
+	// Go message schema or its MessageTypeName method.
 	Type uint8
-	// SEID is the session endpoint identifier.
+	// SEID is the wire session endpoint identifier when S is set; otherwise
+	// encoding ignores it and the message's SEID() returns zero. SetSEID sets S.
 	SEID uint64
 	// SequenceNumber is the 24-bit transaction sequence; encoding rejects values above 0xffffff.
 	SequenceNumber uint32
-	// MessagePriority is the unshifted priority value from 0 to 15.
+	// MessagePriority is the unshifted wire priority, 0..15, when S and MP
+	// are set; otherwise encoding ignores it and MP() returns zero. SetMP
+	// enables MP for a session header; ClearMP clears the flag and value.
 	MessagePriority uint8
-	// Payload is the framed body and received IE ordering template.
+	// Payload is the framed body for Header encoding. In concrete messages
+	// it supplies only the received IE ordering template; current IE fields
+	// supply the encoded values.
 	Payload []byte
 }
 
@@ -86,18 +96,6 @@ func (h *Header) HasMP() bool { return h != nil && h.Flags&2 != 0 }
 // HasSEID reports whether the SEID field is present.
 func (h *Header) HasSEID() bool { return h != nil && h.Flags&1 != 0 }
 
-// SetFO changes only the follow-on bit. Prefer MarshalDatagram when bundling.
-func (h *Header) SetFO(on bool) {
-	if h == nil {
-		return
-	}
-	if on {
-		h.Flags |= 4
-	} else {
-		h.Flags &^= 4
-	}
-}
-
 func (h *Header) validate() error {
 	if h == nil {
 		return ErrNilMessage
@@ -123,9 +121,19 @@ func (h *Header) validate() error {
 	return nil
 }
 
-// Marshal returns the complete header and payload encoding.
+// encodingHeader clears the datagram framing bit without changing the receiver.
+func (h *Header) encodingHeader() *Header {
+	if h == nil {
+		return nil
+	}
+	v := *h
+	v.Flags &^= 4
+	return &v
+}
+
+// Marshal returns the complete header and payload encoding with FO cleared.
 func (h *Header) Marshal() ([]byte, error) {
-	if err := h.validate(); err != nil {
+	if err := h.encodingHeader().validate(); err != nil {
 		return nil, err
 	}
 	b := make([]byte, h.MarshalLen())
@@ -139,14 +147,14 @@ func (h *Header) Marshal() ([]byte, error) {
 // spare bits. It returns io.ErrShortBuffer without writing if b is too short.
 // TS 29.244 V20.1.0 clauses 7.2.2.1 through 7.2.2.4.1.
 func (h *Header) MarshalTo(b []byte) error {
-	if err := h.validate(); err != nil {
+	if err := h.encodingHeader().validate(); err != nil {
 		return err
 	}
 	n := h.MarshalLen()
 	if len(b) < n {
 		return io.ErrShortBuffer
 	}
-	b[0], b[1] = h.Flags&^0x18, h.Type
+	b[0], b[1] = h.Flags&^0x1c, h.Type
 	binary.BigEndian.PutUint16(b[2:4], uint16(n-4))
 	offset := 4
 	if h.HasSEID() {
@@ -163,8 +171,9 @@ func (h *Header) MarshalTo(b []byte) error {
 }
 
 // ParseHeader decodes exactly one framed message, including its payload. FO may
-// be set; this low-level API does not validate the surrounding datagram or version.
-// Use Parse or ParseDatagram for version-aware message decoding.
+// be set; this low-level API does not validate the surrounding datagram.
+// Unsupported versions return UnsupportedVersionError as soon as octet 1 exists.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseHeader(b []byte) (*Header, error) {
 	h := &Header{}
 	if err := h.UnmarshalBinary(b); err != nil {
@@ -176,6 +185,25 @@ func ParseHeader(b []byte) (*Header, error) {
 // frameSize validates the advertised extent without reading beyond it.
 // TS 29.244 V20.1.0 clause 7.2.2.4.1: Length excludes the first four octets.
 func frameSize(b []byte) (int, error) {
+	// TS 29.244 V20.1.0 clause 7.6.2: version takes precedence over framing.
+	if len(b) > 0 && b[0]>>5 != 1 {
+		h := &Header{Flags: b[0] &^ 0x18}
+		if len(b) > 1 {
+			h.Type = b[1]
+		}
+		offset := 4
+		if h.HasSEID() {
+			if len(b) >= 12 {
+				h.SEID = binary.BigEndian.Uint64(b[4:12])
+			}
+			offset = 12
+		}
+		if len(b) >= offset+3 {
+			h.SequenceNumber = uint24To32(b[offset : offset+3])
+		}
+		return 0, &UnsupportedVersionError{Header: h}
+	}
+
 	if len(b) < 4 {
 		return 0, io.ErrUnexpectedEOF
 	}
@@ -199,8 +227,8 @@ func frameSize(b []byte) (int, error) {
 	return n, nil
 }
 
-// UnmarshalBinary decodes exactly one frame. Unsupported versions remain
-// readable here so an application can inspect their common header. Payload
+// UnmarshalBinary decodes exactly one frame. Unsupported versions return
+// UnsupportedVersionError before any framing check. Payload
 // borrows b; keep b unchanged while using decoded data. Spare bits
 // are ignored. A failed decode leaves the receiver unchanged.
 func (h *Header) UnmarshalBinary(b []byte) error {

@@ -48,6 +48,7 @@ func (i *IE) CPIPAddress() (*CPIPAddressFields, error) {
 
 // ParseCPIPAddressFields decodes the fields and rejects trailing octets.
 // TS 29.244 V20.1.0 clauses 8.2.199 and 8.1.2.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseCPIPAddressFields(b []byte) (*CPIPAddressFields, error) {
 	f := &CPIPAddressFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -57,6 +58,7 @@ func ParseCPIPAddressFields(b []byte) (*CPIPAddressFields, error) {
 }
 
 // UnmarshalBinary decodes CP IP Address and resets previously decoded fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *CPIPAddressFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

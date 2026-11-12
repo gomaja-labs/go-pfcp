@@ -103,6 +103,7 @@ func (f *AlternativeSMFIPAddressFields) SetIPv6Flag() {
 }
 
 // ParseAlternativeSMFIPAddressFields parses b into AlternativeSMFIPAddressFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseAlternativeSMFIPAddressFields(b []byte) (*AlternativeSMFIPAddressFields, error) {
 	f := &AlternativeSMFIPAddressFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -112,6 +113,7 @@ func ParseAlternativeSMFIPAddressFields(b []byte) (*AlternativeSMFIPAddressField
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *AlternativeSMFIPAddressFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

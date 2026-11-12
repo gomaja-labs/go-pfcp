@@ -8,8 +8,9 @@ import (
 // DNSQueryResponseFilterFields is the structured value of DNS Query/Response Filter.
 // TS 29.244 V20.1.0 clause 8.2.201.
 type DNSQueryResponseFilterFields struct {
-	// DomainNamePattern contains the domain name pattern octets.
-	DomainNamePattern []byte
+	// DomainNamePattern contains the exact JSON octet string defined in
+	// TS 29.244 V20.1.0 clause 8.2.201. Validation preserves its spelling.
+	DomainNamePattern string
 }
 
 // NewDNSQueryResponseFilter creates a DNS Query/Response Filter IE from its fields.
@@ -35,6 +36,7 @@ func (i *IE) DNSQueryResponseFilter() (*DNSQueryResponseFilterFields, error) {
 
 // ParseDNSQueryResponseFilterFields decodes the known fields; unknown extension octets are ignored.
 // TS 29.244 V20.1.0 clauses 8.2.201 and 8.1.2.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseDNSQueryResponseFilterFields(b []byte) (*DNSQueryResponseFilterFields, error) {
 	f := &DNSQueryResponseFilterFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -44,6 +46,7 @@ func ParseDNSQueryResponseFilterFields(b []byte) (*DNSQueryResponseFilterFields,
 }
 
 // UnmarshalBinary decodes DNS Query/Response Filter and resets previously decoded fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *DNSQueryResponseFilterFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
@@ -53,7 +56,7 @@ func (f *DNSQueryResponseFilterFields) UnmarshalBinary(b []byte) error {
 	n := int(r.u16())
 	v := r.take(n)
 	if r.err == nil {
-		f.DomainNamePattern = append([]byte(nil), v...)
+		f.DomainNamePattern = string(v)
 	}
 	if r.err != nil {
 		return r.err
@@ -65,7 +68,7 @@ func (f *DNSQueryResponseFilterFields) UnmarshalBinary(b []byte) error {
 	return nil
 }
 func (f *DNSQueryResponseFilterFields) valid() bool {
-	return len(f.DomainNamePattern) <= 65533 && addedDNSPatternValid(f.DomainNamePattern)
+	return len(f.DomainNamePattern) <= 65533 && addedDNSPatternValid([]byte(f.DomainNamePattern))
 }
 
 // Marshal encodes the known fields with spare bits set to zero.

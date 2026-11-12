@@ -45,6 +45,7 @@ func (f *ATSSSLLParametersFields) IE() *IE {
 }
 
 // ParseATSSSLLParametersFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseATSSSLLParametersFields(b []byte) (*ATSSSLLParametersFields, error) {
 	f := &ATSSSLLParametersFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -55,6 +56,7 @@ func ParseATSSSLLParametersFields(b []byte) (*ATSSSLLParametersFields, error) {
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *ATSSSLLParametersFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

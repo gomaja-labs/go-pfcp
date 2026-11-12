@@ -57,6 +57,7 @@ func (f *NodeLevelMitigationActionsRulesFields) IE() *IE {
 }
 
 // ParseNodeLevelMitigationActionsRulesFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseNodeLevelMitigationActionsRulesFields(b []byte) (*NodeLevelMitigationActionsRulesFields, error) {
 	f := &NodeLevelMitigationActionsRulesFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -67,6 +68,7 @@ func ParseNodeLevelMitigationActionsRulesFields(b []byte) (*NodeLevelMitigationA
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *NodeLevelMitigationActionsRulesFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

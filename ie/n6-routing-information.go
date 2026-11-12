@@ -66,6 +66,7 @@ func NewN6RoutingInformationFields(flags uint8, sourceIPv4Address netip.Addr, so
 }
 
 // ParseN6RoutingInformationFields decodes fields, ignoring spare bits and trailing extension octets.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseN6RoutingInformationFields(b []byte) (*N6RoutingInformationFields, error) {
 	f := &N6RoutingInformationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -189,6 +190,7 @@ func (f *N6RoutingInformationFields) MarshalTo(b []byte) error {
 }
 
 // UnmarshalBinary replaces the receiver with the decoded known fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *N6RoutingInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

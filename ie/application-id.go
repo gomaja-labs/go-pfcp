@@ -5,21 +5,20 @@
 package ie
 
 // NewApplicationID creates a new ApplicationID IE.
+// The value is an octet string carried unchanged; no character set is imposed or checked.
 // TS 29.244 V20.1.0 clause 8.2.6: no text repertoire is specified for this identifier.
-func NewApplicationID(instance []byte) *IE {
-	return New(ApplicationID, instance)
+func NewApplicationID(instance string) *IE {
+	return newStringIE(ApplicationID, instance)
 }
 
-// ApplicationID returns ApplicationID as opaque octets if the type of IE matches.
-func (i *IE) ApplicationID() ([]byte, error) {
+// ApplicationID returns the unchanged octet string.
+func (i *IE) ApplicationID() (string, error) {
 	if i == nil {
-		return nil, ErrIENotFound
+		return "", ErrIENotFound
 	}
-
-	switch i.Type {
-	case ApplicationID:
-		return i.payloadAtLeast(1)
-	default:
-		return nil, &InvalidTypeError{Type: i.Type}
+	if i.Type != ApplicationID {
+		return "", &InvalidTypeError{Type: i.Type}
 	}
+	b, err := i.payloadAtLeast(1)
+	return string(b), err
 }

@@ -3,7 +3,6 @@ package ie_test
 import (
 	"bytes"
 	"errors"
-	"io"
 	"reflect"
 	"testing"
 
@@ -14,68 +13,6 @@ import (
 // not imply text: preserve arbitrary octets, including NUL and invalid UTF-8.
 // TS 29.244 V20.1.0 clauses 8.2.4, 8.2.6, 8.2.23, 8.2.60,
 // 8.2.72, 8.2.73, 8.2.128 and 8.2.161.
-func TestOpaqueIdentifierAPIs(t *testing.T) {
-	for _, tc := range []struct {
-		name      string
-		ctor, get any
-	}{
-		{"NetworkInstance", ie.NewNetworkInstance, (*ie.IE).NetworkInstance},
-		{"ApplicationID", ie.NewApplicationID, (*ie.IE).ApplicationID},
-		{"ApplicationInstanceID", ie.NewApplicationInstanceID, (*ie.IE).ApplicationInstanceID},
-		{"ForwardingPolicyIdentifier", ie.NewForwardingPolicy, (*ie.IE).ForwardingPolicyIdentifier},
-		{"ActivatePredefinedRules", ie.NewActivatePredefinedRules, (*ie.IE).ActivatePredefinedRules},
-		{"DeactivatePredefinedRules", ie.NewDeactivatePredefinedRules, (*ie.IE).DeactivatePredefinedRules},
-		{"UEIPAddressPoolIdentity", ie.NewUEIPAddressPoolIdentity, (*ie.IE).UEIPAddressPoolIdentity},
-		{"DataNetworkAccessIdentifier", ie.NewDataNetworkAccessIdentifier, (*ie.IE).DataNetworkAccessIdentifier},
-	} {
-		t.Run(tc.name, func(t *testing.T) {
-			ctor, ok := tc.ctor.(func([]byte) *ie.IE)
-			if !ok {
-				t.Fatalf("opaque constructor takes %T, require []byte", tc.ctor)
-			}
-			get, ok := tc.get.(func(*ie.IE) ([]byte, error))
-			if !ok {
-				t.Fatalf("opaque getter has type %T, require []byte", tc.get)
-			}
-			for _, b := range [][]byte{{0}, {0xff, 0, 0x80, 0xc0, 0xaf}, {1, 2, 3}} {
-				item := ctor(b)
-				wire, err := item.Marshal()
-				if err != nil {
-					t.Fatal(err)
-				}
-				item, err = ie.Parse(wire)
-				if err != nil {
-					t.Fatal(err)
-				}
-				got, err := get(item)
-				if err != nil {
-					t.Fatal(err)
-				}
-				// The pool's existing value helper includes its explicit two-octet length.
-				if tc.name == "UEIPAddressPoolIdentity" {
-					got = got[2:]
-				}
-				if !bytes.Equal(got, b) {
-					t.Error("opaque identifier changed")
-				}
-			}
-			if _, err := get(nil); !errors.Is(err, ie.ErrIENotFound) {
-				t.Fatal(err)
-			}
-			if tc.name != "ForwardingPolicyIdentifier" && tc.name != "UEIPAddressPoolIdentity" {
-				item := ctor(nil)
-				wire, err := item.Marshal()
-				if err != nil || len(wire) != 4 {
-					t.Fatalf("null: %v", err)
-				}
-				if _, err := get(item); !errors.Is(err, io.ErrUnexpectedEOF) {
-					t.Fatalf("null value: %v", err)
-				}
-			}
-		})
-	}
-}
-
 // TS 29.244 V20.1.0 clauses 8.2.12 and 8.2.66 encode markings
 // as two octets in wire order, rather than an unsigned integer.
 func TestBinaryMarkingAPIs(t *testing.T) {

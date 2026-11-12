@@ -97,6 +97,7 @@ func (f *NumberOfUEIPAddressesFields) SetIPv4Flag() {
 }
 
 // ParseNumberOfUEIPAddressesFields parses b into NumberOfUEIPAddressesFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseNumberOfUEIPAddressesFields(b []byte) (*NumberOfUEIPAddressesFields, error) {
 	f := &NumberOfUEIPAddressesFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -106,6 +107,7 @@ func ParseNumberOfUEIPAddressesFields(b []byte) (*NumberOfUEIPAddressesFields, e
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *NumberOfUEIPAddressesFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

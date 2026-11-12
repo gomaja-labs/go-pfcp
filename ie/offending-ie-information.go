@@ -39,6 +39,7 @@ func (i *IE) OffendingIEInformation() (*OffendingIEInformationFields, error) {
 
 // ParseOffendingIEInformationFields decodes the type and the remaining offending value.
 // TS 29.244 V20.1.0 clauses 8.2.185 and 8.1.2.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseOffendingIEInformationFields(b []byte) (*OffendingIEInformationFields, error) {
 	f := &OffendingIEInformationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -48,6 +49,7 @@ func ParseOffendingIEInformationFields(b []byte) (*OffendingIEInformationFields,
 }
 
 // UnmarshalBinary decodes Offending IE Information and resets previously decoded fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *OffendingIEInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

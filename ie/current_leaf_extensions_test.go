@@ -389,9 +389,9 @@ func TestCurrentLeafRejectsUnflaggedValues(t *testing.T) {
 		{"UserID", ie.NewUserID(0, "123", "", "", "")},
 		{"QoS", ie.NewQoSMonitoringMeasurementFromFields(&ie.QoSMonitoringMeasurementFields{Flags: 7, DownlinkCongestionInformation: 1})},
 		{"QoSDelay", ie.NewQoSMonitoringMeasurement(8, 1, 0, 0)},
-		{"RemoteAddress", ie.NewRemoteGTPUPeer(2, "192.0.2.1", "2001:db8::1", 0, []byte(""), time.Time{})},
-		{"RemoteInterface", ie.NewRemoteGTPUPeer(2, "192.0.2.1", "", 1, []byte(""), time.Time{})},
-		{"RemoteNetwork", ie.NewRemoteGTPUPeer(2, "192.0.2.1", "", 0, []byte("network"), time.Time{})},
+		{"RemoteAddress", ie.NewRemoteGTPUPeer(2, "192.0.2.1", "2001:db8::1", 0, "", time.Time{})},
+		{"RemoteInterface", ie.NewRemoteGTPUPeer(2, "192.0.2.1", "", 1, "", time.Time{})},
+		{"RemoteNetwork", ie.NewRemoteGTPUPeer(2, "192.0.2.1", "", 0, "network", time.Time{})},
 		{"RemoteTimestamp", ie.NewRemoteGTPUPeerFromFields(&ie.RemoteGTPUPeerFields{Flags: 2, IPv4Address: []byte{192, 0, 2, 1}, RecoveryTimestamp: time.Unix(1700000000, 0)})},
 		{"PacketRate", ie.NewPacketRate(1, 1, 1, 2, 2)},
 		{"PacketRateAdditional", ie.NewPacketRateFromFields(&ie.PacketRateFields{Flags: 1, UplinkPacketRate: 1, AdditionalUplinkPacketRate: 2})},
@@ -414,14 +414,14 @@ func TestCurrentLeafRejectsUnflaggedValues(t *testing.T) {
 
 func TestCurrentLeafReviewBoundaries(t *testing.T) {
 	t.Run("RemoteMalformed", func(t *testing.T) {
-		for _, i := range []*ie.IE{ie.NewRemoteGTPUPeer(2, "junk", "", 0, []byte(""), time.Time{}), ie.NewRemoteGTPUPeer(1, "", "abcdefghijklmnop", 0, []byte(""), time.Time{})} {
+		for _, i := range []*ie.IE{ie.NewRemoteGTPUPeer(2, "junk", "", 0, "", time.Time{}), ie.NewRemoteGTPUPeer(1, "", "abcdefghijklmnop", 0, "", time.Time{})} {
 			if _, e := i.Marshal(); !errors.Is(e, ie.ErrInvalidValue) {
 				t.Fatal("malformed address accepted", e)
 			}
 		}
 	})
 	t.Run("RemotePresence", func(t *testing.T) {
-		if _, e := ie.NewRemoteGTPUPeer(0, "", "", 0, []byte(""), time.Time{}).Marshal(); !errors.Is(e, ie.ErrInvalidValue) {
+		if _, e := ie.NewRemoteGTPUPeer(0, "", "", 0, "", time.Time{}).Marshal(); !errors.Is(e, ie.ErrInvalidValue) {
 			t.Fatal("missing peer address accepted", e)
 		}
 	})

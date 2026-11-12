@@ -93,6 +93,7 @@ func NewTraceInformationFields(mcc, mnc, id string, events []byte, depth uint8, 
 }
 
 // ParseTraceInformationFields parses b into TraceInformationFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseTraceInformationFields(b []byte) (*TraceInformationFields, error) {
 	f := &TraceInformationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -102,6 +103,7 @@ func ParseTraceInformationFields(b []byte) (*TraceInformationFields, error) {
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *TraceInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

@@ -110,6 +110,7 @@ func NewDownlinkDataServiceInformationFromFields(f *DownlinkDataServiceInformati
 }
 
 // ParseDownlinkDataServiceInformationFields decodes the service fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseDownlinkDataServiceInformationFields(b []byte) (*DownlinkDataServiceInformationFields, error) {
 	f := &DownlinkDataServiceInformationFields{}
 	if e := f.UnmarshalBinary(b); e != nil {
@@ -119,6 +120,7 @@ func ParseDownlinkDataServiceInformationFields(b []byte) (*DownlinkDataServiceIn
 }
 
 // UnmarshalBinary decodes values and ignores trailing extension octets.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *DownlinkDataServiceInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

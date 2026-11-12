@@ -42,6 +42,7 @@ func (i *IE) TrafficParameterThreshold() (*TrafficParameterThresholdFields, erro
 
 // ParseTrafficParameterThresholdFields decodes the known fields; unknown extension octets are ignored.
 // TS 29.244 V20.1.0 clauses 8.2.220 and 8.1.2.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseTrafficParameterThresholdFields(b []byte) (*TrafficParameterThresholdFields, error) {
 	f := &TrafficParameterThresholdFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -51,6 +52,7 @@ func ParseTrafficParameterThresholdFields(b []byte) (*TrafficParameterThresholdF
 }
 
 // UnmarshalBinary decodes Traffic Parameter Threshold and resets previously decoded fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *TrafficParameterThresholdFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

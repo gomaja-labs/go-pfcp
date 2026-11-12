@@ -27,6 +27,15 @@ func TestExportedDocumentation(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+			for _, decl := range file.Decls {
+				fn, ok := decl.(*ast.FuncDecl)
+				if !ok || (fn.Name.Name != "UnmarshalBinary" && !strings.HasPrefix(fn.Name.Name, "Parse")) {
+					continue
+				}
+				if !strings.Contains(fn.Doc.Text(), "borrow") {
+					t.Errorf("%s: %s must document borrowed-input ownership", fset.Position(fn.Pos()), fn.Name.Name)
+				}
+			}
 			for _, id := range undocumented(file) {
 				t.Errorf("%s: %s needs a doc comment starting with its name", fset.Position(id.Pos()), id.Name)
 			}

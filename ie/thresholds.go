@@ -48,6 +48,7 @@ func (i *IE) Thresholds() (*ThresholdsFields, error) {
 
 // ParseThresholdsFields decodes the known fields; unknown extension octets are ignored.
 // TS 29.244 V20.1.0 clauses 8.2.196 and 8.1.2.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseThresholdsFields(b []byte) (*ThresholdsFields, error) {
 	f := &ThresholdsFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -57,6 +58,7 @@ func ParseThresholdsFields(b []byte) (*ThresholdsFields, error) {
 }
 
 // UnmarshalBinary decodes Thresholds and resets previously decoded fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *ThresholdsFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

@@ -53,6 +53,7 @@ func (f *CreatedPDRFields) IE() *IE {
 }
 
 // ParseCreatedPDRFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseCreatedPDRFields(b []byte) (*CreatedPDRFields, error) {
 	f := &CreatedPDRFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -63,6 +64,7 @@ func ParseCreatedPDRFields(b []byte) (*CreatedPDRFields, error) {
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *CreatedPDRFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

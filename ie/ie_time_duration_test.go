@@ -27,7 +27,7 @@ func TestDurationIEs(t *testing.T) {
 		}, {
 			description: "AveragePacketDelay/GTPUPathQoSControlInformation",
 			structured: ie.NewGTPUPathQoSControlInformation(
-				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example", time.Time{}),
 				ie.NewAveragePacketDelay(10*time.Second),
 			),
 			decoded: 10 * time.Second,
@@ -41,7 +41,7 @@ func TestDurationIEs(t *testing.T) {
 		}, {
 			description: "AveragePacketDelay/GTPUPathQoSReport",
 			structured: ie.NewGTPUPathQoSReport(
-				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example", time.Time{}),
 				ie.NewAveragePacketDelay(10*time.Second),
 			),
 			decoded: 10 * time.Second,
@@ -245,7 +245,7 @@ func TestDurationIEs(t *testing.T) {
 		}, {
 			description: "MaximumPacketDelay/GTPUPathQoSControlInformation",
 			structured: ie.NewGTPUPathQoSControlInformation(
-				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example", time.Time{}),
 				ie.NewMaximumPacketDelay(10*time.Second),
 			),
 			decoded: 10 * time.Second,
@@ -259,7 +259,7 @@ func TestDurationIEs(t *testing.T) {
 		}, {
 			description: "MaximumPacketDelay/GTPUPathQoSReport",
 			structured: ie.NewGTPUPathQoSReport(
-				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example", time.Time{}),
 				ie.NewMaximumPacketDelay(10*time.Second),
 			),
 			decoded: 10 * time.Second,
@@ -339,7 +339,7 @@ func TestDurationIEs(t *testing.T) {
 		}, {
 			description: "MinimumPacketDelay/GTPUPathQoSControlInformation",
 			structured: ie.NewGTPUPathQoSControlInformation(
-				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example", time.Time{}),
 				ie.NewMinimumPacketDelay(10*time.Second),
 			),
 			decoded: 10 * time.Second,
@@ -353,7 +353,7 @@ func TestDurationIEs(t *testing.T) {
 		}, {
 			description: "MinimumPacketDelay/GTPUPathQoSReport",
 			structured: ie.NewGTPUPathQoSReport(
-				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example", time.Time{}),
 				ie.NewMinimumPacketDelay(10*time.Second),
 			),
 			decoded: 10 * time.Second,
@@ -693,7 +693,7 @@ func TestDurationIEs(t *testing.T) {
 		}, {
 			description: "Timer/GTPUPathQoSControlInformation",
 			structured: ie.NewGTPUPathQoSControlInformation(
-				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, []byte("some.instance.example"), time.Time{}),
+				ie.NewRemoteGTPUPeer(0x0e, "127.0.0.1", "", ie.DstInterfaceAccess, "some.instance.example", time.Time{}),
 				ie.NewTimer(30*time.Second),
 			),
 			decoded: 30 * time.Second,

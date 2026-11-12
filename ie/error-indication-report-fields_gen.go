@@ -45,6 +45,7 @@ func (f *ErrorIndicationReportFields) IE() *IE {
 }
 
 // ParseErrorIndicationReportFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseErrorIndicationReportFields(b []byte) (*ErrorIndicationReportFields, error) {
 	f := &ErrorIndicationReportFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -55,6 +56,7 @@ func ParseErrorIndicationReportFields(b []byte) (*ErrorIndicationReportFields, e
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *ErrorIndicationReportFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

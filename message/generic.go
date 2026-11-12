@@ -18,13 +18,13 @@ type Generic struct {
 	OtherIEs []*ie.IE
 }
 
-// NewGeneric creates a new Generic.
+// NewGeneric creates a Generic, copying the variadic slice and ignoring nil IEs.
 func NewGeneric(msgType uint8, seid uint64, seq uint32, ies ...*ie.IE) *Generic {
 	m := &Generic{
-		Header:   NewHeader(msgType, seid, seq, nil),
-		OtherIEs: ies,
+		Header: NewHeader(msgType, seid, seq, nil),
 	}
 
+	m.AddIE(ies...)
 	return m
 }
 
@@ -42,6 +42,7 @@ func (m *Generic) MarshalTo(b []byte) error {
 }
 
 // ParseGeneric decodes a given byte sequence as a Generic.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseGeneric(b []byte) (*Generic, error) {
 	m := &Generic{}
 	if err := m.UnmarshalBinary(b); err != nil {
@@ -51,6 +52,7 @@ func ParseGeneric(b []byte) (*Generic, error) {
 }
 
 // UnmarshalBinary decodes a given byte sequence as a Generic.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (m *Generic) UnmarshalBinary(b []byte) error {
 	if m == nil {
 		return ErrNilMessage
@@ -91,12 +93,18 @@ func (m *Generic) SEID() uint64 {
 	return m.Header.seid()
 }
 
-// AddIE appends IEs to the message.
+// AddIE appends non-nil IEs without writing into a slice shared with a copy.
 func (m *Generic) AddIE(ies ...*ie.IE) {
 	if m == nil {
 		return
 	}
-	m.OtherIEs = append(m.OtherIEs, ies...)
+	children := m.OtherIEs[:len(m.OtherIEs):len(m.OtherIEs)]
+	for _, i := range ies {
+		if i != nil {
+			children = append(children, i)
+		}
+	}
+	m.OtherIEs = children
 }
 
 // IsRequest reports whether the message is a request.
@@ -152,13 +160,6 @@ func (m *Generic) HasMP() bool { return m != nil && m.Header.HasMP() }
 
 // HasSEID reports whether the SEID is present, or false for nil.
 func (m *Generic) HasSEID() bool { return m != nil && m.Header.HasSEID() }
-
-// SetFO changes the follow-on bit unless m is nil.
-func (m *Generic) SetFO(on bool) {
-	if m != nil {
-		m.Header.SetFO(on)
-	}
-}
 
 // SetSEID assigns the endpoint identifier, or returns ErrNilMessage for nil.
 func (m *Generic) SetSEID(seid uint64) error {

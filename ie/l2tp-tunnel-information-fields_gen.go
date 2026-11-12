@@ -49,6 +49,7 @@ func (f *L2TPTunnelInformationFields) IE() *IE {
 }
 
 // ParseL2TPTunnelInformationFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseL2TPTunnelInformationFields(b []byte) (*L2TPTunnelInformationFields, error) {
 	f := &L2TPTunnelInformationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -59,6 +60,7 @@ func ParseL2TPTunnelInformationFields(b []byte) (*L2TPTunnelInformationFields, e
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *L2TPTunnelInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

@@ -59,6 +59,7 @@ func (f *CreateFARFields) IE() *IE {
 }
 
 // ParseCreateFARFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseCreateFARFields(b []byte) (*CreateFARFields, error) {
 	f := &CreateFARFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -69,6 +70,7 @@ func ParseCreateFARFields(b []byte) (*CreateFARFields, error) {
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *CreateFARFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

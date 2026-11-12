@@ -158,6 +158,7 @@ func (f *IPMulticastAddressFields) SetIPv6Flag() {
 }
 
 // ParseIPMulticastAddressFields parses b into IPMulticastAddressFields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseIPMulticastAddressFields(b []byte) (*IPMulticastAddressFields, error) {
 	f := &IPMulticastAddressFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -167,6 +168,7 @@ func ParseIPMulticastAddressFields(b []byte) (*IPMulticastAddressFields, error) 
 }
 
 // UnmarshalBinary parses b into IE.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *IPMulticastAddressFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

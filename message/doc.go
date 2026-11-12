@@ -18,8 +18,9 @@
 // Concrete messages offer Marshal, which allocates, and MarshalTo, which writes
 // to a buffer of at least MarshalLen bytes. The Message interface exposes
 // MarshalTo and MarshalLen. Lengths are derived from current content; Marshal
-// never mutates the message. Encoding propagates ie.EncodeError for an invalid
-// IE, including one nested in a group.
+// never mutates the message. Standalone encoding always clears FO; only
+// MarshalDatagram sets it in bundled output. Encoding propagates ie.EncodeError
+// for an invalid IE, including one nested in a group.
 //
 // Sequence numbers are 24-bit values; encoding rejects values above 0xffffff.
 // SetSequenceNumber does not allocate transaction identifiers or handle wrap.
@@ -55,19 +56,27 @@
 // without changing its inputs. Bundling requires session messages, prior peer
 // support negotiation and a single destination peer (clauses 6.5 and 7.2.1A).
 // Parse rejects FO with ErrBundledMessage; use ParseDatagram for UDP receives
-// that may contain bundles. Transport size limits remain the caller's concern.
+// that may contain bundles. ParseDatagram returns successful frames even when
+// others fail, with a joined *DatagramError for each failure (zero-based Index,
+// octet Offset, received Header and underlying Err). Body failures allow later
+// frames to decode; an incomplete header, inconsistent length or FO chain,
+// invalid bundle framing, or unsupported version stops decoding. Always handle
+// both the messages and the error. Transport size limits remain the caller's concern.
 //
 // # Version and error handling
 //
 // Only PFCP version 1 is implemented. UnsupportedVersionError is returned
-// before interpreting version-specific IEs; errors.As exposes its Header and
+// as soon as octet 1 exists, before any length or framing check. errors.As
+// exposes its Header and
 // received Version so an application can send NewVersionNotSupportedResponse.
 // That response carries the highest supported version, 1, and only its header
-// (clauses 7.6.2 and 7.4.4.7). ParseHeader also exposes unsupported-version
-// common framing. Known message types reject contradictory S flags.
+// (clauses 7.6.2 and 7.4.4.7). The error Header contains only available fields;
+// sequence and SEID are best-effort at version-1 offsets. ParseHeader follows
+// the same version-first rule. Known message types reject contradictory S flags.
 //
 // An incomplete header returns io.ErrUnexpectedEOF; inconsistent declared
-// framing returns ErrInvalidLength. IE framing failures identify their type
+// framing returns ErrInvalidLength. Truncated IE framing wraps both
+// ie.ErrInvalidLength and io.ErrUnexpectedEOF and identifies its available type
 // through ie.DecodeError. Use errors.Is and errors.As, and check value-helper
 // errors even after Parse succeeds.
 //
@@ -75,6 +84,9 @@
 //
 // Decoding borrows the input buffer, which must remain unchanged while the
 // message is in use. Copy a reusable receive buffer before parsing it.
+// Decoding allocates in proportion to the number of frames and IEs; small
+// frames can allocate much larger message structures. Bound datagram size and
+// receive rate at the transport layer.
 // Concurrent Marshal and MarshalTo calls are safe when callers keep the
 // message, IEs and borrowed input unchanged and use separate output buffers.
 // Synchronize mutations with all readers. The package does not log or provide

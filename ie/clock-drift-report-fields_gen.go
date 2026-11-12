@@ -57,6 +57,7 @@ func (f *ClockDriftReportFields) IE() *IE {
 }
 
 // ParseClockDriftReportFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseClockDriftReportFields(b []byte) (*ClockDriftReportFields, error) {
 	f := &ClockDriftReportFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -67,6 +68,7 @@ func ParseClockDriftReportFields(b []byte) (*ClockDriftReportFields, error) {
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *ClockDriftReportFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

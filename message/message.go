@@ -10,7 +10,8 @@ package message
 type Message interface {
 	// MarshalTo encodes the message into a buffer of at least MarshalLen bytes.
 	MarshalTo([]byte) error
-	// UnmarshalBinary replaces the receiver with one decoded frame.
+	// UnmarshalBinary replaces the receiver with one decoded frame. Decoding
+	// borrows b; keep b unchanged while the message is in use.
 	UnmarshalBinary(b []byte) error
 	// MarshalLen returns the encoded size in octets.
 	MarshalLen() int
@@ -47,6 +48,7 @@ func parseMessage(b []byte) (Message, error) {
 // Parse decodes exactly one standalone PFCP message. FO=1 is rejected with
 // ErrBundledMessage; trailing bytes with FO=0 are an invalid length. Use
 // ParseDatagram for UDP payloads that may contain bundles.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func Parse(b []byte) (Message, error) {
 	if _, err := frameSize(b); err != nil {
 		return nil, err

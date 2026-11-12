@@ -55,6 +55,7 @@ func (f *UpdateNonTGPPAccessForwardingActionInformationFields) IE() *IE {
 }
 
 // ParseUpdateNonTGPPAccessForwardingActionInformationFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseUpdateNonTGPPAccessForwardingActionInformationFields(b []byte) (*UpdateNonTGPPAccessForwardingActionInformationFields, error) {
 	f := &UpdateNonTGPPAccessForwardingActionInformationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -65,6 +66,7 @@ func ParseUpdateNonTGPPAccessForwardingActionInformationFields(b []byte) (*Updat
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *UpdateNonTGPPAccessForwardingActionInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

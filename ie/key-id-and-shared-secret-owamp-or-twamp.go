@@ -41,6 +41,7 @@ func NewKeyIDAndSharedSecretOWAMPOrTWAMPFields(keyID, sharedSecret string) *KeyI
 }
 
 // ParseKeyIDAndSharedSecretOWAMPOrTWAMPFields parses the known fields and ignores trailing extension octets.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseKeyIDAndSharedSecretOWAMPOrTWAMPFields(b []byte) (*KeyIDAndSharedSecretOWAMPOrTWAMPFields, error) {
 	f := &KeyIDAndSharedSecretOWAMPOrTWAMPFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -100,6 +101,7 @@ func (f *KeyIDAndSharedSecretOWAMPOrTWAMPFields) MarshalTo(b []byte) error {
 }
 
 // UnmarshalBinary replaces the receiver with the decoded fields.
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func (f *KeyIDAndSharedSecretOWAMPOrTWAMPFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound

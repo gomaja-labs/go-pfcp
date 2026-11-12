@@ -49,6 +49,7 @@ func (f *RemoteN3N9TunnelInformationFields) IE() *IE {
 }
 
 // ParseRemoteN3N9TunnelInformationFields decodes the value (concatenated child IEs, without a parent header).
+// Decoding may borrow b; keep b unchanged while the result is in use.
 func ParseRemoteN3N9TunnelInformationFields(b []byte) (*RemoteN3N9TunnelInformationFields, error) {
 	f := &RemoteN3N9TunnelInformationFields{}
 	if err := f.UnmarshalBinary(b); err != nil {
@@ -59,6 +60,7 @@ func ParseRemoteN3N9TunnelInformationFields(b []byte) (*RemoteN3N9TunnelInformat
 
 // UnmarshalBinary replaces the fields with decoded children, accepting any order.
 // A decoding error leaves the receiver unchanged.
+// Decoding borrows b; keep b unchanged while the fields are in use.
 func (f *RemoteN3N9TunnelInformationFields) UnmarshalBinary(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
