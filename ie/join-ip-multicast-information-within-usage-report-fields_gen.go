@@ -32,7 +32,7 @@ func (i *IE) JoinIPMulticastInformationWithinUsageReport() (*JoinIPMulticastInfo
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &JoinIPMulticastInformationWithinUsageReportFields{}
 	f.addIEs(children)
@@ -65,7 +65,7 @@ func (f *JoinIPMulticastInformationWithinUsageReportFields) UnmarshalBinary(b []
 	}
 	children, err := parseGroupedFields(JoinIPMulticastInformationWithinUsageReport, b)
 	if err != nil {
-		return err
+		return withDecodePath(JoinIPMulticastInformationWithinUsageReport, err)
 	}
 	*f = JoinIPMulticastInformationWithinUsageReportFields{}
 	f.addIEs(children)

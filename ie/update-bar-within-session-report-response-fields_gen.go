@@ -40,7 +40,7 @@ func (i *IE) UpdateBARWithinSessionReportResponse() (*UpdateBARWithinSessionRepo
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &UpdateBARWithinSessionReportResponseFields{}
 	f.addIEs(children)
@@ -73,7 +73,7 @@ func (f *UpdateBARWithinSessionReportResponseFields) UnmarshalBinary(b []byte) e
 	}
 	children, err := parseGroupedFields(UpdateBARWithinSessionReportResponse, b)
 	if err != nil {
-		return err
+		return withDecodePath(UpdateBARWithinSessionReportResponse, err)
 	}
 	*f = UpdateBARWithinSessionReportResponseFields{}
 	f.addIEs(children)

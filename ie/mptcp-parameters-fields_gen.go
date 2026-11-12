@@ -30,7 +30,7 @@ func (i *IE) MPTCPParameters() (*MPTCPParametersFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &MPTCPParametersFields{}
 	f.addIEs(children)
@@ -63,7 +63,7 @@ func (f *MPTCPParametersFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(MPTCPParameters, b)
 	if err != nil {
-		return err
+		return withDecodePath(MPTCPParameters, err)
 	}
 	*f = MPTCPParametersFields{}
 	f.addIEs(children)

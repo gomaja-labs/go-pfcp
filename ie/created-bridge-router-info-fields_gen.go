@@ -32,7 +32,7 @@ func (i *IE) CreatedBridgeRouterInfo() (*CreatedBridgeRouterInfoFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &CreatedBridgeRouterInfoFields{}
 	f.addIEs(children)
@@ -65,7 +65,7 @@ func (f *CreatedBridgeRouterInfoFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(CreatedBridgeRouterInfo, b)
 	if err != nil {
-		return err
+		return withDecodePath(CreatedBridgeRouterInfo, err)
 	}
 	*f = CreatedBridgeRouterInfoFields{}
 	f.addIEs(children)

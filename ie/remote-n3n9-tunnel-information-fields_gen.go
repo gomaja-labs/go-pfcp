@@ -32,7 +32,7 @@ func (i *IE) RemoteN3N9TunnelInformation() (*RemoteN3N9TunnelInformationFields, 
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &RemoteN3N9TunnelInformationFields{}
 	f.addIEs(children)
@@ -65,7 +65,7 @@ func (f *RemoteN3N9TunnelInformationFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(RemoteN3N9TunnelInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(RemoteN3N9TunnelInformation, err)
 	}
 	*f = RemoteN3N9TunnelInformationFields{}
 	f.addIEs(children)

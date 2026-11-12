@@ -28,7 +28,7 @@ func (i *IE) ErrorIndicationReport() (*ErrorIndicationReportFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &ErrorIndicationReportFields{}
 	f.addIEs(children)
@@ -61,7 +61,7 @@ func (f *ErrorIndicationReportFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(ErrorIndicationReport, b)
 	if err != nil {
-		return err
+		return withDecodePath(ErrorIndicationReport, err)
 	}
 	*f = ErrorIndicationReportFields{}
 	f.addIEs(children)

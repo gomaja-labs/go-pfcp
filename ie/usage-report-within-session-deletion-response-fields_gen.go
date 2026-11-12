@@ -50,7 +50,7 @@ func (i *IE) UsageReportWithinSessionDeletionResponse() (*UsageReportWithinSessi
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &UsageReportWithinSessionDeletionResponseFields{}
 	f.addIEs(children)
@@ -83,7 +83,7 @@ func (f *UsageReportWithinSessionDeletionResponseFields) UnmarshalBinary(b []byt
 	}
 	children, err := parseGroupedFields(UsageReportWithinSessionDeletionResponse, b)
 	if err != nil {
-		return err
+		return withDecodePath(UsageReportWithinSessionDeletionResponse, err)
 	}
 	*f = UsageReportWithinSessionDeletionResponseFields{}
 	f.addIEs(children)

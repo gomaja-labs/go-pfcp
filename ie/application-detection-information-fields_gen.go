@@ -36,7 +36,7 @@ func (i *IE) ApplicationDetectionInformation() (*ApplicationDetectionInformation
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &ApplicationDetectionInformationFields{}
 	f.addIEs(children)
@@ -69,7 +69,7 @@ func (f *ApplicationDetectionInformationFields) UnmarshalBinary(b []byte) error 
 	}
 	children, err := parseGroupedFields(ApplicationDetectionInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(ApplicationDetectionInformation, err)
 	}
 	*f = ApplicationDetectionInformationFields{}
 	f.addIEs(children)

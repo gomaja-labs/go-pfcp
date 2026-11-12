@@ -36,7 +36,7 @@ func (i *IE) OverloadControlInformation() (*OverloadControlInformationFields, er
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &OverloadControlInformationFields{}
 	f.addIEs(children)
@@ -69,7 +69,7 @@ func (f *OverloadControlInformationFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(OverloadControlInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(OverloadControlInformation, err)
 	}
 	*f = OverloadControlInformationFields{}
 	f.addIEs(children)

@@ -32,7 +32,7 @@ func (i *IE) CreatedL2TPSession() (*CreatedL2TPSessionFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &CreatedL2TPSessionFields{}
 	f.addIEs(children)
@@ -65,7 +65,7 @@ func (f *CreatedL2TPSessionFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(CreatedL2TPSession, b)
 	if err != nil {
-		return err
+		return withDecodePath(CreatedL2TPSession, err)
 	}
 	*f = CreatedL2TPSessionFields{}
 	f.addIEs(children)

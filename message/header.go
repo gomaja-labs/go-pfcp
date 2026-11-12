@@ -163,17 +163,22 @@ func frameSize(b []byte) (int, error) {
 	if len(b) < 4 {
 		return 0, io.ErrUnexpectedEOF
 	}
-	minimum := 4
+	minimum := 8
 	if b[0]&1 != 0 {
-		minimum = 12
+		minimum = 16
+	}
+	// TS 29.244 V20.1.0 clause 7.6.3 distinguishes a short respective
+	// header from an inconsistent Length field after a complete header.
+	if len(b) < minimum {
+		return 0, io.ErrUnexpectedEOF
 	}
 	length := int(binary.BigEndian.Uint16(b[2:4]))
-	if length < minimum {
+	if length < minimum-4 {
 		return 0, ErrInvalidLength
 	}
 	n := length + 4
 	if len(b) < n {
-		return 0, io.ErrUnexpectedEOF
+		return 0, ErrInvalidLength
 	}
 	return n, nil
 }

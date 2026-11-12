@@ -245,7 +245,7 @@ func Parse{{.Name}}(b []byte) (*{{.Name}},error) {
 func (m *{{.Name}}) UnmarshalBinary(b []byte) error {
  if m==nil {return ErrNilMessage}
  h,err:=parseMessageHeader(b,MsgType{{.Name}});if err!=nil {return err}
- ies,err:=ie.ParseMultiIEs(h.Payload);if err!=nil {return err}
+ ies,err:=ie.ParseMessageIEs(h.Payload);if err!=nil {return err}
  *m={{.Name}}{Header:h};m.addIEs(ies);return nil
 }
 
@@ -255,13 +255,41 @@ func (m *{{.Name}}) MarshalLen() int {
 }
 
 // MessageTypeName returns the message's specification name.
-func (m *{{.Name}}) MessageTypeName() string {return MessageTypeName(MsgType{{.Name}})}
+func (m *{{.Name}}) MessageTypeName() string {if m==nil {return ""};return MessageTypeName(MsgType{{.Name}})}
 
 // SEID returns the session endpoint identifier, or zero for node messages.
 func (m *{{.Name}}) SEID() uint64 {if m==nil {return 0};return m.Header.seid()}
 
 // IsRequest reports whether this message is a request.
-func (m *{{.Name}}) IsRequest() bool {return {{.Request}}}
+func (m *{{.Name}}) IsRequest() bool {return m!=nil && {{.Request}}}
+
+
+// Version returns the received version, or zero for nil.
+func (m *{{.Name}}) Version() int {if m==nil {return 0};return m.Header.Version()}
+// MessageType returns the received type, or zero for nil.
+func (m *{{.Name}}) MessageType() uint8 {if m==nil {return 0};return m.Header.MessageType()}
+// Sequence returns the sequence number, or zero for nil.
+func (m *{{.Name}}) Sequence() uint32 {if m==nil {return 0};return m.Header.Sequence()}
+// SetSequenceNumber assigns the sequence number unless m is nil.
+func (m *{{.Name}}) SetSequenceNumber(seq uint32) {if m!=nil {m.Header.SetSequenceNumber(seq)}}
+// HasFO reports whether another frame follows, or false for nil.
+func (m *{{.Name}}) HasFO() bool {return m!=nil && m.Header.HasFO()}
+// HasMP reports whether priority is present, or false for nil.
+func (m *{{.Name}}) HasMP() bool {return m!=nil && m.Header.HasMP()}
+// HasSEID reports whether the SEID is present, or false for nil.
+func (m *{{.Name}}) HasSEID() bool {return m!=nil && m.Header.HasSEID()}
+// SetFO changes the follow-on bit unless m is nil.
+func (m *{{.Name}}) SetFO(on bool) {if m!=nil {m.Header.SetFO(on)}}
+// SetSEID assigns the endpoint identifier, or returns ErrNilMessage for nil.
+func (m *{{.Name}}) SetSEID(seid uint64) error {if m==nil {return ErrNilMessage};return m.Header.SetSEID(seid)}
+// SetMP sets priority, or returns ErrNilMessage for nil.
+func (m *{{.Name}}) SetMP(priority uint8) error {if m==nil {return ErrNilMessage};return m.Header.SetMP(priority)}
+// ClearMP removes priority unless m is nil.
+func (m *{{.Name}}) ClearMP() {if m!=nil {m.Header.ClearMP()}}
+// MP returns priority, or zero for nil.
+func (m *{{.Name}}) MP() uint8 {if m==nil {return 0};return m.Header.MP()}
+// String summarizes the header, or returns an empty string for nil.
+func (m *{{.Name}}) String() string {if m==nil {return ""};return m.Header.String()}
 
 func (m *{{.Name}}) messageIEs() []*ie.IE {
  if m==nil {return nil}

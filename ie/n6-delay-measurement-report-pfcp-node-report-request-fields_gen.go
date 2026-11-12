@@ -44,7 +44,7 @@ func (i *IE) N6DelayMeasurementReportPFCPNodeReportRequest() (*N6DelayMeasuremen
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &N6DelayMeasurementReportPFCPNodeReportRequestFields{}
 	f.addIEs(children)
@@ -77,7 +77,7 @@ func (f *N6DelayMeasurementReportPFCPNodeReportRequestFields) UnmarshalBinary(b 
 	}
 	children, err := parseGroupedFields(N6DelayMeasurementReportPFCPNodeReportRequest, b)
 	if err != nil {
-		return err
+		return withDecodePath(N6DelayMeasurementReportPFCPNodeReportRequest, err)
 	}
 	*f = N6DelayMeasurementReportPFCPNodeReportRequestFields{}
 	f.addIEs(children)

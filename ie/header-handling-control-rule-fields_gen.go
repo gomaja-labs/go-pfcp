@@ -38,7 +38,7 @@ func (i *IE) HeaderHandlingControlRule() (*HeaderHandlingControlRuleFields, erro
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &HeaderHandlingControlRuleFields{}
 	f.addIEs(children)
@@ -71,7 +71,7 @@ func (f *HeaderHandlingControlRuleFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(HeaderHandlingControlRule, b)
 	if err != nil {
-		return err
+		return withDecodePath(HeaderHandlingControlRule, err)
 	}
 	*f = HeaderHandlingControlRuleFields{}
 	f.addIEs(children)

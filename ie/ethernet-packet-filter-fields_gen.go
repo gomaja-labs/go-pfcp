@@ -40,7 +40,7 @@ func (i *IE) EthernetPacketFilter() (*EthernetPacketFilterFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &EthernetPacketFilterFields{}
 	f.addIEs(children)
@@ -73,7 +73,7 @@ func (f *EthernetPacketFilterFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(EthernetPacketFilter, b)
 	if err != nil {
-		return err
+		return withDecodePath(EthernetPacketFilter, err)
 	}
 	*f = EthernetPacketFilterFields{}
 	f.addIEs(children)

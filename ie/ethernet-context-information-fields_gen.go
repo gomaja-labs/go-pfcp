@@ -30,7 +30,7 @@ func (i *IE) EthernetContextInformation() (*EthernetContextInformationFields, er
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &EthernetContextInformationFields{}
 	f.addIEs(children)
@@ -63,7 +63,7 @@ func (f *EthernetContextInformationFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(EthernetContextInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(EthernetContextInformation, err)
 	}
 	*f = EthernetContextInformationFields{}
 	f.addIEs(children)

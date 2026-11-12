@@ -28,7 +28,7 @@ func (i *IE) RemovePDR() (*RemovePDRFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &RemovePDRFields{}
 	f.addIEs(children)
@@ -61,7 +61,7 @@ func (f *RemovePDRFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(RemovePDR, b)
 	if err != nil {
-		return err
+		return withDecodePath(RemovePDR, err)
 	}
 	*f = RemovePDRFields{}
 	f.addIEs(children)

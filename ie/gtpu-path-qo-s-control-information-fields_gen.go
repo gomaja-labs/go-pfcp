@@ -46,7 +46,7 @@ func (i *IE) GTPUPathQoSControlInformation() (*GTPUPathQoSControlInformationFiel
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &GTPUPathQoSControlInformationFields{}
 	f.addIEs(children)
@@ -79,7 +79,7 @@ func (f *GTPUPathQoSControlInformationFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(GTPUPathQoSControlInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(GTPUPathQoSControlInformation, err)
 	}
 	*f = GTPUPathQoSControlInformationFields{}
 	f.addIEs(children)

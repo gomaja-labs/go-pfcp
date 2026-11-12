@@ -32,7 +32,7 @@ func (i *IE) PacketRateStatusReportWithinSessionModificationResponse() (*PacketR
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &PacketRateStatusReportWithinSessionModificationResponseFields{}
 	f.addIEs(children)
@@ -65,7 +65,7 @@ func (f *PacketRateStatusReportWithinSessionModificationResponseFields) Unmarsha
 	}
 	children, err := parseGroupedFields(PacketRateStatusReportWithinSessionModificationResponse, b)
 	if err != nil {
-		return err
+		return withDecodePath(PacketRateStatusReportWithinSessionModificationResponse, err)
 	}
 	*f = PacketRateStatusReportWithinSessionModificationResponseFields{}
 	f.addIEs(children)

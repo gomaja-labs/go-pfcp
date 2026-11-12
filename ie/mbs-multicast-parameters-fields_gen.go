@@ -38,7 +38,7 @@ func (i *IE) MBSMulticastParameters() (*MBSMulticastParametersFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &MBSMulticastParametersFields{}
 	f.addIEs(children)
@@ -71,7 +71,7 @@ func (f *MBSMulticastParametersFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(MBSMulticastParameters, b)
 	if err != nil {
-		return err
+		return withDecodePath(MBSMulticastParameters, err)
 	}
 	*f = MBSMulticastParametersFields{}
 	f.addIEs(children)

@@ -36,7 +36,7 @@ func (i *IE) UpdateDuplicatingParameters() (*UpdateDuplicatingParametersFields, 
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &UpdateDuplicatingParametersFields{}
 	f.addIEs(children)
@@ -69,7 +69,7 @@ func (f *UpdateDuplicatingParametersFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(UpdateDuplicatingParameters, b)
 	if err != nil {
-		return err
+		return withDecodePath(UpdateDuplicatingParameters, err)
 	}
 	*f = UpdateDuplicatingParametersFields{}
 	f.addIEs(children)

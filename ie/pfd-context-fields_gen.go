@@ -28,7 +28,7 @@ func (i *IE) PFDContext() (*PFDContextFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &PFDContextFields{}
 	f.addIEs(children)
@@ -61,7 +61,7 @@ func (f *PFDContextFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(PFDContext, b)
 	if err != nil {
-		return err
+		return withDecodePath(PFDContext, err)
 	}
 	*f = PFDContextFields{}
 	f.addIEs(children)

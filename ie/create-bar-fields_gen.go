@@ -40,7 +40,7 @@ func (i *IE) CreateBAR() (*CreateBARFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &CreateBARFields{}
 	f.addIEs(children)
@@ -73,7 +73,7 @@ func (f *CreateBARFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(CreateBAR, b)
 	if err != nil {
-		return err
+		return withDecodePath(CreateBAR, err)
 	}
 	*f = CreateBARFields{}
 	f.addIEs(children)

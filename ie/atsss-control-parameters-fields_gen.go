@@ -36,7 +36,7 @@ func (i *IE) ATSSSControlParameters() (*ATSSSControlParametersFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &ATSSSControlParametersFields{}
 	f.addIEs(children)
@@ -69,7 +69,7 @@ func (f *ATSSSControlParametersFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(ATSSSControlParameters, b)
 	if err != nil {
-		return err
+		return withDecodePath(ATSSSControlParameters, err)
 	}
 	*f = ATSSSControlParametersFields{}
 	f.addIEs(children)

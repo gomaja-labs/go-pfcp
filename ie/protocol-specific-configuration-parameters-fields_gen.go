@@ -42,7 +42,7 @@ func (i *IE) ProtocolSpecificConfigurationParameters() (*ProtocolSpecificConfigu
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &ProtocolSpecificConfigurationParametersFields{}
 	f.addIEs(children)
@@ -75,7 +75,7 @@ func (f *ProtocolSpecificConfigurationParametersFields) UnmarshalBinary(b []byte
 	}
 	children, err := parseGroupedFields(ProtocolSpecificConfigurationParameters, b)
 	if err != nil {
-		return err
+		return withDecodePath(ProtocolSpecificConfigurationParameters, err)
 	}
 	*f = ProtocolSpecificConfigurationParametersFields{}
 	f.addIEs(children)

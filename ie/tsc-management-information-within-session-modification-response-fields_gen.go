@@ -34,7 +34,7 @@ func (i *IE) TSCManagementInformationWithinSessionModificationResponse() (*TSCMa
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &TSCManagementInformationWithinSessionModificationResponseFields{}
 	f.addIEs(children)
@@ -67,7 +67,7 @@ func (f *TSCManagementInformationWithinSessionModificationResponseFields) Unmars
 	}
 	children, err := parseGroupedFields(TSCManagementInformationWithinSessionModificationResponse, b)
 	if err != nil {
-		return err
+		return withDecodePath(TSCManagementInformationWithinSessionModificationResponse, err)
 	}
 	*f = TSCManagementInformationWithinSessionModificationResponseFields{}
 	f.addIEs(children)

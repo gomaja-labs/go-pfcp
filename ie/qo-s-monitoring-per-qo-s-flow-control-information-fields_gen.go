@@ -48,7 +48,7 @@ func (i *IE) QoSMonitoringPerQoSFlowControlInformation() (*QoSMonitoringPerQoSFl
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &QoSMonitoringPerQoSFlowControlInformationFields{}
 	f.addIEs(children)
@@ -81,7 +81,7 @@ func (f *QoSMonitoringPerQoSFlowControlInformationFields) UnmarshalBinary(b []by
 	}
 	children, err := parseGroupedFields(QoSMonitoringPerQoSFlowControlInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(QoSMonitoringPerQoSFlowControlInformation, err)
 	}
 	*f = QoSMonitoringPerQoSFlowControlInformationFields{}
 	f.addIEs(children)

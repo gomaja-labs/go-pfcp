@@ -32,7 +32,7 @@ func (i *IE) LocalN3N9TunnelInformation() (*LocalN3N9TunnelInformationFields, er
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &LocalN3N9TunnelInformationFields{}
 	f.addIEs(children)
@@ -65,7 +65,7 @@ func (f *LocalN3N9TunnelInformationFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(LocalN3N9TunnelInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(LocalN3N9TunnelInformation, err)
 	}
 	*f = LocalN3N9TunnelInformationFields{}
 	f.addIEs(children)

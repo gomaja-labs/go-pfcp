@@ -36,7 +36,7 @@ func (i *IE) QoSMonitoringReport() (*QoSMonitoringReportFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &QoSMonitoringReportFields{}
 	f.addIEs(children)
@@ -69,7 +69,7 @@ func (f *QoSMonitoringReportFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(QoSMonitoringReport, b)
 	if err != nil {
-		return err
+		return withDecodePath(QoSMonitoringReport, err)
 	}
 	*f = QoSMonitoringReportFields{}
 	f.addIEs(children)

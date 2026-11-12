@@ -60,7 +60,7 @@ func (i *IE) CreatePDR() (*CreatePDRFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &CreatePDRFields{}
 	f.addIEs(children)
@@ -93,7 +93,7 @@ func (f *CreatePDRFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(CreatePDR, b)
 	if err != nil {
-		return err
+		return withDecodePath(CreatePDR, err)
 	}
 	*f = CreatePDRFields{}
 	f.addIEs(children)

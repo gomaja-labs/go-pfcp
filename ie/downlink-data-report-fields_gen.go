@@ -34,7 +34,7 @@ func (i *IE) DownlinkDataReport() (*DownlinkDataReportFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &DownlinkDataReportFields{}
 	f.addIEs(children)
@@ -67,7 +67,7 @@ func (f *DownlinkDataReportFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(DownlinkDataReport, b)
 	if err != nil {
-		return err
+		return withDecodePath(DownlinkDataReport, err)
 	}
 	*f = DownlinkDataReportFields{}
 	f.addIEs(children)

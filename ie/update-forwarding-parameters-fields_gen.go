@@ -60,7 +60,7 @@ func (i *IE) UpdateForwardingParameters() (*UpdateForwardingParametersFields, er
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &UpdateForwardingParametersFields{}
 	f.addIEs(children)
@@ -93,7 +93,7 @@ func (f *UpdateForwardingParametersFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(UpdateForwardingParameters, b)
 	if err != nil {
-		return err
+		return withDecodePath(UpdateForwardingParameters, err)
 	}
 	*f = UpdateForwardingParametersFields{}
 	f.addIEs(children)

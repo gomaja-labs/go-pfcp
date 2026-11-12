@@ -38,7 +38,7 @@ func (i *IE) CreateSRR() (*CreateSRRFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &CreateSRRFields{}
 	f.addIEs(children)
@@ -71,7 +71,7 @@ func (f *CreateSRRFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(CreateSRR, b)
 	if err != nil {
-		return err
+		return withDecodePath(CreateSRR, err)
 	}
 	*f = CreateSRRFields{}
 	f.addIEs(children)

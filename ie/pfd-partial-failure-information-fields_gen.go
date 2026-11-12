@@ -32,7 +32,7 @@ func (i *IE) PFDPartialFailureInformation() (*PFDPartialFailureInformationFields
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &PFDPartialFailureInformationFields{}
 	f.addIEs(children)
@@ -65,7 +65,7 @@ func (f *PFDPartialFailureInformationFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(PFDPartialFailureInformation, b)
 	if err != nil {
-		return err
+		return withDecodePath(PFDPartialFailureInformation, err)
 	}
 	*f = PFDPartialFailureInformationFields{}
 	f.addIEs(children)

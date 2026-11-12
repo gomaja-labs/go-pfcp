@@ -58,7 +58,7 @@ func (i *IE) CreateQER() (*CreateQERFields, error) {
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &CreateQERFields{}
 	f.addIEs(children)
@@ -91,7 +91,7 @@ func (f *CreateQERFields) UnmarshalBinary(b []byte) error {
 	}
 	children, err := parseGroupedFields(CreateQER, b)
 	if err != nil {
-		return err
+		return withDecodePath(CreateQER, err)
 	}
 	*f = CreateQERFields{}
 	f.addIEs(children)

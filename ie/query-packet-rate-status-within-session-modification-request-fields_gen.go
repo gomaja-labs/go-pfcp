@@ -30,7 +30,7 @@ func (i *IE) QueryPacketRateStatusWithinSessionModificationRequest() (*QueryPack
 	}
 	children, err := groupedChildren(i)
 	if err != nil {
-		return nil, err
+		return nil, withDecodePath(i.Type, err)
 	}
 	f := &QueryPacketRateStatusWithinSessionModificationRequestFields{}
 	f.addIEs(children)
@@ -63,7 +63,7 @@ func (f *QueryPacketRateStatusWithinSessionModificationRequestFields) UnmarshalB
 	}
 	children, err := parseGroupedFields(QueryPacketRateStatusWithinSessionModificationRequest, b)
 	if err != nil {
-		return err
+		return withDecodePath(QueryPacketRateStatusWithinSessionModificationRequest, err)
 	}
 	*f = QueryPacketRateStatusWithinSessionModificationRequestFields{}
 	f.addIEs(children)
