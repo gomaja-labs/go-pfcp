@@ -61,3 +61,24 @@ func TestFlowDirectionReservedValues(t *testing.T) {
 		}
 	}
 }
+
+func TestPacketRateAdditionalFlagWithoutDirections(t *testing.T) {
+	// TS 29.244 V20.1.0 clause 8.2.63 requires one flag in octet 5.
+	// APRC alone satisfies that; neither conditional direction is present.
+	value := ie.NewPacketRate(4, 0, 0, 0, 0)
+	wire, err := value.Marshal()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(wire, []byte{0, 94, 0, 1, 4}) {
+		t.Fatal("unexpected APRC-only encoding")
+	}
+	parsed, err := ie.Parse(wire)
+	if err != nil {
+		t.Fatal(err)
+	}
+	fields, err := parsed.PacketRate()
+	if err != nil || fields.Flags != 4 {
+		t.Fatalf("APRC-only value: %+v, %v", fields, err)
+	}
+}

@@ -179,7 +179,7 @@ func (f *PacketRateFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
 	}
-	if f.Flags&3 == 0 || f.Flags&^uint8(7) != 0 || f.Flags&1 == 0 && (f.UplinkTimeUnit != 0 || f.UplinkPacketRate != 0) || f.Flags&2 == 0 && (f.DownlinkTimeUnit != 0 || f.DownlinkPacketRate != 0) || f.Flags&5 != 5 && (f.AdditionalUplinkTimeUnit != 0 || f.AdditionalUplinkPacketRate != 0) || f.Flags&6 != 6 && (f.AdditionalDownlinkTimeUnit != 0 || f.AdditionalDownlinkPacketRate != 0) {
+	if f.Flags == 0 || f.Flags&^uint8(7) != 0 || f.Flags&1 == 0 && (f.UplinkTimeUnit != 0 || f.UplinkPacketRate != 0) || f.Flags&2 == 0 && (f.DownlinkTimeUnit != 0 || f.DownlinkPacketRate != 0) || f.Flags&5 != 5 && (f.AdditionalUplinkTimeUnit != 0 || f.AdditionalUplinkPacketRate != 0) || f.Flags&6 != 6 && (f.AdditionalDownlinkTimeUnit != 0 || f.AdditionalDownlinkPacketRate != 0) {
 		return ErrInvalidValue
 	}
 	if f.UplinkTimeUnit > 4 || f.DownlinkTimeUnit > 4 || f.AdditionalUplinkTimeUnit > 4 || f.AdditionalDownlinkTimeUnit > 4 {
