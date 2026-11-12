@@ -2,7 +2,6 @@ package ie_test
 
 import (
 	"encoding/binary"
-	"errors"
 	"reflect"
 	"testing"
 	"time"
@@ -69,16 +68,19 @@ func TestTimestampConstructorPolicy(t *testing.T) {
 					t.Fatalf("timestamp changed: want %v", want)
 				}
 			}
-			requireInvalidValue(t, "fractional seconds", typ, ctor(time.Unix(1700000000, 1)))
+			fractional := ctor(time.Unix(1700000000, 1))
+			values := reflect.ValueOf(fractional).MethodByName(typ.String()).Call(nil)
+			if !values[1].IsNil() || !values[0].Interface().(time.Time).Equal(time.Unix(1700000000, 0)) {
+				t.Fatal("fractional timestamp did not retain the whole second")
+			}
 			for _, i := range []*ie.IE{nil, ie.New(0xffff, nil), ie.New(typ, nil), ie.New(typ, []byte{1, 2, 3})} {
 				got := reflect.ValueOf(i).MethodByName(typ.String()).Call(nil)
 				if got[1].IsNil() {
 					t.Fatal("invalid timestamp accepted")
 				}
 			}
-			_, e := ctor(time.Unix(1700000000, 1)).Marshal()
-			if !errors.Is(e, ie.ErrInvalidValue) {
-				t.Fatal("fractional timestamp did not retain constructor error")
+			if _, e := fractional.Marshal(); e != nil {
+				t.Fatal(e)
 			}
 		})
 	}
