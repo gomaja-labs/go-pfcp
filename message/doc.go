@@ -57,8 +57,11 @@
 // support negotiation and a single destination peer (clauses 6.5 and 7.2.1A).
 // Parse rejects FO with ErrBundledMessage; use ParseDatagram for UDP receives
 // that may contain bundles. ParseDatagram returns successful frames even when
-// others fail, with a joined *DatagramError for each failure (zero-based Index,
-// octet Offset, received Header and underlying Err). Body failures allow later
+// others fail, including a decodable frame whose FO chain check fails.
+// The joined error contains at most 16 *DatagramError details (zero-based Index,
+// octet Offset, received Header and underlying Err), followed by a count of
+// further failed frames. Later failures still allow valid frames to decode;
+// omitted details are unavailable through errors.Is/As. Body failures allow later
 // frames to decode; an incomplete header, inconsistent length or FO chain,
 // invalid bundle framing, or unsupported version stops decoding. Always handle
 // both the messages and the error. Transport size limits remain the caller's concern.

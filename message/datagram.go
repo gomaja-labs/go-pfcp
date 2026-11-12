@@ -35,18 +35,24 @@ func (e *DatagramError) Unwrap() error { return e.Err }
 
 // ParseDatagram decodes messages in one UDP payload, borrowing b. Keep b unchanged
 // while using the results. It returns every successfully decoded message and a
-// joined error containing one *DatagramError per failed frame, in wire order.
+// joined error containing at most 16 *DatagramError details, in wire order,
+// followed by a count of further failed frames when details were omitted.
 // A malformed body does not prevent decoding later frames. A framing failure
 // (incomplete header, inconsistent length or FO chain, invalid bundle framing),
 // or an unsupported version whose layout is unknown, stops further decoding.
+// A consistent, decodable frame is returned even if its FO chain check fails.
 // Applications must process both the returned messages and the error.
 // TS 29.244 V20.1.0 clauses 6.5, 7.2.1A, 7.2.2.4.1 and 7.6.2–7.6.7.
 func ParseDatagram(b []byte) ([]Message, error) {
 	var messages []Message
 	var failures []error
-	index, offset := 0, 0
+	index, offset, omitted := 0, 0, 0
 	fail := func(h *Header, err error) {
-		failures = append(failures, &DatagramError{Index: index, Offset: offset, Header: h, Err: err})
+		if len(failures) < 16 {
+			failures = append(failures, &DatagramError{Index: index, Offset: offset, Header: h, Err: err})
+		} else {
+			omitted++
+		}
 	}
 	if len(b) == 0 {
 		fail(nil, io.ErrUnexpectedEOF)
@@ -72,23 +78,36 @@ func ParseDatagram(b []byte) ([]Message, error) {
 			fail(h, ErrInvalidHeader)
 			break
 		}
+		var chainErr error
 		if h.HasFO() && n == len(b) {
-			fail(h, io.ErrUnexpectedEOF)
-			break
+			chainErr = io.ErrUnexpectedEOF
 		}
 		if !h.HasFO() && n != len(b) {
-			fail(h, ErrInvalidLength)
-			break
+			chainErr = ErrInvalidLength
 		}
-		m, err := parseMessage(frame)
-		if err != nil {
-			fail(h, err)
-		} else {
+		// Clause 6.5: handle each framed message as if sent on its own.
+		m, bodyErr := parseMessage(frame)
+		if bodyErr == nil {
 			messages = append(messages, m)
+		}
+		if bodyErr != nil || chainErr != nil {
+			err := bodyErr
+			if err == nil {
+				err = chainErr
+			} else if chainErr != nil {
+				err = errors.Join(bodyErr, chainErr)
+			}
+			fail(h, err)
+		}
+		if chainErr != nil {
+			break
 		}
 		b = b[n:]
 		offset += n
 		index++
+	}
+	if omitted != 0 {
+		failures = append(failures, fmt.Errorf("%d further frames failed", omitted))
 	}
 	return messages, errors.Join(failures...)
 }

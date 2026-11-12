@@ -31,9 +31,15 @@ var (
 // Not Supported Response. No version-specific IEs have been decoded.
 // TS 29.244 V20.1.0 clause 7.6.2.
 type UnsupportedVersionError struct {
-	// Header always exposes the version from octet 1. Type is available after
-	// octet 2; SEID and sequence are best-effort values at version-1 offsets
-	// when enough octets exist, without validating length or future layouts.
+	// Header contains only the available fields for decoding errors:
+	// Flags (including Version) from octet 1, with spare bits cleared; Type
+	// from octet 2 when present. Octets 3–4 carry length, which Header does
+	// not retain. SEID is read only with S=1 and at least 12 input octets.
+	// SequenceNumber is read only with at least 7 octets for S=0 or 15 for
+	// S=1. These use version-1 offsets without validating future layouts or
+	// the declared length. MessagePriority and Payload are never populated.
+	// Unavailable fields remain zero; zero alone does not prove presence.
+	// Encoding errors instead expose the caller-supplied header.
 	Header *Header
 }
 
