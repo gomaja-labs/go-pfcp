@@ -14,6 +14,12 @@ func helperExtendedSemanticValues() []helperSemanticCase {
 	v6 := net.ParseIP("2001:db8::1")
 	mac := net.HardwareAddr{2, 0, 0, 0, 0, 1}
 	return []helperSemanticCase{
+		// TS 29.244 V20.1.0 clause 8.2.167.
+		{name: "RequestedQoSMonitoring", input: ie.NewRequestedQoSMonitoringFlags(0x3ff), want: uint16(0x3ff), minimum: 2},
+		// TS 29.244 V20.1.0 clause 8.2.43.
+		{name: "FQCSIDNodeType", input: ie.NewFQCSID("192.0.2.1", 5, 0x1234), want: uint8(5), minimum: 8},
+		// TS 29.244 V20.1.0 clause 8.2.27.
+		{name: "DownlinkDataServiceInformation", input: ie.NewDownlinkDataServiceInformationFromFields(&ie.DownlinkDataServiceInformationFields{Flags: 7, PagingPolicyIndication: 5, QFI: 9, DLDataPacketsSize: 123}), want: &ie.DownlinkDataServiceInformationFields{Flags: 7, PagingPolicyIndication: 5, QFI: 9, DLDataPacketsSize: 123}, minimum: 5},
 		// TS 29.244 V20.1.0 clause 8.2.7.
 		{name: "GateStatusULDL", input: ie.NewGateStatus(1, 0), want: []any{uint8(1), uint8(0)}, minimum: 1},
 		{name: "ValueAsUint8", input: ie.New(0xffff, []byte{0x12}), want: uint8(0x12), minimum: 1, generic: true},
@@ -27,7 +33,7 @@ func helperExtendedSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.135.
 		{name: "CPPFCPEntityIPAddress", input: ie.NewCPPFCPEntityIPAddress(v4, nil), want: &ie.CPPFCPEntityIPAddressFields{Flags: 2, IPv4Address: v4}, minimum: 5},
 		// TS 29.244 V20.1.0 clause 8.2.43.
-		{name: "CSIDs", input: ie.NewFQCSID("192.0.2.1", 0x1234, 0x5678), want: []uint16{0x1234, 0x5678}, minimum: 9},
+		{name: "CSIDs", input: ie.NewFQCSID("192.0.2.1", 5, 0x1234, 0x5678), want: []uint16{0x1234, 0x5678}, minimum: 10},
 		// TS 29.244 V20.1.0 clause 8.2.94.
 		{name: "CTAG", input: ie.NewCTAG(7, 3, 1, 0xabc), want: &ie.CTAGFields{Flags: 7, PCP: 3, DEIFlag: 1, CVID: 0xabc}, minimum: 3},
 		// TS 29.244 V20.1.0 clause 8.2.150.
@@ -35,13 +41,13 @@ func helperExtendedSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.66.
 		{name: "DLFlowLevelMarking", input: ie.NewDLFlowLevelMarking(3, 0x1234, 0x5678), want: &ie.DLFlowLevelMarkingFields{Flags: 3, ToSTrafficClass: 0x1234, ServiceClassIdentifier: 0x5678}, minimum: 5},
 		// TS 29.244 V20.1.0 clause 8.2.27.
-		{name: "DownlinkDataServiceInformation", input: ie.NewDownlinkDataServiceInformation(true, true, 5, 9), want: []byte{3, 5, 9}, minimum: 3},
+		{name: "DownlinkDataServiceInformation", input: ie.NewDownlinkDataServiceInformation(true, true, 5, 9), want: &ie.DownlinkDataServiceInformationFields{Flags: 3, PagingPolicyIndication: 5, QFI: 9}, minimum: 3},
 		// TS 29.244 V20.1.0 clause 8.2.49.
-		{name: "DroppedDLTrafficThreshold", input: ie.NewDroppedDLTrafficThreshold(true, false, 123, 0), want: 1, minimum: 1},
+		{name: "DroppedDLTrafficThreshold", input: ie.NewDroppedDLTrafficThreshold(true, false, 123, 0), want: &ie.DroppedDLTrafficThresholdFields{Flags: 1, DownlinkPackets: 123}, minimum: 9},
 		// TS 29.244 V20.1.0 clause 8.2.74.
 		{name: "FARID", input: ie.NewFARID(0x12345678), want: 0x12345678, minimum: 4},
 		// TS 29.244 V20.1.0 clause 8.2.43.
-		{name: "FQCSID", input: ie.NewFQCSID("192.0.2.1", 0x1234), want: []byte{1, 192, 0, 2, 1, 0x12, 0x34}, minimum: 7},
+		{name: "FQCSID", input: ie.NewFQCSID("192.0.2.1", 5, 0x1234), want: []byte{1, 192, 0, 2, 1, 0x12, 0x34, 5}, minimum: 8},
 		// TS 29.244 V20.1.0 clause 8.2.37.
 		{name: "FSEID", input: ie.NewFSEID(0x12345678, v4, nil), want: &ie.FSEIDFields{Flags: 2, SEID: 0x12345678, IPv4Address: v4}, minimum: 13},
 		// TS 29.244 V20.1.0 clause 8.2.3.
@@ -49,7 +55,7 @@ func helperExtendedSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.80.
 		{name: "FailedRuleID", input: ie.NewFailedRuleID(5, 0x1234), want: 0x1234, minimum: 3},
 		// TS 29.244 V20.1.0 clause 8.2.143.
-		{name: "FiveGSUserPlaneNodeID", input: ie.NewFiveGSUserPlaneNodeID(mac), want: mac, minimum: 7},
+		{name: "FiveGSUserPlaneNodeID", input: ie.NewFiveGSUserPlaneNodeID(true, 0x0102030405060708), want: &ie.FiveGSUserPlaneNodeIDFields{BID: true, Value: 0x0102030405060708}, minimum: 9},
 		// TS 29.244 V20.1.0 clause 8.2.61.
 		{name: "FlowInformation", input: ie.NewFlowInformation(2, "abc"), want: []byte{2, 0, 3, 'a', 'b', 'c'}, minimum: 6},
 		// TS 29.244 V20.1.0 clause 8.2.23.
@@ -95,7 +101,7 @@ func helperExtendedSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.142.
 		{name: "NWTTPortNumber", input: ie.NewNWTTPortNumber(123), want: 123, minimum: 4},
 		// TS 29.244 V20.1.0 clause 8.2.43.
-		{name: "NodeAddress", input: ie.NewFQCSID("192.0.2.1", 0x1234), want: []byte{192, 0, 2, 1}, minimum: 5},
+		{name: "NodeAddress", input: ie.NewFQCSID("192.0.2.1", 5, 0x1234), want: []byte{192, 0, 2, 1}, minimum: 5},
 		// TS 29.244 V20.1.0 clause 8.2.183.
 		{name: "NumberOfUEIPAddresses", input: ie.NewNumberOfUEIPAddresses(3, 123, 456), want: &ie.NumberOfUEIPAddressesFields{Flags: 3, NumberOfUEIPv4Addresses: 123, NumberOfUEIPv6Addresses: 456}, minimum: 9},
 		// TS 29.244 V20.1.0 clause 8.2.22.
@@ -134,7 +140,7 @@ func helperExtendedSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.19.
 		{name: "ReportingTriggers", input: ie.NewReportingTriggers(1, 2), want: []byte{1, 2}, minimum: 2},
 		// TS 29.244 V20.1.0 clause 8.2.5.
-		{name: "SDFFilter", input: ie.NewSDFFilter("abc", "", "", "", 0), want: &ie.SDFFilterFields{Flags: 1, FDLength: 3, FlowDescription: "abc"}, minimum: 7},
+		{name: "SDFFilter", input: ie.NewSDFFilter("abc", nil, nil, nil, 0), want: &ie.SDFFilterFields{Flags: 1, FDLength: 3, FlowDescription: "abc"}, minimum: 7},
 		// TS 29.244 V20.1.0 clause 8.2.176.
 		{name: "SNSSAI", input: ie.NewSNSSAI(1, 0x234567), want: []byte{1, 0x23, 0x45, 0x67}, minimum: 4},
 		// TS 29.244 V20.1.0 clause 8.2.95.

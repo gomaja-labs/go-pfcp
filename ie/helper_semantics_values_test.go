@@ -146,7 +146,7 @@ func helperSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.38.
 		{name: "NodeID", input: ie.NewNodeIDAddress(netip.MustParseAddr("192.0.2.1")), want: ie.NodeIDValue{Type: ie.NodeIDIPv4Address, Address: netip.MustParseAddr("192.0.2.1")}},
 		// TS 29.244 V20.1.0 clause 8.2.43.
-		{name: "NodeIDType", input: ie.NewFQCSID("127.0.0.1", 1), want: ie.NodeIDIPv4Address},
+		{name: "NodeIDType", input: ie.NewFQCSID("127.0.0.1", 5, 1), want: ie.NodeIDIPv4Address},
 		// TS 29.244 V20.1.0 clause 8.2.69.
 		{name: "NodeReportType", input: ie.NewNodeReportType(0x01), want: 0x01},
 		// TS 29.244 V20.1.0 clause 8.2.133.
@@ -172,7 +172,7 @@ func helperSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.32.
 		{name: "PFCPSRRspFlags", input: ie.NewPFCPSRRspFlags(0x01), want: 0x01},
 		// TS 29.244 V20.1.0 clause 8.2.156.
-		{name: "PMFControlInformation", input: ie.NewPMFControlInformation(0xff), want: 0x01},
+		{name: "PMFControlInformation", input: ie.NewPMFControlInformation(7, 1, 9), want: &ie.PMFControlInformationFields{Flags: 7, QFIs: []uint8{1, 9}}},
 		// TS 29.244 V20.1.0 clause 8.2.27.
 		{name: "PPI", input: ie.NewDownlinkDataServiceInformation(true, true, 1, 1), want: 1},
 		// TS 29.244 V20.1.0 clause 8.2.130.
@@ -188,7 +188,7 @@ func helperSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.97.
 		{name: "Proxying", input: ie.NewProxying(1, 1), want: 0x03},
 		// TS 29.244 V20.1.0 clause 8.2.174.
-		{name: "QERControlIndications", input: ie.NewQERControlIndications(1, 1, 1), want: 0x07},
+		{name: "QERControlIndications", input: ie.NewQERControlIndications(0, 0, 1), want: 0x01},
 		// TS 29.244 V20.1.0 clause 8.2.27.
 		{name: "QFI", input: ie.NewDownlinkDataServiceInformation(true, true, 1, 1), want: 1},
 		// TS 29.244 V20.1.0 clause 8.2.165.
@@ -206,7 +206,7 @@ func helperSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.21.
 		{name: "ReportType", input: ie.NewReportType(1, 1, 1, 1), want: 0x0f},
 		// TS 29.244 V20.1.0 clause 8.2.168.
-		{name: "ReportingFrequency", input: ie.NewReportingFrequency(1, 1, 1), want: 0x07},
+		{name: "ReportingFrequency", input: ie.NewReportingFrequency(0, 1, 1), want: 0x03},
 		// TS 29.244 V20.1.0 clause 8.2.152.
 		{name: "RequestedAccessAvailabilityInformation", input: ie.NewRequestedAccessAvailabilityInformation(1), want: 1},
 		// TS 29.244 V20.1.0 clause 8.2.145.

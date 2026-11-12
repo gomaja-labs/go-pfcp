@@ -19,6 +19,9 @@ type helperFlagCase struct {
 // clauses and the explicit TestCurrentFlagHelpers vectors.
 func helperSemanticFlags() []helperFlagCase {
 	return []helperFlagCase{
+		{45, 0, 4, "HasDLPSI", "8.2.27"},
+		{224, 0, 2, "HasDRTTI", "8.2.156"}, {224, 0, 4, "HasPQPM", "8.2.156"},
+		{243, 0, 8, "HasGTPUPM", "8.2.167"}, {243, 0, 16, "HasDLCI", "8.2.167"}, {243, 0, 32, "HasULCI", "8.2.167"}, {243, 0, 64, "RequestsDLDR", "8.2.167"}, {243, 0, 128, "HasULDR", "8.2.167"}, {243, 1, 1, "HasDLAB", "8.2.167"}, {243, 1, 2, "HasULAB", "8.2.167"},
 		{84, 1, 1, "IsN19", "8.2.56"}, {84, 1, 2, "IsN6", "8.2.56"}, {84, 1, 4, "IsLLSSMCTEID", "8.2.56"},
 		{21, 0, 1, "HasIPv4", "8.2.3"},
 		{21, 0, 2, "HasIPv6", "8.2.3"},
@@ -258,7 +261,7 @@ func helperSemanticFlags() []helperFlagCase {
 		{186, 0, 8, "HasEPRI", "8.2.136"},
 		{194, 0, 1, "HasBII", "8.2.140"},
 		{194, 0, 2, "HasRII", "8.2.140"},
-		{198, 0, 1, "HasMAC", "8.2.143"},
+		{198, 0, 1, "HasBID", "8.2.143"},
 		{204, 0, 1, "HasRRTO", "8.2.145"},
 		{204, 0, 2, "HasRRCR", "8.2.145"},
 		{217, 0, 1, "HasRRCA", "8.2.152"},
@@ -304,6 +307,11 @@ func TestHelperSemanticFlags(t *testing.T) {
 				t.Run(fmt.Sprintf("bit-%d", bit+1), func(t *testing.T) {
 					payload := make([]byte, 64)
 					payload[tc.octet] = 1 << bit
+					// PQPM selects a nonempty count-delimited QFI list (clause 8.2.156).
+					if tc.typ == ie.PMFControlInformation && payload[0]&4 != 0 {
+						payload[1] = 1
+						payload[2] = 9
+					}
 					if got, want := call(ie.New(tc.typ, payload)), tc.mask&(1<<bit) != 0; got != want {
 						t.Fatalf("flag=%v; want %v (%s)", got, want, tc.clause)
 					}
