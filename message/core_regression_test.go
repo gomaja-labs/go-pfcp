@@ -179,7 +179,11 @@ func TestUnknownMessageSilent(t *testing.T) {
 		}
 		return
 	}
-	cmd := exec.Command(os.Args[0], "-test.run=^TestUnknownMessageSilent$")
+	self, err := os.Executable()
+	if err != nil {
+		t.Fatal(err)
+	}
+	cmd := exec.Command(self, "-test.run=^TestUnknownMessageSilent$")
 	cmd.Env = append(os.Environ(), "PFCP_SILENCE_CHILD=1")
 	out, err := cmd.CombinedOutput()
 	if err != nil {
