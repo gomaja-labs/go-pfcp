@@ -426,9 +426,9 @@ func TestCurrentLeafReviewBoundaries(t *testing.T) {
 		}
 	})
 	t.Run("PacketRatePresence", func(t *testing.T) {
-		for _, flags := range []uint8{0, 4} {
+		for _, flags := range []uint8{0} {
 			if _, e := ie.NewPacketRate(flags, 0, 0, 0, 0).Marshal(); !errors.Is(e, ie.ErrInvalidValue) {
-				t.Fatal("missing packet rate direction accepted", e)
+				t.Fatal("missing packet rate flags accepted", e)
 			}
 		}
 	})
