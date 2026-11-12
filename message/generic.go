@@ -107,9 +107,10 @@ func (m *Generic) AddIE(ies ...*ie.IE) {
 	m.OtherIEs = children
 }
 
-// IsRequest reports whether the message is a request.
+// IsRequest classifies the received wire Type field through Header.IsRequest,
+// including known request types decoded by ParseGeneric.
 func (m *Generic) IsRequest() bool {
-	return false
+	return m != nil && m.Header.IsRequest()
 }
 
 func (m *Generic) messageIEs() []*ie.IE {

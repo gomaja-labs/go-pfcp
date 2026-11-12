@@ -250,6 +250,33 @@ func testIEOrder(t *testing.T, b []byte) []uint16 {
 	return out
 }
 
+// TS 29.244 V20.1.0 Table 7.3-1: classify the received wire type,
+// including known requests decoded without their generated schema.
+func TestHeaderAndGenericIsRequest(t *testing.T) {
+	want := map[uint8]bool{}
+	for _, m := range catalogueMessages() {
+		want[m.MessageType()] = m.IsRequest()
+	}
+	for typ := 0; typ < 256; typ++ {
+		h := NewHeader(uint8(typ), 1, 2, nil)
+		if h.IsRequest() != want[uint8(typ)] {
+			t.Errorf("header type %d: request=%t, want %t", typ, h.IsRequest(), want[uint8(typ)])
+		}
+		g, err := ParseGeneric(encodeTestMessage(t, NewGeneric(uint8(typ), 1, 2)))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if g.IsRequest() != want[uint8(typ)] {
+			t.Errorf("generic type %d: request=%t, want %t", typ, g.IsRequest(), want[uint8(typ)])
+		}
+	}
+	var h *Header
+	var g *Generic
+	if h.IsRequest() || g.IsRequest() || (&Generic{}).IsRequest() {
+		t.Fatal("nil header or generic classified as a request")
+	}
+}
+
 func TestEveryMessageConcurrentMarshal(t *testing.T) {
 	c, err := spec.Load()
 	if err != nil {

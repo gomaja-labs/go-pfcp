@@ -169,6 +169,13 @@ func TestTypeNamesCatalogue(t *testing.T) {
 		fmt.Fprintf(&b, "case MsgType%s: return &%s{}\n", m.GoName, m.GoName)
 	}
 	b.WriteString("default: return &Generic{}\n}}\n")
+	b.WriteString("\n// isRequestType classifies requests from TS 29.244 V20.1.0 Table 7.3-1.\nfunc isRequestType(t uint8) bool {switch t {\n")
+	for _, m := range c.Messages {
+		if strings.HasSuffix(m.GoName, "Request") {
+			fmt.Fprintf(&b, "case MsgType%s: return true\n", m.GoName)
+		}
+	}
+	b.WriteString("default: return false\n}}\n")
 	if err := put("message/types_gen.go", &b); err != nil {
 		return nil, err
 	}
