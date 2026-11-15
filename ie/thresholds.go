@@ -85,7 +85,7 @@ func (f *ThresholdsFields) UnmarshalBinary(b []byte) error {
 	return nil
 }
 func (f *ThresholdsFields) valid() bool {
-	return f.Flags >= 1 && f.Flags <= 3 && addedDurationFits(f.RTT, time.Millisecond, 65535) && f.PacketLossRate <= 100 && (f.Flags&ThresholdRTT != 0 || f.RTT == 0) && (f.Flags&ThresholdPLR != 0 || f.PacketLossRate == 0)
+	return f.Flags >= 1 && f.Flags <= 3 && durationFits(f.RTT, time.Millisecond, 65535) && f.PacketLossRate <= 100 && (f.Flags&ThresholdRTT != 0 || f.RTT == 0) && (f.Flags&ThresholdPLR != 0 || f.PacketLossRate == 0)
 }
 
 // Marshal encodes the known fields with spare bits set to zero.

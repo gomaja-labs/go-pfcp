@@ -5,10 +5,11 @@ import (
 	"time"
 )
 
-// NewULPeriodicity creates a UL Periodicity IE with an exact millisecond duration.
+// NewULPeriodicity creates a UL Periodicity IE with nonnegative whole milliseconds
+// up to 4294967295 milliseconds; other values produce an encoding ErrInvalidValue.
 // TS 29.244 V20.1.0 clause 8.2.224.
 func NewULPeriodicity(value time.Duration) *IE {
-	if !addedDurationFits(value, time.Millisecond, 0xffffffff) {
+	if !durationFits(value, time.Millisecond, 0xffffffff) {
 		return newInvalidIE(ULPeriodicity, ErrInvalidValue)
 	}
 	b := make([]byte, 5)

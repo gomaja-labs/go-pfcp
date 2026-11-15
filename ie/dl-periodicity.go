@@ -5,10 +5,11 @@ import (
 	"time"
 )
 
-// NewDLPeriodicity creates a DL Periodicity IE with an exact millisecond duration.
+// NewDLPeriodicity creates a DL Periodicity IE with nonnegative whole milliseconds
+// up to 4294967295 milliseconds; other values produce an encoding ErrInvalidValue.
 // TS 29.244 V20.1.0 clause 8.2.221.
 func NewDLPeriodicity(value time.Duration) *IE {
-	if !addedDurationFits(value, time.Millisecond, 0xffffffff) {
+	if !durationFits(value, time.Millisecond, 0xffffffff) {
 		return newInvalidIE(DLPeriodicity, ErrInvalidValue)
 	}
 	b := make([]byte, 5)

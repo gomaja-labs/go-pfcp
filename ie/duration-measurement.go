@@ -10,11 +10,14 @@ import (
 	"time"
 )
 
-// NewDurationMeasurement creates a new DurationMeasurement IE.
-//
-// The period should be within the range of uint32, otherwise it overflows.
+// NewDurationMeasurement creates a Duration Measurement IE. The duration must
+// be a whole number of seconds from 0 to 4294967295; another duration gives an
+// IE whose encoding reports ErrInvalidValue. TS 29.244 V20.1.0 clause 8.2.45.
 func NewDurationMeasurement(duration time.Duration) *IE {
-	return newUint32ValIE(DurationMeasurement, uint32(duration.Seconds()))
+	if !durationFits(duration, time.Second, 4294967295) {
+		return newInvalidIE(DurationMeasurement, ErrInvalidValue)
+	}
+	return newUint32ValIE(DurationMeasurement, uint32(duration/time.Second))
 }
 
 // DurationMeasurement returns DurationMeasurement in time.Duration if the type of IE matches.

@@ -10,7 +10,8 @@ import (
 	"time"
 )
 
-// NewTimeOffsetThreshold creates a new TimeOffsetThreshold IE.
+// NewTimeOffsetThreshold creates a TimeOffsetThreshold IE from any signed nanosecond duration.
+// TS 29.244 V20.1.0 clause 8.2.147: signed64 nanoseconds, including negative offsets.
 func NewTimeOffsetThreshold(threshold time.Duration) *IE {
 	return newUint64ValIE(TimeOffsetThreshold, uint64(threshold.Nanoseconds()))
 }

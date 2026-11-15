@@ -10,11 +10,14 @@ import (
 	"time"
 )
 
-// NewValidityTimer creates a new ValidityTimer IE.
-//
-// the period should be within the range of uint16, otherwise it overflows.
+// NewValidityTimer creates a Validity Timer IE. The duration must be a whole
+// number of seconds from 0 to 65535; another duration gives an IE whose
+// encoding reports ErrInvalidValue. TS 29.244 V20.1.0 clause 8.2.184.
 func NewValidityTimer(period time.Duration) *IE {
-	return newUint16ValIE(ValidityTimer, uint16(period.Seconds()))
+	if !durationFits(period, time.Second, 65535) {
+		return newInvalidIE(ValidityTimer, ErrInvalidValue)
+	}
+	return newUint16ValIE(ValidityTimer, uint16(period/time.Second))
 }
 
 // ValidityTimer returns ValidityTimer in time.Duration if the type of IE matches.

@@ -73,7 +73,7 @@ func (f *TrafficParameterThresholdFields) UnmarshalBinary(b []byte) error {
 	return nil
 }
 func (f *TrafficParameterThresholdFields) valid() bool {
-	return f.Flags&^1 == 0 && addedDurationFits(f.DownlinkJitter, time.Millisecond, 0xffffffff) && (f.Flags&TrafficParameterThresholdDL != 0 || f.DownlinkJitter == 0)
+	return f.Flags&^1 == 0 && durationFits(f.DownlinkJitter, time.Millisecond, 0xffffffff) && (f.Flags&TrafficParameterThresholdDL != 0 || f.DownlinkJitter == 0)
 }
 
 // Marshal encodes the known fields with spare bits set to zero.

@@ -10,11 +10,14 @@ import (
 	"time"
 )
 
-// NewQuotaHoldingTime creates a new QuotaHoldingTime IE.
-//
-// The period should be within the range of uint32, otherwise it overflows.
+// NewQuotaHoldingTime creates a Quota Holding Time IE. The duration must be a
+// whole number of seconds from 0 to 4294967295; another duration gives an IE
+// whose encoding reports ErrInvalidValue. TS 29.244 V20.1.0 clause 8.2.48.
 func NewQuotaHoldingTime(duration time.Duration) *IE {
-	return newUint32ValIE(QuotaHoldingTime, uint32(duration.Seconds()))
+	if !durationFits(duration, time.Second, 4294967295) {
+		return newInvalidIE(QuotaHoldingTime, ErrInvalidValue)
+	}
+	return newUint32ValIE(QuotaHoldingTime, uint32(duration/time.Second))
 }
 
 // QuotaHoldingTime returns QuotaHoldingTime in time.Duration if the type of IE matches.

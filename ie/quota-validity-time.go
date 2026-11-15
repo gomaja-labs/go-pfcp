@@ -10,9 +10,14 @@ import (
 	"time"
 )
 
-// NewQuotaValidityTime creates a new QuotaValidityTime IE.
+// NewQuotaValidityTime creates a Quota Validity Time IE. The duration must be a
+// whole number of seconds from 0 to 4294967295; another duration gives an IE
+// whose encoding reports ErrInvalidValue. TS 29.244 V20.1.0 clause 8.2.132.
 func NewQuotaValidityTime(t time.Duration) *IE {
-	return newUint32ValIE(QuotaValidityTime, uint32(t.Seconds()))
+	if !durationFits(t, time.Second, 4294967295) {
+		return newInvalidIE(QuotaValidityTime, ErrInvalidValue)
+	}
+	return newUint32ValIE(QuotaValidityTime, uint32(t/time.Second))
 }
 
 // QuotaValidityTime returns QuotaValidityTime in time.Time if the type of IE matches.

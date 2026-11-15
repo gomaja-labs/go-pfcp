@@ -114,7 +114,7 @@ func addedValuePayload(i *IE, typ IEType, minimum int, fixed bool) ([]byte, erro
 	return i.Payload, nil
 }
 
-func addedDurationFits(v, unit time.Duration, max uint64) bool {
+func durationFits(v, unit time.Duration, max uint64) bool {
 	return v >= 0 && v%unit == 0 && uint64(v/unit) <= max
 }
 

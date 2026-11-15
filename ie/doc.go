@@ -122,4 +122,8 @@
 // IEs and their backing slices are mutable. Concurrent readers and encoders
 // require an unchanged object graph and input; MarshalTo calls need separate
 // output buffers. The package does not log or manage transport state.
+//
+// Duration constructors require exact whole wire units within the field range.
+// Timer, DL Buffering Duration and Graceful Release Period accept InfiniteTimer;
+// zero stops those timers (TS 29.244 V20.1.0 clauses 8.2.29, 8.2.35 and 8.2.78).
 package ie
