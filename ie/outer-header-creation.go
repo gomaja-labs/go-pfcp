@@ -295,32 +295,10 @@ type OuterHeaderCreationFields struct {
 
 // NewOuterHeaderCreationFields creates a new OuterHeaderCreationFields.
 func NewOuterHeaderCreationFields(desc uint16, teid uint32, v4, v6 string, port uint16, ctag, stag uint32) *OuterHeaderCreationFields {
-	f := &OuterHeaderCreationFields{OuterHeaderCreationDescription: desc}
-
-	oct5 := uint8((desc & 0xff00) >> 8)
-
-	if has1stBit(oct5) || has2ndBit(oct5) {
-		f.TEID = teid
-	}
-
-	if has1stBit(oct5) || has3rdBit(oct5) || has5thBit(oct5) {
-		f.IPv4Address = net.ParseIP(v4).To4()
-	}
-
-	if has2ndBit(oct5) || has4thBit(oct5) || has6thBit(oct5) {
-		f.IPv6Address = net.ParseIP(v6).To16()
-	}
-
-	if has3rdBit(oct5) || has4thBit(oct5) {
-		f.PortNumber = port
-	}
-
-	if has7thBit(oct5) {
-		f.CTag = ctag
-	}
-
-	if has8thBit(oct5) {
-		f.STag = stag
+	f := &OuterHeaderCreationFields{
+		OuterHeaderCreationDescription: desc, TEID: teid,
+		IPv4Address: parseIPArgument(v4), IPv6Address: parseIPArgument(v6),
+		PortNumber: port, CTag: ctag, STag: stag,
 	}
 
 	return f
@@ -349,7 +327,8 @@ func (f *OuterHeaderCreationFields) UnmarshalBinary(b []byte) error {
 		return io.ErrUnexpectedEOF
 	}
 
-	f.OuterHeaderCreationDescription = binary.BigEndian.Uint16(b[0:2])
+	// TS 29.244 V20.1.0 Table 8.2.56-1: octet 6 bits 4-8 are spare.
+	f.OuterHeaderCreationDescription = binary.BigEndian.Uint16(b[0:2]) & 0xff07
 	offset := 2
 
 	// TS 29.244 V20.1.0 Table 8.2.56-1: tags use bits 5/7 and 5/8.
@@ -421,6 +400,18 @@ func (f *OuterHeaderCreationFields) Marshal() ([]byte, error) {
 func (f *OuterHeaderCreationFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
+	}
+	// TS 29.244 V20.1.0 clause 8.2.56: at least one description bit is
+	// required for a non-null value. This send constraint does not affect decode.
+	if f.OuterHeaderCreationDescription == 0 {
+		return ErrInvalidValue
+	}
+	// Validate address presence and family.
+	if !f.HasTEID() && f.TEID != 0 || !f.HasPortNumber() && f.PortNumber != 0 ||
+		!f.HasCTag() && f.CTag != 0 || !f.HasSTag() && f.STag != 0 || f.CTag > 0xffffff || f.STag > 0xffffff ||
+		f.IsLLSSMCTEID() && (f.HasTEID() || f.HasIPv4() || f.HasIPv6() || f.HasPortNumber()) ||
+		f.OuterHeaderCreationDescription&^uint16(0xff07) != 0 || !ipv4FieldValid(f.IPv4Address, f.HasIPv4()) || !ipv6FieldValid(f.IPv6Address, f.HasIPv6()) {
+		return ErrInvalidValue
 	}
 	if f.MarshalLen() > 65535 {
 		return ErrInvalidLength

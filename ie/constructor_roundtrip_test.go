@@ -405,6 +405,12 @@ func TestFlagDrivenConstructorRoundTrips(t *testing.T) {
 						excluded++
 						continue
 					}
+				case "NewUEIPAddressFields":
+					// TS 29.244 V20.1.0 clause 8.2.62: prefix flags need V6/CHV6 and exclude each other.
+					if flags&128 != 0 || flags&0x12 == 0x12 || flags&0x21 == 0x21 || flags&0x48 != 0 && flags&0x21 == 0 || flags&0x48 == 0x48 {
+						excluded++
+						continue
+					}
 				case "NewRemoteGTPUPeerFields":
 					// All current Remote Peer flags, including RTS.
 					if flags&^31 != 0 || flags&3 == 0 {
@@ -439,6 +445,8 @@ func TestFlagDrivenConstructorRoundTrips(t *testing.T) {
 				switch name {
 				case "NewUserIDFields":
 					conditional = map[string]int{"imsi": 1, "imei": 2, "msisdn": 4, "nai": 8}
+				case "NewUEIPAddressFields":
+					conditional = map[string]int{"v4": 2, "v6": 1, "v6d": 8, "v6pl": 64}
 				case "NewRemoteGTPUPeerFields":
 					conditional = map[string]int{"v4": 2, "v6": 1, "di": 4, "ni": 8, "recoveryTimestamp": 16}
 				case "NewPacketRateFields":

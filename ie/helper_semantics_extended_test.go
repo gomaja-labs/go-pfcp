@@ -71,7 +71,7 @@ func helperExtendedSemanticValues() []helperSemanticCase {
 		// TS 29.244 V20.1.0 clause 8.2.67.
 		{name: "HeaderEnrichment", input: ie.NewHeaderEnrichment(0, "abc", "def"), want: &ie.HeaderEnrichmentFields{HeaderType: 0, NameLength: 3, HeaderFieldName: "abc", ValueLength: 3, HeaderFieldValue: "def"}, minimum: 9},
 		// TS 29.244 V20.1.0 clause 8.2.137.
-		{name: "IPMulticastAddress", input: ie.NewIPMulticastAddress(v4, nil, nil, nil), want: &ie.IPMulticastAddressFields{Flags: 2, StartIPv4Address: v4}, minimum: 5},
+		{name: "IPMulticastAddress", input: ie.NewIPMulticastAddress(net.ParseIP("239.1.1.1"), nil, nil, nil), want: &ie.IPMulticastAddressFields{Flags: 2, StartIPv4Address: net.ParseIP("239.1.1.1").To4()}, minimum: 5},
 		// TS 29.244 V20.1.0 clause 8.2.18.
 		{name: "InactivityDetectionTime", input: ie.NewInactivityDetectionTime(123), want: 123, minimum: 4},
 		// TS 29.244 V20.1.0 clause 8.2.158.

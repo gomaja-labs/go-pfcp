@@ -99,13 +99,13 @@ func (f *MPQUICAddressInformationFields) UnmarshalBinary(b []byte) error {
 		return fmt.Errorf("%w: %w", ErrMalformed, r.err)
 	}
 
-	if !f.valid() {
+	if !f.valid(false) {
 		return fmt.Errorf("%w: %w", ErrMalformed, ErrInvalidValue)
 	}
 	return nil
 }
-func (f *MPQUICAddressInformationFields) valid() bool {
-	return f.Flags&^3 == 0 && f.ProxyType >= 2 && f.ProxyType <= 5 && ((f.Flags&MPQUICAddressV4 != 0 && addedAddressValid(f.IPv4Address, 32)) || (f.Flags&MPQUICAddressV4 == 0 && !f.IPv4Address.IsValid())) && ((f.Flags&MPQUICAddressV6 != 0 && addedAddressValid(f.IPv6Address, 128)) || (f.Flags&MPQUICAddressV6 == 0 && !f.IPv6Address.IsValid()))
+func (f *MPQUICAddressInformationFields) valid(send bool) bool {
+	return f.Flags&^3 == 0 && f.ProxyType >= 2 && f.ProxyType <= 5 && ((f.Flags&MPQUICAddressV4 != 0 && addedAddressValid(f.IPv4Address, 32, send)) || (f.Flags&MPQUICAddressV4 == 0 && !f.IPv4Address.IsValid())) && ((f.Flags&MPQUICAddressV6 != 0 && addedAddressValid(f.IPv6Address, 128, send)) || (f.Flags&MPQUICAddressV6 == 0 && !f.IPv6Address.IsValid()))
 }
 
 // Marshal encodes the known fields with spare bits set to zero.
@@ -113,7 +113,7 @@ func (f *MPQUICAddressInformationFields) Marshal() ([]byte, error) {
 	if f == nil {
 		return nil, ErrIENotFound
 	}
-	if !f.valid() {
+	if !f.valid(true) {
 		return nil, ErrInvalidValue
 	}
 	b := addedPut16([]byte{byte(f.Flags), byte(f.ProxyType)}, f.Port)

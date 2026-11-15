@@ -93,13 +93,13 @@ func (f *MBSSessionIdentifierFields) UnmarshalBinary(b []byte) error {
 		return fmt.Errorf("%w: %w", ErrMalformed, r.err)
 	}
 
-	if !f.valid() {
+	if !f.valid(false) {
 		return fmt.Errorf("%w: %w", ErrMalformed, ErrInvalidValue)
 	}
 	return nil
 }
-func (f *MBSSessionIdentifierFields) valid() bool {
-	return f.Flags&^7 == 0 && f.NID <= 0xfffffffffff && (f.Flags&MBSSessionNIDI != 0 || f.NID == 0) && (f.Flags&MBSSessionTMGI != 0 || f.TMGI == [6]byte{}) && ((f.Flags&MBSSessionSSMI != 0 && addedSSMValid(f.MulticastAddress, f.SourceAddress)) || (f.Flags&MBSSessionSSMI == 0 && !f.MulticastAddress.IsValid() && !f.SourceAddress.IsValid()))
+func (f *MBSSessionIdentifierFields) valid(send bool) bool {
+	return f.Flags&^7 == 0 && f.NID <= 0xfffffffffff && (f.Flags&MBSSessionNIDI != 0 || f.NID == 0) && (f.Flags&MBSSessionTMGI != 0 || f.TMGI == [6]byte{}) && ((f.Flags&MBSSessionSSMI != 0 && addedSSMValid(f.MulticastAddress, f.SourceAddress, send)) || (f.Flags&MBSSessionSSMI == 0 && !f.MulticastAddress.IsValid() && !f.SourceAddress.IsValid()))
 }
 
 // Marshal encodes the known fields with spare bits set to zero.
@@ -107,7 +107,7 @@ func (f *MBSSessionIdentifierFields) Marshal() ([]byte, error) {
 	if f == nil {
 		return nil, ErrIENotFound
 	}
-	if !f.valid() {
+	if !f.valid(true) {
 		return nil, ErrInvalidValue
 	}
 	b := []byte{byte(f.Flags)}

@@ -147,21 +147,12 @@ type UEIPAddressFields struct {
 func NewUEIPAddressFields(flags uint8, v4, v6 string, v6d, v6pl uint8) *UEIPAddressFields {
 	f := &UEIPAddressFields{Flags: flags}
 
-	if has2ndBit(flags) && !has5thBit(flags) {
-		f.IPv4Address = net.ParseIP(v4).To4()
-	}
+	f.IPv4Address = parseIPArgument(v4)
 
-	if has1stBit(flags) && !has6thBit(flags) {
-		f.IPv6Address = net.ParseIP(v6).To16()
-	}
+	f.IPv6Address = parseIPArgument(v6)
 
-	if has4thBit(flags) {
-		f.IPv6PrefixDelegationBits = v6d
-	}
-
-	if has7thBit(flags) {
-		f.IPv6PrefixLength = v6pl
-	}
+	f.IPv6PrefixDelegationBits = v6d
+	f.IPv6PrefixLength = v6pl
 
 	return f
 }
@@ -189,7 +180,8 @@ func (f *UEIPAddressFields) UnmarshalBinary(b []byte) error {
 		return io.ErrUnexpectedEOF
 	}
 
-	f.Flags = b[0]
+	// TS 29.244 V20.1.0 clauses 8.1.2 and 8.2.62: ignore spare bits.
+	f.Flags = b[0] & 127
 	offset := 1
 
 	if has2ndBit(f.Flags) && !has5thBit(f.Flags) {
@@ -242,6 +234,15 @@ func (f *UEIPAddressFields) Marshal() ([]byte, error) {
 func (f *UEIPAddressFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
+	}
+	// TS 29.244 V20.1.0 clause 8.2.62: IPv6D and IP6PL require V6 or
+	// CHV6, and IP6PL excludes IPv6D. These are send constraints only.
+	if f.Flags&0x48 != 0 && f.Flags&0x21 == 0 || f.Flags&0x48 == 0x48 {
+		return ErrInvalidValue
+	}
+	// Validate address presence and family.
+	if f.Flags&0x12 == 0x12 || f.Flags&0x21 == 0x21 || !has4thBit(f.Flags) && f.IPv6PrefixDelegationBits != 0 || !has7thBit(f.Flags) && f.IPv6PrefixLength != 0 || f.Flags&128 != 0 || !ipv4FieldValid(f.IPv4Address, has2ndBit(f.Flags) && !has5thBit(f.Flags)) || !ipv6FieldValid(f.IPv6Address, has1stBit(f.Flags) && !has6thBit(f.Flags)) {
+		return ErrInvalidValue
 	}
 	if f.MarshalLen() > 65535 {
 		return ErrInvalidLength

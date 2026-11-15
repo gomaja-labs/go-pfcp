@@ -141,7 +141,8 @@ func (f *MPTCPAddressInformationFields) UnmarshalBinary(b []byte) error {
 		return io.ErrUnexpectedEOF
 	}
 
-	f.Flags = b[0]
+	// TS 29.244 V20.1.0 clauses 8.1.2 and 8.2.157: ignore spare bits.
+	f.Flags = b[0] & 3
 	f.MPTCPProxyType = b[1]
 	f.MPTCPProxyPort = binary.BigEndian.Uint16(b[2:4])
 	offset := 4
@@ -181,6 +182,10 @@ func (f *MPTCPAddressInformationFields) Marshal() ([]byte, error) {
 func (f *MPTCPAddressInformationFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
+	}
+	// TS 29.244 V20.1.0 clause 8.2.157: validate address presence and family.
+	if f.Flags&^uint8(3) != 0 || !ipv4FieldValid(f.MPTCPIPv4Address, f.HasIPv4()) || !ipv6FieldValid(f.MPTCPIPv6Address, f.HasIPv6()) {
+		return ErrInvalidValue
 	}
 	if f.MarshalLen() > 65535 {
 		return ErrInvalidLength

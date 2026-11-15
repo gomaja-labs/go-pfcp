@@ -29,6 +29,17 @@
 // MarshalTo may partially write before a nested encoding error; discard output
 // after any error.
 //
+// # Address families
+//
+// On send, an IPv6 address field rejects an IPv4-mapped IPv6 address
+// (net.IP.To4 or netip.Addr.Is4In6 reports one): such values usually hold an
+// IPv4 address, and sending one as IPv6 changes the family, and for Node ID
+// the node's identity. Use netip.Addr.Unmap or net.IP.To4 to send IPv4.
+// Redirect Information carries text, so an IPv6 address in RFC 5952 section 5
+// mixed notation is sent as written. Wrong-family and zoned addresses are
+// rejected. Decoding accepts received IPv4-mapped addresses; keep the received
+// IE to forward it unchanged (TS 29.244 V20.1.0 clause 8.1.2).
+//
 // # Grouped IEs
 //
 // NewCreatePDR(children...) builds a group. Alternatively, populate

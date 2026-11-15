@@ -99,8 +99,8 @@ type RemoteGTPUPeerFields struct {
 func NewRemoteGTPUPeerFields(flags uint8, v4, v6 string, di uint8, ni string, recoveryTimestamp time.Time) *RemoteGTPUPeerFields {
 	f := &RemoteGTPUPeerFields{Flags: flags, RecoveryTimestamp: recoveryTimestamp}
 
-	f.IPv4Address = net.ParseIP(v4).To4()
-	f.IPv6Address = net.ParseIP(v6).To16()
+	f.IPv4Address = parseIPArgument(v4)
+	f.IPv6Address = parseIPArgument(v6)
 	f.invalidArgument = v4 != "" && f.IPv4Address == nil || v6 != "" && f.IPv6Address == nil
 
 	f.DestinationInterface = di
@@ -221,6 +221,10 @@ func (f *RemoteGTPUPeerFields) MarshalTo(b []byte) error {
 		return ErrIENotFound
 	}
 	if f.invalidArgument || f.Flags&3 == 0 || f.Flags&^uint8(31) != 0 || f.Flags&2 == 0 && len(f.IPv4Address) != 0 || f.Flags&1 == 0 && len(f.IPv6Address) != 0 || f.Flags&4 == 0 && (f.DILength != 0 || f.DestinationInterface != 0) || f.Flags&8 == 0 && (f.NILength != 0 || len(f.NetworkInstance) != 0) || f.Flags&16 == 0 && !f.RecoveryTimestamp.IsZero() || f.DestinationInterface > 15 {
+		return ErrInvalidValue
+	}
+	// TS 29.244 V20.1.0 clause 8.2.70: validate address presence and family.
+	if !ipv4FieldValid(f.IPv4Address, has2ndBit(f.Flags)) || !ipv6FieldValid(f.IPv6Address, has1stBit(f.Flags)) {
 		return ErrInvalidValue
 	}
 	if f.MarshalLen() > 65535 {

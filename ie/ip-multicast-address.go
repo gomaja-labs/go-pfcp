@@ -57,7 +57,7 @@ type IPMulticastAddressFields struct {
 
 // NewIPMulticastAddressFields creates a new NewIPMulticastAddressFields.
 func NewIPMulticastAddressFields(sv4, sv6, ev4, ev6 net.IP) *IPMulticastAddressFields {
-	f := &IPMulticastAddressFields{Flags: 0x00}
+	f := &IPMulticastAddressFields{Flags: 0x00, EndIPv4Address: ev4, EndIPv6Address: ev6}
 	if sv4 == nil && sv6 == nil {
 		f.SetAnyFlag()
 		return f
@@ -181,7 +181,8 @@ func (f *IPMulticastAddressFields) UnmarshalBinary(b []byte) error {
 		return io.ErrUnexpectedEOF
 	}
 
-	f.Flags = b[0]
+	// TS 29.244 V20.1.0 clause 8.1.2: ignore spare bits.
+	f.Flags = b[0] & 15
 	offset := 1
 
 	if f.HasAny() {
@@ -242,6 +243,10 @@ func (f *IPMulticastAddressFields) Marshal() ([]byte, error) {
 func (f *IPMulticastAddressFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
+	}
+	// TS 29.244 V20.1.0 clause 8.2.137: validate address presence and family.
+	if f.Flags&^uint8(15) != 0 || (f.Flags&11 != 1 && f.Flags&11 != 2 && f.Flags&11 != 8) || f.HasAny() && f.HasRange() || !ipv4FieldValid(f.StartIPv4Address, f.HasIPv4()) || !ipv6FieldValid(f.StartIPv6Address, f.HasIPv6()) || !ipv4FieldValid(f.EndIPv4Address, f.HasIPv4() && f.HasRange()) || !ipv6FieldValid(f.EndIPv6Address, f.HasIPv6() && f.HasRange()) {
+		return ErrInvalidValue
 	}
 	if f.MarshalLen() > 65535 {
 		return ErrInvalidLength

@@ -114,8 +114,8 @@ func (f *IPAddressAndPortNumberReplacementFields) UnmarshalBinary(b []byte) erro
 	}
 	return r.err
 }
-func (f *IPAddressAndPortNumberReplacementFields) valid() bool {
-	return f.Flags&^127 == 0 && ((f.Flags&1 != 0 && addedAddressValid(f.DestinationIPv4, 32)) || (f.Flags&1 == 0 && !f.DestinationIPv4.IsValid())) && ((f.Flags&2 != 0 && addedAddressValid(f.DestinationIPv6, 128)) || (f.Flags&2 == 0 && !f.DestinationIPv6.IsValid())) && ((f.Flags&8 != 0 && addedAddressValid(f.SourceIPv4, 32)) || (f.Flags&8 == 0 && !f.SourceIPv4.IsValid())) && ((f.Flags&16 != 0 && addedAddressValid(f.SourceIPv6, 128)) || (f.Flags&16 == 0 && !f.SourceIPv6.IsValid())) && (f.Flags&4 != 0 || f.DestinationPort == 0) && (f.Flags&32 != 0 || f.SourcePort == 0)
+func (f *IPAddressAndPortNumberReplacementFields) valid(send bool) bool {
+	return f.Flags&^127 == 0 && ((f.Flags&1 != 0 && addedAddressValid(f.DestinationIPv4, 32, send)) || (f.Flags&1 == 0 && !f.DestinationIPv4.IsValid())) && ((f.Flags&2 != 0 && addedAddressValid(f.DestinationIPv6, 128, send)) || (f.Flags&2 == 0 && !f.DestinationIPv6.IsValid())) && ((f.Flags&8 != 0 && addedAddressValid(f.SourceIPv4, 32, send)) || (f.Flags&8 == 0 && !f.SourceIPv4.IsValid())) && ((f.Flags&16 != 0 && addedAddressValid(f.SourceIPv6, 128, send)) || (f.Flags&16 == 0 && !f.SourceIPv6.IsValid())) && (f.Flags&4 != 0 || f.DestinationPort == 0) && (f.Flags&32 != 0 || f.SourcePort == 0)
 }
 
 // Marshal encodes known fields with spare bits set to zero.
@@ -123,7 +123,7 @@ func (f *IPAddressAndPortNumberReplacementFields) Marshal() ([]byte, error) {
 	if f == nil {
 		return nil, ErrIENotFound
 	}
-	if !f.valid() {
+	if !f.valid(true) {
 		return nil, ErrInvalidValue
 	}
 	b := []byte{byte(f.Flags)}

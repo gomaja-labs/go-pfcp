@@ -130,7 +130,34 @@ func TestFQCSIDCounts(t *testing.T) {
 func TestOuterHeaderFlagRoundTrip(t *testing.T) {
 	for flags := 0; flags < 256; flags++ {
 		t.Run(fmt.Sprintf("flags_%02x", flags), func(t *testing.T) {
-			want := ie.NewOuterHeaderCreationFields(uint16(flags)<<8, 42, "192.0.2.1", "2001:db8::1", 8805, 0x123456, 0xabcdef)
+			var v4, v6 string
+			if flags&0x15 != 0 {
+				v4 = "192.0.2.1"
+			}
+			if flags&0x2a != 0 {
+				v6 = "2001:db8::1"
+			}
+			var teid, ctag, stag uint32
+			var port uint16
+			if flags&3 != 0 {
+				teid = 42
+			}
+			if flags&12 != 0 {
+				port = 8805
+			}
+			if flags&64 != 0 {
+				ctag = 0x123456
+			}
+			if flags&128 != 0 {
+				stag = 0xabcdef
+			}
+			want := ie.NewOuterHeaderCreationFields(uint16(flags)<<8, teid, v4, v6, port, ctag, stag)
+			if flags == 0 {
+				if _, err := want.Marshal(); !errors.Is(err, ie.ErrInvalidValue) {
+					t.Fatalf("empty description: %v", err)
+				}
+				return
+			}
 			if p := panicOf(func() {
 				b, e := want.Marshal()
 				if e != nil {

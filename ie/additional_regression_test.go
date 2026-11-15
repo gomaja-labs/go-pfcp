@@ -72,7 +72,11 @@ func TestPMFOptionalAddresses(t *testing.T) {
 			m1 = mac
 			m2 = mac
 		}
-		i := ie.NewPMFAddressInformation(v4, v6, 8805, 8806, m1, m2)
+		var port1, port2 uint16
+		if flags&3 != 0 {
+			port1, port2 = 8805, 8806
+		}
+		i := ie.NewPMFAddressInformation(v4, v6, port1, port2, m1, m2)
 		f, err := i.PMFAddressInformation()
 		if err != nil {
 			t.Fatal(err)

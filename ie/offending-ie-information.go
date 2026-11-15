@@ -187,6 +187,9 @@ func addedCopyTo(dst, src []byte, err error) error {
 	copy(dst, src)
 	return nil
 }
-func addedAddressValid(a netip.Addr, bits int) bool {
-	return a.IsValid() && a.Zone() == "" && a.BitLen() == bits
+
+// addedAddressValid distinguishes binary-address send policy from tolerant
+// decoding; each caller specifies its TS 29.244 V20.1.0 address layout.
+func addedAddressValid(a netip.Addr, bits int, send bool) bool {
+	return a.IsValid() && a.Zone() == "" && a.BitLen() == bits && (!send || !a.Is4In6())
 }

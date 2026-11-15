@@ -62,13 +62,13 @@ func (f *MulticastTransportInformationFields) UnmarshalBinary(b []byte) error {
 		return r.err
 	}
 
-	if !f.valid() {
+	if !f.valid(false) {
 		return ErrInvalidValue
 	}
 	return nil
 }
-func (f *MulticastTransportInformationFields) valid() bool {
-	return addedSSMValid(f.MulticastAddress, f.SourceAddress)
+func (f *MulticastTransportInformationFields) valid(send bool) bool {
+	return addedSSMValid(f.MulticastAddress, f.SourceAddress, send)
 }
 
 // Marshal encodes the known fields with spare bits set to zero.
@@ -76,7 +76,7 @@ func (f *MulticastTransportInformationFields) Marshal() ([]byte, error) {
 	if f == nil {
 		return nil, ErrIENotFound
 	}
-	if !f.valid() {
+	if !f.valid(true) {
 		return nil, ErrInvalidValue
 	}
 	b := addedPut32([]byte{0}, f.CommonTEID)
@@ -95,8 +95,11 @@ func (f *MulticastTransportInformationFields) MarshalTo(b []byte) error {
 	wire, err := f.Marshal()
 	return addedCopyTo(b, wire, err)
 }
-func addedSSMValid(dst, src netip.Addr) bool {
-	return dst.IsValid() && src.IsValid() && dst.Zone() == "" && src.Zone() == "" && dst.IsMulticast() && !src.IsMulticast()
+
+// addedSSMValid follows TS 29.244 V20.1.0 clause 8.2.207.
+// The binary-address send policy does not restrict received mapped addresses.
+func addedSSMValid(dst, src netip.Addr, send bool) bool {
+	return (!send || !dst.Is4In6() && !src.Is4In6()) && dst.IsValid() && src.IsValid() && dst.Zone() == "" && src.Zone() == "" && dst.IsMulticast() && !src.IsMulticast()
 }
 func addedAppendSSM(b []byte, dst, src netip.Addr) []byte {
 	for _, a := range []netip.Addr{dst, src} {

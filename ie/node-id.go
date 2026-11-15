@@ -35,12 +35,11 @@ type NodeIDValue struct {
 }
 
 // NewNodeIDAddress creates a Node ID from an IPv4 or IPv6 address.
-// IPv4-mapped IPv6 addresses retain their IPv6 kind. Zoned addresses cannot be
-// represented on the wire and produce an IE that reports ErrInvalidValue.
+// Invalid, zoned or IPv4-mapped IPv6 addresses produce an IE that reports ErrInvalidValue.
 func NewNodeIDAddress(addr netip.Addr) *IE {
 	// TS 29.244 V20.1.0 clause 8.2.38: four or sixteen address octets.
-	if !addr.IsValid() || addr.Zone() != "" {
-		return newInvalidIE(NodeID, fmt.Errorf("%w: invalid or zoned Node ID address", ErrInvalidValue))
+	if !addr.IsValid() || addr.Zone() != "" || addr.Is4In6() {
+		return newInvalidIE(NodeID, fmt.Errorf("%w: invalid, zoned or IPv4-mapped Node ID address", ErrInvalidValue))
 	}
 	kind := NodeIDIPv6Address
 	if addr.Is4() {
