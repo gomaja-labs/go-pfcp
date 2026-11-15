@@ -29,7 +29,11 @@ func (i *IE) DLBufferingSuggestedPacketCount() (uint16, error) {
 			return uint16(i.Payload[0]), nil
 		}
 
-		if len(i.Payload) >= 2 {
+		// TS 29.244 V20.1.0 clause 8.2.30: only 1 or 2 value octets.
+		if len(i.Payload) > 2 {
+			return 0, &DecodeError{Type: DLBufferingSuggestedPacketCount, Err: ErrInvalidLength}
+		}
+		if len(i.Payload) == 2 {
 			return i.ValueAsUint16()
 		}
 
