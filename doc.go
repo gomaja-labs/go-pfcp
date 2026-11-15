@@ -29,8 +29,10 @@
 // Decode failures distinguish incomplete headers, inconsistent framing and
 // offending IE types. Use errors.Is for sentinel errors and errors.As for
 // ie.DecodeError, ie.EncodeError, message.UnsupportedVersionError,
-// message.InvalidLengthError and message.DatagramError. Reading
-// an IE value can fail after message framing succeeds; check helper errors too.
+// message.InvalidLengthError, message.DatagramErrors and message.DatagramError.
+// ParseDatagram returns the decoded messages together with DatagramErrors, one
+// detail per failed frame in wire order; handle both results. Reading an IE
+// value can fail after message framing succeeds; check helper errors too.
 // Invalid arguments retained by constructors surface when encoding.
 //
 // Decoding borrows the input bytes. Keep them unchanged, or copy them before

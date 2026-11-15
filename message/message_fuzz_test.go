@@ -138,7 +138,7 @@ func FuzzParseDatagram(f *testing.F) {
 		}
 		f.Add(b)
 	}
-	// Exercise chain failures and the diagnostic cap from the seed corpus.
+	// Exercise chain failures and multiple body failures from the seed corpus.
 	f.Add(wireHeader(0x25, 54, nil))
 	f.Add(append(wireHeader(0x21, 54, nil), 0))
 	f.Add(wireHeader(0x25, 54, []byte{0, 19, 0, 2, 1}))
@@ -152,15 +152,22 @@ func FuzzParseDatagram(f *testing.F) {
 	f.Fuzz(func(t *testing.T, b []byte) {
 		ms, err := message.ParseDatagram(b)
 		if err != nil {
-			var frame *message.DatagramError
-			if !errors.As(err, &frame) {
-				t.Fatal("missing frame error context", err)
+			var failures message.DatagramErrors
+			if !errors.As(err, &failures) || len(failures) == 0 {
+				t.Fatal("missing non-empty frame error list", err)
 			}
-			for _, detail := range err.(interface{ Unwrap() []error }).Unwrap() {
-				var de *message.DatagramError
-				if !errors.As(detail, &de) {
-					continue // The final detail may summarize omitted failures.
+			if len(failures) > len(b)/16+1 {
+				t.Fatal("failure count exceeds input bound")
+			}
+			if failures[0] == nil || len(err.Error()) > len(failures[0].Error())+64 {
+				t.Fatal("unbounded error text")
+			}
+			previousIndex, previousOffset := -1, -1
+			for _, de := range failures {
+				if de == nil || de.Index <= previousIndex || de.Offset <= previousOffset {
+					t.Fatal("frame indexes and offsets must strictly increase")
 				}
+				previousIndex, previousOffset = de.Index, de.Offset
 				if de.Offset < 0 || de.Offset > len(b) {
 					t.Fatal("frame offset outside datagram")
 				}
