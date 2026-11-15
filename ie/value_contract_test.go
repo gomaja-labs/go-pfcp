@@ -113,7 +113,7 @@ func TestLeafSemanticBoundaries(t *testing.T) {
 	if _, e := ie.New(ie.DownlinkDataServiceInformation, []byte{1}).PPI(); !errors.Is(e, io.ErrUnexpectedEOF) {
 		t.Fatalf("PPI truncation error=%v", e)
 	}
-	if v, e := ie.New(ie.DownlinkDataServiceInformation, []byte{3, 0xff, 0xff}).PPI(); e != nil || v != 7 {
+	if v, e := ie.New(ie.DownlinkDataServiceInformation, []byte{3, 0xff, 0xff}).PPI(); e != nil || v != 63 {
 		t.Fatalf("PPI spare bits value=%d error=%v", v, e)
 	}
 	if v, e := ie.New(ie.DownlinkDataServiceInformation, []byte{3, 0, 0xff}).QFI(); e != nil || v != 63 {

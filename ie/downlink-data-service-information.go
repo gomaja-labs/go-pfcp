@@ -84,7 +84,9 @@ func (i *IE) PPI() (uint8, error) {
 		return 0, io.ErrUnexpectedEOF
 	}
 
-	return i.Payload[1] & 0x07, nil
+	// TS 29.244 V20.1.0 clause 8.2.27 and RFC 2474 section 3:
+	// PPI is the six-bit DSCP; ignore the two received spare bits.
+	return i.Payload[1] & 0x3f, nil
 }
 
 // DownlinkDataServiceInformationFields carries independently optional PPI, QFI and
@@ -135,7 +137,8 @@ func (f *DownlinkDataServiceInformationFields) UnmarshalBinary(b []byte) error {
 	}
 	o := 1
 	if f.Flags&1 != 0 {
-		f.PagingPolicyIndication = b[o] & 7
+		// TS 29.244 V20.1.0 clause 8.2.27 and RFC 2474 section 3: six-bit DSCP.
+		f.PagingPolicyIndication = b[o] & 0x3f
 		o++
 	}
 	if f.Flags&2 != 0 {
@@ -186,7 +189,8 @@ func (f *DownlinkDataServiceInformationFields) MarshalTo(b []byte) error {
 	if f.Flags&1 == 0 && f.PagingPolicyIndication != 0 || f.Flags&2 == 0 && f.QFI != 0 || f.Flags&4 == 0 && f.DLDataPacketsSize != 0 {
 		return ErrInvalidValue
 	}
-	if f.Flags&^uint8(7) != 0 || f.PagingPolicyIndication > 7 || f.QFI > 63 {
+	// TS 29.244 V20.1.0 clause 8.2.27 and RFC 2474 section 3: six-bit DSCP.
+	if f.Flags&^uint8(7) != 0 || f.PagingPolicyIndication > 63 || f.QFI > 63 {
 		return ErrInvalidValue
 	}
 	if len(b) < f.MarshalLen() {
