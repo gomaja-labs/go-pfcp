@@ -13,8 +13,9 @@ const (
 	N6DelayMeasurementInformationMAXD uint8 = 2
 )
 
-// NewN6DelayMeasurementInformation creates a N6 Delay Measurement Information IE.
+// NewN6DelayMeasurementInformation creates an N6 Delay Measurement Information IE.
 // TS 29.244 V20.1.0 clause 8.2.247.
+// Delays must be nonnegative whole milliseconds up to 4294967295 milliseconds.
 func NewN6DelayMeasurementInformation(flags uint8, averagePacketDelay time.Duration, minimumPacketDelay time.Duration, maximumPacketDelay time.Duration) *IE {
 	return recentFieldsIE(N6DelayMeasurementInformation, NewN6DelayMeasurementInformationFields(flags, averagePacketDelay, minimumPacketDelay, maximumPacketDelay))
 }
@@ -48,6 +49,7 @@ type N6DelayMeasurementInformationFields struct {
 }
 
 // NewN6DelayMeasurementInformationFields stores all arguments; Marshal validates their representation.
+// Delays must be nonnegative whole milliseconds up to 4294967295 milliseconds.
 func NewN6DelayMeasurementInformationFields(flags uint8, averagePacketDelay time.Duration, minimumPacketDelay time.Duration, maximumPacketDelay time.Duration) *N6DelayMeasurementInformationFields {
 	return &N6DelayMeasurementInformationFields{flags, averagePacketDelay, minimumPacketDelay, maximumPacketDelay}
 }

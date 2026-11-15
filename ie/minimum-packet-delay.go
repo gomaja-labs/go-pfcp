@@ -10,11 +10,15 @@ import (
 	"time"
 )
 
-// NewMinimumPacketDelay creates a new MinimumPacketDelay IE.
-//
-// the delay should be within the range of uint32, otherwise it overflows.
+// NewMinimumPacketDelay creates a Minimum Packet Delay IE. The duration must be
+// a whole number of milliseconds from 0 to 4294967295; another duration gives
+// an IE whose encoding reports ErrInvalidValue. TS 29.244 V20.1.0 clause
+// 8.2.163.
 func NewMinimumPacketDelay(delay time.Duration) *IE {
-	return newUint32ValIE(MinimumPacketDelay, uint32(delay.Milliseconds()))
+	if !durationFits(delay, time.Millisecond, 4294967295) {
+		return newInvalidIE(MinimumPacketDelay, ErrInvalidValue)
+	}
+	return newUint32ValIE(MinimumPacketDelay, uint32(delay/time.Millisecond))
 }
 
 // MinimumPacketDelay returns MinimumPacketDelay in time.Duration if the type of IE matches.

@@ -33,6 +33,7 @@ const (
 
 // NewUELevelMeasurementsConfiguration creates a UE Level Measurements Configuration IE.
 // TS 29.244 V20.1.0 clause 8.2.245.
+// The time period must be nonnegative whole seconds up to 16777215 seconds.
 func NewUELevelMeasurementsConfiguration(jobType uint8, measurementTypes []uint8, timePeriod time.Duration) *IE {
 	return recentFieldsIE(UELevelMeasurementsConfiguration, NewUELevelMeasurementsConfigurationFields(jobType, append([]uint8(nil), measurementTypes...), timePeriod))
 }
@@ -61,6 +62,7 @@ type UELevelMeasurementsConfigurationFields struct {
 }
 
 // NewUELevelMeasurementsConfigurationFields retains all supplied arguments; Marshal validates them.
+// The time period must be nonnegative whole seconds up to 16777215 seconds.
 func NewUELevelMeasurementsConfigurationFields(jobType uint8, measurementTypes []uint8, timePeriod time.Duration) *UELevelMeasurementsConfigurationFields {
 	return &UELevelMeasurementsConfigurationFields{jobType, append([]uint8(nil), measurementTypes...), timePeriod}
 }

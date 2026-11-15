@@ -9,11 +9,16 @@ import (
 	"time"
 )
 
-// NewDownlinkDataNotificationDelay creates a new DownlinkDataNotificationDelay IE.
+// NewDownlinkDataNotificationDelay creates a Downlink Data Notification Delay
+// IE. The delay must be a whole multiple of 50 milliseconds from 0 to 12.75
+// seconds, where zero clears a previously set delay condition; another duration
+// gives an IE whose encoding reports ErrInvalidValue. TS 29.244 V20.1.0 clause
+// 8.2.28.
 func NewDownlinkDataNotificationDelay(delay time.Duration) *IE {
-	// TS29.244 8.2.28 Downlink Data Notification Delay
-	// Delay Value in integer multiples of 50 millisecs, or zero
-	return newUint8ValIE(DownlinkDataNotificationDelay, uint8(delay/50000000))
+	if !durationFits(delay, 50*time.Millisecond, 255) {
+		return newInvalidIE(DownlinkDataNotificationDelay, ErrInvalidValue)
+	}
+	return newUint8ValIE(DownlinkDataNotificationDelay, uint8(delay/(50*time.Millisecond)))
 }
 
 // DownlinkDataNotificationDelay returns DownlinkDataNotificationDelay in time.Duration if the type of IE matches.

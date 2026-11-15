@@ -10,11 +10,16 @@ import (
 	"time"
 )
 
-// NewUserPlaneInactivityTimer creates a new UserPlaneInactivityTimer IE.
-//
-// the period should be within the range of uint32, otherwise it overflows.
+// NewUserPlaneInactivityTimer creates a User Plane Inactivity Timer IE. The
+// duration must be a whole number of seconds from 0 to 4294967295, where zero
+// stops user plane inactivity detection and reporting; another duration gives
+// an IE whose encoding reports ErrInvalidValue. TS 29.244 V20.1.0 clause
+// 8.2.83.
 func NewUserPlaneInactivityTimer(period time.Duration) *IE {
-	return newUint32ValIE(UserPlaneInactivityTimer, uint32(period.Seconds()))
+	if !durationFits(period, time.Second, 4294967295) {
+		return newInvalidIE(UserPlaneInactivityTimer, ErrInvalidValue)
+	}
+	return newUint32ValIE(UserPlaneInactivityTimer, uint32(period/time.Second))
 }
 
 // UserPlaneInactivityTimer returns UserPlaneInactivityTimer in time.Duration if the type of IE matches.

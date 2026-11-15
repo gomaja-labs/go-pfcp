@@ -77,7 +77,7 @@ func (f *ReportingSuggestionInfoFields) UnmarshalBinary(b []byte) error {
 	return nil
 }
 func (f *ReportingSuggestionInfoFields) valid() bool {
-	return f.Urgency <= ReportingNonDelayTolerant && addedDurationFits(f.ReportingTime, time.Second, 0xffffffff) && (f.Urgency == ReportingDelayTolerant || f.ReportingTime == 0)
+	return f.Urgency <= ReportingNonDelayTolerant && durationFits(f.ReportingTime, time.Second, 0xffffffff) && (f.Urgency == ReportingDelayTolerant || f.ReportingTime == 0)
 }
 
 // Marshal encodes the known fields with spare bits set to zero.

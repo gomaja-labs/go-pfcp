@@ -79,7 +79,7 @@ func (f *N6JitterMeasurementFields) UnmarshalBinary(b []byte) error {
 	return nil
 }
 func (f *N6JitterMeasurementFields) valid() bool {
-	return f.Flags&^1 == 0 && addedDurationFits(f.DLPeriodicity, time.Millisecond, 0xffffffff) && addedSignedMilliseconds(f.LowerDLJitter) && addedSignedMilliseconds(f.HigherDLJitter) && (f.Flags&N6JitterDL != 0 || (f.DLPeriodicity == 0 && f.LowerDLJitter == 0 && f.HigherDLJitter == 0))
+	return f.Flags&^1 == 0 && durationFits(f.DLPeriodicity, time.Millisecond, 0xffffffff) && addedSignedMilliseconds(f.LowerDLJitter) && addedSignedMilliseconds(f.HigherDLJitter) && (f.Flags&N6JitterDL != 0 || (f.DLPeriodicity == 0 && f.LowerDLJitter == 0 && f.HigherDLJitter == 0))
 }
 
 // Marshal encodes the known fields with spare bits set to zero.

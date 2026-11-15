@@ -10,7 +10,8 @@ import (
 	"time"
 )
 
-// NewTimeOffsetMeasurement creates a new TimeOffsetMeasurement IE.
+// NewTimeOffsetMeasurement creates a TimeOffsetMeasurement IE from any signed nanosecond duration.
+// TS 29.244 V20.1.0 clause 8.2.149: signed64 nanoseconds, including negative offsets.
 func NewTimeOffsetMeasurement(measurement time.Duration) *IE {
 	return newUint64ValIE(TimeOffsetMeasurement, uint64(measurement.Nanoseconds()))
 }

@@ -17,11 +17,17 @@ const (
 	BTITDTP uint8 = 1
 )
 
-// NewTimeQuotaMechanism creates a new TimeQuotaMechanism IE.
+// NewTimeQuotaMechanism creates a Time Quota Mechanism IE. The type must be
+// BTITCTP or BTITDTP and the base time interval a whole number of seconds from
+// 0 to 4294967295; other arguments give an IE whose encoding reports
+// ErrInvalidValue. TS 29.244 V20.1.0 clause 8.2.81.
 func NewTimeQuotaMechanism(btit uint8, bti time.Duration) *IE {
+	if btit > BTITDTP || !durationFits(bti, time.Second, 0xffffffff) {
+		return newInvalidIE(TimeQuotaMechanism, ErrInvalidValue)
+	}
 	b := make([]byte, 5)
-	b[0] = btit & 0x03
-	binary.BigEndian.PutUint32(b[1:5], uint32(bti.Seconds()))
+	b[0] = btit
+	binary.BigEndian.PutUint32(b[1:5], uint32(bti/time.Second))
 
 	return New(TimeQuotaMechanism, b)
 }

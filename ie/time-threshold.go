@@ -10,9 +10,14 @@ import (
 	"time"
 )
 
-// NewTimeThreshold creates a new TimeThreshold IE.
+// NewTimeThreshold creates a Time Threshold IE. The duration must be a whole
+// number of seconds from 0 to 4294967295; another duration gives an IE whose
+// encoding reports ErrInvalidValue. TS 29.244 V20.1.0 clause 8.2.14.
 func NewTimeThreshold(t time.Duration) *IE {
-	return newUint32ValIE(TimeThreshold, uint32(t.Seconds()))
+	if !durationFits(t, time.Second, 4294967295) {
+		return newInvalidIE(TimeThreshold, ErrInvalidValue)
+	}
+	return newUint32ValIE(TimeThreshold, uint32(t/time.Second))
 }
 
 // TimeThreshold returns TimeThreshold in time.Duration if the type of IE matches.

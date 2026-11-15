@@ -10,11 +10,15 @@ import (
 	"time"
 )
 
-// NewMaximumPacketDelay creates a new MaximumPacketDelay IE.
-//
-// the delay should be within the range of uint32, otherwise it overflows.
+// NewMaximumPacketDelay creates a Maximum Packet Delay IE. The duration must be
+// a whole number of milliseconds from 0 to 4294967295; another duration gives
+// an IE whose encoding reports ErrInvalidValue. TS 29.244 V20.1.0 clause
+// 8.2.164.
 func NewMaximumPacketDelay(delay time.Duration) *IE {
-	return newUint32ValIE(MaximumPacketDelay, uint32(delay.Milliseconds()))
+	if !durationFits(delay, time.Millisecond, 4294967295) {
+		return newInvalidIE(MaximumPacketDelay, ErrInvalidValue)
+	}
+	return newUint32ValIE(MaximumPacketDelay, uint32(delay/time.Millisecond))
 }
 
 // MaximumPacketDelay returns MaximumPacketDelay in time.Duration if the type of IE matches.
