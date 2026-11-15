@@ -177,7 +177,8 @@ func (f *LinkSpecificMultipathIPAddressFields) UnmarshalBinary(b []byte) error {
 		return io.ErrUnexpectedEOF
 	}
 
-	f.Flags = b[0]
+	// TS 29.244 V20.1.0 clause 8.1.2: ignore spare bits.
+	f.Flags = b[0] & 15
 	offset := 1
 
 	if f.HasIPv4() {
@@ -231,6 +232,10 @@ func (f *LinkSpecificMultipathIPAddressFields) Marshal() ([]byte, error) {
 func (f *LinkSpecificMultipathIPAddressFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
+	}
+	// TS 29.244 V20.1.0 clause 8.2.158: validate address presence and family.
+	if f.Flags&^uint8(15) != 0 || !ipv4FieldValid(f.UELinkSpecificIPv4AddressFor3GPPAccess, f.HasIPv4()) || !ipv6FieldValid(f.UELinkSpecificIPv6AddressFor3GPPAccess, f.HasIPv6()) || !ipv4FieldValid(f.UELinkSpecificIPv4AddressForNon3GPPAccess, f.HasNV4()) || !ipv6FieldValid(f.UELinkSpecificIPv6AddressForNon3GPPAccess, f.HasNV6()) {
+		return ErrInvalidValue
 	}
 	if f.MarshalLen() > 65535 {
 		return ErrInvalidLength

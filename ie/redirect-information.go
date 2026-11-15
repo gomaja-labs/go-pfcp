@@ -233,7 +233,8 @@ func NewRedirectInformationFromFields(fields *RedirectInformationFields) *IE {
 
 // TS 29.244 V20.1.0 clause 8.2.20 and RFC 8506 section 8.38:
 // addresses are nonempty UTF-8 and use the specified IP family. Send IPv6
-// in RFC 5952 canonical form; receive other valid spellings without changing them.
+// in RFC 5952 sections 4 and 5 canonical form (including mixed notation);
+// receive other valid spellings without changing them.
 func (f *RedirectInformationFields) validateAddresses(sending bool) error {
 	if f.RedirectAddressType > 8 {
 		return ErrInvalidValue

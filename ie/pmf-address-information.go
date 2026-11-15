@@ -82,10 +82,6 @@ func NewPMFAddressInformationFields(v4, v6 net.IP, port1, port2 uint16, mac1, ma
 		f.PMFIPv6Address = v6
 	}
 
-	if v4 == nil && v6 == nil {
-		f.PMFPortFor3GPPAccess = 0
-		f.PMFPortForNon3GPPAccess = 0
-	}
 	return f
 }
 
@@ -166,7 +162,8 @@ func (f *PMFAddressInformationFields) UnmarshalBinary(b []byte) error {
 		return io.ErrUnexpectedEOF
 	}
 
-	f.Flags = b[0]
+	// TS 29.244 V20.1.0 clauses 8.1.2 and 8.2.159: ignore spare bits.
+	f.Flags = b[0] & 7
 	offset := 1
 
 	if f.HasIPv4() {
@@ -224,6 +221,10 @@ func (f *PMFAddressInformationFields) Marshal() ([]byte, error) {
 func (f *PMFAddressInformationFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
+	}
+	// TS 29.244 V20.1.0 clause 8.2.159: validate address presence and family.
+	if !f.HasMAC() && (f.PMFMACAddressFor3GPPAccess != nil || f.PMFMACAddressForNon3GPPAccess != nil) || f.Flags&^uint8(7) != 0 || f.Flags&3 == 0 && (f.PMFPortFor3GPPAccess != 0 || f.PMFPortForNon3GPPAccess != 0) || !ipv4FieldValid(f.PMFIPv4Address, f.HasIPv4()) || !ipv6FieldValid(f.PMFIPv6Address, f.HasIPv6()) {
+		return ErrInvalidValue
 	}
 	if f.MarshalLen() > 65535 {
 		return ErrInvalidLength

@@ -226,6 +226,10 @@ func (f *FTEIDFields) MarshalTo(b []byte) error {
 	if !f.HasCh() && (f.HasIPv4() && f.IPv4Address.To4() == nil || f.HasIPv6() && (f.IPv6Address.To16() == nil || f.IPv6Address.To4() != nil)) {
 		return ErrInvalidValue
 	}
+	// TS 29.244 V20.1.0 clause 8.2.3: validate address presence and family.
+	if f.HasCh() && f.TEID != 0 || !f.HasChID() && f.ChooseID != 0 || !ipv4FieldValid(f.IPv4Address, !f.HasCh() && f.HasIPv4()) || !ipv6FieldValid(f.IPv6Address, !f.HasCh() && f.HasIPv6()) {
+		return ErrInvalidValue
+	}
 	if f.MarshalLen() > 65535 {
 		return ErrInvalidLength
 	}

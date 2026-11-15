@@ -79,13 +79,13 @@ func (f *CPIPAddressFields) UnmarshalBinary(b []byte) error {
 	if r.pos != len(b) {
 		return ErrInvalidLength
 	}
-	if !f.valid() {
+	if !f.valid(false) {
 		return ErrInvalidValue
 	}
 	return nil
 }
-func (f *CPIPAddressFields) valid() bool {
-	return f.Flags >= 1 && f.Flags <= 3 && ((f.Flags&CPIPAddressV4 != 0 && addedAddressValid(f.IPv4Address, 32)) || (f.Flags&CPIPAddressV4 == 0 && !f.IPv4Address.IsValid())) && ((f.Flags&CPIPAddressV6 != 0 && addedAddressValid(f.IPv6Address, 128)) || (f.Flags&CPIPAddressV6 == 0 && !f.IPv6Address.IsValid()))
+func (f *CPIPAddressFields) valid(send bool) bool {
+	return f.Flags >= 1 && f.Flags <= 3 && ((f.Flags&CPIPAddressV4 != 0 && addedAddressValid(f.IPv4Address, 32, send)) || (f.Flags&CPIPAddressV4 == 0 && !f.IPv4Address.IsValid())) && ((f.Flags&CPIPAddressV6 != 0 && addedAddressValid(f.IPv6Address, 128, send)) || (f.Flags&CPIPAddressV6 == 0 && !f.IPv6Address.IsValid()))
 }
 
 // Marshal encodes the known fields with spare bits set to zero.
@@ -93,7 +93,7 @@ func (f *CPIPAddressFields) Marshal() ([]byte, error) {
 	if f == nil {
 		return nil, ErrIENotFound
 	}
-	if !f.valid() {
+	if !f.valid(true) {
 		return nil, ErrInvalidValue
 	}
 	b := []byte{byte(f.Flags)}

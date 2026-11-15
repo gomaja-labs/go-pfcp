@@ -20,7 +20,6 @@ func TestNodeIDTypedValue(t *testing.T) {
 	}{
 		{"IPv4", ie.NewNodeIDAddress(netip.MustParseAddr("192.0.2.1")), ie.NodeIDValue{Type: ie.NodeIDIPv4Address, Address: netip.MustParseAddr("192.0.2.1")}, []byte{0, 192, 0, 2, 1}},
 		{"IPv6", ie.NewNodeIDAddress(netip.MustParseAddr("2001:db8::1")), ie.NodeIDValue{Type: ie.NodeIDIPv6Address, Address: netip.MustParseAddr("2001:db8::1")}, []byte{1, 0x20, 1, 0x0d, 0xb8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}},
-		{"mapped IPv6", ie.NewNodeIDAddress(netip.MustParseAddr("::ffff:192.0.2.1")), ie.NodeIDValue{Type: ie.NodeIDIPv6Address, Address: netip.MustParseAddr("::ffff:192.0.2.1")}, []byte{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xff, 0xff, 192, 0, 2, 1}},
 		{"numeric domain", ie.NewNodeIDFQDN("192.0.2.1"), ie.NodeIDValue{Type: ie.NodeIDFQDN, FQDN: "192.0.2.1"}, []byte{2, 3, '1', '9', '2', 1, '0', 1, '2', 1, '1'}},
 		{"domain", ie.NewNodeIDFQDN("node.example"), ie.NodeIDValue{Type: ie.NodeIDFQDN, FQDN: "node.example"}, []byte{2, 4, 'n', 'o', 'd', 'e', 7, 'e', 'x', 'a', 'm', 'p', 'l', 'e'}},
 	} {

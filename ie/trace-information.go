@@ -187,6 +187,10 @@ func (f *TraceInformationFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
 	}
+	// TS 29.244 V20.1.0 clause 8.2.108: validate address presence and family.
+	if f.IPAddressOfTraceCollectionEntityLength != 4 && f.IPAddressOfTraceCollectionEntityLength != 16 || f.IPAddressOfTraceCollectionEntityLength == 4 && !ipv4FieldValid(f.IPAddressOfTraceCollectionEntity, true) || f.IPAddressOfTraceCollectionEntityLength == 16 && !ipv6FieldValid(f.IPAddressOfTraceCollectionEntity, true) {
+		return ErrInvalidValue
+	}
 	if f.MarshalLen() > 65535 {
 		return ErrInvalidLength
 	}

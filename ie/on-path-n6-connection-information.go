@@ -66,7 +66,7 @@ func ParseOnPathN6ConnectionInformationFields(b []byte) (*OnPathN6ConnectionInfo
 	}
 	return f, nil
 }
-func (f *OnPathN6ConnectionInformationFields) validate() error {
+func (f *OnPathN6ConnectionInformationFields) validate(send bool) error {
 	if f == nil {
 		return ErrIENotFound
 	}
@@ -82,7 +82,7 @@ func (f *OnPathN6ConnectionInformationFields) validate() error {
 	if f.Flags&16 == 0 && f.IPv6Address.IsValid() {
 		return ErrInvalidValue
 	}
-	if f.Flags&16 != 0 && (!f.IPv6Address.Is6() || f.IPv6Address.Zone() != "") {
+	if f.Flags&16 != 0 && !addedAddressValid(f.IPv6Address, 128, send) {
 		return ErrInvalidValue
 	}
 	if f.Flags&32 == 0 && f.PortNumber != 0 {
@@ -111,7 +111,7 @@ func (f *OnPathN6ConnectionInformationFields) MarshalLen() int {
 
 // Marshal serializes fields as defined in clause 8.2.261.
 func (f *OnPathN6ConnectionInformationFields) Marshal() ([]byte, error) {
-	if err := f.validate(); err != nil {
+	if err := f.validate(true); err != nil {
 		return nil, err
 	}
 	b := make([]byte, f.MarshalLen())
@@ -123,7 +123,7 @@ func (f *OnPathN6ConnectionInformationFields) Marshal() ([]byte, error) {
 
 // MarshalTo writes fields to b, rejecting invalid values and short buffers.
 func (f *OnPathN6ConnectionInformationFields) MarshalTo(b []byte) error {
-	if err := f.validate(); err != nil {
+	if err := f.validate(true); err != nil {
 		return err
 	}
 	if len(b) < f.MarshalLen() {
@@ -177,5 +177,5 @@ func (f *OnPathN6ConnectionInformationFields) UnmarshalBinary(b []byte) error {
 		}
 		f.PortNumber = uint16(recentUint(b[offset : offset+2]))
 	}
-	return f.validate()
+	return f.validate(false)
 }

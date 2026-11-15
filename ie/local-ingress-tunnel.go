@@ -80,13 +80,13 @@ func (f *LocalIngressTunnelFields) UnmarshalBinary(b []byte) error {
 		return r.err
 	}
 
-	if !f.valid() {
+	if !f.valid(false) {
 		return ErrInvalidValue
 	}
 	return nil
 }
-func (f *LocalIngressTunnelFields) valid() bool {
-	return f.Flags&^7 == 0 && (f.Flags&3 == 1 || f.Flags&3 == 2) && ((f.Flags&LocalIngressCH != 0 && f.Port == 0 && !f.Address.IsValid()) || (f.Flags&LocalIngressCH == 0 && ((f.Flags&LocalIngressV4 != 0 && addedAddressValid(f.Address, 32)) || (f.Flags&LocalIngressV6 != 0 && addedAddressValid(f.Address, 128)))))
+func (f *LocalIngressTunnelFields) valid(send bool) bool {
+	return f.Flags&^7 == 0 && (f.Flags&3 == 1 || f.Flags&3 == 2) && ((f.Flags&LocalIngressCH != 0 && f.Port == 0 && !f.Address.IsValid()) || (f.Flags&LocalIngressCH == 0 && ((f.Flags&LocalIngressV4 != 0 && addedAddressValid(f.Address, 32, send)) || (f.Flags&LocalIngressV6 != 0 && addedAddressValid(f.Address, 128, send)))))
 }
 
 // Marshal encodes the known fields with spare bits set to zero.
@@ -94,7 +94,7 @@ func (f *LocalIngressTunnelFields) Marshal() ([]byte, error) {
 	if f == nil {
 		return nil, ErrIENotFound
 	}
-	if !f.valid() {
+	if !f.valid(true) {
 		return nil, ErrInvalidValue
 	}
 	b := []byte{byte(f.Flags)}

@@ -148,11 +148,13 @@ func (f *SourceIPAddressFields) UnmarshalBinary(b []byte) error {
 	*f = SourceIPAddressFields{}
 
 	l := len(b)
-	if l < 2 {
+	// TS 29.244 V20.1.0 clause 8.2.138: only flags are unconditional.
+	if l < 1 {
 		return io.ErrUnexpectedEOF
 	}
 
-	f.Flags = b[0]
+	// TS 29.244 V20.1.0 clauses 8.1.2 and 8.2.138: ignore spare bits.
+	f.Flags = b[0] & 7
 	offset := 1
 
 	if f.HasIPv4() {
@@ -198,6 +200,10 @@ func (f *SourceIPAddressFields) Marshal() ([]byte, error) {
 func (f *SourceIPAddressFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
+	}
+	// TS 29.244 V20.1.0 clause 8.2.138: validate address presence and family.
+	if !f.HasMPL() && f.MaskPrefixLength != 0 || f.Flags&^uint8(7) != 0 || !ipv4FieldValid(f.IPv4Address, f.HasIPv4()) || !ipv6FieldValid(f.IPv6Address, f.HasIPv6()) {
+		return ErrInvalidValue
 	}
 	if f.MarshalLen() > 65535 {
 		return ErrInvalidLength

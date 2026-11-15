@@ -130,7 +130,8 @@ func (f *CPPFCPEntityIPAddressFields) UnmarshalBinary(b []byte) error {
 		return io.ErrUnexpectedEOF
 	}
 
-	f.Flags = b[0]
+	// TS 29.244 V20.1.0 clauses 8.1.2 and 8.2.135: ignore spare bits.
+	f.Flags = b[0] & 3
 	offset := 1
 
 	if f.HasIPv4() {
@@ -168,6 +169,10 @@ func (f *CPPFCPEntityIPAddressFields) Marshal() ([]byte, error) {
 func (f *CPPFCPEntityIPAddressFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
+	}
+	// TS 29.244 V20.1.0 clause 8.2.135: validate address presence and family.
+	if f.TEID != 0 || f.ChooseID != nil || f.Flags&^uint8(3) != 0 || f.Flags&3 == 0 || !ipv4FieldValid(f.IPv4Address, f.HasIPv4()) || !ipv6FieldValid(f.IPv6Address, f.HasIPv6()) {
+		return ErrInvalidValue
 	}
 	if f.MarshalLen() > 65535 {
 		return ErrInvalidLength
@@ -208,10 +213,10 @@ func (f *CPPFCPEntityIPAddressFields) MarshalLen() int {
 	}
 
 	l := 1
-	if f.IPv4Address != nil {
+	if f.HasIPv4() {
 		l += 4
 	}
-	if f.IPv6Address != nil {
+	if f.HasIPv6() {
 		l += 16
 	}
 

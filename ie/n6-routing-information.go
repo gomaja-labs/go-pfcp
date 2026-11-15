@@ -74,7 +74,7 @@ func ParseN6RoutingInformationFields(b []byte) (*N6RoutingInformationFields, err
 	}
 	return f, nil
 }
-func (f *N6RoutingInformationFields) validate() error {
+func (f *N6RoutingInformationFields) validate(send bool) error {
 	if f == nil {
 		return ErrIENotFound
 	}
@@ -90,7 +90,7 @@ func (f *N6RoutingInformationFields) validate() error {
 	if f.Flags&2 == 0 && f.SourceIPv6Address.IsValid() {
 		return ErrInvalidValue
 	}
-	if f.Flags&2 != 0 && (!f.SourceIPv6Address.Is6() || f.SourceIPv6Address.Zone() != "") {
+	if f.Flags&2 != 0 && !addedAddressValid(f.SourceIPv6Address, 128, send) {
 		return ErrInvalidValue
 	}
 	if f.Flags&4 == 0 && f.SourcePort != 0 {
@@ -105,7 +105,7 @@ func (f *N6RoutingInformationFields) validate() error {
 	if f.Flags&16 == 0 && f.DestinationIPv6Address.IsValid() {
 		return ErrInvalidValue
 	}
-	if f.Flags&16 != 0 && (!f.DestinationIPv6Address.Is6() || f.DestinationIPv6Address.Zone() != "") {
+	if f.Flags&16 != 0 && !addedAddressValid(f.DestinationIPv6Address, 128, send) {
 		return ErrInvalidValue
 	}
 	if f.Flags&32 == 0 && f.DestinationPort != 0 {
@@ -143,7 +143,7 @@ func (f *N6RoutingInformationFields) MarshalLen() int {
 
 // Marshal serializes fields as defined in clause 8.2.243.
 func (f *N6RoutingInformationFields) Marshal() ([]byte, error) {
-	if err := f.validate(); err != nil {
+	if err := f.validate(true); err != nil {
 		return nil, err
 	}
 	b := make([]byte, f.MarshalLen())
@@ -155,7 +155,7 @@ func (f *N6RoutingInformationFields) Marshal() ([]byte, error) {
 
 // MarshalTo writes fields to b, rejecting invalid values and short buffers.
 func (f *N6RoutingInformationFields) MarshalTo(b []byte) error {
-	if err := f.validate(); err != nil {
+	if err := f.validate(true); err != nil {
 		return err
 	}
 	if len(b) < f.MarshalLen() {
@@ -242,5 +242,5 @@ func (f *N6RoutingInformationFields) UnmarshalBinary(b []byte) error {
 		}
 		f.DestinationPort = uint16(recentUint(b[offset : offset+2]))
 	}
-	return f.validate()
+	return f.validate(false)
 }

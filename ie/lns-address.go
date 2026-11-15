@@ -3,10 +3,11 @@ package ie
 import "net/netip"
 
 // NewLNSAddress creates an LNS Address IE.
+// Invalid, zoned or IPv4-mapped IPv6 addresses produce an encoding error.
 // TS 29.244 V20.1.0 clause 8.2.188: the payload length alone selects IPv4
 // (four octets) or IPv6 (sixteen octets); no extension octets can be recognised.
 func NewLNSAddress(address netip.Addr) *IE {
-	if !address.IsValid() || address.Zone() != "" {
+	if !address.IsValid() || address.Zone() != "" || address.Is4In6() {
 		return newInvalidIE(LNSAddress, ErrInvalidValue)
 	}
 	return New(LNSAddress, address.AsSlice())

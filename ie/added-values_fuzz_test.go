@@ -2,6 +2,8 @@ package ie_test
 
 import (
 	"bytes"
+	"errors"
+	"net/netip"
 	"reflect"
 	"testing"
 
@@ -14,6 +16,9 @@ func FuzzAddedIEValues(f *testing.F) {
 	for _, b := range [][]byte{{0}, {1, 255}, {3, 0, 0, 0}, {255, 255, 255, 255, 255}} {
 		f.Add(b)
 	}
+	// CP IP Address, TS 29.244 V20.1.0 clause 8.2.199: receive is
+	// tolerant of a mapped IPv6 value that typed send validation rejects.
+	f.Add(append([]byte{16, 1}, netip.MustParseAddr("::ffff:192.0.2.1").AsSlice()...))
 	names := []string{"L2TPUserAuthentication", "LNSAddress", "IPAddressAndPortNumberReplacement", "DSCPToPPIMappingInformation", "OffendingIEInformation", "RATType", "TunnelPreference", "CallingNumber", "CalledNumber", "L2TPSessionIndications", "DNSServerAddress", "NBNSServerAddress", "MaximumReceiveUnit", "Thresholds", "SteeringModeIndicator", "GroupID", "CPIPAddress", "DNSQueryResponseFilter", "EventNotificationURI", "NotificationCorrelationID", "ReportingFlags", "PredefinedRulesName", "MBSSessionIdentifier", "MulticastTransportInformation", "MBSN4mbReqFlags", "LocalIngressTunnel", "MBSUnicastParametersID", "MBSN4RespFlags", "TunnelPassword", "AreaSessionID", "PFCPSDRspFlags", "QERIndications", "VendorSpecificNodeReportType", "ConfiguredTimeDomain", "Metadata", "TrafficParameterThreshold", "DLPeriodicity", "N6JitterMeasurement", "TrafficParameterMeasurementIndication", "ULPeriodicity", "MPQUICControlInformation", "MPQUICAddressInformation", "TransportMode", "ReportingSuggestionInfo", "TLContainer", "MeasurementIndication", "HPLMNSNSSAI", "MediaTransportProtocol", "RTPHeaderExtensionType", "RTPHeaderExtensionID"}
 	types := []ie.IEType{ie.L2TPUserAuthentication, ie.LNSAddress, ie.IPAddressAndPortNumberReplacement, ie.DSCPToPPIMappingInformation, ie.OffendingIEInformation, ie.RATType, ie.TunnelPreference, ie.CallingNumber, ie.CalledNumber, ie.L2TPSessionIndications, ie.DNSServerAddress, ie.NBNSServerAddress, ie.MaximumReceiveUnit, ie.Thresholds, ie.SteeringModeIndicator, ie.GroupID, ie.CPIPAddress, ie.DNSQueryResponseFilter, ie.EventNotificationURI, ie.NotificationCorrelationID, ie.ReportingFlags, ie.PredefinedRulesName, ie.MBSSessionIdentifier, ie.MulticastTransportInformation, ie.MBSN4mbReqFlags, ie.LocalIngressTunnel, ie.MBSUnicastParametersID, ie.MBSN4RespFlags, ie.TunnelPassword, ie.AreaSessionID, ie.PFCPSDRspFlags, ie.QERIndications, ie.VendorSpecificNodeReportType, ie.ConfiguredTimeDomain, ie.Metadata, ie.TrafficParameterThreshold, ie.DLPeriodicity, ie.N6JitterMeasurement, ie.TrafficParameterMeasurementIndication, ie.ULPeriodicity, ie.MPQUICControlInformation, ie.MPQUICAddressInformation, ie.TransportMode, ie.ReportingSuggestionInfo, ie.TLContainer, ie.MeasurementIndication, ie.HPLMNSNSSAI, ie.MediaTransportProtocol, ie.RTPHeaderExtensionType, ie.RTPHeaderExtensionID}
 	f.Fuzz(func(t *testing.T, data []byte) {
@@ -69,6 +74,17 @@ func FuzzAddedIEValues(f *testing.F) {
 			return
 		}
 		b, err := v.Marshal()
+		// A mapped address is valid on receive, but binary typed encoders
+		// reject it on send. Keep checking every other decoded value.
+		fields := reflect.ValueOf(v).Elem()
+		for n := 0; n < fields.NumField(); n++ {
+			if addr, ok := fields.Field(n).Interface().(netip.Addr); ok && addr.Is4In6() {
+				if !errors.Is(err, ie.ErrInvalidValue) {
+					t.Fatalf("mapped binary send: %v", err)
+				}
+				return
+			}
+		}
 		if err != nil {
 			t.Fatalf("successful decoder produced invalid fields: %v", err)
 		}

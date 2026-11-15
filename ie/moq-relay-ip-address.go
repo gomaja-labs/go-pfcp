@@ -58,7 +58,7 @@ func ParseMoQRelayIPAddressFields(b []byte) (*MoQRelayIPAddressFields, error) {
 	}
 	return f, nil
 }
-func (f *MoQRelayIPAddressFields) validate() error {
+func (f *MoQRelayIPAddressFields) validate(send bool) error {
 	if f == nil {
 		return ErrIENotFound
 	}
@@ -74,7 +74,7 @@ func (f *MoQRelayIPAddressFields) validate() error {
 	if f.Flags&1 == 0 && f.IPv6Address.IsValid() {
 		return ErrInvalidValue
 	}
-	if f.Flags&1 != 0 && (!f.IPv6Address.Is6() || f.IPv6Address.Zone() != "") {
+	if f.Flags&1 != 0 && !addedAddressValid(f.IPv6Address, 128, send) {
 		return ErrInvalidValue
 	}
 	return nil
@@ -97,7 +97,7 @@ func (f *MoQRelayIPAddressFields) MarshalLen() int {
 
 // Marshal serializes fields as defined in clause 8.2.270.
 func (f *MoQRelayIPAddressFields) Marshal() ([]byte, error) {
-	if err := f.validate(); err != nil {
+	if err := f.validate(true); err != nil {
 		return nil, err
 	}
 	b := make([]byte, f.MarshalLen())
@@ -109,7 +109,7 @@ func (f *MoQRelayIPAddressFields) Marshal() ([]byte, error) {
 
 // MarshalTo writes fields to b, rejecting invalid values and short buffers.
 func (f *MoQRelayIPAddressFields) MarshalTo(b []byte) error {
-	if err := f.validate(); err != nil {
+	if err := f.validate(true); err != nil {
 		return err
 	}
 	if len(b) < f.MarshalLen() {
@@ -152,5 +152,5 @@ func (f *MoQRelayIPAddressFields) UnmarshalBinary(b []byte) error {
 		}
 		f.IPv6Address, _ = netip.AddrFromSlice(b[offset : offset+16])
 	}
-	return f.validate()
+	return f.validate(false)
 }
