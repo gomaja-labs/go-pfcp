@@ -131,7 +131,8 @@ func (f *FSEIDFields) UnmarshalBinary(b []byte) error {
 		return io.ErrUnexpectedEOF
 	}
 
-	f.Flags = b[0]
+	// TS 29.244 V20.1.0 clauses 8.1.2 and 8.2.37: ignore spare bits.
+	f.Flags = b[0] & 3
 	offset := 1
 
 	f.SEID = binary.BigEndian.Uint64(b[offset : offset+8])
@@ -172,6 +173,14 @@ func (f *FSEIDFields) Marshal() ([]byte, error) {
 func (f *FSEIDFields) MarshalTo(b []byte) error {
 	if f == nil {
 		return ErrIENotFound
+	}
+	// TS 29.244 V20.1.0 clause 8.2.37: at least one address is required,
+	// and each presence flag selects an address of exactly that family.
+	if f.Flags&^uint8(3) != 0 || f.Flags&3 == 0 ||
+		f.HasIPv4() && f.IPv4Address.To4() == nil ||
+		f.HasIPv6() && (f.IPv6Address.To16() == nil || f.IPv6Address.To4() != nil) ||
+		!f.HasIPv4() && f.IPv4Address != nil || !f.HasIPv6() && f.IPv6Address != nil {
+		return ErrInvalidValue
 	}
 	if f.MarshalLen() > 65535 {
 		return ErrInvalidLength
@@ -217,11 +226,11 @@ func (f *FSEIDFields) MarshalLen() int {
 
 	l := 9
 
-	if f.IPv4Address != nil {
+	if f.HasIPv4() {
 		l += 4
 	}
 
-	if f.IPv6Address != nil {
+	if f.HasIPv6() {
 		l += 16
 	}
 
