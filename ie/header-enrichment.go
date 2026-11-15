@@ -5,7 +5,6 @@
 package ie
 
 import (
-	"fmt"
 	"io"
 )
 
@@ -20,7 +19,7 @@ func NewHeaderEnrichment(typ uint8, name, value string) *IE {
 	fields := NewHeaderEnrichmentFields(typ, name, value)
 	b, err := fields.Marshal()
 	if err != nil {
-		return newInvalidIE(HeaderEnrichment, fmt.Errorf("%w: %w", ErrInvalidValue, err))
+		return newInvalidFieldsIE(HeaderEnrichment, err)
 	}
 
 	return New(HeaderEnrichment, b)

@@ -7,6 +7,7 @@ package ie
 import (
 	"bytes"
 	"encoding/binary"
+	"errors"
 	"fmt"
 	"io"
 	"time"
@@ -42,6 +43,15 @@ type IE struct {
 // newInvalidIE returns an IE of type t that cannot be encoded because of err.
 func newInvalidIE(t IEType, err error) *IE {
 	return &IE{Type: t, err: err}
+}
+
+// newInvalidFieldsIE returns an IE of type t whose fields failed to encode
+// with err. Its error wraps ErrInvalidValue once, whether or not err does.
+func newInvalidFieldsIE(t IEType, err error) *IE {
+	if !errors.Is(err, ErrInvalidValue) {
+		err = fmt.Errorf("%w: %w", ErrInvalidValue, err)
+	}
+	return newInvalidIE(t, err)
 }
 
 // Equal reports whether i and o encode to the same octets. The same pointer

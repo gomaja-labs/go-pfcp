@@ -5,7 +5,6 @@
 package ie
 
 import (
-	"fmt"
 	"io"
 )
 
@@ -14,7 +13,7 @@ func NewDLFlowLevelMarking(flags uint8, ttc, sci []byte) *IE {
 	f := NewDLFlowLevelMarkingFields(flags, ttc, sci)
 	b, err := f.Marshal()
 	if err != nil {
-		return newInvalidIE(DLFlowLevelMarking, fmt.Errorf("%w: %w", ErrInvalidValue, err))
+		return newInvalidFieldsIE(DLFlowLevelMarking, err)
 	}
 
 	return New(DLFlowLevelMarking, b)
