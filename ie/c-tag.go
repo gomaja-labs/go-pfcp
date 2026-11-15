@@ -6,7 +6,6 @@ package ie
 
 import (
 	"encoding/binary"
-	"fmt"
 	"io"
 )
 
@@ -16,7 +15,7 @@ func NewCTAG(flags, pcp, deiFlag uint8, cvid uint16) *IE {
 
 	b, err := fields.Marshal()
 	if err != nil {
-		return newInvalidIE(CTAG, fmt.Errorf("%w: %w", ErrInvalidValue, err))
+		return newInvalidFieldsIE(CTAG, err)
 	}
 
 	return New(CTAG, b)

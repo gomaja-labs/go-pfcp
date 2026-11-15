@@ -5,7 +5,6 @@
 package ie
 
 import (
-	"fmt"
 	"io"
 	"net"
 )
@@ -16,7 +15,7 @@ func NewSourceIPAddress(v4, v6 net.IP, mpl uint8) *IE {
 
 	b, err := fields.Marshal()
 	if err != nil {
-		return newInvalidIE(SourceIPAddress, fmt.Errorf("%w: %w", ErrInvalidValue, err))
+		return newInvalidFieldsIE(SourceIPAddress, err)
 	}
 
 	return New(SourceIPAddress, b)

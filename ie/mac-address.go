@@ -5,7 +5,6 @@
 package ie
 
 import (
-	"fmt"
 	"io"
 	"net"
 )
@@ -16,7 +15,7 @@ func NewMACAddress(src, dst, upperSrc, upperDst net.HardwareAddr) *IE {
 
 	b, err := fields.Marshal()
 	if err != nil {
-		return newInvalidIE(MACAddress, fmt.Errorf("%w: %w", ErrInvalidValue, err))
+		return newInvalidFieldsIE(MACAddress, err)
 	}
 
 	return New(MACAddress, b)

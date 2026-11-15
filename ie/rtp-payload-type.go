@@ -58,7 +58,7 @@ func invalidRecentIE(typ IEType, field string) *IE {
 func recentFieldsIE(typ IEType, f interface{ Marshal() ([]byte, error) }) *IE {
 	b, err := f.Marshal()
 	if err != nil {
-		return newInvalidIE(typ, fmt.Errorf("%w: %w", ErrInvalidValue, err))
+		return newInvalidFieldsIE(typ, err)
 	}
 	return New(typ, b)
 }

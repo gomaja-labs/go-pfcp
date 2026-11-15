@@ -6,7 +6,6 @@ package ie
 
 import (
 	"encoding/binary"
-	"fmt"
 	"io"
 	"net"
 )
@@ -17,7 +16,7 @@ func NewFTEID(flags uint8, teid uint32, v4, v6 net.IP, chid uint8) *IE {
 
 	b, err := fields.Marshal()
 	if err != nil {
-		return newInvalidIE(FTEID, fmt.Errorf("%w: %w", ErrInvalidValue, err))
+		return newInvalidFieldsIE(FTEID, err)
 	}
 
 	return New(FTEID, b)

@@ -7,7 +7,6 @@ package ie
 // TS 29.244 V20.1.0 clause 8.2.158.
 
 import (
-	"fmt"
 	"io"
 	"net"
 )
@@ -18,7 +17,7 @@ func NewLinkSpecificMultipathIPAddress(v4, v6, nv4, nv6 net.IP) *IE {
 
 	b, err := fields.Marshal()
 	if err != nil {
-		return newInvalidIE(LinkSpecificMultipathIPAddress, fmt.Errorf("%w: %w", ErrInvalidValue, err))
+		return newInvalidFieldsIE(LinkSpecificMultipathIPAddress, err)
 	}
 
 	return New(LinkSpecificMultipathIPAddress, b)

@@ -6,7 +6,6 @@ package ie
 
 import (
 	"encoding/binary"
-	"fmt"
 	"io"
 )
 
@@ -17,7 +16,7 @@ func NewPFDContents(fd, url, dn string, cp []byte, dnp string, afd, aurl, adnp [
 	f := NewPFDContentsFields(fd, url, dn, cp, dnp, afd, aurl, adnp)
 	b, err := f.Marshal()
 	if err != nil {
-		return newInvalidIE(PFDContents, fmt.Errorf("%w: %w", ErrInvalidValue, err))
+		return newInvalidFieldsIE(PFDContents, err)
 	}
 
 	return New(PFDContents, b)
