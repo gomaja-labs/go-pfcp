@@ -1,6 +1,7 @@
 package message_test
 
 import (
+	"encoding/binary"
 	"errors"
 	"fmt"
 	"net"
@@ -228,4 +229,75 @@ func ExampleInvalidLengthError() {
 	// invalid PFCP message length: Length field 13 but 12 octets follow it
 	// Session Deletion Request 83 true
 	// Session Deletion Response 83 68
+}
+
+// ExampleDatagramErrors answers each failed Request independently, as required
+// by TS 29.244 V20.1.0 clauses 6.5 and 7.6.7. A failed Response is reported to
+// the application instead of answered (clause 7.6.8). Clause 7.2.2.4.2 says the
+// response should carry the remote peer's SEID; this example uses its
+// implementation option, SEID 0, which forbids the cause "Session not found".
+func ExampleDatagramErrors() {
+	var wire []byte
+	for seq := uint32(1); seq <= 3; seq++ {
+		frame, err := message.NewSessionDeletionRequest(42, seq).Marshal()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		if seq != 2 {
+			// Synthetic trailing PDR ID header declares one value octet, but has none.
+			frame = append(frame, 0, 56, 0, 1)
+			binary.BigEndian.PutUint16(frame[2:4], uint16(len(frame)-4))
+		}
+		if seq < 3 {
+			frame[0] |= 4
+		}
+		wire = append(wire, frame...)
+	}
+	received, err := message.ParseDatagram(wire)
+	fmt.Println("decoded:", len(received)) // Process this successful request too.
+	var failures message.DatagramErrors
+	if !errors.As(err, &failures) {
+		fmt.Println("expected frame failures:", err)
+		return
+	}
+	for _, failure := range failures {
+		h := failure.Header
+		if h == nil || h.Type != message.MsgTypeSessionDeletionRequest || !h.IsRequest() {
+			continue
+		}
+		var invalid *ie.DecodeError
+		if !errors.Is(failure, ie.ErrInvalidLength) || !errors.As(failure, &invalid) || invalid.TypeUnknown {
+			fmt.Println("expected invalid IE length:", failure)
+			return
+		}
+		// Clause 7.6.7 requires Cause Invalid length and the offending IE type.
+		response := message.NewSessionDeletionResponse(0, h.SequenceNumber,
+			ie.NewCause(ie.CauseInvalidLength), ie.NewOffendingIE(invalid.Type))
+		encoded, err := response.Marshal()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		decoded, err := message.ParseSessionDeletionResponse(encoded)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		cause, err := decoded.Cause.Cause()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		offending, err := decoded.OffendingIE.OffendingIE()
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println(decoded.MessageTypeName(), decoded.Sequence(), cause, "offending IE:", offending, "SEID:", decoded.SEID())
+	}
+	// Output:
+	// decoded: 1
+	// Session Deletion Response 1 68 offending IE: PDRID SEID: 0
+	// Session Deletion Response 3 68 offending IE: PDRID SEID: 0
 }

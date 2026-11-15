@@ -62,13 +62,18 @@
 // nor returned. A frame with FO=1 that ends the datagram is decoded, and the
 // frame it announces is reported missing at the datagram end, with a nil Header
 // and io.ErrUnexpectedEOF (TS 29.244 V20.1.0 clauses 6.5 and 7.6.3).
-// The joined error contains at most 16 *DatagramError details (zero-based Index,
-// octet Offset, received Header and underlying Err), followed by a count of
-// further failed frames. Later failures still allow valid frames to decode;
-// omitted details are unavailable through errors.Is/As. Body failures allow later
-// frames to decode; an incomplete header, inconsistent length, invalid bundle
-// framing or unsupported version stops decoding. Always handle both the messages
-// and the error. Transport size limits remain the caller's concern.
+// The error is nil on success, or DatagramErrors with one *DatagramError per
+// failed frame in wire order (zero-based Index, octet Offset, received Header
+// and underlying Err). Use errors.As to obtain the list and process each frame;
+// errors.Is/As can also reach every underlying cause. Error text describes only
+// the first failure and counts the others. There are at most len(input)/16 + 1
+// details: every frame before the final failure consumes at least a 16-octet
+// session header. A terminal failure may consume fewer octets or none, as with
+// an incomplete header or an unbundled node message.
+// Body failures allow later frames to decode; an incomplete header,
+// inconsistent length, invalid bundle framing or unsupported version stops
+// decoding. Always handle both the messages and the error. Transport size limits
+// remain the caller's concern.
 //
 // # Version and error handling
 //

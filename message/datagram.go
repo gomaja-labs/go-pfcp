@@ -10,6 +10,9 @@ import (
 )
 
 // DatagramError identifies a failed frame in a UDP payload.
+// ParseDatagram returns these in DatagramErrors so each failed Request can be
+// answered and each failed Response reported (TS 29.244 V20.1.0 clauses 6.5,
+// 7.6.7 and 7.6.8).
 // Index is zero-based; Offset counts octets from the start of the datagram.
 // Header is nil only when the input ended before the frame's complete header
 // (TS 29.244 V20.1.0 clause 7.6.3: silently discard it). For an unsupported
@@ -28,16 +31,61 @@ type DatagramError struct {
 
 // Error describes the frame position and its failure.
 func (e *DatagramError) Error() string {
+	if e == nil {
+		return "PFCP frame error"
+	}
 	return fmt.Sprintf("PFCP frame %d at octet %d: %v", e.Index, e.Offset, e.Err)
 }
 
 // Unwrap exposes the underlying framing, version or IE decoding failure.
-func (e *DatagramError) Unwrap() error { return e.Err }
+func (e *DatagramError) Unwrap() error {
+	if e == nil {
+		return nil
+	}
+	return e.Err
+}
+
+// DatagramErrors lists the failed frames of one datagram in wire order.
+// ParseDatagram returns it when at least one frame failed. Use errors.As to
+// obtain it and range over it to answer or report each failed frame.
+type DatagramErrors []*DatagramError
+
+// Error describes the first failure and counts the remaining failed frames.
+func (e DatagramErrors) Error() string {
+	switch len(e) {
+	case 0:
+		return "no failed PFCP frames"
+	case 1:
+		return e[0].Error()
+	case 2:
+		return e[0].Error() + " (and 1 more failed frame)"
+	default:
+		return fmt.Sprintf("%s (and %d more failed frames)", e[0].Error(), len(e)-1)
+	}
+}
+
+// Unwrap exposes every non-nil frame error in wire order.
+func (e DatagramErrors) Unwrap() []error {
+	if len(e) == 0 {
+		return nil
+	}
+	failures := make([]error, 0, len(e))
+	for _, failure := range e {
+		if failure != nil {
+			failures = append(failures, failure)
+		}
+	}
+	return failures
+}
 
 // ParseDatagram decodes messages in one UDP payload, borrowing b. Keep b unchanged
 // while using the results. It returns every successfully decoded message and a
-// joined error containing at most 16 *DatagramError details, in wire order,
-// followed by a count of further failed frames when details were omitted.
+// DatagramErrors containing one *DatagramError per failed frame, in wire order.
+// With no failures the error is nil. The detail count is at most len(b)/16 + 1:
+// every frame before a final failure consumes at least a 16-octet session
+// header. A terminal failure may instead be an incomplete or missing header,
+// or an unbundled node message shorter than 16 octets.
+// Error text describes only the first failure and counts the others.
 // A malformed body does not prevent decoding later frames. A framing failure
 // (incomplete header, inconsistent length, invalid bundle framing) or an
 // unsupported version whose layout is unknown stops further decoding.
@@ -49,14 +97,10 @@ func (e *DatagramError) Unwrap() error { return e.Err }
 // TS 29.244 V20.1.0 clauses 6.5, 7.2.1A, 7.2.2.4.1 and 7.6.2–7.6.7.
 func ParseDatagram(b []byte) ([]Message, error) {
 	var messages []Message
-	var failures []error
-	index, offset, omitted := 0, 0, 0
+	var failures DatagramErrors
+	index, offset := 0, 0
 	fail := func(h *Header, err error) {
-		if len(failures) < 16 {
-			failures = append(failures, &DatagramError{Index: index, Offset: offset, Header: h, Err: err})
-		} else {
-			omitted++
-		}
+		failures = append(failures, &DatagramError{Index: index, Offset: offset, Header: h, Err: err})
 	}
 	for {
 		n, err := frameSize(b)
@@ -98,10 +142,10 @@ func ParseDatagram(b []byte) ([]Message, error) {
 		offset += n
 		index++
 	}
-	if omitted != 0 {
-		failures = append(failures, fmt.Errorf("%d further frames failed", omitted))
+	if len(failures) != 0 {
+		return messages, failures
 	}
-	return messages, errors.Join(failures...)
+	return messages, nil
 }
 
 // MarshalDatagram encodes one or more messages for one peer into a UDP payload.
